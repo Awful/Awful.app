@@ -1,0 +1,21 @@
+/*
+  lepers.css
+  Awful
+
+  Copyright 2026 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
+
+  Supplemental styles layered over posts-view.css for the Leper's Colony. Each punishment is rendered as a
+  <post>, so it inherits the posts-view look (background, borders, header/avatar/username, .postbody); these
+  rules only add the bits specific to the Leper's Colony.
+*/
+
+/* The whole entry is tappable — it opens the post the user was punished for. */
+post {
+  cursor: pointer;
+}
+
+/* The sentence icon reuses the avatar slot, but it's a fixed badge rather than a user avatar, so never
+   round it (some themes round avatars). */
+post .avatar {
+  border-radius: 0;
+}

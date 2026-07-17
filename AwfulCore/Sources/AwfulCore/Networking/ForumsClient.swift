@@ -1567,20 +1567,49 @@ public final class ForumsClient {
     }
 
     private func lepersColony(
-        parameters: some Sequence<KeyValuePairs<String, Any>.Element>
-    ) async throws -> [LepersColonyScrapeResult.Punishment] {
+        page: Int,
+        userID: String?,
+        filter: LepersColonyFilter
+    ) async throws -> LepersColonyScrapeResult {
+        // Always send every filter, using the site's base defaults (adminid=0, actfilt=-1, ban_month=0,
+        // ban_year=0) for the "any/all" cases, so results match the website's unfiltered view.
+        let adminid = filter.adminID?.rawValue ?? "0"
+        let actfilt = "\(filter.type.rawValue)"
+        let banMonth = filter.month.map { "\($0)" } ?? "0"
+        let banYear = filter.year.map { "\($0)" } ?? "0"
+
+        let parameters: KeyValuePairs<String, Any>
+        if let userID {
+            parameters = [
+                "pagenumber": "\(page)",
+                "userid": userID,
+                "adminid": adminid,
+                "actfilt": actfilt,
+                "ban_month": banMonth,
+                "ban_year": banYear,
+            ]
+        } else {
+            parameters = [
+                "pagenumber": "\(page)",
+                "adminid": adminid,
+                "actfilt": actfilt,
+                "ban_month": banMonth,
+                "ban_year": banYear,
+            ]
+        }
+
         let (data, response) = try await fetch(method: .get, urlString: "banlist.php", parameters: parameters)
         let (document, url) = try parseHTML(data: data, response: response)
-        let result = try LepersColonyScrapeResult(document, url: url)
-        return result.punishments
+        return try LepersColonyScrapeResult(document, url: url)
     }
 
     public func listPunishments(
         of user: User?,
-        page: Int
-    ) async throws -> [LepersColonyScrapeResult.Punishment] {
+        page: Int,
+        filter: LepersColonyFilter = .init()
+    ) async throws -> LepersColonyScrapeResult {
         guard let user else {
-            return try await lepersColony(parameters: ["pagenumber": "\(page)"])
+            return try await lepersColony(page: page, userID: nil, filter: filter)
         }
 
         let maybe: (userID: String, username: String?) = await user.managedObjectContext!.perform {
@@ -1592,7 +1621,7 @@ public final class ForumsClient {
         } else {
             guard let username = maybe.username else {
                 assertionFailure("need user ID or username")
-                return try await lepersColony(parameters: ["pagenumber": "\(page)"])
+                return try await lepersColony(page: page, userID: nil, filter: filter)
             }
             let profile = try await profileUser(.username(username))
             userID = await profile.managedObjectContext!.perform {
@@ -1600,10 +1629,7 @@ public final class ForumsClient {
             }
         }
 
-        return try await lepersColony(parameters: [
-            "pagenumber": "\(page)",
-            "userid": userID,
-        ])
+        return try await lepersColony(page: page, userID: userID, filter: filter)
     }
 
     // MARK: Private Messages

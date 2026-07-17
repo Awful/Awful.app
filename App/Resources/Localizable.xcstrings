@@ -50,6 +50,12 @@
     "Added Bookmark" : {
 
     },
+    "Admin" : {
+
+    },
+    "All" : {
+
+    },
     "announcement.title" : {
       "comment" : "Fallback title of an announcement screen (the announcement's title is used when available).",
       "extractionState" : "manual",
@@ -233,6 +239,9 @@
       }
     },
     "Cancel" : {
+
+    },
+    "Clear" : {
 
     },
     "compose.accessibility-label" : {
@@ -552,6 +561,9 @@
     "Day" : {
 
     },
+    "Display Options" : {
+
+    },
     "Doggo" : {
 
     },
@@ -637,6 +649,9 @@
 
     },
     "Ghost" : {
+
+    },
+    "Go" : {
 
     },
     "handoff.bookmarks-title" : {
@@ -1841,6 +1856,9 @@
 
     },
     "Try a different search term" : {
+
+    },
+    "Type" : {
 
     },
     "V" : {
