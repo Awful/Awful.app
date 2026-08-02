@@ -1422,6 +1422,40 @@ Awful.prependPosts = function(postsHTML) {
 
 
 /**
+ Adds some posts to the bottom of a container element (endless scroll).
+
+ @param {string} postsHTML - HTML for the new posts (and any page dividers).
+ @param {string} [containerID] - ID of the container to append into. Defaults to 'posts'; the Leper's Colony passes 'punishments'.
+ @param {string} [endHTML] - End-of-thread marker HTML, passed when the appended page is the last. Inserted at the end of the body (its usual spot), e.g. the spacer that keeps the frog below the last post.
+ */
+Awful.appendPosts = function(postsHTML, containerID, endHTML) {
+  var container = document.getElementById(containerID || 'posts');
+  if (!container) { return; }
+
+  // Remove stale end-of-thread markers rendered when the initial page was believed to be the last; they'd otherwise sit below appended content.
+  ['end', 'endf'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) { el.remove(); }
+  });
+
+  container.insertAdjacentHTML('beforeend', postsHTML);
+
+  if (endHTML) {
+    document.body.insertAdjacentHTML('beforeend', endHTML);
+  }
+
+  if (window.twttr) {
+    window.twttr.ready(function() {
+      Awful.embedTweets();
+    });
+  }
+
+  Awful.applyTimeoutToLoadingImages();
+  Awful.setupRetryHandler();
+};
+
+
+/**
  Replaces the announcement HTML.
 
  @param {string} html - The updated HTML for the announcement.
@@ -1775,5 +1809,5 @@ if (Awful.domContentLoadedFired) {
 }
 
 // THIS SHOULD STAY AT THE BOTTOM OF THE FILE!
-// All done; tell the native side we're ready.
-window.webkit.messageHandlers.didRender.postMessage({});
+// All done; tell the native side we're ready. (No Swift side registers "didRender", so guard to avoid a TypeError.)
+window.webkit.messageHandlers.didRender?.postMessage({});

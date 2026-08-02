@@ -1,3 +1,4 @@
+{% if not rowsOnly %}
 <!DOCTYPE html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=320, initial-scale=0.99, viewport-fit=cover">
@@ -13,7 +14,9 @@
 
 <body class="{{ userInterfaceIdiom }}">
     <div id="punishments">
+{% endif %}
     {% for p in punishments %}
+        {% if p.pageDivider %}<div class="endless-page-divider">{{ p.pageDivider|htmlEscape }}</div>{% endif %}
         <post class="{{ p.sentenceClass }}" {% if p.postID %}data-post-id="{{ p.postID|htmlEscape }}"{% endif %}>
             <header>
                 <img class="avatar" src="{{ p.iconURL }}" alt="{{ p.sentenceClass }}">
@@ -25,6 +28,7 @@
             <section class="postbody">{{ p.reasonHTML }}</section>
         </post>
     {% endfor %}
+{% if not rowsOnly %}
     </div>
 
     {% if not punishments %}<div id="end">{{ emptyText|htmlEscape }}</div>{% endif %}
@@ -47,3 +51,4 @@
     })();
     </script>
 </body>
+{% endif %}

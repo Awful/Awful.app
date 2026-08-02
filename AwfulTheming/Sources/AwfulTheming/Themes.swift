@@ -187,12 +187,20 @@ extension Theme {
         }
     }
 
+    /// Bundled CSS is immutable for the life of the process, so cache file contents by name. (`NSCache` is thread-safe.)
+    private static let stylesheetCache = NSCache<NSString, NSString>()
+
     /// Returns the contents of `name.css`.
     public func stylesheet(named name: String) throws -> String? {
+        if let cached = Self.stylesheetCache.object(forKey: name as NSString) {
+            return cached as String
+        }
         guard let url = Bundle.module.url(forResource: name, withExtension: ".css") else {
             return nil
         }
-        return try String(contentsOf: url, encoding: .utf8)
+        let css = try String(contentsOf: url, encoding: .utf8)
+        Self.stylesheetCache.setObject(css as NSString, forKey: name as NSString)
+        return css
     }
 
     /**

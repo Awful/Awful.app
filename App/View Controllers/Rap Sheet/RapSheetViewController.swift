@@ -3,7 +3,9 @@
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
+import AwfulSettings
 import AwfulTheming
+import ScrollViewDelegateMultiplexer
 import UIKit
 import WebKit
 
@@ -23,6 +25,22 @@ final class RapSheetViewController: ViewController {
     private var pageCount = 1
     private var isLoading = false
 
+    /// Already-fetched pages, keyed by requested page number, so Back/Forward doesn't refetch.
+    /// Invalidated on refresh and filter change.
+    private var pageCache: [Int: LepersColonyScrapeResult] = [:]
+
+    // MARK: Endless scroll (Leper's Colony tab only)
+
+    @FoilDefaultStorage(Settings.endlessScrollLepers) private var endlessScrollLepers
+
+    /// Punishments grouped by the page they were fetched from, in display order, so full re-renders
+    /// (theme change, web process termination) can reproduce the accumulated document with dividers.
+    private var punishmentPages: [(page: Int, punishments: [LepersColonyScrapeResult.Punishment])] = []
+    private var isAppending = false
+    private var scrollViewDelegateMux: ScrollViewDelegateMultiplexer?
+
+    private var isEndlessScrolling: Bool { isLepersColony && endlessScrollLepers }
+
     // MARK: Filtering (Leper's Colony tab only)
 
     private var filter = LepersColonyFilter()
@@ -41,7 +59,8 @@ final class RapSheetViewController: ViewController {
     }()
 
     private lazy var renderView: RenderView = {
-        let renderView = RenderView()
+        // No frog/ghost animations here, so skip injecting the sizable lottie-player.js.
+        let renderView = RenderView(includesLottiePlayer: false)
         renderView.delegate = self
         renderView.registerMessage(DidTapPunishmentPost.self)
         return renderView
@@ -64,6 +83,7 @@ final class RapSheetViewController: ViewController {
         control.addAction(UIAction { [weak self] _ in
             guard let self else { return }
             // The pull-to-refresh control shows its own spinner, so skip the full loading overlay.
+            self.pageCache.removeAll()
             Task { await self.load(max(self.page, 1), showsLoadingOverlay: false) }
         }, for: .valueChanged)
         return control
@@ -73,6 +93,10 @@ final class RapSheetViewController: ViewController {
     /// `updateButtonColors()` can retint them on theme changes — mirroring `ForumsTableViewController`.
     private var filterButtonView: UIButton?
     private var refreshButtonView: UIButton?
+
+    /// Top-left "More…" button, shown only while endless scrolling. Its menu is the way back to the paging
+    /// controls, which are hidden while endless scroll is on.
+    private var moreButtonView: UIButton?
 
     // MARK: Toolbar items
 
@@ -151,6 +175,10 @@ final class RapSheetViewController: ViewController {
         renderView.scrollView.contentInsetAdjustmentBehavior = .never
         renderView.scrollView.refreshControl = refreshControl
 
+        // Watch for nearing the bottom to drive endless scroll. (The multiplexer preserves WKWebView's own scroll-view delegation.)
+        scrollViewDelegateMux = ScrollViewDelegateMultiplexer(scrollView: renderView.scrollView)
+        scrollViewDelegateMux?.addDelegate(self)
+
         toolbar.items = makeToolbarItems()
         updateToolbar()
         updateRightBarButtons()
@@ -180,7 +208,10 @@ final class RapSheetViewController: ViewController {
     /// screen (content visible behind the glass bars) without the last rows being hidden underneath.
     private func updateScrollViewInsets() {
         guard isViewLoaded else { return }
-        let bottomInset = max(0, view.bounds.maxY - toolbar.frame.minY)
+        // With the paging toolbar hidden (endless scroll), only the tab bar needs clearing.
+        let bottomInset = toolbar.isHidden
+            ? max(0, view.bounds.maxY - view.safeAreaLayoutGuide.layoutFrame.maxY)
+            : max(0, view.bounds.maxY - toolbar.frame.minY)
         renderView.scrollView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
         renderView.scrollView.verticalScrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
     }
@@ -256,6 +287,7 @@ final class RapSheetViewController: ViewController {
 
     private func refresh() {
         guard !isLoading else { return }
+        pageCache.removeAll()
         Task { await load(max(page, 1)) }
     }
 
@@ -273,13 +305,21 @@ final class RapSheetViewController: ViewController {
         }
 
         do {
-            let result = try await ForumsClient.shared.listPunishments(of: user, page: pageToLoad, filter: filter)
+            let result: LepersColonyScrapeResult
+            if let cached = pageCache[pageToLoad] {
+                result = cached
+            } else {
+                result = try await ForumsClient.shared.listPunishments(of: user, page: pageToLoad, filter: filter)
+                pageCache[pageToLoad] = result
+            }
             page = result.pageNumber ?? pageToLoad
             pageCount = result.pageCount ?? max(pageCount, page)
             if let options = result.filterOptions {
                 filterOptions = options
             }
             currentPunishments = result.punishments
+            // A fresh page load collapses any endless-scroll accumulation.
+            punishmentPages = [(page, result.punishments)]
             renderPunishments()
             if isLepersColony {
                 RefreshMinder.sharedMinder.didRefresh(.lepersColony)
@@ -289,15 +329,81 @@ final class RapSheetViewController: ViewController {
         }
     }
 
+    /// Endless scroll: fetches the next page and appends its punishments to the rendered document, preceded
+    /// by a "Page x of y" divider. Called repeatedly as the user scrolls near the bottom; all gating happens
+    /// here so calls are cheap and idempotent.
+    private func appendNextPageIfNeeded() {
+        guard isEndlessScrolling, !isLoading, !isAppending, page >= 1, page < pageCount else { return }
+        isAppending = true
+        let nextPage = page + 1
+        Task { [weak self] in
+            defer { self?.isAppending = false }
+            guard let self else { return }
+            do {
+                let result = try await ForumsClient.shared.listPunishments(of: user, page: nextPage, filter: filter)
+                // Bail if a full load raced us and the document no longer ends with the page we appended after.
+                guard self.isEndlessScrolling, self.page == nextPage - 1 else { return }
+                self.pageCache[nextPage] = result
+                self.page = result.pageNumber ?? nextPage
+                self.pageCount = result.pageCount ?? max(self.pageCount, self.page)
+                // Banlist rows shift as new punishments arrive (newest first), so drop rows we already show.
+                let existing = Set(self.currentPunishments)
+                let fresh = result.punishments.filter { !existing.contains($0) }
+                guard !fresh.isEmpty else {
+                    self.updateToolbar()
+                    return
+                }
+                self.punishmentPages.append((self.page, fresh))
+                self.currentPunishments.append(contentsOf: fresh)
+                let rowsHTML = (try? StencilEnvironment.shared.renderTemplate(.lepersColony, context: [
+                    "rowsOnly": true,
+                    "punishments": self.rows(for: fresh, pageDivider: "Page \(self.page) of \(self.pageCount)"),
+                ])) ?? ""
+                await self.renderView.appendPostHTML(rowsHTML, containerID: "punishments")
+                self.updateToolbar()
+            } catch {
+                // Stay quiet; scrolling near the bottom again retries.
+            }
+        }
+    }
+
     // MARK: - Rendering
 
     private func renderPunishments() {
-        let html = (try? StencilEnvironment.shared.renderTemplate(.lepersColony, context: renderContext())) ?? ""
-        renderView.render(html: html, baseURL: ForumsClient.shared.baseURL)
+        // Build the context on the main actor (it reads the theme), then render off-main like the posts page.
+        let context = renderContext()
+        Task.detached(priority: .userInitiated) {
+            let html = (try? StencilEnvironment.shared.renderTemplate(.lepersColony, context: context)) ?? ""
+            await self.renderView.render(html: html, baseURL: ForumsClient.shared.baseURL)
+        }
     }
 
     private func renderContext() -> [String: Any] {
-        let rows: [[String: Any]] = currentPunishments.map { punishment in
+        // Re-emit page dividers so a full re-render (theme change, web process termination) reproduces the endless-scroll accumulation.
+        var allRows: [[String: Any]] = []
+        if punishmentPages.count > 1 {
+            for (i, group) in punishmentPages.enumerated() {
+                let divider = i == 0 ? nil : "Page \(group.page) of \(pageCount)"
+                allRows += rows(for: group.punishments, pageDivider: divider)
+            }
+        } else {
+            allRows = rows(for: currentPunishments, pageDivider: nil)
+        }
+
+        return [
+            "stylesheet": theme[string: "postsViewCSS"] ?? "",
+            "lepersCSS": (try? theme.stylesheet(named: "lepers")) ?? "",
+            "emptyText": LocalizedString("rap-sheet.empty"),
+            "punishments": allRows,
+        ]
+    }
+
+    /// Template contexts for a run of punishment rows, with an optional "Page x of y" divider before the first row.
+    private func rows(
+        for punishments: [LepersColonyScrapeResult.Punishment],
+        pageDivider: String?
+    ) -> [[String: Any]] {
+        punishments.enumerated().map { i, punishment in
             let sentenceClass = Self.sentenceClass(for: punishment.sentence)
             var row: [String: Any] = [
                 "sentenceClass": sentenceClass,
@@ -309,15 +415,11 @@ final class RapSheetViewController: ViewController {
             if let postID = punishment.post?.rawValue {
                 row["postID"] = postID
             }
+            if i == 0, let pageDivider {
+                row["pageDivider"] = pageDivider
+            }
             return row
         }
-
-        return [
-            "stylesheet": theme[string: "postsViewCSS"] ?? "",
-            "lepersCSS": (try? theme.stylesheet(named: "lepers")) ?? "",
-            "emptyText": LocalizedString("rap-sheet.empty"),
-            "punishments": rows,
-        ]
     }
 
     // MARK: - Loading overlay
@@ -415,6 +517,8 @@ final class RapSheetViewController: ViewController {
     }
 
     private func updateToolbar() {
+        // Endless scroll replaces the paging controls; the near-bottom trigger loads the next page instead.
+        toolbar.isHidden = isEndlessScrolling
         let current = max(page, 1)
         let total = max(pageCount, current)
         currentPageItem.title = "\(current) / \(total)"
@@ -422,6 +526,24 @@ final class RapSheetViewController: ViewController {
         currentPageItem.isEnabled = total > 1
         backItem.isEnabled = current > 1 && !isLoading
         forwardItem.isEnabled = current < total && !isLoading
+    }
+
+    // MARK: - Endless scroll
+
+    private func startEndlessScroll() {
+        endlessScrollLepers = true
+        updateToolbar()
+        updateRightBarButtons()
+        updateScrollViewInsets()
+        // The user may already be parked at the bottom.
+        appendNextPageIfNeeded()
+    }
+
+    private func exitEndlessScroll() {
+        endlessScrollLepers = false
+        updateToolbar()
+        updateRightBarButtons()
+        updateScrollViewInsets()
     }
 
     // MARK: - Navigation bar
@@ -443,6 +565,7 @@ final class RapSheetViewController: ViewController {
         guard isLepersColony else {
             filterButtonView = nil
             refreshButtonView = nil
+            moreButtonView = nil
             navigationItem.setRightBarButtonItems(doneItems, animated: false)
             return
         }
@@ -481,15 +604,29 @@ final class RapSheetViewController: ViewController {
             stack.alignment = .center
             navigationItem.setRightBarButtonItems(doneItems + [UIBarButtonItem(customView: stack)], animated: false)
 
-            // Reserve left-side width matching the right-side icon cluster so the centered title isn't
-            // pushed off-center — same balancing spacer as `ForumsTableViewController`.
-            let spacer = UIBarButtonItem(customView: UIView(frame: CGRect(x: 0, y: 0, width: 72, height: 44)))
-            navigationItem.setLeftBarButtonItems([spacer], animated: false)
+            if isEndlessScrolling {
+                // Replace the balancing spacer with a real More… button (menu attached to a UIButton via
+                // `showsMenuAsPrimaryAction` — plain UIBarButtonItem menus misbehave on iOS 26 iPad), padded
+                // out to the same 72pt so the centered title stays balanced against the right-side cluster.
+                let moreButton = makeMoreButton()
+                moreButtonView = moreButton
+                let container = UIView(frame: CGRect(x: 0, y: 0, width: 72, height: 44))
+                moreButton.frame = CGRect(x: 0, y: 0, width: 44, height: 44)
+                container.addSubview(moreButton)
+                navigationItem.setLeftBarButtonItems([UIBarButtonItem(customView: container)], animated: false)
+            } else {
+                moreButtonView = nil
+                // Reserve left-side width matching the right-side icon cluster so the centered title isn't
+                // pushed off-center — same balancing spacer as `ForumsTableViewController`.
+                let spacer = UIBarButtonItem(customView: UIView(frame: CGRect(x: 0, y: 0, width: 72, height: 44)))
+                navigationItem.setLeftBarButtonItems([spacer], animated: false)
+            }
 
             // This path tints itself (via `makeSidebarImageHostingView`'s `.themed()` SwiftUI view), so drop
-            // the standard-path references.
+            // the standard-path references. The More… button still needs the explicit tint.
             filterButtonView = nil
             refreshButtonView = nil
+            updateButtonColors()
             return
         }
 
@@ -503,7 +640,35 @@ final class RapSheetViewController: ViewController {
             doneItems + [UIBarButtonItem(customView: filterButton), UIBarButtonItem(customView: refreshButton)],
             animated: false
         )
+
+        if isEndlessScrolling {
+            let moreButton = makeMoreButton()
+            moreButtonView = moreButton
+            navigationItem.setLeftBarButtonItems([UIBarButtonItem(customView: moreButton)], animated: false)
+        } else {
+            moreButtonView = nil
+            navigationItem.setLeftBarButtonItems([], animated: false)
+        }
+
         updateButtonColors()
+    }
+
+    /// The top-left "More…" button shown while endless scrolling. Uses `showsMenuAsPrimaryAction` on a
+    /// UIButton (rather than a UIBarButtonItem menu) so it behaves on iOS 26 iPads too.
+    private func makeMoreButton() -> UIButton {
+        let button = UIButton(type: .system)
+        button.setImage(UIImage(systemName: "ellipsis.circle"), for: .normal)
+        button.accessibilityLabel = "More"
+        button.showsMenuAsPrimaryAction = true
+        button.menu = UIMenu(children: [
+            UIAction(title: "Exit Endless Scroll") { [weak self] _ in
+                self?.exitEndlessScroll()
+            },
+        ])
+        if #available(iOS 26.0, *) {
+            button.tintAdjustmentMode = .normal
+        }
+        return button
     }
 
     private func makeBarButton(image: UIImage?, accessibilityLabel: String, action: Selector) -> UIButton {
@@ -530,6 +695,7 @@ final class RapSheetViewController: ViewController {
         }
         filterButtonView?.tintColor = tintColor
         refreshButtonView?.tintColor = tintColor
+        moreButtonView?.tintColor = tintColor
     }
 
     @objc private func filterButtonTapped() {
@@ -542,11 +708,25 @@ final class RapSheetViewController: ViewController {
 
     private func showPagePicker(from item: UIBarButtonItem?) {
         guard pageCount > 1, !isLoading else { return }
-        let picker = PagePickerViewController(pageCount: pageCount, currentPage: max(page, 1)) { [weak self] selected in
-            guard let self, selected != self.page else { return }
-            Task { await self.load(selected) }
-        }
-        picker.modalPresentationStyle = .popover
+        let picker = PagePickerViewController(
+            pageCount: pageCount,
+            currentPage: max(page, 1),
+            endlessScrollToggle: isLepersColony ? (
+                title: endlessScrollLepers ? "Exit Endless Scroll" : "Start Endless Scroll",
+                action: { [weak self] in
+                    guard let self else { return }
+                    if self.endlessScrollLepers {
+                        self.exitEndlessScroll()
+                    } else {
+                        self.startEndlessScroll()
+                    }
+                }
+            ) : nil,
+            onSelect: { [weak self] selected in
+                guard let self, selected != self.page else { return }
+                Task { await self.load(selected) }
+            }
+        )
         picker.popoverPresentationController?.barButtonItem = item
         present(picker, animated: true)
     }
@@ -558,6 +738,7 @@ final class RapSheetViewController: ViewController {
             onApply: { [weak self] newFilter in
                 guard let self, newFilter != self.filter else { return }
                 self.filter = newFilter
+                self.pageCache.removeAll()
                 // Reflect the new filter in the nav bar's Filter icon (plain vs. filled).
                 self.updateRightBarButtons()
                 Task { await self.load(1) }
@@ -642,6 +823,26 @@ extension RapSheetViewController: RenderViewDelegate {
     }
 }
 
+// MARK: - UIScrollViewDelegate (endless scroll trigger)
+
+extension RapSheetViewController: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        // WKWebView may trigger scroll events on background threads during content loading (same caveat as PostsPageView).
+        guard Thread.isMainThread else {
+            DispatchQueue.main.async { [weak self] in
+                self?.scrollViewDidScroll(scrollView)
+            }
+            return
+        }
+
+        // Ask for the next page when nearing the bottom. (`appendNextPageIfNeeded` does all its own gating, so this is cheap.)
+        let distanceToBottom = scrollView.contentSize.height - (scrollView.contentOffset.y + scrollView.bounds.height)
+        if scrollView.contentSize.height > 0, distanceToBottom < scrollView.bounds.height * 1.5 {
+            appendNextPageIfNeeded()
+        }
+    }
+}
+
 // MARK: - RestorableLocation
 
 extension RapSheetViewController: RestorableLocation {
@@ -654,18 +855,32 @@ extension RapSheetViewController: RestorableLocation {
 // MARK: - Page picker
 
 /// A compact page-jump popover, mirroring the posts page's `Selectotron`.
-private final class PagePickerViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate {
+private final class PagePickerViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate, UIPopoverPresentationControllerDelegate {
     private let pageCount: Int
     private let initialPage: Int
+    private let endlessScrollToggle: (title: String, action: () -> Void)?
     private let onSelect: (Int) -> Void
     private let picker = UIPickerView()
 
-    init(pageCount: Int, currentPage: Int, onSelect: @escaping (Int) -> Void) {
+    init(
+        pageCount: Int,
+        currentPage: Int,
+        endlessScrollToggle: (title: String, action: () -> Void)? = nil,
+        onSelect: @escaping (Int) -> Void
+    ) {
         self.pageCount = pageCount
         self.initialPage = currentPage
+        self.endlessScrollToggle = endlessScrollToggle
         self.onSelect = onSelect
         super.init(nibName: nil, bundle: nil)
-        preferredContentSize = CGSize(width: 240, height: 240)
+        preferredContentSize = CGSize(width: 240, height: endlessScrollToggle == nil ? 240 : 296)
+        modalPresentationStyle = .popover
+        // Stay a popover on iPhone too (like `Selectotron`); otherwise this adapts to a full-screen sheet.
+        popoverPresentationController?.delegate = self
+    }
+
+    func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle {
+        .none
     }
 
     required init?(coder: NSCoder) {
@@ -691,7 +906,19 @@ private final class PagePickerViewController: UIViewController, UIPickerViewData
             self.dismiss(animated: true) { self.onSelect(selected) }
         }, for: .touchUpInside)
 
-        let stack = UIStackView(arrangedSubviews: [picker, goButton])
+        var arrangedSubviews: [UIView] = [picker, goButton]
+        if let endlessScrollToggle {
+            let toggleButton = UIButton(type: .system)
+            toggleButton.setTitle(endlessScrollToggle.title, for: .normal)
+            toggleButton.titleLabel?.font = .preferredFont(forTextStyle: .body)
+            toggleButton.addAction(UIAction { [weak self] _ in
+                guard let self else { return }
+                self.dismiss(animated: true) { endlessScrollToggle.action() }
+            }, for: .touchUpInside)
+            arrangedSubviews.append(toggleButton)
+        }
+
+        let stack = UIStackView(arrangedSubviews: arrangedSubviews)
         stack.axis = .vertical
         stack.spacing = 8
         stack.translatesAutoresizingMaskIntoConstraints = false
@@ -700,7 +927,7 @@ private final class PagePickerViewController: UIViewController, UIPickerViewData
             stack.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor),
             stack.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             stack.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            stack.bottomAnchor.constraint(equalTo: view.layoutMarginsGuide.bottomAnchor),
+            stack.bottomAnchor.constraint(equalTo: view.layoutMarginsGuide.bottomAnchor, constant: -12),
         ])
     }
 
@@ -708,7 +935,13 @@ private final class PagePickerViewController: UIViewController, UIPickerViewData
 
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int { pageCount }
 
-    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        "\(row + 1)"
+    /// Attributed titles (like `Selectotron`'s): plain titles render in the system label color, which can be
+    /// invisible against the themed sheet background when the theme and system appearance disagree.
+    func pickerView(_ pickerView: UIPickerView, attributedTitleForRow row: Int, forComponent component: Int) -> NSAttributedString? {
+        let theme = Theme.defaultTheme()
+        return NSAttributedString(string: "\(row + 1)", attributes: [
+            .foregroundColor: theme[uicolor: "sheetTextColor"] ?? UIColor.label,
+            .font: UIFont.preferredFont(forTextStyle: .body),
+        ])
     }
 }

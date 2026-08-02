@@ -1,3 +1,4 @@
+{% if pageDivider %}<div class="endless-page-divider">{{ pageDivider|htmlEscape }}</div>{% endif %}
 <post
     id="{{ postID }}"
     class="{% if beenSeen %} seen {% endif %}
