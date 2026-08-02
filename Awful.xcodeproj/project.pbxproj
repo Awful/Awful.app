@@ -218,6 +218,7 @@
 		2D5009F32F9C9FF300887F4B /* LoadMoreCollectionFooter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D5009F22F9C9FF300887F4B /* LoadMoreCollectionFooter.swift */; };
 		2D571B472EC83DD00026826C /* AttachmentCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D571B462EC83DD00026826C /* AttachmentCardView.swift */; };
 		2D571B492EC8765F0026826C /* ImmersiveModeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D571B482EC876590026826C /* ImmersiveModeManager.swift */; };
+		2D571B4B2EC8765F0026826C /* TiltScrollManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D571B4A2EC876590026826C /* TiltScrollManager.swift */; };
 		2D62DEA42EBFE93800F7121B /* LiquidGlassTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D62DEA32EBFE93600F7121B /* LiquidGlassTitleView.swift */; };
 		2D62DEA62EBFE95B00F7121B /* PostsPageTopBarLiquidGlass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D62DEA52EBFE95500F7121B /* PostsPageTopBarLiquidGlass.swift */; };
 		2D62DEA82EBFEB2000F7121B /* GradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D62DEA72EBFEB1D00F7121B /* GradientView.swift */; };
@@ -564,6 +565,7 @@
 		2D5009F22F9C9FF300887F4B /* LoadMoreCollectionFooter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadMoreCollectionFooter.swift; sourceTree = "<group>"; };
 		2D571B462EC83DD00026826C /* AttachmentCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentCardView.swift; sourceTree = "<group>"; };
 		2D571B482EC876590026826C /* ImmersiveModeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImmersiveModeManager.swift; sourceTree = "<group>"; };
+		2D571B4A2EC876590026826C /* TiltScrollManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TiltScrollManager.swift; sourceTree = "<group>"; };
 		2D62DEA32EBFE93600F7121B /* LiquidGlassTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiquidGlassTitleView.swift; sourceTree = "<group>"; };
 		2D62DEA52EBFE95500F7121B /* PostsPageTopBarLiquidGlass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsPageTopBarLiquidGlass.swift; sourceTree = "<group>"; };
 		2D62DEA72EBFEB1D00F7121B /* GradientView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientView.swift; sourceTree = "<group>"; };
@@ -707,6 +709,7 @@
 			children = (
 				2D571B482EC876590026826C /* ImmersiveModeManager.swift */,
 				1C0D80011CF9FE79003EE2D1 /* NavigationBar.swift */,
+				2D571B4A2EC876590026826C /* TiltScrollManager.swift */,
 				1C0D80031CF9FE81003EE2D1 /* NavigationController.swift */,
 				1C0D7FFF1CF9FE70003EE2D1 /* Toolbar.swift */,
 				1C16FC051CC3E1AF00C88BD1 /* UnpoppingViewHandler.swift */,
@@ -1729,6 +1732,7 @@
 				1C24BC98200A9BE00022C85F /* ThreadListDataSource.swift in Sources */,
 				1C0D80041CF9FE81003EE2D1 /* NavigationController.swift in Sources */,
 				2D571B492EC8765F0026826C /* ImmersiveModeManager.swift in Sources */,
+				2D571B4B2EC8765F0026826C /* TiltScrollManager.swift in Sources */,
 				1C16FBB21CB86ACD00C88BD1 /* EmptyViewController.swift in Sources */,
 				1C353C071E416FE200CCBA51 /* SpriteSheetView.swift in Sources */,
 				1C16FBA21CB49D2700C88BD1 /* SelfHostingAttachmentInterpolator.swift in Sources */,

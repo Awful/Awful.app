@@ -28,6 +28,8 @@ final class PostsPageView: UIView {
 
     let immersiveModeManager = ImmersiveModeManager()
 
+    let tiltScrollManager = TiltScrollManager()
+
     /// Effective bottom inset used to position the toolbar: honors the system safe
     /// area on iPhone, and raises the toolbar to `minimumPadBottomInset` on iPad
     /// so it aligns with the sidebar's RootTabBar.
@@ -320,6 +322,8 @@ final class PostsPageView: UIView {
             toolbar: toolbar,
             topBarContainer: topBarContainer
         )
+
+        tiltScrollManager.configure(scrollView: renderView.scrollView)
 
         scrollViewDelegateMux = ScrollViewDelegateMultiplexer(scrollView: renderView.scrollView)
         scrollViewDelegateMux?.addDelegate(self)
@@ -666,6 +670,7 @@ extension PostsPageView: ScrollViewDelegateExtras {
         }
 
         immersiveModeManager.handleScrollViewWillBeginDragging(scrollView)
+        tiltScrollManager.handleScrollViewWillBeginDragging()
     }
 
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
@@ -726,6 +731,8 @@ extension PostsPageView: ScrollViewDelegateExtras {
             postsPageViewController?.refreshRestorationAnchor()
         }
 
+        tiltScrollManager.handleScrollViewDidEndDragging(willDecelerate: willDecelerate)
+
         willBeginDraggingContentOffset = nil
     }
 
@@ -739,6 +746,8 @@ extension PostsPageView: ScrollViewDelegateExtras {
         }
 
         updateTopBarDidEndDecelerating()
+
+        tiltScrollManager.handleScrollViewDidEndDecelerating()
 
         immersiveModeManager.handleScrollViewDidEndDecelerating(
             scrollView,

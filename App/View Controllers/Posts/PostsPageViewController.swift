@@ -673,6 +673,9 @@ final class PostsPageViewController: ViewController {
             image: UIImage(named: "page-settings"),
             handler: { [unowned self] action in
                 let settings = PostsPageSettingsViewController()
+                settings.tiltScrollRecalibrate = { [weak self] in
+                    self?.postsView.tiltScrollManager.recalibrate()
+                }
                 self.present(settings, animated: true)
 
                 if let popover = settings.popoverPresentationController {
@@ -2265,11 +2268,13 @@ final class PostsPageViewController: ViewController {
         super.viewDidAppear(animated)
 
         configureUserActivityIfPossible()
+        postsView.tiltScrollManager.viewDidAppear()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         postsView.immersiveModeManager.exitImmersiveMode()
+        postsView.tiltScrollManager.viewWillDisappear()
     }
 
     override func viewDidDisappear(_ animated: Bool) {
