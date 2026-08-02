@@ -243,6 +243,12 @@
     "Pull for Next Page" : {
 
     },
+    "Remove Tracking from Links" : {
+
+    },
+    "Remove Tracking from Links strips tracking parameters (like utm_ and fbclid) from links pasted into the composer. A Use Original button appears after each cleaned paste." : {
+
+    },
     "Replace Custom Theme?" : {
 
     },

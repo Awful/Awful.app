@@ -2,6 +2,8 @@
 //
 //  Copyright 2015 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import AwfulExtensions
+import AwfulSettings
 import AwfulTheming
 import UIKit
 
@@ -161,6 +163,15 @@ extension UIPasteboard {
         set {
             string = newValue?.absoluteString
         }
+    }
+
+    /// `coercedURL` with tracking parameters removed when the "Remove Tracking from Links" setting is on. Returns the URL to insert, plus the original when cleaning changed it (else `nil`).
+    var cleanedCoercedURL: (url: URL, originalIfChanged: URL?)? {
+        guard let url = coercedURL else { return nil }
+        guard UserDefaults.standard.defaultingValue(for: Settings.cleanPastedURLs),
+              let cleaned = TrackingParameterRemover.cleanedURL(url)
+        else { return (url, nil) }
+        return (cleaned, url)
     }
 }
 

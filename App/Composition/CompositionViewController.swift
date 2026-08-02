@@ -3,6 +3,7 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
+import AwfulExtensions
 import AwfulSettings
 import AwfulTheming
 import UIKit
@@ -61,6 +62,9 @@ final class CompositionViewController: ViewController {
 
         _textView = CompositionTextView()
         _textView.translatesAutoresizingMaskIntoConstraints = false
+        _textView.onURLsCleaned = { [weak self] notice in
+            self?.showURLCleanedBanner(notice)
+        }
 
         attachmentPreviewView.translatesAutoresizingMaskIntoConstraints = false
         attachmentPreviewView.isHidden = true
@@ -305,6 +309,43 @@ final class CompositionViewController: ViewController {
         }
     }
 
+    // MARK: - Tracking removal
+
+    private var activeCleaningNotice: URLCleaningNotice?
+
+    private func showURLCleanedBanner(_ notice: URLCleaningNotice) {
+        activeCleaningNotice = notice
+        BannerToastView.show(
+            in: view,
+            theme: theme,
+            message: notice.bannerMessage,
+            actionTitle: "Use Original"
+        ) { [weak self] in
+            guard let self, let notice = self.activeCleaningNotice else { return }
+            self.textView.restoreOriginalURLs(from: notice)
+            self.activeCleaningNotice = nil
+        }
+    }
+
+    /// Cleans tracking parameters out of a user-entered URL string when the setting is on. Returns the string to insert, plus the original when cleaning changed it (else `nil`).
+    private func cleanedURLString(_ urlString: String) -> (cleaned: String, originalIfChanged: String?) {
+        guard UserDefaults.standard.defaultingValue(for: Settings.cleanPastedURLs) else { return (urlString, nil) }
+        let result = TrackingParameterRemover.cleanedText(urlString)
+        guard result.didChange else { return (urlString, nil) }
+        return (result.cleanedText, urlString)
+    }
+
+    private func reportIfCleaned(original: String?, cleaned: String, at location: Int) {
+        guard let original else { return }
+        _textView.reportCleaned(URLCleaningNotice(replacements: [
+            .init(
+                original: original,
+                cleaned: cleaned,
+                range: NSRange(location: location, length: (cleaned as NSString).length)
+            ),
+        ]))
+    }
+
     // MARK: - URL and Video Prompts
 
     func showURLPrompt() {
@@ -341,11 +382,15 @@ final class CompositionViewController: ViewController {
 
     private func insertURLTag(url: String, displayText: String) {
         guard !url.isEmpty else { return }
+        let (cleaned, original) = cleanedURLString(url)
         let helper = BBcodeTagHelper(textView: textView)
+        let insertionStart = textView.selectedRange.location
         if displayText.isEmpty {
-            helper.insertText("[url]\(url)[/url]")
+            helper.insertText("[url]\(cleaned)[/url]")
+            reportIfCleaned(original: original, cleaned: cleaned, at: insertionStart + ("[url]" as NSString).length)
         } else {
-            helper.insertText("[url=\(url)]\(displayText)[/url]")
+            helper.insertText("[url=\(cleaned)]\(displayText)[/url]")
+            reportIfCleaned(original: original, cleaned: cleaned, at: insertionStart + ("[url=" as NSString).length)
         }
     }
 
@@ -372,12 +417,16 @@ final class CompositionViewController: ViewController {
     }
 
     private func insertVideoTag(urlString: String) {
+        let (cleaned, original) = cleanedURLString(urlString)
         let helper = BBcodeTagHelper(textView: textView)
-        if let url = URL(string: urlString),
+        let insertionStart = textView.selectedRange.location
+        if let url = URL(string: cleaned),
            let normalizedURL = BBcodeTagHelper.videoTagURL(for: url) {
             helper.insertText("[video]\(normalizedURL.absoluteString)[/video]")
+            reportIfCleaned(original: original, cleaned: normalizedURL.absoluteString, at: insertionStart + ("[video]" as NSString).length)
         } else {
-            helper.insertText("[video]\(urlString)[/video]")
+            helper.insertText("[video]\(cleaned)[/video]")
+            reportIfCleaned(original: original, cleaned: cleaned, at: insertionStart + ("[video]" as NSString).length)
         }
     }
 
@@ -389,9 +438,11 @@ final class CompositionViewController: ViewController {
         if BBcodeTagHelper.clipboardHasURL {
             alert.addAction(UIAlertAction(title: "Paste URL from Clipboard", style: .default) { [weak self] _ in
                 guard let self = self else { return }
-                if let url = UIPasteboard.general.coercedURL {
+                if let (url, original) = UIPasteboard.general.cleanedCoercedURL {
                     let helper = BBcodeTagHelper(textView: self.textView)
+                    let insertionStart = self.textView.selectedRange.location
                     helper.insertText("[img]\(url.absoluteString)[/img]")
+                    self.reportIfCleaned(original: original?.absoluteString, cleaned: url.absoluteString, at: insertionStart + ("[img]" as NSString).length)
                 }
             })
         }
@@ -443,9 +494,12 @@ final class CompositionViewController: ViewController {
 
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         alert.addAction(UIAlertAction(title: "Insert", style: .default) { [weak self] _ in
-            guard let urlString = alert.textFields?[0].text, !urlString.isEmpty else { return }
-            let helper = BBcodeTagHelper(textView: self?.textView ?? UITextView())
-            helper.insertText("[img]\(urlString)[/img]")
+            guard let self, let urlString = alert.textFields?[0].text, !urlString.isEmpty else { return }
+            let (cleaned, original) = self.cleanedURLString(urlString)
+            let helper = BBcodeTagHelper(textView: self.textView)
+            let insertionStart = self.textView.selectedRange.location
+            helper.insertText("[img]\(cleaned)[/img]")
+            self.reportIfCleaned(original: original, cleaned: cleaned, at: insertionStart + ("[img]" as NSString).length)
         })
 
         present(alert, animated: true)
@@ -458,7 +512,7 @@ final class CompositionViewController: ViewController {
     }
 }
 
-final class CompositionTextView: UITextView, CompositionHidesMenuItems {
+final class CompositionTextView: URLCleaningTextView, CompositionHidesMenuItems {
     var hidesBuiltInMenuItems: Bool = false
     
     override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {

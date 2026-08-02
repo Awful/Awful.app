@@ -32,6 +32,9 @@ public enum Settings {
     /// Whether the logged-in user can send private messages. This really shouldn't be a setting :/
     public static let canSendPrivateMessages = Setting(key: "can_send_private_messages", default: false)
 
+    /// Remove known tracking query parameters (utm_*, fbclid, YouTube's si, etc.) from URLs pasted into the composer.
+    public static let cleanPastedURLs = Setting(key: "clean_pasted_urls", default: true)
+
     /// Check the general pasteboard for a Forums URL whenever we enter the foreground. iOS shows an alert requesting permission from the user whenever we attempt to check the pasteboard, so we default to off to be less annoying.
     public static let clipboardURLEnabled = Setting(key: "clipboard_url_enabled", default: false)
 

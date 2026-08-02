@@ -348,7 +348,30 @@ class ComposeTextViewController: ViewController {
         let textView = ComposeTextView()
         textView.font = UIFont.preferredFontForTextStyle(.body, sizeAdjustment: -0.5, weight: .regular)
         textView.delegate = self
+        textView.onURLsCleaned = { [weak self] notice in
+            self?.showURLCleanedBanner(notice)
+        }
         view = textView
+    }
+
+    // MARK: - Tracking removal
+
+    private var activeCleaningNotice: URLCleaningNotice?
+
+    private func showURLCleanedBanner(_ notice: URLCleaningNotice) {
+        activeCleaningNotice = notice
+        // Not our own view: that's the scrollable text view itself, so the banner would scroll away with the content.
+        let host = navigationController?.view ?? view!
+        BannerToastView.show(
+            in: host,
+            theme: theme,
+            message: notice.bannerMessage,
+            actionTitle: "Use Original"
+        ) { [weak self] in
+            guard let self, let notice = self.activeCleaningNotice else { return }
+            self.textView.restoreOriginalURLs(from: notice)
+            self.activeCleaningNotice = nil
+        }
     }
     
     override func themeDidChange() {
