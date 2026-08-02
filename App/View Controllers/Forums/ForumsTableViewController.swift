@@ -383,7 +383,7 @@ final class ForumsTableViewController: CollectionViewController {
     /// Builds the Search + overflow (⋯) buttons as an icon pair, mirroring
     /// `BookmarksTableViewController`'s Filter/Search combo. Search uses the `quick-look`
     /// asset icon and is gated on PM privileges; the overflow menu is for everyone.
-    /// Right-bar items are ordered right-to-left, so Search keeps its rightmost spot.
+    /// Right-bar items are ordered right-to-left, so ⋯ keeps the rightmost spot with Search to its left.
     ///
     /// iOS 26's iPad navigation bar mishandles a menu-bearing bar button placed beside another item —
     /// the menu won't open and the spacing is off. Match `BookmarksTableViewController`: on iOS 26 iPad
@@ -407,7 +407,7 @@ final class ForumsTableViewController: CollectionViewController {
             moreButton.accessibilityLabel = "More"
             moreButton.tintAdjustmentMode = .normal
 
-            var arranged: [UIView] = [moreButton]
+            var arranged: [UIView] = []
             if canSearch, let searchImage = UIImage(named: "quick-look") {
                 // The iPad glass sidebar tints plain UIButton images via vibrancy, so route
                 // the Search icon through the SwiftUI `.glassEffect(.identity)` hosting view
@@ -420,6 +420,7 @@ final class ForumsTableViewController: CollectionViewController {
                 )
                 arranged.append(searchHosting)
             }
+            arranged.append(moreButton)
             let stack = UIStackView(arrangedSubviews: arranged)
             stack.axis = .horizontal
             stack.spacing = 8
@@ -464,7 +465,7 @@ final class ForumsTableViewController: CollectionViewController {
         }
         searchButtonView = searchButton
         let searchItem = UIBarButtonItem(customView: searchButton)
-        navigationItem.setRightBarButtonItems([searchItem, moreItem], animated: true)
+        navigationItem.setRightBarButtonItems([moreItem, searchItem], animated: true)
         updateButtonColors()
     }
 
