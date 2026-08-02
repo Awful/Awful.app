@@ -13,6 +13,9 @@ final class RapSheetViewController: ViewController {
 
     private let user: User?
 
+    /// True for the Leper's Colony tab root, false for a single user's rap sheet.
+    var isLepersColony: Bool { user == nil }
+
     // MARK: Paging state
 
     /// The currently-displayed page; `0` until the first load completes.
@@ -46,6 +49,14 @@ final class RapSheetViewController: ViewController {
 
     private lazy var toolbar = Toolbar(frame: CGRect(x: 0, y: 0, width: 320, height: 44))
 
+    /// Keeps the paging controls from sitting flush against the root tab bar.
+    private static let toolbarBottomPadding: CGFloat = 2
+
+    /// Size of the nav-bar icons on the iOS 26 iPad path. `makeSidebarImageHostingView` scales the
+    /// image to fill this box, so these circle-enclosed symbols need to come in under the 20pt other
+    /// tabs use for their (unenclosed) icons to read the same size.
+    private static let padIconPointSize: CGFloat = 17
+
     private lazy var doneItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(didTapDone))
 
     private lazy var refreshControl: UIRefreshControl = {
@@ -58,13 +69,12 @@ final class RapSheetViewController: ViewController {
         return control
     }()
 
-    // MARK: Toolbar items
+    /// Nav-bar Filter/Refresh button views on the standard (non–iOS 26 iPad) path, kept so
+    /// `updateButtonColors()` can retint them on theme changes — mirroring `ForumsTableViewController`.
+    private var filterButtonView: UIButton?
+    private var refreshButtonView: UIButton?
 
-    private lazy var displayOptionsItem = UIBarButtonItem(primaryAction: UIAction(
-        image: UIImage(systemName: "line.3.horizontal.decrease.circle")
-    ) { [weak self] action in
-        self?.showDisplayOptions(from: action.sender as? UIBarButtonItem)
-    })
+    // MARK: Toolbar items
 
     private lazy var backItem: UIBarButtonItem = {
         let item = UIBarButtonItem(primaryAction: UIAction(image: UIImage(named: "arrowleft")) { [weak self] _ in
@@ -90,17 +100,6 @@ final class RapSheetViewController: ViewController {
             Task { await self.load(self.page + 1) }
         })
         item.accessibilityLabel = "Next page"
-        return item
-    }()
-
-    /// Balances `displayOptionsItem` on the right so the paging controls stay centered (mirroring the posts
-    /// toolbar's settings/actions symmetry); also a handy explicit reload.
-    private lazy var refreshItem: UIBarButtonItem = {
-        let item = UIBarButtonItem(primaryAction: UIAction(image: UIImage(systemName: "arrow.clockwise")) { [weak self] _ in
-            guard let self, !self.isLoading else { return }
-            Task { await self.load(max(self.page, 1)) }
-        })
-        item.accessibilityLabel = "Refresh"
         return item
     }()
 
@@ -146,7 +145,7 @@ final class RapSheetViewController: ViewController {
 
             toolbar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             toolbar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            toolbar.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            toolbar.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -Self.toolbarBottomPadding),
         ])
 
         renderView.scrollView.contentInsetAdjustmentBehavior = .never
@@ -154,6 +153,7 @@ final class RapSheetViewController: ViewController {
 
         toolbar.items = makeToolbarItems()
         updateToolbar()
+        updateRightBarButtons()
 
         // Re-apply the theme now that the render view and toolbar are in the hierarchy.
         themeDidChange()
@@ -162,8 +162,8 @@ final class RapSheetViewController: ViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        guard presentingViewController != nil && navigationController?.viewControllers.count == 1 else { return }
-        navigationItem.rightBarButtonItem = doneItem
+        // Whether we need a Done button depends on how we were presented, which isn't known until now.
+        updateRightBarButtons()
     }
 
     override func viewDidLayoutSubviews() {
@@ -188,7 +188,7 @@ final class RapSheetViewController: ViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        if user == nil {
+        if isLepersColony {
             // Refresh when the tab is shown, but only if it's been a while (like the other tabs), so
             // returning from a post doesn't reload every time.
             if page == 0 || RefreshMinder.sharedMinder.shouldRefresh(.lepersColony) {
@@ -207,7 +207,7 @@ final class RapSheetViewController: ViewController {
             tabBarItem.title = nil
         } else {
             tabBarItem.imageInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-            tabBarItem.title = if user == nil {
+            tabBarItem.title = if isLepersColony {
                 String(localized: "Lepers", bundle: .module)
             } else {
                 String(localized: "Rap Sheet", bundle: .module)
@@ -218,6 +218,7 @@ final class RapSheetViewController: ViewController {
 
         toolbar.tintColor = theme["toolbarTextColor"]
         configureToolbarAppearance()
+        updateButtonColors()
         refreshControl.tintColor = theme["listTextColor"]
 
         renderView.setThemeStylesheet(theme[string: "postsViewCSS"] ?? "")
@@ -280,7 +281,7 @@ final class RapSheetViewController: ViewController {
             }
             currentPunishments = result.punishments
             renderPunishments()
-            if user == nil {
+            if isLepersColony {
                 RefreshMinder.sharedMinder.didRefresh(.lepersColony)
             }
         } catch {
@@ -408,14 +409,9 @@ final class RapSheetViewController: ViewController {
 
     // MARK: - Toolbar
 
+    /// The toolbar carries only the paging controls; Filter and Refresh live in the navigation bar.
     private func makeToolbarItems() -> [UIBarButtonItem] {
-        let paging: [UIBarButtonItem] = [.flexibleSpace(), backItem, currentPageItem, forwardItem, .flexibleSpace()]
-        // The display-options filter is only meaningful on the whole-colony tab. When it's shown, a refresh
-        // button balances it on the right so the paging controls stay centered.
-        if user == nil {
-            return [displayOptionsItem] + paging + [refreshItem]
-        }
-        return paging
+        [.flexibleSpace(), backItem, currentPageItem, forwardItem, .flexibleSpace()]
     }
 
     private func updateToolbar() {
@@ -426,6 +422,122 @@ final class RapSheetViewController: ViewController {
         currentPageItem.isEnabled = total > 1
         backItem.isEnabled = current > 1 && !isLoading
         forwardItem.isEnabled = current < total && !isLoading
+    }
+
+    // MARK: - Navigation bar
+
+    /// Builds the Refresh + Filter icon pair, mirroring `ForumsTableViewController`'s Search + ⋯ combo.
+    /// Right-bar items are ordered right-to-left, so Refresh ends up left of Filter (and both left of Done,
+    /// where there is one).
+    ///
+    /// iOS 26's iPad navigation bar spreads adjacent bar buttons apart, so — matching
+    /// `ForumsTableViewController` — pack both icons into a single customView stack there, routing them
+    /// through `makeSidebarImageHostingView` so the glass sidebar doesn't mis-tint them.
+    private func updateRightBarButtons() {
+        // Presented as the root of our own navigation controller, so Done is the only way out.
+        let doneItems = presentingViewController != nil && navigationController?.viewControllers.count == 1
+            ? [doneItem]
+            : []
+
+        // Filtering and refreshing are only meaningful on the whole-colony tab.
+        guard isLepersColony else {
+            filterButtonView = nil
+            refreshButtonView = nil
+            navigationItem.setRightBarButtonItems(doneItems, animated: false)
+            return
+        }
+
+        // The filled icon shows at a glance that this isn't the site's default unfiltered view.
+        let filterImage = UIImage(systemName: filter == LepersColonyFilter()
+            ? "line.3.horizontal.decrease.circle"
+            : "line.3.horizontal.decrease.circle.fill")
+        let refreshImage = UIImage(systemName: "arrow.clockwise")
+
+        if #available(iOS 26.0, *), UIDevice.current.userInterfaceIdiom == .pad {
+            // The iPad glass sidebar tints plain UIButton images via vibrancy, so route both icons through
+            // the SwiftUI `.glassEffect(.identity)` hosting view to preserve the theme's tint.
+            var arranged: [UIView] = []
+            if let refreshImage {
+                arranged.append(NavigationController.makeSidebarImageHostingView(
+                    image: refreshImage,
+                    accessibilityLabel: "Refresh",
+                    pointSize: Self.padIconPointSize,
+                    target: self,
+                    action: #selector(refreshButtonTapped)
+                ))
+            }
+            if let filterImage {
+                arranged.append(NavigationController.makeSidebarImageHostingView(
+                    image: filterImage,
+                    accessibilityLabel: "Filter",
+                    pointSize: Self.padIconPointSize,
+                    target: self,
+                    action: #selector(filterButtonTapped)
+                ))
+            }
+            let stack = UIStackView(arrangedSubviews: arranged)
+            stack.axis = .horizontal
+            stack.spacing = 8
+            stack.alignment = .center
+            navigationItem.setRightBarButtonItems(doneItems + [UIBarButtonItem(customView: stack)], animated: false)
+
+            // Reserve left-side width matching the right-side icon cluster so the centered title isn't
+            // pushed off-center — same balancing spacer as `ForumsTableViewController`.
+            let spacer = UIBarButtonItem(customView: UIView(frame: CGRect(x: 0, y: 0, width: 72, height: 44)))
+            navigationItem.setLeftBarButtonItems([spacer], animated: false)
+
+            // This path tints itself (via `makeSidebarImageHostingView`'s `.themed()` SwiftUI view), so drop
+            // the standard-path references.
+            filterButtonView = nil
+            refreshButtonView = nil
+            return
+        }
+
+        // Icon-sized customViews rather than plain `UIBarButtonItem(image:)`: the latter reserves a wide
+        // (~44pt) tap area, which spreads the pair apart instead of packing them tightly like Forums.
+        let filterButton = makeBarButton(image: filterImage, accessibilityLabel: "Filter", action: #selector(filterButtonTapped))
+        let refreshButton = makeBarButton(image: refreshImage, accessibilityLabel: "Refresh", action: #selector(refreshButtonTapped))
+        filterButtonView = filterButton
+        refreshButtonView = refreshButton
+        navigationItem.setRightBarButtonItems(
+            doneItems + [UIBarButtonItem(customView: filterButton), UIBarButtonItem(customView: refreshButton)],
+            animated: false
+        )
+        updateButtonColors()
+    }
+
+    private func makeBarButton(image: UIImage?, accessibilityLabel: String, action: Selector) -> UIButton {
+        let button = UIButton(type: .system)
+        button.setImage(image, for: .normal)
+        button.addTarget(self, action: action, for: .touchUpInside)
+        button.accessibilityLabel = accessibilityLabel
+        if #available(iOS 26.0, *) {
+            button.tintAdjustmentMode = .normal
+        }
+        return button
+    }
+
+    /// Applies the navigation-bar button tint, mirroring `ForumsTableViewController.updateButtonColors()`.
+    /// iOS 26's glass capsule doesn't dynamically tint customView buttons — a nilled tint falls back to
+    /// system blue — so set the theme-appropriate color explicitly.
+    private func updateButtonColors() {
+        let tintColor: UIColor?
+        if #available(iOS 26.0, *) {
+            // An explicit tint prevents the system default blue when `NavigationController` sets tintColor = nil.
+            tintColor = theme["mode"] == "dark" ? UIColor.white : UIColor.black
+        } else {
+            tintColor = theme[uicolor: "navigationBarTextColor"]
+        }
+        filterButtonView?.tintColor = tintColor
+        refreshButtonView?.tintColor = tintColor
+    }
+
+    @objc private func filterButtonTapped() {
+        showDisplayOptions()
+    }
+
+    @objc private func refreshButtonTapped() {
+        refresh()
     }
 
     private func showPagePicker(from item: UIBarButtonItem?) {
@@ -439,13 +551,15 @@ final class RapSheetViewController: ViewController {
         present(picker, animated: true)
     }
 
-    private func showDisplayOptions(from item: UIBarButtonItem?) {
+    private func showDisplayOptions() {
         let controller = LepersFilterHostingController(
             filter: filter,
             options: filterOptions,
             onApply: { [weak self] newFilter in
                 guard let self, newFilter != self.filter else { return }
                 self.filter = newFilter
+                // Reflect the new filter in the nav bar's Filter icon (plain vs. filled).
+                self.updateRightBarButtons()
                 Task { await self.load(1) }
             }
         )
@@ -532,8 +646,8 @@ extension RapSheetViewController: RenderViewDelegate {
 
 extension RapSheetViewController: RestorableLocation {
     var restorationRoute: AwfulRoute? {
-        // Only the tab-root (user == nil) instance needs to advertise a route; user-specific rap sheets are pushed/presented on top of a parent that already conforms, so walking past them is correct.
-        user == nil ? .lepersColony : nil
+        // Only the tab-root instance needs to advertise a route; user-specific rap sheets are pushed/presented on top of a parent that already conforms, so walking past them is correct.
+        isLepersColony ? .lepersColony : nil
     }
 }
 
