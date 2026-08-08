@@ -53,6 +53,7 @@ final class TiltScrollManager: NSObject {
     // MARK: - Configuration
 
     @FoilDefaultStorage(Settings.tiltScrollEnabled) private var tiltScrollEnabled
+    @FoilDefaultStorage(Settings.tiltScrollInverted) private var tiltScrollInverted
     @FoilDefaultStorage(Settings.tiltScrollSensitivity) private var tiltScrollSensitivity
     private var cancellables: Set<AnyCancellable> = []
 
@@ -224,8 +225,10 @@ final class TiltScrollManager: NSObject {
         let normalized = min(1, excess / Self.rampRadians)
         let maxVelocity = Self.minMaxVelocity
             + (Self.maxMaxVelocity - Self.minMaxVelocity) * CGFloat(tiltScrollSensitivity).clamp(0...1)
-        // Tilting the top of the device away scrolls down the page.
-        let velocity = (delta > 0 ? 1 : -1) * maxVelocity * pow(normalized, Self.responseExponent)
+        // Tilting the top of the device away scrolls down the page, unless the
+        // direction is inverted.
+        let direction: CGFloat = (delta > 0 ? 1 : -1) * (tiltScrollInverted ? -1 : 1)
+        let velocity = direction * maxVelocity * pow(normalized, Self.responseExponent)
 
         let minY = -scrollView.adjustedContentInset.top
         let maxY = max(

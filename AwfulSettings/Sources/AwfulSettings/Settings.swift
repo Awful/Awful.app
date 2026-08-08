@@ -158,6 +158,9 @@ public enum Settings {
     /// Scroll the posts page by tilting the device toward or away from you.
     public static let tiltScrollEnabled = Setting(key: "tilt_scroll_enabled", default: false)
 
+    /// Reverse the direction the posts page scrolls when tilting the device.
+    public static let tiltScrollInverted = Setting(key: "tilt_scroll_inverted", default: false)
+
     /// Tilt-to-scroll sensitivity, normalized `0...1`. Scales the maximum scroll speed.
     public static let tiltScrollSensitivity = Setting(key: "tilt_scroll_sensitivity", default: 0.5)
 

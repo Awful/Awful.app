@@ -21,6 +21,7 @@ final class PostsPageSettingsViewController: ViewController, UIPopoverPresentati
     @FoilDefaultStorage(Settings.showAvatars) private var showAvatars
     @FoilDefaultStorage(Settings.loadImages) private var showImages
     @FoilDefaultStorage(Settings.tiltScrollEnabled) private var tiltScrollEnabled
+    @FoilDefaultStorage(Settings.tiltScrollInverted) private var tiltScrollInverted
     @FoilDefaultStorage(Settings.tiltScrollSensitivity) private var tiltScrollSensitivity
 
     init() {
@@ -91,6 +92,9 @@ final class PostsPageSettingsViewController: ViewController, UIPopoverPresentati
     private var tiltSensitivityStack: UIStackView?
     private var tiltSensitivityLabel: UILabel?
     private var tiltSensitivitySlider: UISlider?
+    private var tiltInvertStack: UIStackView?
+    private var tiltInvertLabel: UILabel?
+    private var tiltInvertSwitch: UISwitch?
     private var tiltZeroButton: UIButton?
 
     /// Set by the presenter; called when the user taps "Set Zero Point" so the
@@ -104,6 +108,11 @@ final class PostsPageSettingsViewController: ViewController, UIPopoverPresentati
 
     @objc private func tiltSensitivityDidChange(_ sender: UISlider) {
         tiltScrollSensitivity = Double(sender.value)
+    }
+
+    @objc private func toggleTiltScrollInverted(_ sender: UISwitch) {
+        performHapticFeedback()
+        tiltScrollInverted = sender.isOn
     }
 
     @objc private func setTiltZeroPoint(_ sender: UIButton) {
@@ -196,6 +205,7 @@ final class PostsPageSettingsViewController: ViewController, UIPopoverPresentati
                 guard let self else { return }
                 tiltScrollSwitch?.isOn = enabled
                 tiltSensitivityStack?.isHidden = !enabled
+                tiltInvertStack?.isHidden = !enabled
                 tiltZeroButton?.isHidden = !enabled
                 updatePreferredContentSize()
             }
@@ -204,6 +214,11 @@ final class PostsPageSettingsViewController: ViewController, UIPopoverPresentati
         $tiltScrollSensitivity
             .receive(on: RunLoop.main)
             .sink { [weak self] in self?.tiltSensitivitySlider?.value = Float($0) }
+            .store(in: &cancellables)
+
+        $tiltScrollInverted
+            .receive(on: RunLoop.main)
+            .sink { [weak self] in self?.tiltInvertSwitch?.isOn = $0 }
             .store(in: &cancellables)
 
         DispatchQueue.main.async { [weak self] in
@@ -330,6 +345,26 @@ final class PostsPageSettingsViewController: ViewController, UIPopoverPresentati
         sliderStack.isHidden = !tiltScrollEnabled
         tiltSensitivityStack = sliderStack
 
+        let invertLabel = UILabel()
+        invertLabel.text = "Invert Direction"
+        invertLabel.font = UIFont.preferredFont(forTextStyle: .body)
+        invertLabel.textColor = theme["sheetTextColor"] ?? UIColor.label
+        tiltInvertLabel = invertLabel
+
+        let invertSwitch = UISwitch()
+        invertSwitch.isOn = tiltScrollInverted
+        invertSwitch.onTintColor = theme["settingsSwitchColor"]
+        invertSwitch.addTarget(self, action: #selector(toggleTiltScrollInverted(_:)), for: .valueChanged)
+        tiltInvertSwitch = invertSwitch
+
+        let invertStack = UIStackView(arrangedSubviews: [invertLabel, invertSwitch])
+        invertStack.axis = .horizontal
+        invertStack.distribution = .equalSpacing
+        invertStack.alignment = .center
+        invertStack.translatesAutoresizingMaskIntoConstraints = false
+        invertStack.isHidden = !tiltScrollEnabled
+        tiltInvertStack = invertStack
+
         let zeroButton = UIButton(type: .system)
         zeroButton.setTitle("Set Zero Point", for: .normal)
         zeroButton.titleLabel?.font = UIFont.preferredFont(forTextStyle: .body)
@@ -343,10 +378,12 @@ final class PostsPageSettingsViewController: ViewController, UIPopoverPresentati
             if let index = parentStack.arrangedSubviews.firstIndex(of: anchor) {
                 parentStack.insertArrangedSubview(toggleStack, at: index + 1)
                 parentStack.insertArrangedSubview(sliderStack, at: index + 2)
-                parentStack.insertArrangedSubview(zeroButton, at: index + 3)
+                parentStack.insertArrangedSubview(invertStack, at: index + 3)
+                parentStack.insertArrangedSubview(zeroButton, at: index + 4)
             } else {
                 parentStack.addArrangedSubview(toggleStack)
                 parentStack.addArrangedSubview(sliderStack)
+                parentStack.addArrangedSubview(invertStack)
                 parentStack.addArrangedSubview(zeroButton)
             }
         }
@@ -381,6 +418,8 @@ final class PostsPageSettingsViewController: ViewController, UIPopoverPresentati
         tiltScrollSwitch?.onTintColor = theme["settingsSwitchColor"]
         tiltSensitivityLabel?.textColor = theme["sheetTextColor"] ?? UIColor.label
         tiltSensitivitySlider?.minimumTrackTintColor = theme["settingsSwitchColor"]
+        tiltInvertLabel?.textColor = theme["sheetTextColor"] ?? UIColor.label
+        tiltInvertSwitch?.onTintColor = theme["settingsSwitchColor"]
     }
     
     // MARK: UIAdaptivePresentationControllerDelegate
