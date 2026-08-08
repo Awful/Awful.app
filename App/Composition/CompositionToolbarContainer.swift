@@ -27,6 +27,18 @@ final class CompositionToolbarContainer: UIInputView {
         }
     }
 
+    /// Adds a Poll button to the modern toolbar. Only the new thread composer sets this.
+    var showsPollButton: Bool {
+        get { modernToolbar.showsPollButton }
+        set { modernToolbar.showsPollButton = newValue }
+    }
+
+    /// Marks the Poll button to show a poll is already attached.
+    var pollIsAttached: Bool {
+        get { modernToolbar.pollIsAttached }
+        set { modernToolbar.pollIsAttached = newValue }
+    }
+
     private let modernToolbar: ModernBBcodeToolbar
     private let existingToolbar: CompositionInputAccessoryView
 

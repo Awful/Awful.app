@@ -8,7 +8,7 @@ import MRProgress
 import UIKit
 import ImgurAnonymousAPI
 
-class ComposeTextViewController: ViewController {
+class ComposeTextViewController: ViewController, ModernToolbarActionHandling {
     @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
 
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
@@ -128,7 +128,25 @@ class ComposeTextViewController: ViewController {
     weak var delegate: ComposeTextViewControllerDelegate?
     
     fileprivate var menuTree: CompositionMenuTree!
-    
+
+    /// The modern BBcode toolbar stacked above the plain BBcode bar, shown over the keyboard.
+    private(set) var toolbarContainer: CompositionToolbarContainer?
+
+    /// Whether the toolbar offers a Poll button. Only new threads can carry a poll.
+    var showsPollButtonInToolbar: Bool { false }
+
+    /// Override to take toolbar actions the base class doesn't know about, and call `super` for the
+    /// rest.
+    func handleComposeToolbarAction(_ action: ModernToolbarAction) {
+        handleModernToolbarAction(action)
+    }
+
+    // MARK: - ModernToolbarActionHandling
+
+    var toolbarTextView: URLCleaningTextView { view as! URLCleaningTextView }
+    var toolbarMenuTree: CompositionMenuTree? { menuTree }
+
+
     fileprivate func beginObservingTextChangeNotification() {
         guard textDidChangeObserver == nil else { return }
         textDidChangeObserver = NotificationCenter.default.addObserver(forName: UITextView.textDidChangeNotification, object: textView, queue: OperationQueue.main, using: { [weak self] (note: Notification) in
@@ -379,12 +397,28 @@ class ComposeTextViewController: ViewController {
         
         textView.textColor = theme["listTextColor"]
         textView.keyboardAppearance = theme.keyboardAppearance
+        toolbarContainer?.keyboardAppearance = theme.keyboardAppearance
+        toolbarContainer?.fontName = theme["listFontName"]
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         menuTree = CompositionMenuTree(textView: textView)
+
+        // Replies get this toolbar from CompositionViewController; wire up the same thing here so
+        // new threads and private messages aren't left with just the plain BBcode bar.
+        let container = CompositionToolbarContainer(textView: textView)
+        container.onToolbarAction = { [weak self] action in
+            self?.handleComposeToolbarAction(action)
+        }
+        container.showsPollButton = showsPollButtonInToolbar
+        toolbarContainer = container
+        (textView as? ComposeTextView)?.accessoryView = container
+
+        menuTree.onShowURLPrompt = { [weak self] in self?.showURLPrompt() }
+        menuTree.onShowVideoPrompt = { [weak self] in self?.showVideoPrompt() }
+        menuTree.onShowImageOptions = { [weak self] in self?.showImageOptions() }
     }
     
     override func viewWillLayoutSubviews() {

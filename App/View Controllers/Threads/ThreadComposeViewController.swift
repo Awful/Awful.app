@@ -21,6 +21,22 @@ final class ThreadComposeViewController: ComposeTextViewController {
     private var secondaryThreadTag: ThreadTag? {
         didSet { updateThreadTagButtonImage() }
     }
+    private var poll: PollSubmission? {
+        didSet {
+            toolbarContainer?.pollIsAttached = poll != nil
+            scheduleDraftAutoSave()
+        }
+    }
+
+    override var showsPollButtonInToolbar: Bool { true }
+
+    override func handleComposeToolbarAction(_ action: ModernToolbarAction) {
+        if case .poll = action {
+            presentPollEditor()
+        } else {
+            super.handleComposeToolbarAction(action)
+        }
+    }
     private var fieldView: NewThreadFieldView!
     private var availableThreadTags: [ThreadTag]?
     private var availableSecondaryThreadTags: [ThreadTag]?
@@ -72,6 +88,7 @@ final class ThreadComposeViewController: ComposeTextViewController {
         updateTweaks()
         threadTag = draft.threadTag
         secondaryThreadTag = draft.secondaryThreadTag
+        poll = draft.poll
         updateThreadTagButtonImage()
         updateAvailableThreadTagsIfNecessary()
 
@@ -176,6 +193,21 @@ final class ThreadComposeViewController: ComposeTextViewController {
         view.endEditing(true)
     }
     
+    private func presentPollEditor() {
+        let editor = PollEditorHostingController(
+            poll: poll,
+            theme: theme,
+            onCancel: { [weak self] in self?.dismiss(animated: true) },
+            onSave: { [weak self] poll in
+                self?.poll = poll
+                self?.dismiss(animated: true)
+            }
+        )
+        // Put the keyboard away first, or it animates out from under the sheet.
+        view.endEditing(true)
+        present(editor, animated: true)
+    }
+
     @objc private func subjectFieldDidChange(_ sender: UITextField) {
         if let text = sender.text , !text.isEmpty {
             title = text
@@ -219,10 +251,12 @@ final class ThreadComposeViewController: ComposeTextViewController {
         draft.threadTag = threadTag
         draft.secondaryThreadTag = secondaryThreadTag
         draft.text = textView.attributedText
+        draft.poll = poll
         if draft.subject.isEmpty
             && draft.threadTag == nil
             && draft.secondaryThreadTag == nil
             && (draft.text?.length ?? 0) == 0
+            && draft.poll == nil
         {
             DraftStore.sharedStore().deleteDraft(draft)
         } else {
@@ -301,28 +335,103 @@ final class ThreadComposeViewController: ComposeTextViewController {
             let threadTag = threadTag,
             let formData = formData
             else { return completion(false) }
-        
+
+        let poll = self.poll.map(\.normalized).flatMap { $0.isValid ? $0 : nil }
+
         Task {
+            let result: ForumsClient.PostNewThreadResult
             do {
-                let thread = try await ForumsClient.shared.postThread(
+                result = try await ForumsClient.shared.postThread(
                     using: formData,
                     subject: subject,
                     threadTag: threadTag,
                     secondaryTag: secondaryThreadTag,
-                    bbcode: composition
+                    bbcode: composition,
+                    pollOptionCount: poll?.options.count
                 )
-                self.thread = thread
-                deleteDraft()
-                completion(true)
             } catch {
                 let alert = UIAlertController(title: "Network Error", error: error, handler: {
                     completion(false)
                 })
                 present(alert, animated: true)
+                return
+            }
+
+            // Past this point the thread exists on the forums, so there's no going back to the
+            // compose screen — retrying would post it a second time.
+            self.thread = result.thread
+            deleteDraft()
+
+            guard let poll else { return completion(true) }
+
+            do {
+                try await postPoll(poll, threadID: result.thread.threadID, form: result.pollForm)
+                completion(true)
+            } catch {
+                presentPollFailure(error, poll: poll, threadID: result.thread.threadID, completion: completion)
             }
         }
     }
-    
+
+    private func postPoll(
+        _ poll: PollSubmission,
+        threadID: String,
+        form: NewPollForm?
+    ) async throws {
+        // The forums usually hand us the poll form in the response to posting the thread; if they
+        // didn't, go and ask for it.
+        let pollForm: NewPollForm
+        if let form {
+            pollForm = form
+        } else {
+            pollForm = try await ForumsClient.shared.newPollForm(
+                threadID: threadID,
+                optionCount: poll.options.count
+            )
+        }
+        try await ForumsClient.shared.postPoll(using: pollForm, poll)
+    }
+
+    /// The thread is live but its poll isn't. Never offer to go back and edit — that would invite a
+    /// duplicate thread — so both ways out of this alert count as a successful submission.
+    private func presentPollFailure(
+        _ error: Error,
+        poll: PollSubmission,
+        threadID: String,
+        completion: @escaping (Bool) -> Void
+    ) {
+        let alert = UIAlertController(
+            title: String(localized: "Thread posted, poll wasn't", bundle: .module),
+            message: String(
+                localized: "Your thread is up, but the poll couldn't be added: \(error.localizedDescription)",
+                bundle: .module
+            ),
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(
+            title: String(localized: "Try Again", bundle: .module),
+            style: .default
+        ) { [weak self] _ in
+            guard let self else { return completion(true) }
+            Task {
+                do {
+                    try await self.postPoll(poll, threadID: threadID, form: nil)
+                    completion(true)
+                } catch {
+                    self.presentPollFailure(error, poll: poll, threadID: threadID, completion: completion)
+                }
+            }
+        })
+        alert.addAction(UIAlertAction(
+            title: String(localized: "Skip Poll", bundle: .module),
+            style: .cancel
+        ) { _ in
+            completion(true)
+        })
+        // The preview view controller is on top of us at this point, so present from the navigation
+        // controller rather than from a covered-up view controller.
+        (navigationController ?? self).present(alert, animated: true)
+    }
 }
 
 extension ThreadComposeViewController: ThreadTagPickerViewControllerDelegate {

@@ -11,6 +11,8 @@ enum ModernToolbarAction {
     case image
     case format(BBcodeTagHelper.FormatOption)
     case video
+    /// Only offered when composing a new thread; a poll attaches to the thread, not to a post.
+    case poll
 }
 
 /// Modern toolbar with quick access to BBcode formatting options
@@ -35,12 +37,61 @@ final class ModernBBcodeToolbar: UIView {
 
     @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
 
+    /// Adds a Poll button to the toolbar. Only the new thread composer sets this: a poll belongs to
+    /// a thread, so there's nothing to attach one to when replying or writing a private message.
+    var showsPollButton = false {
+        didSet {
+            guard showsPollButton != oldValue else { return }
+            if showsPollButton {
+                stackView.addArrangedSubview(pollButton)
+                pollButton.heightAnchor.constraint(
+                    equalToConstant: Self.buttonHeight).isActive = true
+            } else {
+                stackView.removeArrangedSubview(pollButton)
+                pollButton.removeFromSuperview()
+            }
+            updateKeyboardAppearance()
+            updateButtonFonts()
+        }
+    }
+
+    /// Marks the Poll button to show the thread already has a poll attached.
+    var pollIsAttached = false {
+        didSet {
+            guard pollIsAttached != oldValue else { return }
+            let title = pollIsAttached ? "Poll \u{2713}" : "Poll"
+            if #available(iOS 26.0, *), let glass = pollButton as? GlassToolbarButton {
+                glass.updateTitle(title)
+            } else if let blur = pollButton as? BlurToolbarButton {
+                blur.updateTitle(title)
+            }
+        }
+    }
+
+    private static var buttonHeight: CGFloat {
+        UIDevice.current.userInterfaceIdiom == .pad ? 40 : 32
+    }
+
+    /// Every button currently in the toolbar, for appearance updates.
+    private var allButtons: [UIButton] {
+        var buttons = [urlButton, imageButton, formatButton, videoButton]
+        if showsPollButton { buttons.append(pollButton) }
+        return buttons
+    }
+
     private lazy var stackView: UIStackView = {
         let stack = UIStackView(arrangedSubviews: [urlButton, imageButton, formatButton, videoButton])
         stack.distribution = .fillEqually
         stack.spacing = 8
         stack.translatesAutoresizingMaskIntoConstraints = false
         return stack
+    }()
+
+    private lazy var pollButton: UIButton = {
+        let button = createToolbarButton(title: "Poll")
+        button.addTarget(self, action: #selector(didTapPoll), for: .primaryActionTriggered)
+        button.accessibilityLabel = "Add a poll"
+        return button
     }()
 
     private lazy var urlButton: UIButton = {
@@ -89,7 +140,7 @@ final class ModernBBcodeToolbar: UIView {
 
         addSubview(stackView)
 
-        let buttonHeight: CGFloat = UIDevice.current.userInterfaceIdiom == .pad ? 40 : 32
+        let buttonHeight = Self.buttonHeight
 
         NSLayoutConstraint.activate([
             stackView.topAnchor.constraint(equalTo: topAnchor, constant: 6),
@@ -143,6 +194,11 @@ final class ModernBBcodeToolbar: UIView {
         onAction?(.video)
     }
 
+    @objc private func didTapPoll() {
+        triggerHaptic()
+        onAction?(.poll)
+    }
+
     private func triggerHaptic() {
         if enableHaptics {
             UIImpactFeedbackGenerator(style: .light).impactOccurred()
@@ -164,7 +220,7 @@ final class ModernBBcodeToolbar: UIView {
             return
         }
 
-        for button in [urlButton, imageButton, formatButton, videoButton] {
+        for button in allButtons {
             if let blurButton = button as? BlurToolbarButton {
                 blurButton.keyboardAppearance = keyboardAppearance
             }
@@ -173,7 +229,7 @@ final class ModernBBcodeToolbar: UIView {
 
     private func updateButtonFonts() {
         let font = UIFont.preferredFontForTextStyle(.footnote, fontName: fontName, sizeAdjustment: 0, weight: .medium)
-        for button in [urlButton, imageButton, formatButton, videoButton] {
+        for button in allButtons {
             if #available(iOS 26.0, *) {
                 if let glassButton = button as? GlassToolbarButton {
                     glassButton.updateFont(font)
@@ -209,6 +265,9 @@ private final class GlassToolbarButton: UIButton {
         titleLabelView.text = title
         titleLabelView.textAlignment = .center
         titleLabelView.isUserInteractionEnabled = false
+        // A fifth button (Poll) makes each one narrower; shrink rather than truncate "[video]".
+        titleLabelView.adjustsFontSizeToFitWidth = true
+        titleLabelView.minimumScaleFactor = 0.75
 
         super.init(frame: .zero)
 
@@ -245,6 +304,10 @@ private final class GlassToolbarButton: UIButton {
     func updateFont(_ font: UIFont) {
         titleLabelView.font = font
     }
+
+    func updateTitle(_ title: String) {
+        titleLabelView.text = title
+    }
 }
 
 // MARK: - Pre-iOS 26 Blur Button
@@ -274,6 +337,9 @@ private final class BlurToolbarButton: UIButton {
         titleLabelView.text = title
         titleLabelView.textAlignment = .center
         titleLabelView.isUserInteractionEnabled = false
+        // A fifth button (Poll) makes each one narrower; shrink rather than truncate "[video]".
+        titleLabelView.adjustsFontSizeToFitWidth = true
+        titleLabelView.minimumScaleFactor = 0.75
 
         super.init(frame: .zero)
 
@@ -317,5 +383,9 @@ private final class BlurToolbarButton: UIButton {
 
     func updateFont(_ font: UIFont) {
         titleLabelView.font = font
+    }
+
+    func updateTitle(_ title: String) {
+        titleLabelView.text = title
     }
 }

@@ -230,6 +230,7 @@
 		2DD8209C25DDD9BF0015A90D /* CopyImageActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD8209B25DDD9BF0015A90D /* CopyImageActivity.swift */; };
 		2DDCCE9F2F77A73E0011BCA2 /* CompositionToolbarContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DDCCE9D2F77A73E0011BCA2 /* CompositionToolbarContainer.swift */; };
 		2DDCCEA02F77A73E0011BCA2 /* ModernBBcodeToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DDCCE9E2F77A73E0011BCA2 /* ModernBBcodeToolbar.swift */; };
+		DDDDDDDD000000000000000A /* ModernToolbarActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDDDDDDD0000000000000009 /* ModernToolbarActions.swift */; };
 		2DDCCEA12F77A73E0011BCA2 /* BBcodeTagHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DDCCE9C2F77A73E0011BCA2 /* BBcodeTagHelper.swift */; };
 		306F740B2D90AA01000717BC /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 306F740A2D90AA01000717BC /* KeychainAccess */; };
 		30E0C51D2E35C89D0030DC0A /* AnimatedImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30E0C5162E35C89D0030DC0A /* AnimatedImageView.swift */; };
@@ -270,6 +271,7 @@
 		C8BE3CFABA1B4371B058B77E /* URLCleaningTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7066513D77148949920CFF8 /* URLCleaningTextView.swift */; };
 		DDDDDDDD0000000000000002 /* LepersColony.html.stencil in Resources */ = {isa = PBXBuildFile; fileRef = DDDDDDDD0000000000000001 /* LepersColony.html.stencil */; };
 		DDDDDDDD0000000000000006 /* LepersFilterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDDDDDDD0000000000000005 /* LepersFilterView.swift */; };
+		DDDDDDDD0000000000000008 /* PollEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDDDDDDD0000000000000007 /* PollEditorView.swift */; };
 		F4233C591917C77900482BD0 /* bg_menu.jpg in Resources */ = {isa = PBXBuildFile; fileRef = F4233C581917C77900482BD0 /* bg_menu.jpg */; };
 		F4B3645819165D5100CCE1EF /* SecondaryTags.plist in Resources */ = {isa = PBXBuildFile; fileRef = F4B3645719165D5100CCE1EF /* SecondaryTags.plist */; };
 		F7DD3BB290F57E0EF4014ECD /* ScreenshotterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEA873B27D6269867FC99B16 /* ScreenshotterViewController.swift */; };
@@ -580,6 +582,7 @@
 		2DDCCE9C2F77A73E0011BCA2 /* BBcodeTagHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BBcodeTagHelper.swift; sourceTree = "<group>"; };
 		2DDCCE9D2F77A73E0011BCA2 /* CompositionToolbarContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompositionToolbarContainer.swift; sourceTree = "<group>"; };
 		2DDCCE9E2F77A73E0011BCA2 /* ModernBBcodeToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModernBBcodeToolbar.swift; sourceTree = "<group>"; };
+		DDDDDDDD0000000000000009 /* ModernToolbarActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModernToolbarActions.swift; sourceTree = "<group>"; };
 		30E0C5162E35C89D0030DC0A /* AnimatedImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatedImageView.swift; sourceTree = "<group>"; };
 		30E0C5182E35C89D0030DC0A /* SmilieGridItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmilieGridItem.swift; sourceTree = "<group>"; };
 		30E0C5192E35C89D0030DC0A /* SmiliePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmiliePickerView.swift; sourceTree = "<group>"; };
@@ -617,6 +620,7 @@
 		BEA873B27D6269867FC99B16 /* ScreenshotterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotterViewController.swift; sourceTree = "<group>"; };
 		DDDDDDDD0000000000000001 /* LepersColony.html.stencil */ = {isa = PBXFileReference; explicitFileType = text.html; fileEncoding = 4; path = LepersColony.html.stencil; sourceTree = "<group>"; };
 		DDDDDDDD0000000000000005 /* LepersFilterView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LepersFilterView.swift; sourceTree = "<group>"; };
+		DDDDDDDD0000000000000007 /* PollEditorView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PollEditorView.swift; sourceTree = "<group>"; };
 		F4233C581917C77900482BD0 /* bg_menu.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = bg_menu.jpg; sourceTree = "<group>"; };
 		F4B3645719165D5100CCE1EF /* SecondaryTags.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = SecondaryTags.plist; sourceTree = "<group>"; };
 		F7066513D77148949920CFF8 /* URLCleaningTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLCleaningTextView.swift; sourceTree = "<group>"; };
@@ -1188,6 +1192,7 @@
 				F7066513D77148949920CFF8 /* URLCleaningTextView.swift */,
 				2DDCCE9D2F77A73E0011BCA2 /* CompositionToolbarContainer.swift */,
 				2DDCCE9E2F77A73E0011BCA2 /* ModernBBcodeToolbar.swift */,
+				DDDDDDDD0000000000000009 /* ModernToolbarActions.swift */,
 				2D571B462EC83DD00026826C /* AttachmentCardView.swift */,
 				2DB4472E2EC1E2DA00F03402 /* AttachmentEditView.swift */,
 				2DB4472F2EC1E2DA00F03402 /* AttachmentPreviewView.swift */,
@@ -1225,6 +1230,7 @@
 				2D327DD527F468CE00D21AB0 /* BookmarkColorPicker.swift */,
 				22AED6467DEB2EDF1126D575 /* ArchivesView.swift */,
 				DDDDDDDD0000000000000005 /* LepersFilterView.swift */,
+				DDDDDDDD0000000000000007 /* PollEditorView.swift */,
 				AB093C6C98D145F6A4765964 /* BannerToastView.swift */,
 			);
 			path = Views;
@@ -1652,6 +1658,7 @@
 				1C5C81BF22DA336A00EFD8A9 /* ChromeActivity.swift in Sources */,
 				2DDCCE9F2F77A73E0011BCA2 /* CompositionToolbarContainer.swift in Sources */,
 				2DDCCEA02F77A73E0011BCA2 /* ModernBBcodeToolbar.swift in Sources */,
+				DDDDDDDD000000000000000A /* ModernToolbarActions.swift in Sources */,
 				2DDCCEA12F77A73E0011BCA2 /* BBcodeTagHelper.swift in Sources */,
 				C8BE3CFABA1B4371B058B77E /* URLCleaningTextView.swift in Sources */,
 				AE48C6FD2F594122B995BC09 /* BannerToastView.swift in Sources */,
@@ -1768,6 +1775,7 @@
 				1C82AC4B199F585000CB15FE /* Selectotron.swift in Sources */,
 				71B2B16F35AAEE42EF20CC4B /* ArchivesView.swift in Sources */,
 				DDDDDDDD0000000000000006 /* LepersFilterView.swift in Sources */,
+				DDDDDDDD0000000000000008 /* PollEditorView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

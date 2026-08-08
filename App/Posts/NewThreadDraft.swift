@@ -14,6 +14,7 @@ final class NewThreadDraft: NSObject, NSCoding, StorableDraft {
     var threadTag: ThreadTag?
     var secondaryThreadTag: ThreadTag?
     var text: NSAttributedString?
+    var poll: PollSubmission?
 
     init(forum: Forum) {
         self.forum = forum
@@ -31,6 +32,7 @@ final class NewThreadDraft: NSObject, NSCoding, StorableDraft {
         static let threadTagKey = "threadTagKey"
         static let secondaryThreadTagKey = "secondaryThreadTagKey"
         static let text = "text"
+        static let poll = "poll"
     }
 
     convenience init?(coder: NSCoder) {
@@ -48,6 +50,10 @@ final class NewThreadDraft: NSObject, NSCoding, StorableDraft {
             self.secondaryThreadTag = ThreadTag.objectForKey(objectKey: secondaryKey, in: context)
         }
         self.text = coder.decodeObject(forKey: Keys.text) as? NSAttributedString
+        // Drafts archived before polls existed simply have no value here. Decoding must never
+        // throw: `init?(coder:)` returning nil throws away the whole draft, poll or not.
+        self.poll = (coder.decodeObject(forKey: Keys.poll) as? Data)
+            .flatMap { try? JSONDecoder().decode(PollSubmission.self, from: $0) }
     }
 
     func encode(with coder: NSCoder) {
@@ -56,5 +62,8 @@ final class NewThreadDraft: NSObject, NSCoding, StorableDraft {
         coder.encode(threadTag?.objectKey, forKey: Keys.threadTagKey)
         coder.encode(secondaryThreadTag?.objectKey, forKey: Keys.secondaryThreadTagKey)
         coder.encode(text, forKey: Keys.text)
+        if let poll, let data = try? JSONEncoder().encode(poll) {
+            coder.encode(data, forKey: Keys.poll)
+        }
     }
 }

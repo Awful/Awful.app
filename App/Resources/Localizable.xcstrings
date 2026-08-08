@@ -10,12 +10,25 @@
     "%lld" : {
 
     },
+    "%lld days" : {
+
+    },
     "%lld of %lld" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "%1$lld of %2$lld"
+          }
+        }
+      }
+    },
+    "%lld of %lld characters" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld of %2$lld characters"
           }
         }
       }
@@ -38,7 +51,13 @@
     "Add" : {
 
     },
+    "Add a poll" : {
+
+    },
     "Add Bookmark" : {
+
+    },
+    "Add option" : {
 
     },
     "Add Smilie" : {
@@ -54,6 +73,9 @@
 
     },
     "All" : {
+
+    },
+    "Allow multiple choice" : {
 
     },
     "announcement.title" : {
@@ -591,6 +613,9 @@
     "Five" : {
 
     },
+    "Forever" : {
+
+    },
     "forums-list.announcements-section-title" : {
       "comment" : "Title of the announcements section in the forums list.",
       "extractionState" : "migrated",
@@ -692,6 +717,16 @@
     },
     "Jump to First Page" : {
 
+    },
+    "Keep them short and to the point. Between %lld and %lld options; blank ones are dropped." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Keep them short and to the point. Between %1$lld and %2$lld options; blank ones are dropped."
+          }
+        }
+      }
     },
     "Last Page" : {
 
@@ -966,6 +1001,12 @@
         }
       }
     },
+    "Option" : {
+
+    },
+    "Options" : {
+
+    },
     "Page %lld of %lld" : {
       "localizations" : {
         "en" : {
@@ -975,6 +1016,12 @@
           }
         }
       }
+    },
+    "Poll" : {
+
+    },
+    "Poll runs for" : {
+
     },
     "posts-page.copied-post" : {
       "comment" : "Title of alert shown when post successfully copied to pasteboard.",
@@ -1556,6 +1603,9 @@
         }
       }
     },
+    "Question" : {
+
+    },
     "Rap Sheet" : {
 
     },
@@ -1586,6 +1636,9 @@
     "Remove Bookmark" : {
 
     },
+    "Remove poll" : {
+
+    },
     "Removed Bookmark" : {
 
     },
@@ -1593,6 +1646,9 @@
 
     },
     "Riker" : {
+
+    },
+    "Save" : {
 
     },
     "save-action.error" : {
@@ -1736,6 +1792,9 @@
         }
       }
     },
+    "Skip Poll" : {
+
+    },
     "smilie-action.add-to-favorites" : {
       "comment" : "Title of button that adds a smilie to the user's favorites. Parameter is the text used to insert the smilie into a post.",
       "extractionState" : "migrated",
@@ -1791,6 +1850,9 @@
           }
         }
       }
+    },
+    "Thread posted, poll wasn't" : {
+
     },
     "thread-list.filter-button.change-filter" : {
       "comment" : "Button title atop the thread list when some filter is set.",
@@ -1858,13 +1920,22 @@
     "Try a different search term" : {
 
     },
+    "Try Again" : {
+
+    },
     "Type" : {
 
     },
     "V" : {
 
     },
+    "What are you asking?" : {
+
+    },
     "Year" : {
+
+    },
+    "Your thread is up, but the poll couldn't be added: %@" : {
 
     }
   },

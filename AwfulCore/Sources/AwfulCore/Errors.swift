@@ -10,6 +10,8 @@ public enum AwfulCoreError: Error {
     case forbidden(description: String)
     case databaseUnavailable
     case archivesRequired
+    /// The forums handed back the poll form again instead of accepting the poll.
+    case pollSubmissionRejected(message: String?)
 }
 
 extension AwfulCoreError: CustomNSError {
@@ -22,14 +24,21 @@ extension AwfulCoreError: CustomNSError {
         case .forbidden: return 6
         case .databaseUnavailable: return 7
         case .archivesRequired: return 8
+        case .pollSubmissionRejected: return 9
         }
     }
 
     public var errorUserInfo: [String: Any] {
         switch self {
         case .forbidden(description: let description) where !description.isEmpty,
-             .parseError(description: let description) where !description.isEmpty:
+             .parseError(description: let description) where !description.isEmpty,
+             .pollSubmissionRejected(message: .some(let description)) where !description.isEmpty:
             return [NSLocalizedDescriptionKey: description]
+        case .pollSubmissionRejected:
+            return [NSLocalizedDescriptionKey: String(
+                localized: "The forums didn't accept the poll.",
+                bundle: .module
+            )]
         case .invalidUsernameOrPassword, .parseError, .forbidden, .databaseUnavailable, .archivesRequired:
             return [:]
         }

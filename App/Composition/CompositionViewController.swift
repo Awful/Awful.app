@@ -8,7 +8,7 @@ import AwfulSettings
 import AwfulTheming
 import UIKit
 
-final class CompositionViewController: ViewController {
+final class CompositionViewController: ViewController, ModernToolbarActionHandling {
 
     @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
 
@@ -107,7 +107,7 @@ final class CompositionViewController: ViewController {
 
         toolbarContainer = CompositionToolbarContainer(textView: _textView)
         toolbarContainer?.onToolbarAction = { [weak self] action in
-            self?.handleToolbarAction(action)
+            self?.handleModernToolbarAction(action)
         }
         _textView.inputAccessoryView = toolbarContainer
     }
@@ -293,21 +293,10 @@ final class CompositionViewController: ViewController {
         view.endEditing(true)
     }
     
-    // MARK: - Toolbar Actions
+    // MARK: - ModernToolbarActionHandling
 
-    private func handleToolbarAction(_ action: ModernToolbarAction) {
-        switch action {
-        case .url:
-            showURLPrompt()
-        case .image:
-            showImageOptions()
-        case .format(let option):
-            let helper = BBcodeTagHelper(textView: textView)
-            helper.applyFormat(option)
-        case .video:
-            showVideoPrompt()
-        }
-    }
+    var toolbarTextView: URLCleaningTextView { _textView }
+    var toolbarMenuTree: CompositionMenuTree? { menuTree }
 
     // MARK: - Tracking removal
 
@@ -325,184 +314,6 @@ final class CompositionViewController: ViewController {
             self.textView.restoreOriginalURLs(from: notice)
             self.activeCleaningNotice = nil
         }
-    }
-
-    /// Cleans tracking parameters out of a user-entered URL string when the setting is on. Returns the string to insert, plus the original when cleaning changed it (else `nil`).
-    private func cleanedURLString(_ urlString: String) -> (cleaned: String, originalIfChanged: String?) {
-        guard UserDefaults.standard.defaultingValue(for: Settings.cleanPastedURLs) else { return (urlString, nil) }
-        let result = TrackingParameterRemover.cleanedText(urlString)
-        guard result.didChange else { return (urlString, nil) }
-        return (result.cleanedText, urlString)
-    }
-
-    private func reportIfCleaned(original: String?, cleaned: String, at location: Int) {
-        guard let original else { return }
-        _textView.reportCleaned(URLCleaningNotice(replacements: [
-            .init(
-                original: original,
-                cleaned: cleaned,
-                range: NSRange(location: location, length: (cleaned as NSString).length)
-            ),
-        ]))
-    }
-
-    // MARK: - URL and Video Prompts
-
-    func showURLPrompt() {
-        let alert = UIAlertController(title: "Insert Link", message: nil, preferredStyle: .alert)
-
-        alert.addTextField { textField in
-            textField.placeholder = "URL (e.g., https://example.com)"
-            textField.keyboardType = .URL
-            textField.autocapitalizationType = .none
-            textField.autocorrectionType = .no
-            if let clipboardURL = UIPasteboard.general.coercedURL {
-                textField.text = clipboardURL.absoluteString
-            }
-        }
-
-        alert.addTextField { [weak self] textField in
-            textField.placeholder = "Display text (optional)"
-            if let selection = self?.textView.selectedTextRange,
-               let selectedText = self?.textView.text(in: selection),
-               !selectedText.isEmpty {
-                textField.text = selectedText
-            }
-        }
-
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        alert.addAction(UIAlertAction(title: "Insert", style: .default) { [weak self] _ in
-            let url = alert.textFields?[0].text ?? ""
-            let displayText = alert.textFields?[1].text ?? ""
-            self?.insertURLTag(url: url, displayText: displayText)
-        })
-
-        present(alert, animated: true)
-    }
-
-    private func insertURLTag(url: String, displayText: String) {
-        guard !url.isEmpty else { return }
-        let (cleaned, original) = cleanedURLString(url)
-        let helper = BBcodeTagHelper(textView: textView)
-        let insertionStart = textView.selectedRange.location
-        if displayText.isEmpty {
-            helper.insertText("[url]\(cleaned)[/url]")
-            reportIfCleaned(original: original, cleaned: cleaned, at: insertionStart + ("[url]" as NSString).length)
-        } else {
-            helper.insertText("[url=\(cleaned)]\(displayText)[/url]")
-            reportIfCleaned(original: original, cleaned: cleaned, at: insertionStart + ("[url=" as NSString).length)
-        }
-    }
-
-    func showVideoPrompt() {
-        let alert = UIAlertController(title: "Insert Video", message: "Supported: YouTube, Vimeo, TikTok, CNN, Yahoo, FOXNews", preferredStyle: .alert)
-
-        alert.addTextField { textField in
-            textField.placeholder = "Video URL"
-            textField.keyboardType = .URL
-            textField.autocapitalizationType = .none
-            textField.autocorrectionType = .no
-            if let clipboardURL = UIPasteboard.general.coercedURL {
-                textField.text = clipboardURL.absoluteString
-            }
-        }
-
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        alert.addAction(UIAlertAction(title: "Insert", style: .default) { [weak self] _ in
-            guard let urlString = alert.textFields?[0].text, !urlString.isEmpty else { return }
-            self?.insertVideoTag(urlString: urlString)
-        })
-
-        present(alert, animated: true)
-    }
-
-    private func insertVideoTag(urlString: String) {
-        let (cleaned, original) = cleanedURLString(urlString)
-        let helper = BBcodeTagHelper(textView: textView)
-        let insertionStart = textView.selectedRange.location
-        if let url = URL(string: cleaned),
-           let normalizedURL = BBcodeTagHelper.videoTagURL(for: url) {
-            helper.insertText("[video]\(normalizedURL.absoluteString)[/video]")
-            reportIfCleaned(original: original, cleaned: normalizedURL.absoluteString, at: insertionStart + ("[video]" as NSString).length)
-        } else {
-            helper.insertText("[video]\(cleaned)[/video]")
-            reportIfCleaned(original: original, cleaned: cleaned, at: insertionStart + ("[video]" as NSString).length)
-        }
-    }
-
-    // MARK: - Image Options
-
-    func showImageOptions() {
-        let alert = UIAlertController(title: "Insert Image", message: nil, preferredStyle: .actionSheet)
-
-        if BBcodeTagHelper.clipboardHasURL {
-            alert.addAction(UIAlertAction(title: "Paste URL from Clipboard", style: .default) { [weak self] _ in
-                guard let self = self else { return }
-                if let (url, original) = UIPasteboard.general.cleanedCoercedURL {
-                    let helper = BBcodeTagHelper(textView: self.textView)
-                    let insertionStart = self.textView.selectedRange.location
-                    helper.insertText("[img]\(url.absoluteString)[/img]")
-                    self.reportIfCleaned(original: original?.absoluteString, cleaned: url.absoluteString, at: insertionStart + ("[img]" as NSString).length)
-                }
-            })
-        }
-
-        let canAttachInEdit = (menuTree?.draft as? EditReplyDraft)?.canAddAttachment ?? false
-        let hasDestination: Bool = {
-            guard let menuTree = menuTree else { return false }
-            return menuTree.imgurUploadsEnabled || menuTree.draft is NewReplyDraft || canAttachInEdit
-        }()
-
-        if UIPasteboard.general.hasImages && hasDestination {
-            alert.addAction(UIAlertAction(title: "Paste Image from Clipboard", style: .default) { [weak self] _ in
-                self?.menuTree?.pasteImageFromClipboard()
-            })
-        }
-
-        if hasDestination {
-            alert.addAction(UIAlertAction(title: "From Library", style: .default) { [weak self] _ in
-                self?.menuTree?.showImagePicker(.photoLibrary)
-            })
-        }
-
-        alert.addAction(UIAlertAction(title: "Enter URL", style: .default) { [weak self] _ in
-            self?.showImagePrompt()
-        })
-
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-
-        if let popover = alert.popoverPresentationController {
-            popover.sourceView = textView
-            popover.sourceRect = textView.selectedRect ?? textView.bounds
-        }
-
-        present(alert, animated: true)
-    }
-
-    func showImagePrompt() {
-        let alert = UIAlertController(title: "Insert Image", message: nil, preferredStyle: .alert)
-
-        alert.addTextField { textField in
-            textField.placeholder = "Image URL"
-            textField.keyboardType = .URL
-            textField.autocapitalizationType = .none
-            textField.autocorrectionType = .no
-            if let clipboardURL = UIPasteboard.general.coercedURL {
-                textField.text = clipboardURL.absoluteString
-            }
-        }
-
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        alert.addAction(UIAlertAction(title: "Insert", style: .default) { [weak self] _ in
-            guard let self, let urlString = alert.textFields?[0].text, !urlString.isEmpty else { return }
-            let (cleaned, original) = self.cleanedURLString(urlString)
-            let helper = BBcodeTagHelper(textView: self.textView)
-            let insertionStart = self.textView.selectedRange.location
-            helper.insertText("[img]\(cleaned)[/img]")
-            self.reportIfCleaned(original: original, cleaned: cleaned, at: insertionStart + ("[img]" as NSString).length)
-        })
-
-        present(alert, animated: true)
     }
 
     override var keyCommands: [UIKeyCommand]? {
