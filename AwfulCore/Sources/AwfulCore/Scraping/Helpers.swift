@@ -69,6 +69,19 @@ extension HTMLElement {
         }
         return nil
     }
+
+    /// The nearest ancestor with the given tag name, or nil if there isn't one. HTMLReader has no
+    /// equivalent of the DOM's `closest()`.
+    func ancestorElement(tagName: String) -> HTMLElement? {
+        var candidate = parentElement
+        while let element = candidate {
+            if element.tagName.lowercased() == tagName.lowercased() {
+                return element
+            }
+            candidate = element.parentElement
+        }
+        return nil
+    }
 }
 
 

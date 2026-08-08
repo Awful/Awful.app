@@ -808,6 +808,124 @@ public final class ForumsClient {
         }
     }
 
+    /**
+     Fetches a poll's results without voting on it.
+
+     This is how "see the results first" works: a thread page shows either a ballot or results, never
+     both, so the only way to peek is to ask `poll.php` directly.
+     */
+    public func pollResults(pollID: String) async throws -> ThreadPoll {
+        let (data, response) = try await fetch(method: .get, urlString: "poll.php", parameters: [
+            "action": "showresults",
+            "pollid": pollID,
+        ])
+        let (document, url) = try parseHTML(data: data, response: response)
+        guard let result = try? ThreadPollScrapeResult(document, url: url) else {
+            throw AwfulCoreError.parseError(description: "Could not find the poll's results.")
+        }
+        return result.poll
+    }
+
+    /**
+     Reads a thread's poll straight off the thread page.
+
+     The thread page is the authoritative rendering — it's what the reader sees, and its totals are
+     the ones they'll compare against. Asks for a single post per page since we only want the poll
+     block, which sits outside the posts anyway.
+     */
+    public func threadPoll(threadID: String) async throws -> ThreadPoll {
+        let (data, response) = try await fetch(method: .get, urlString: "showthread.php", parameters: [
+            "threadid": threadID,
+            "perpage": "1",
+            "pagenumber": "1",
+            "noseen": "1",
+        ])
+        let (document, url) = try parseHTML(data: data, response: response)
+        guard var poll = (try? ThreadPollScrapeResult(document, url: url))?.poll else {
+            throw AwfulCoreError.parseError(description: "Could not find the thread's poll.")
+        }
+        poll.threadID = threadID
+        return poll
+    }
+
+    /**
+     Votes on a poll.
+
+     - Parameter optionIDs: The `ThreadPoll.Option.id`s the user picked.
+     - Returns: The poll as it stands after voting, with results where we could get them.
+     */
+    @discardableResult
+    public func votePoll(
+        _ poll: ThreadPoll,
+        choosing optionIDs: [Int]
+    ) async throws -> ThreadPoll {
+        guard let ballot = poll.ballot else {
+            throw AwfulCoreError.pollVotingUnavailable
+        }
+        guard !optionIDs.isEmpty else {
+            throw AwfulCoreError.pollVoteInvalid(message: String(
+                localized: "Please pick an option.", bundle: .module
+            ))
+        }
+        guard ballot.allowsMultipleChoice || optionIDs.count == 1 else {
+            throw AwfulCoreError.pollVoteInvalid(message: String(
+                localized: "This poll only takes one answer.", bundle: .module
+            ))
+        }
+
+        var params: [(key: String, value: Any)] = ballot.hiddenFields.map {
+            (key: $0.name, value: $0.value as Any)
+        }
+        for id in optionIDs {
+            guard let option = poll.options.first(where: { $0.id == id }),
+                  let name = option.formName
+            else { continue }
+            // `?? "on"` matches what `Form` assumes for a checkbox with no `value` attribute; in
+            // practice the scraper always fills this in.
+            params.append((key: name, value: (option.formValue ?? "on") as Any))
+        }
+
+        let (data, response) = try await fetch(method: .post, urlString: ballot.actionPath, parameters: params)
+
+        // `parseHTML` throws for the forums' standard error pages, which is how a rejected vote
+        // ("you already voted", "this poll is closed") reaches the user with a real message.
+        // Everything past that is a guess, and we guess in favour of "it worked": a false failure
+        // would have people voting twice.
+        // TODO: capture a real poll.php pollvote response as a fixture and tighten this up.
+        let (document, url) = try parseHTML(data: data, response: response)
+        var voted = poll
+        voted.hasVoted = true
+        voted.ballot = nil
+
+        /*
+         Once you've voted the thread page shows the results itself, and those are the numbers to
+         report: they're what the reader sees, and they have been seen to disagree with the ones
+         `poll.php?action=showresults` gives for the same poll. So take the vote response only when
+         it actually *is* a thread page — `body[data-thread]` is the giveaway — then go and read the
+         thread page, and only fall back to the results page if we can't.
+         */
+        let respondedWithThreadPage = document
+            .firstNode(matchingParsedSelector: .cached("body[data-thread]")) != nil
+        if respondedWithThreadPage,
+           var result = (try? ThreadPollScrapeResult(document, url: url))?.poll,
+           result.hasResults
+        {
+            result.threadID = result.threadID ?? poll.threadID
+            return result
+        }
+        if let threadID = poll.threadID,
+           let results = try? await threadPoll(threadID: threadID),
+           results.hasResults
+        {
+            return results
+        }
+        if let pollID = poll.pollID, let results = try? await pollResults(pollID: pollID) {
+            return results
+        }
+
+        return voted
+    }
+
     /// The first `<form>` on the page that looks like a new poll form, if any.
     private func firstPollForm(in document: HTMLDocument, url: URL?) -> NewPollForm? {
         // Match on shape rather than the `action` attribute, which could be "poll.php", "/poll.php",
@@ -986,7 +1104,7 @@ public final class ForumsClient {
         writtenBy author: User?,
         page: ThreadPage,
         updateLastReadPost: Bool
-    ) async throws -> (posts: [Post], firstUnreadPost: Int?, advertisementHTML: String) {
+    ) async throws -> (posts: [Post], firstUnreadPost: Int?, advertisementHTML: String, poll: ThreadPoll?) {
         guard let backgroundContext = backgroundManagedObjectContext,
               let mainContext = managedObjectContext
         else { throw Error.missingManagedObjectContext }
@@ -1050,7 +1168,8 @@ public final class ForumsClient {
             posts: posts,
             // post index is 1-based
             firstUnreadPost: result.jumpToPostIndex.map { $0 + 1 },
-            advertisementHTML: result.advertisement
+            advertisementHTML: result.advertisement,
+            poll: result.poll
         )
     }
 

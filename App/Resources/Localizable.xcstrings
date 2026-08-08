@@ -4,6 +4,9 @@
     "" : {
 
     },
+    "(%lld)" : {
+
+    },
     "%@" : {
 
     },
@@ -32,6 +35,9 @@
           }
         }
       }
+    },
+    "%lld votes so far" : {
+
     },
     "😕" : {
 
@@ -1017,6 +1023,12 @@
         }
       }
     },
+    "Pick as many as you like." : {
+
+    },
+    "Pick one." : {
+
+    },
     "Poll" : {
 
     },
@@ -1642,6 +1654,12 @@
     "Removed Bookmark" : {
 
     },
+    "Results" : {
+
+    },
+    "Results aren't available for this poll." : {
+
+    },
     "Retry" : {
 
     },
@@ -1927,6 +1945,9 @@
 
     },
     "V" : {
+
+    },
+    "Vote" : {
 
     },
     "What are you asking?" : {

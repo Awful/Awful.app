@@ -49,6 +49,13 @@ final class PostsPageViewController: ViewController {
     private var observers: [NSKeyValueObservation] = []
     private lazy var oEmbedFetcher: OEmbedFetcher = .init()
     private(set) var page: ThreadPage?
+    /// The thread's poll, once a page has come back from the Forums saying there is one. We don't
+    /// persist it: it's cheap to re-scrape and goes stale the moment anyone votes.
+    private var poll: ThreadPoll?
+    /// Whether we've already offered the poll toast during this visit to the thread. Set on the
+    /// first render that has a poll to offer, and never reset — the controller is built fresh each
+    /// time the thread is pushed, so leaving and coming back offers it again.
+    private var hasOfferedPollToast = false
     @FoilDefaultStorage(Settings.pullForNext) private var pullForNext
     private var replyWorkspace: ReplyWorkspace?
     private var scrollToFractionAfterLoading: CGFloat?
@@ -108,7 +115,7 @@ final class PostsPageViewController: ViewController {
     }
 
     func threadActionsMenu() -> UIMenu {
-        return UIMenu(title: thread.title ?? "", image: nil, identifier: nil, options: .displayInline, children: [
+        var children: [UIMenuElement] = [
             // Bookmark
             UIAction(
                 title: thread.bookmarked ? "Remove Bookmark" : "Bookmark Thread",
@@ -124,13 +131,27 @@ final class PostsPageViewController: ViewController {
                 identifier: .init("copyLink"),
                 handler: { [unowned self] in copyLink(action: $0) }
             ),
-            // Vote
+            // Vote (the thread's star rating, not a poll)
             UIAction(
                 title: "Vote",
                 image: UIImage(named: "vote")!.withRenderingMode(.alwaysTemplate),
                 identifier: .init("vote"),
                 handler: { [unowned self] in vote(action: $0) }
             ),
+        ]
+
+        // The menu is rebuilt on every tap, so this stays in step with whatever the last page load
+        // told us. Threads without a poll — nearly all of them — don't get a dead row.
+        if poll != nil {
+            children.append(UIAction(
+                title: "View poll",
+                image: UIImage(systemName: "chart.bar.xaxis"),
+                identifier: .init("viewPoll"),
+                handler: { [unowned self] in viewPoll(action: $0) }
+            ))
+        }
+
+        children += [
             // Your posts
             UIAction(
                 title: "Your posts",
@@ -152,7 +173,9 @@ final class PostsPageViewController: ViewController {
                 identifier: .init("screenshotPosts"),
                 handler: { [unowned self] _ in screenshotPosts() }
             ),
-        ])
+        ]
+
+        return UIMenu(title: thread.title ?? "", image: nil, identifier: nil, options: .displayInline, children: children)
     }
 
     private var hiddenPosts = 0 {
@@ -363,10 +386,11 @@ final class PostsPageViewController: ViewController {
             let posts: [Post]
             let firstUnreadPost: Int?
             let advertisementHTML: String
+            let poll: ThreadPoll?
         }
         let fetch = Task {
             let result = try await ForumsClient.shared.listPosts(in: thread, writtenBy: author, page: newPage, updateLastReadPost: updateLastReadPost)
-            return FetchResult(posts: result.posts, firstUnreadPost: result.firstUnreadPost, advertisementHTML: result.advertisementHTML)
+            return FetchResult(posts: result.posts, firstUnreadPost: result.firstUnreadPost, advertisementHTML: result.advertisementHTML, poll: result.poll)
         }
         cancelNetworkOperation = { fetch.cancel() }
         Task { [weak self] in
@@ -377,6 +401,16 @@ final class PostsPageViewController: ViewController {
 
                 // We can get out-of-sync here as there's no cancelling the overall scraping operation. Make sure we've got the right page.
                 guard self.page == newPage else { return }
+
+                // The only place the poll is assigned. Set it before `renderPosts()` below so the
+                // render's completion callback can offer the toast.
+                //
+                // Sticky on purpose: we don't know for sure that the forums put the poll block on
+                // every page of a thread, and a later page coming back without one shouldn't yank
+                // "View poll" back out of the menu.
+                if let poll = fetchResult.poll {
+                    self.poll = poll
+                }
 
                 if self.theme != initialTheme {
                     self.themeDidChange()
@@ -1532,6 +1566,60 @@ final class PostsPageViewController: ViewController {
         }
     }
 
+    private func viewPoll(action: UIAction) {
+        if enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
+        Task {
+            // The menu is anchored to a hidden button that has to go away before we present.
+            await dismiss(animated: false)
+            presentPollViewer()
+        }
+    }
+
+    private func presentPollViewer() {
+        guard let poll else { return }
+        let viewer = PollViewerHostingController(poll: poll, theme: theme) { [weak self] voted in
+            // Hold onto the fresher copy so reopening the sheet doesn't offer a ballot we've used.
+            self?.poll = voted
+        }
+        present(viewer, animated: true)
+    }
+
+    /// Offers the poll toast, at most once per visit to this thread.
+    ///
+    /// Called from every render. Rendering happens twice on a typical load — once from the cached
+    /// posts, then again once the network comes back — and only the second one knows about a poll.
+    /// Hence the ordering here: checking `poll` *before* spending `hasOfferedPollToast` means the
+    /// cached render doesn't burn the one offer we get.
+    private func offerPollToastIfNeeded() {
+        guard !hasOfferedPollToast, poll != nil else { return }
+        hasOfferedPollToast = true
+
+        BannerToastView.show(
+            in: view,
+            theme: theme,
+            message: "This thread has a poll",
+            actionTitle: "View poll",
+            duration: 6,
+            bottomInset: pollToastBottomInset
+        ) { [weak self] in
+            self?.presentPollViewer()
+        }
+    }
+
+    /// How far up from the safe area the toast needs to sit to clear the posts toolbar, which lives
+    /// inside `postsView` and so contributes nothing to `view`'s safe area.
+    ///
+    /// This is the toolbar's overlap with the safe area specifically — the banner is pinned to the
+    /// safe-area bottom, so measuring from the view's bottom edge instead would double-count the
+    /// home indicator. Read once, when the toast appears: if immersive mode later hides the toolbar
+    /// the banner just sits a little high, which is fine for the few seconds it's up.
+    private var pollToastBottomInset: CGFloat {
+        let toolbarTop = postsView.convert(postsView.toolbar.frame, to: view).minY
+        return max(0, view.safeAreaLayoutGuide.layoutFrame.maxY - toolbarTop)
+    }
+
     private func profile(action: UIAction) {
         if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
@@ -2339,6 +2427,8 @@ extension PostsPageViewController: RenderViewDelegate {
 
         // Capture an initial anchor so backgrounding before any scroll still produces an anchored save.
         refreshRestorationAnchor()
+
+        offerPollToastIfNeeded()
     }
 
     func didReceive(message: RenderViewMessage, in view: RenderView) {
