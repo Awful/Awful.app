@@ -230,7 +230,6 @@
 		2DD8209C25DDD9BF0015A90D /* CopyImageActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD8209B25DDD9BF0015A90D /* CopyImageActivity.swift */; };
 		2DDCCE9F2F77A73E0011BCA2 /* CompositionToolbarContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DDCCE9D2F77A73E0011BCA2 /* CompositionToolbarContainer.swift */; };
 		2DDCCEA02F77A73E0011BCA2 /* ModernBBcodeToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DDCCE9E2F77A73E0011BCA2 /* ModernBBcodeToolbar.swift */; };
-		DDDDDDDD000000000000000A /* ModernToolbarActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDDDDDDD0000000000000009 /* ModernToolbarActions.swift */; };
 		2DDCCEA12F77A73E0011BCA2 /* BBcodeTagHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DDCCE9C2F77A73E0011BCA2 /* BBcodeTagHelper.swift */; };
 		306F740B2D90AA01000717BC /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 306F740A2D90AA01000717BC /* KeychainAccess */; };
 		30E0C51D2E35C89D0030DC0A /* AnimatedImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30E0C5162E35C89D0030DC0A /* AnimatedImageView.swift */; };
@@ -272,6 +271,7 @@
 		DDDDDDDD0000000000000002 /* LepersColony.html.stencil in Resources */ = {isa = PBXBuildFile; fileRef = DDDDDDDD0000000000000001 /* LepersColony.html.stencil */; };
 		DDDDDDDD0000000000000006 /* LepersFilterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDDDDDDD0000000000000005 /* LepersFilterView.swift */; };
 		DDDDDDDD0000000000000008 /* PollEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDDDDDDD0000000000000007 /* PollEditorView.swift */; };
+		DDDDDDDD000000000000000A /* ModernToolbarActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDDDDDDD0000000000000009 /* ModernToolbarActions.swift */; };
 		DDDDDDDD000000000000000C /* PollViewerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDDDDDDD000000000000000B /* PollViewerView.swift */; };
 		F4233C591917C77900482BD0 /* bg_menu.jpg in Resources */ = {isa = PBXBuildFile; fileRef = F4233C581917C77900482BD0 /* bg_menu.jpg */; };
 		F4B3645819165D5100CCE1EF /* SecondaryTags.plist in Resources */ = {isa = PBXBuildFile; fileRef = F4B3645719165D5100CCE1EF /* SecondaryTags.plist */; };
@@ -583,7 +583,6 @@
 		2DDCCE9C2F77A73E0011BCA2 /* BBcodeTagHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BBcodeTagHelper.swift; sourceTree = "<group>"; };
 		2DDCCE9D2F77A73E0011BCA2 /* CompositionToolbarContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompositionToolbarContainer.swift; sourceTree = "<group>"; };
 		2DDCCE9E2F77A73E0011BCA2 /* ModernBBcodeToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModernBBcodeToolbar.swift; sourceTree = "<group>"; };
-		DDDDDDDD0000000000000009 /* ModernToolbarActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModernToolbarActions.swift; sourceTree = "<group>"; };
 		30E0C5162E35C89D0030DC0A /* AnimatedImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatedImageView.swift; sourceTree = "<group>"; };
 		30E0C5182E35C89D0030DC0A /* SmilieGridItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmilieGridItem.swift; sourceTree = "<group>"; };
 		30E0C5192E35C89D0030DC0A /* SmiliePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmiliePickerView.swift; sourceTree = "<group>"; };
@@ -622,6 +621,7 @@
 		DDDDDDDD0000000000000001 /* LepersColony.html.stencil */ = {isa = PBXFileReference; explicitFileType = text.html; fileEncoding = 4; path = LepersColony.html.stencil; sourceTree = "<group>"; };
 		DDDDDDDD0000000000000005 /* LepersFilterView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LepersFilterView.swift; sourceTree = "<group>"; };
 		DDDDDDDD0000000000000007 /* PollEditorView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PollEditorView.swift; sourceTree = "<group>"; };
+		DDDDDDDD0000000000000009 /* ModernToolbarActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModernToolbarActions.swift; sourceTree = "<group>"; };
 		DDDDDDDD000000000000000B /* PollViewerView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PollViewerView.swift; sourceTree = "<group>"; };
 		F4233C581917C77900482BD0 /* bg_menu.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = bg_menu.jpg; sourceTree = "<group>"; };
 		F4B3645719165D5100CCE1EF /* SecondaryTags.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = SecondaryTags.plist; sourceTree = "<group>"; };

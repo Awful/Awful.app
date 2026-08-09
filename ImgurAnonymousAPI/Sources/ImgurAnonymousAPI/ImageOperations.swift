@@ -16,6 +16,7 @@ internal enum ImageError: LocalizedError {
     case missingPhotoResource
     case sourceCreationFailed
     case thumbnailCreationFailed
+    case transcodingFailed
 
     var errorDescription: String? {
         switch self {
@@ -35,6 +36,8 @@ internal enum ImageError: LocalizedError {
             return "Could not find image"
         case .thumbnailCreationFailed:
             return "Could not resize image"
+        case .transcodingFailed:
+            return "Could not convert image to a supported format"
         }
     }
 }
@@ -80,7 +83,7 @@ internal final class ResizeImage: AsynchronousOperation<ImageFile>, @unchecked S
         
         var maxPixelSize: Int
         if
-            let properties = CGImageSourceCopyProperties(imageSource, nil) as NSDictionary?,
+            let properties = CGImageSourceCopyPropertiesAtIndex(imageSource, 0, nil) as NSDictionary?,
             let width = properties[kCGImagePropertyPixelWidth] as? Int,
             let height = properties[kCGImagePropertyPixelHeight] as? Int
         {
@@ -127,9 +130,19 @@ internal final class ResizeImage: AsynchronousOperation<ImageFile>, @unchecked S
                 log(.debug, "scaled image down to \(maxPixelSize)px as its larger dimension, which gets it to \(byteSize) bytes, which is within the file size limit")
                 return finish(.success(ImageFile(url: resizedImageURL)))
             }
+
+            log(.debug, "scaling image down to \(maxPixelSize)px as its larger dimension still leaves it at \(byteSize) bytes, so we'll try again at half that")
+            maxPixelSize /= 2
+            guard maxPixelSize >= minimumMaxPixelSize else {
+                log(.error, "could not get image under the file size limit without scaling it down past \(minimumMaxPixelSize)px")
+                throw ImageError.thumbnailCreationFailed
+            }
         }
     }
 }
+
+/// Below this, a resized image is so small that giving up beats uploading it.
+private let minimumMaxPixelSize = 320
 
 #if canImport(Photos)
 import Photos

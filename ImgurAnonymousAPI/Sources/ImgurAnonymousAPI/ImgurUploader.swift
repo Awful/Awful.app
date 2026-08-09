@@ -237,8 +237,13 @@ public final class ImgurUploader {
 
         imageSaveOperation.addDependency(tempFolder)
 
+        let transcode = TranscodeImage()
+        transcode.addDependency(imageSaveOperation)
+        transcode.addDependency(tempFolder)
+
         let resize = ResizeImage(maximumFileSizeBytes: imgurFileSizeLimit)
-        resize.addDependency(imageSaveOperation)
+        // Depends on the transcode and not on the image save operation, as `firstDependencyValue(ofType:)` finds the first dependency with a matching result type and we want the transcoded image.
+        resize.addDependency(transcode)
         resize.addDependency(tempFolder)
 
         let writeFormData = WriteMultipartFormData()
@@ -256,7 +261,7 @@ public final class ImgurUploader {
         deleteTempFolder.addDependency(tempFolder)
         deleteTempFolder.addDependency(upload)
 
-        let ops = [tempFolder, imageSaveOperation, resize, writeFormData, upload, deleteTempFolder]
+        let ops = [tempFolder, imageSaveOperation, transcode, resize, writeFormData, upload, deleteTempFolder]
 
         log(.debug, "starting upload of \(imageSaveOperation)")
         queue.addOperations(ops, waitUntilFinished: false)

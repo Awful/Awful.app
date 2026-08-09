@@ -240,10 +240,11 @@ private func configureLogger(for uploader: ImgurUploader) {
         switch level {
         case .debug:
             uploaderLogger.debug("\(message)")
+        // These are diagnostics we wrote ourselves, not user data, and os.Logger redacts interpolated strings by default. Debug stays redacted as it includes photo filenames and image picker contents.
         case .info:
-            uploaderLogger.info("\(message)")
+            uploaderLogger.info("\(message, privacy: .public)")
         case .error:
-            uploaderLogger.error("\(message)")
+            uploaderLogger.error("\(message, privacy: .public)")
         }
     }
 }
