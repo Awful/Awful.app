@@ -44,6 +44,10 @@ extension Forum {
         
         var subforumStack = Array(childForums)
         while let forum = subforumStack.popLast() {
+            // The site has stopped listing this one, so it stays hidden no matter what its parent
+            // is doing.
+            guard forum.index >= 0 else { continue }
+
             if forum.metadata.showsChildrenInForumList {
                 subforumStack.append(contentsOf: forum.childForums)
             }

@@ -276,7 +276,10 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // Add a shortcut for favorited forums, in the order they appear in the list.
         let fetchRequest = ForumMetadata.makeFetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "favorite = YES")
+        // Skip favorites the site no longer lists: their shortcut would deep-link nowhere, and
+        // they'd eat one of the three slots below.
+        fetchRequest.predicate = NSPredicate(
+            format: "favorite = YES AND %K >= 0", #keyPath(ForumMetadata.forum.index))
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "favoriteIndex", ascending: true)]
         fetchRequest.fetchLimit = 3
         let favourites: [ForumMetadata]
