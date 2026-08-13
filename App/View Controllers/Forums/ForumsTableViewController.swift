@@ -487,7 +487,8 @@ final class ForumsTableViewController: CollectionViewController {
     }
 
     @objc private func searchForums() {
-        let searchView = SearchHostingController()
+        // Picks up where the last search left off, when its results are still good.
+        let searchView = SearchHostingController(restoring: LastSearchStore.record)
         if traitCollection.userInterfaceIdiom == .pad {
             searchView.modalPresentationStyle = .pageSheet
         } else {

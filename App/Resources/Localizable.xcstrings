@@ -947,6 +947,9 @@
         }
       }
     },
+    "Loading your last search…" : {
+
+    },
     "login.consent-to-terms.full-text" : {
       "comment" : "Text shown at the bottom of the login screen that tells the user about the Privacy Policy and Terms & Conditions. Parameters are: 1. a link to the Privacy Policy (translated separately); 2. a link to the Terms of Service (translated separately).",
       "extractionState" : "migrated",

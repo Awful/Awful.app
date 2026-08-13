@@ -175,6 +175,17 @@ final class PostsPageViewController: ViewController {
             ),
         ]
 
+        // Tapping a search result drops the search screen on the way to the thread, so this is the
+        // way back to it. Rebuilt with the menu, so it disappears once the results have expired.
+        if LastSearchStore.hasStoredResults {
+            children.append(UIAction(
+                title: "Search results",
+                image: UIImage(systemName: "text.magnifyingglass"),
+                identifier: .init("lastSearchResults"),
+                handler: { [unowned self] in lastSearchResults(action: $0) }
+            ))
+        }
+
         return UIMenu(title: thread.title ?? "", image: nil, identifier: nil, options: .displayInline, children: children)
     }
 
@@ -1420,6 +1431,18 @@ final class PostsPageViewController: ViewController {
         }
         self.dismiss(animated: false) { [self] in
             let searchVC = SearchHostingController(threadID: thread.threadID)
+            searchVC.modalPresentationStyle = (traitCollection.userInterfaceIdiom == .pad) ? .pageSheet : .fullScreen
+            present(searchVC, animated: true)
+        }
+    }
+
+    private func lastSearchResults(action: UIAction) {
+        if enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
+        guard let record = LastSearchStore.record else { return }
+        self.dismiss(animated: false) { [self] in
+            let searchVC = SearchHostingController(restoring: record)
             searchVC.modalPresentationStyle = (traitCollection.userInterfaceIdiom == .pad) ? .pageSheet : .fullScreen
             present(searchVC, animated: true)
         }

@@ -152,6 +152,8 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
             cookieJar.deleteCookie(cookie)
         }
         UserDefaults.standard.removeSessionObjects()
+        // A search query ID belongs to the session that made it, so it's dead weight now.
+        LastSearchStore.clear()
         Task { await emptyCache() }
         
         let loginVC = LoginViewController.newFromStoryboard()

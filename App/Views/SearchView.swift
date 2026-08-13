@@ -19,6 +19,17 @@ struct SearchResultsView: View {
         NavigationView {
             ScrollViewReader { proxy in
                 ScrollView {
+                    // The search screen's message line only renders on the form, so anything that
+                    // goes wrong while paging through results would otherwise be silent.
+                    if !model.searchState.resultsMessage.isEmpty {
+                        Text(model.searchState.resultsMessage)
+                            .font(.caption)
+                            .foregroundColor(theme[color: "unreadBadgeRedColor"] ?? theme[color: "listTextColor"])
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.horizontal)
+                            .padding(.top)
+                    }
+
                     if model.searchResults.isEmpty && !model.searchState.resultInfo.isEmpty {
                         VStack(alignment: .leading, spacing: 12) {
                             // Parse and display the search info with proper formatting
@@ -317,7 +328,10 @@ struct SearchView: View {
 
             case .results:
                 SearchResultsView(model: model)
-            
+
+            case .restoring:
+                restoringView
+
             case .none:
                 EmptyView()
             }
@@ -336,6 +350,41 @@ struct SearchView: View {
         }
     }
     
+    /// Shown while the last search's results are being fetched again.
+    ///
+    /// Carries an Exit button because the sheet is otherwise inescapable: `interactiveDismissDisabled`
+    /// rules out swiping it away, and on iPhone it's full screen.
+    private var restoringView: some View {
+        NavigationView {
+            VStack(spacing: 16) {
+                ProgressView()
+                    .tint(theme[color: "listSecondaryTextColor"])
+                Text("Loading your last search…")
+                    .font(.subheadline)
+                    .foregroundColor(theme[color: "listSecondaryTextColor"])
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(theme[color: "backgroundColor"]!.ignoresSafeArea(.all))
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .principal) {
+                    Text("Search Results")
+                        .font(.headline)
+                        .foregroundColor(theme[color: "navigationBarTextColor"])
+                }
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button("Exit") {
+                        model.viewState = .none
+                    }
+                    .liquidGlassBarButtonColor(theme[color: "navigationBarTextColor"])
+                }
+            }
+            .background(NavigationConfigurator(theme: theme))
+        }
+        .navigationViewStyle(.stack)
+        .liquidGlassNavigationTint(theme[color: "tintColor"])
+    }
+
     private var searchField: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(spacing: 8) {
@@ -674,24 +723,43 @@ final class SearchPageViewModel: ObservableObject {
     private let previewHTML: String?
     let threadID: String?
 
+    /// Called when a restore turns out to have outlived its query ID, so the host can say so.
+    var onExpiredResults: ((String) -> Void)?
+
+    /// Forum selections carried in from a restore, since the form they came from hasn't loaded yet.
+    private var restoredForumIDs: [String] = []
+
     init(
         forumSelectOptions: [ForumSelectOption] = [],
         searchHelpHints: [SearchHelpHint] = [],
         searchResults: [SearchResult] = [],
         isPreview: Bool = false,
         previewHTML: String? = nil,
-        threadID: String? = nil
+        threadID: String? = nil,
+        restoring: LastSearchStore.Record? = nil
     ) {
         self.forumSelectOptions = forumSelectOptions
         self.searchHelpHints = searchHelpHints
         self.searchResults = searchResults
         self.isPreview = isPreview
         self.previewHTML = previewHTML
-        self.threadID = threadID
+        // A restored search keeps the scope it was run in, so the forum picker and the `threadid:`
+        // prefix stay consistent if the user backs out and searches again.
+        self.threadID = restoring?.threadID ?? threadID
+
+        // Set before the task below, which doesn't run until a later turn: otherwise the search form
+        // gets a frame on screen before the restore can switch away from it.
+        if restoring != nil {
+            viewState = .restoring
+        }
 
         // Move the Task creation to after initialization
         Task { [weak self] in
-            await self?.loadInitialData()
+            if let restoring {
+                await self?.restoreLastResults(restoring)
+            } else {
+                await self?.loadInitialData()
+            }
         }
     }
     
@@ -838,15 +906,6 @@ final class SearchPageViewModel: ObservableObject {
                 let pageLinks = pagesDiv.nodes(matchingParsedSelector: .cached("a"))
                 var maxPage = currentPage
 
-                if self.searchQueryID == nil,
-                   let firstLink = pageLinks.first,
-                   let href = firstLink["href"],
-                   let url = URL(string: href, relativeTo: ForumsClient.shared.baseURL),
-                   let components = URLComponents(url: url, resolvingAgainstBaseURL: true),
-                   let qidItem = components.queryItems?.first(where: { $0.name == "qid" }) {
-                    self.searchQueryID = qidItem.value
-                }
-
                 for link in pageLinks {
                     guard let href = link["href"],
                           let url = URL(string: href, relativeTo: ForumsClient.shared.baseURL),
@@ -870,9 +929,76 @@ final class SearchPageViewModel: ObservableObject {
                     self.totalPages = requestedPage
                 }
             }
+
+            // Last thing, so the remembered page is whatever we actually ended up showing.
+            persistLastSearch()
         }
     }
-    
+
+    /// Remembers this page of results so it can be fetched again after the search screen goes away.
+    ///
+    /// Called from every successful scrape rather than on the way out, because by then
+    /// `clearHeavyObjects()` has already thrown the query ID away.
+    private func persistLastSearch() {
+        guard !isPreview, let searchQueryID else { return }
+        // Nothing worth coming back to if the page held neither results nor the "no results" blurb.
+        guard !searchResults.isEmpty || !searchState.resultInfo.isEmpty else { return }
+
+        // Straight after a restore the form hasn't been fetched, so fall back to the selections the
+        // record came with rather than saving an empty list over them.
+        let forumIDs = forumSelectOptions.isEmpty
+            ? restoredForumIDs
+            : forumSelectOptions.filter(\.isSelected).map(\.value)
+
+        LastSearchStore.save(.init(
+            queryID: searchQueryID,
+            page: currentPage,
+            query: searchState.query,
+            threadID: threadID,
+            forumIDs: forumIDs
+        ))
+    }
+
+    /// Digs the forums' query ID out of a results page, so it can be asked for again later.
+    ///
+    /// The response URL is the reliable source — a search POST redirects to
+    /// `query.php?action=results&qid=N`. The pagination links are the fallback, and only carry a
+    /// query ID when there's more than one page of results.
+    private func captureQueryID(from document: HTMLDocument, responseURL: URL?) -> String? {
+        if let responseURL,
+           let components = URLComponents(url: responseURL, resolvingAgainstBaseURL: true),
+           let qid = components.queryItems?.first(where: { $0.name == "qid" })?.value,
+           !qid.isEmpty {
+            print("🔍 SearchView: query ID \(qid) from response URL")
+            return qid
+        }
+
+        for link in document.nodes(matchingParsedSelector: .cached("a")) {
+            guard let href = link["href"],
+                  let url = URL(string: href, relativeTo: ForumsClient.shared.baseURL),
+                  url.path.contains("query.php"),
+                  let components = URLComponents(url: url, resolvingAgainstBaseURL: true),
+                  let qid = components.queryItems?.first(where: { $0.name == "qid" })?.value,
+                  !qid.isEmpty
+            else { continue }
+            print("🔍 SearchView: query ID \(qid) from a link on the results page")
+            return qid
+        }
+
+        print("❌ SearchView: no query ID on this results page; it won't be restorable")
+        return nil
+    }
+
+    /// Whether a document looks like a page of search results rather than an expiry or error page.
+    ///
+    /// A search that found nothing still counts: it has no `.search_result` nodes but does explain
+    /// itself in `#search_info`, and `SearchResultsView` knows how to show that.
+    private func looksLikeResults(_ document: HTMLDocument) -> Bool {
+        if document.firstNode(matchingParsedSelector: .cached(".search_result")) != nil { return true }
+        let info = document.firstNode(matchingParsedSelector: .cached("#search_info"))?.textContent ?? ""
+        return !info.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
+
     func toggleForumSelection(for option: ForumSelectOption) {
         guard let index = forumSelectOptions.firstIndex(where: { $0.id == option.id }) else { return }
 
@@ -889,6 +1015,7 @@ final class SearchPageViewModel: ObservableObject {
     
     func performSearch() async {
         searchState.message = ""
+        searchState.resultsMessage = ""
 
         let forumIDs = forumSelectOptions
             .filter(\.isSelected)
@@ -900,48 +1027,141 @@ final class SearchPageViewModel: ObservableObject {
         }()
 
         do {
-            let document = try await ForumsClient.shared.searchForums(
+            let (document, responseURL) = try await ForumsClient.shared.searchForums(
                 query: outgoingQuery,
                 forumIDs: forumIDs
             )
-            
-            searchResultsHtmlDoc = document
-            viewState = .results
-            
-            // Reset pagination state before scraping new search results
+
+            // Reset pagination state before publishing the new document, so the results screen never
+            // shows the previous search's rows against the new search's page count.
             self.currentPage = 1
             self.totalPages = 1
-            self.searchQueryID = nil
-            
+            self.searchResults.removeAll()
+            self.searchState.resultInfo = ""
+            self.searchQueryID = captureQueryID(from: document, responseURL: responseURL)
+
+            searchResultsHtmlDoc = document
+            viewState = .results
+
             await scrapeForumResultsPage()
-            
+
         } catch {
             searchState.message = "Search failed: \(error.localizedDescription)"
             print("Search error: \(error)")
         }
     }
-    
+
     func goToPage(page: Int) async {
         guard let qid = searchQueryID else {
-            searchState.message = "Cannot navigate to page, no query ID."
+            searchState.resultsMessage = "Cannot navigate to page, no query ID."
             return
         }
-        
+
+        searchState.resultsMessage = ""
+
         do {
             let document = try await ForumsClient.shared.searchForumsPage(
                 queryID: qid,
                 page: page
             )
-            
+
+            // A query ID that's aged out mid-browse comes back as something other than results.
+            guard looksLikeResults(document) else {
+                await fallBackToSearchForm(document: document)
+                return
+            }
+
             searchResultsHtmlDoc = document
             await scrapeForumResultsPage(requestedPage: page)
-            
+
         } catch {
-            searchState.message = "Failed to load page: \(error.localizedDescription)"
+            searchState.resultsMessage = "Failed to load page: \(error.localizedDescription)"
             print("Page load error: \(error)")
         }
     }
-    
+
+    /// Fetches the results the user was last looking at, using the query ID we kept.
+    func restoreLastResults(_ record: LastSearchStore.Record) async {
+        // Show what was typed, not the `threadid:N ` the forums were actually sent.
+        searchState.query = record.query
+        restoredForumIDs = record.forumIDs
+
+        let document: HTMLDocument
+        do {
+            document = try await ForumsClient.shared.searchForumsPage(
+                queryID: record.queryID,
+                page: record.page
+            )
+        } catch {
+            print("Search restore error: \(error)")
+            await fallBackToSearchForm(document: nil, preservingForumIDs: record.forumIDs)
+            return
+        }
+
+        guard viewState == .restoring else { return }
+
+        guard looksLikeResults(document) else {
+            await fallBackToSearchForm(document: document, preservingForumIDs: record.forumIDs)
+            return
+        }
+
+        searchQueryID = record.queryID
+        searchResultsHtmlDoc = document
+        currentPage = record.page
+        totalPages = max(totalPages, record.page)
+        await scrapeForumResultsPage(requestedPage: record.page)
+
+        guard viewState == .restoring else { return }
+        viewState = .results
+
+        // The search form is only needed if the user backs out of the results, so it can trail in.
+        Task { [weak self] in
+            await self?.fetchAndParseSearchPage()
+            self?.applySelectedForumIDs(record.forumIDs)
+        }
+    }
+
+    /// Gives up on a restore and shows the search form instead, letting the host explain why.
+    ///
+    /// Passing the failed response lets us reuse it when the forums answered with the search form
+    /// itself, which saves a second round trip in the common expiry case.
+    private func fallBackToSearchForm(document: HTMLDocument?, preservingForumIDs: [String]? = nil) async {
+        // Clear the dead record even if nobody's watching any more.
+        LastSearchStore.clear()
+        guard viewState != .none else { return }
+
+        searchQueryID = nil
+        searchResults.removeAll()
+        searchResultsHtmlDoc = nil
+        searchState.resultInfo = ""
+        currentPage = 1
+        totalPages = 1
+
+        // Whatever the user had ticked, or — restoring, where the form was never shown — whatever
+        // they had ticked when the search was first run.
+        let selectedForumIDs = preservingForumIDs ?? forumSelectOptions.filter(\.isSelected).map(\.value)
+
+        if let document, document.firstNode(matchingParsedSelector: .cached("form[action='query.php']")) != nil {
+            searchPageHtmlDoc = document
+            await scrapeForumSelectOptions()
+        } else {
+            await fetchAndParseSearchPage()
+        }
+        applySelectedForumIDs(selectedForumIDs)
+
+        guard viewState != .none else { return }
+        viewState = .search
+        onExpiredResults?("Those search results have expired. Try searching again.")
+    }
+
+    private func applySelectedForumIDs(_ forumIDs: [String]) {
+        guard !forumIDs.isEmpty else { return }
+        let selected = Set(forumIDs)
+        for i in forumSelectOptions.indices {
+            forumSelectOptions[i].isSelected = selected.contains(forumSelectOptions[i].value)
+        }
+    }
+
     func clearHeavyObjects() {
         searchPageHtmlDoc = HTMLDocument(string: "")
         searchResultsHtmlDoc = nil
@@ -982,12 +1202,62 @@ struct SearchHelpHint: Identifiable, Equatable {
 
 struct SearchState {
     var query: String = ""
+    /// Shown on the search form. Doubles as the forums' own "search_message" notice.
     var message: String = ""
+    /// Shown on the results screen. Separate from `message`, which the form keeps overwriting.
+    var resultsMessage: String = ""
     var resultInfo: String = ""
 }
 
 enum SearchViewState {
-    case search, results, none
+    case search, results, restoring, none
+}
+
+// MARK: - Last search restore
+
+/**
+ The most recent search results, remembered well enough to fetch them again.
+
+ The results screen itself is thrown away as soon as a result is tapped — it holds onto parsed HTML
+ documents, and search results don't stay valid for long anyway. What's kept instead is the forums'
+ own query ID, which can be handed back to `query.php?action=results&qid=N&page=M` to rebuild the
+ same results on demand. The forums expire a query ID after a while; when that happens the restore
+ fails and the user is dropped on a fresh search form.
+
+ This deliberately lives outside `SearchPageViewModel`: the model is wiped by `clearHeavyObjects()`
+ on the way out of the sheet, which is exactly the moment we need the query ID to survive.
+
+ One slot, shared by forum-wide and thread-scoped searches — whichever ran last is what comes back.
+ In-memory only, since a query ID belongs to a login session and won't outlive one. Static state is
+ shared across scenes, so on iPad both windows see the same last search; that's fine for what this
+ is.
+ */
+@MainActor
+enum LastSearchStore {
+    struct Record {
+        /// The forums' query ID, good for `query.php?action=results&qid=…` until it expires.
+        var queryID: String
+        var page: Int
+        /// What the user typed, *without* the `threadid:N ` prefix a thread-scoped search adds.
+        var query: String
+        /// The thread a thread-scoped search was run in, or nil for a forum-wide search.
+        var threadID: String?
+        /// Which forums were ticked, so backing out to the form doesn't lose the selection.
+        var forumIDs: [String]
+    }
+
+    private static var stored: Record?
+
+    static var record: Record? { stored }
+    static var hasStoredResults: Bool { stored != nil }
+
+    static func save(_ record: Record) {
+        stored = record
+    }
+
+    static func clear() {
+        stored = nil
+    }
 }
 
 extension Int {
@@ -997,21 +1267,49 @@ extension Int {
 // MARK: - Custom Hosting Controller
 final class SearchHostingController: UIHostingController<AnyView> {
     private let searchModel: SearchPageViewModel
+    /// A message that arrived before there was anywhere to show it. See `viewDidAppear`.
+    private var pendingBannerMessage: String?
 
-    init(threadID: String? = nil) {
-        self.searchModel = SearchPageViewModel(threadID: threadID)
+    /// - Parameter restoring: when set, opens straight onto the results this record points at
+    ///   instead of a blank search form. Falls back to the form if the forums no longer have them.
+    init(threadID: String? = nil, restoring: LastSearchStore.Record? = nil) {
+        self.searchModel = SearchPageViewModel(threadID: threadID, restoring: restoring)
         super.init(rootView: AnyView(SearchView(model: searchModel).themed()))
+
+        searchModel.onExpiredResults = { [weak self] message in
+            self?.showBanner(message)
+        }
     }
-    
+
     @MainActor required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         // Ensure this controller controls status bar appearance so it stays
         // consistent with the app's theme while presented
         modalPresentationCapturesStatusBarAppearance = true
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        if let pendingBannerMessage {
+            self.pendingBannerMessage = nil
+            showBanner(pendingBannerMessage)
+        }
+    }
+
+    /// Shows a plain informational toast, holding onto it if the sheet hasn't arrived yet.
+    ///
+    /// A restore can outrun the presentation animation, and a banner added to a view that isn't on
+    /// screen yet auto-dismisses before anyone sees it.
+    private func showBanner(_ message: String) {
+        guard isViewLoaded, view.window != nil else {
+            pendingBannerMessage = message
+            return
+        }
+        BannerToastView.show(in: view, theme: Theme.defaultTheme(), message: message)
     }
 
     // Keep status bar style in sync with the current theme so opening the
