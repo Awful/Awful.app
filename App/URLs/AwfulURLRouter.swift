@@ -116,27 +116,6 @@ struct AwfulURLRouter {
             return selectTopmostViewController(containingViewControllerOfClass: MessageListViewController.self) != nil
 
         case let .post(id: postID, updateSeen):
-            let key = PostKey(postID: postID)
-            if let post = Post.existingObjectForKey(objectKey: key, in: managedObjectContext),
-               let thread = post.thread,
-               post.page > 0
-            {
-                let postsVC = PostsPageViewController(thread: thread)
-                var updateLastRead: Bool {
-                    switch updateSeen {
-                    case .noseen: return false
-                    case .seen: return true
-                    }
-                }
-                postsVC.loadPage(.specific(post.page), updatingCache: true, updatingLastReadPost: updateLastRead)
-                postsVC.scrollPostToVisible(post)
-                return showPostsViewController(postsVC)
-            }
-
-            guard let rootView = rootViewController.view else { return false }
-            let overlay = MRProgressOverlayView.showOverlayAdded(to: rootView, title: "Locating Post", mode: .indeterminate, animated: true)!
-            overlay.tintColor = Theme.defaultTheme()["tintColor"]
-
             var updateLastRead: Bool {
                 switch updateSeen {
                 case .noseen: return false
@@ -144,21 +123,21 @@ struct AwfulURLRouter {
                 }
             }
 
+            if let postsVC = PostLocator.cachedPostsPageViewController(
+                postID: postID, updateLastReadPost: updateLastRead, in: managedObjectContext)
+            {
+                return showPostsViewController(postsVC)
+            }
+
+            guard let rootView = rootViewController.view else { return false }
+
             Task { @MainActor in
-                do {
-                    let (post, page) = try await ForumsClient.shared.locatePost(id: key.postID, updateLastReadPost: updateLastRead)
-                    overlay.dismiss(true) {
-                        guard let thread = post.thread else { return }
-                        let postsVC = PostsPageViewController(thread: thread)
-                        postsVC.loadPage(page, updatingCache: true, updatingLastReadPost: updateLastRead)
-                        postsVC.scrollPostToVisible(post)
-                        _ = self.showPostsViewController(postsVC)
-                    }
-                } catch {
-                    overlay.titleLabelText = "Post Not Found"
-                    overlay.mode = .cross
-                    try? await Task.sleep(timeInterval: 3)
-                    overlay.dismiss(true)
+                let postsVC = await PostLocator.withLocatingOverlay(in: rootView) {
+                    try await PostLocator.makePostsPageViewController(
+                        postID: postID, updateLastReadPost: updateLastRead)
+                }
+                if let postsVC {
+                    _ = self.showPostsViewController(postsVC)
                 }
             }
             return true

@@ -175,9 +175,12 @@ final class PostsPageViewController: ViewController {
             ),
         ]
 
-        // Tapping a search result drops the search screen on the way to the thread, so this is the
-        // way back to it. Rebuilt with the menu, so it disappears once the results have expired.
-        if LastSearchStore.hasStoredResults {
+        // A shortcut back to the search results. Usually they're still further down this stack, in
+        // which case it just pops to them; otherwise it fetches them again from the stored query ID.
+        // Rebuilt with the menu, so it goes away once neither is true.
+        let hasResultsBelow = navigationController?.viewControllers
+            .contains { $0 is SearchResultsViewController } ?? false
+        if LastSearchStore.hasStoredResults || hasResultsBelow {
             children.append(UIAction(
                 title: "Search results",
                 image: UIImage(systemName: "text.magnifyingglass"),
@@ -1430,9 +1433,7 @@ final class PostsPageViewController: ViewController {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         self.dismiss(animated: false) { [self] in
-            let searchVC = SearchHostingController(threadID: thread.threadID)
-            searchVC.modalPresentationStyle = (traitCollection.userInterfaceIdiom == .pad) ? .pageSheet : .fullScreen
-            present(searchVC, animated: true)
+            showSearch(SearchFormViewController.makeStack(threadID: thread.threadID))
         }
     }
 
@@ -1440,12 +1441,39 @@ final class PostsPageViewController: ViewController {
         if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
-        guard let record = LastSearchStore.record else { return }
         self.dismiss(animated: false) { [self] in
-            let searchVC = SearchHostingController(restoring: record)
-            searchVC.modalPresentationStyle = (traitCollection.userInterfaceIdiom == .pad) ? .pageSheet : .fullScreen
-            present(searchVC, animated: true)
+            // Results already in that stack are the ones the reader came from, so go back to those
+            // rather than fetching a second copy on top.
+            if let nav = searchHostNavigationController,
+               let existing = nav.viewControllers.last(where: { $0 is SearchResultsViewController })
+            {
+                nav.popToViewController(existing, animated: true)
+                return
+            }
+            guard let record = LastSearchStore.record else { return }
+            showSearch(SearchFormViewController.makeStack(restoring: record))
         }
+    }
+
+    private func showSearch(_ screens: [UIViewController]) {
+        guard let nav = searchHostNavigationController else { return }
+        SearchFormViewController.push(screens, onto: nav)
+    }
+
+    /// The navigation stack the search screens should live in.
+    ///
+    /// Usually this posts page's own stack. The exception is an expanded split view, where this
+    /// posts page sits in the detail column: opening a result there calls
+    /// `showDetailViewController`, which replaces the entire detail stack and would take the search
+    /// screens with it. Putting them in the sidebar instead keeps them alive — and visible beside
+    /// the post they opened.
+    private var searchHostNavigationController: UINavigationController? {
+        guard let splitViewController, !splitViewController.isCollapsed else {
+            return navigationController
+        }
+        guard let tabBarController = splitViewController.viewControllers.first as? UITabBarController
+        else { return navigationController }
+        return tabBarController.selectedViewController as? UINavigationController ?? navigationController
     }
 
     private func screenshotPosts() {

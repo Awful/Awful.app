@@ -162,4 +162,11 @@ extension UnpoppingViewHandler {
         guard !interactiveUnpopIsTakingPlace else { return }
         viewControllers.removeAll()
     }
+
+    /// Whatever was staged for unpop belonged to the stack that just got thrown away, so unpopping
+    /// one would splice an unrelated view controller on top. Same reasoning as `didPushViewController`.
+    func navigationControllerDidReplaceStack(_ navigationController: UINavigationController) {
+        guard !interactiveUnpopIsTakingPlace else { return }
+        viewControllers.removeAll()
+    }
 }

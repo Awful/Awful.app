@@ -246,7 +246,7 @@ final class ArchivesViewModel: ObservableObject {
 // MARK: - Hosting controller
 
 /// Hosts ``ArchivesView`` as a themed medium sheet. Present modally from the Forums screen. Mirrors
-/// `SearchHostingController` so the status-bar style stays consistent with the app theme.
+/// the other modal SwiftUI sheets so the status-bar style stays consistent with the app theme.
 final class ArchivesHostingController: UIHostingController<AnyView> {
 
     init() {
