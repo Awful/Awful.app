@@ -1651,7 +1651,7 @@ final class PostsPageViewController: ViewController {
             in: view,
             theme: theme,
             message: "This thread has a poll",
-            actionTitle: "View poll",
+            action: .link(text: "has a poll", actionName: "View poll"),
             duration: 6,
             bottomInset: pollToastBottomInset
         ) { [weak self] in

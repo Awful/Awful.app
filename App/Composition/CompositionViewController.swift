@@ -308,7 +308,7 @@ final class CompositionViewController: ViewController, ModernToolbarActionHandli
             in: view,
             theme: theme,
             message: notice.bannerMessage,
-            actionTitle: "Use Original"
+            action: .button(title: "Use Original")
         ) { [weak self] in
             guard let self, let notice = self.activeCleaningNotice else { return }
             self.textView.restoreOriginalURLs(from: notice)
