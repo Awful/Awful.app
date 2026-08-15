@@ -168,10 +168,10 @@ public final class RapSheetViewController: ViewController {
         renderView.view.translatesAutoresizingMaskIntoConstraints = false
         toolbar.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            // The render view fills below the nav bar all the way to the screen bottom, so content scrolls
-            // behind the floating toolbar and the (glass) tab bar. `updateScrollViewInsets()` reserves the
-            // matching bottom inset so content still clears them.
-            renderView.view.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            // The render view fills the whole view, so content scrolls behind the (glass) nav bar,
+            // the floating toolbar, and the tab bar. `updateScrollViewInsets()` reserves matching
+            // top/bottom insets so content still clears them.
+            renderView.view.topAnchor.constraint(equalTo: view.topAnchor),
             renderView.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             renderView.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             renderView.view.bottomAnchor.constraint(equalTo: view.bottomAnchor),
@@ -218,16 +218,18 @@ public final class RapSheetViewController: ViewController {
         updateScrollViewInsets()
     }
 
-    /// Reserves bottom space equal to the floating toolbar plus the tab bar, so the render view can fill the
-    /// screen (content visible behind the glass bars) without the last rows being hidden underneath.
+    /// Reserves top space equal to the nav bar and bottom space equal to the floating toolbar plus the
+    /// tab bar, so the render view can fill the screen (content visible behind the glass bars) without
+    /// the first or last rows being hidden underneath.
     private func updateScrollViewInsets() {
         guard isViewLoaded else { return }
+        let topInset = view.safeAreaInsets.top
         // With the paging toolbar hidden (endless scroll), only the tab bar needs clearing.
         let bottomInset = toolbar.isHidden
             ? max(0, view.bounds.maxY - view.safeAreaLayoutGuide.layoutFrame.maxY)
             : max(0, view.bounds.maxY - toolbar.frame.minY)
-        renderView.scrollView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
-        renderView.scrollView.verticalScrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
+        renderView.scrollView.contentInset = UIEdgeInsets(top: topInset, left: 0, bottom: bottomInset, right: 0)
+        renderView.scrollView.verticalScrollIndicatorInsets = UIEdgeInsets(top: topInset, left: 0, bottom: bottomInset, right: 0)
     }
 
     public override func viewDidAppear(_ animated: Bool) {
@@ -335,6 +337,11 @@ public final class RapSheetViewController: ViewController {
             // A fresh page load collapses any endless-scroll accumulation.
             punishmentPages = [(page, result.punishments)]
             renderPunishments()
+            // The document replacement returns to the top without any drag events, so reset the
+            // iOS 26 bar to its opaque at-top state.
+            if #available(iOS 26.0, *) {
+                updateNavigationBarTint(progress: 0)
+            }
             if isLepersColony {
                 handlers.didRefreshLepersColony()
             }
@@ -469,7 +476,8 @@ public final class RapSheetViewController: ViewController {
             background.trailingAnchor.constraint(equalTo: renderView.view.trailingAnchor),
             background.bottomAnchor.constraint(equalTo: view.bottomAnchor),
 
-            loadingView.topAnchor.constraint(equalTo: renderView.view.topAnchor),
+            // The render view extends under the nav bar; keep the spinner centered in the visible area.
+            loadingView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             loadingView.leadingAnchor.constraint(equalTo: renderView.view.leadingAnchor),
             loadingView.trailingAnchor.constraint(equalTo: renderView.view.trailingAnchor),
             loadingView.bottomAnchor.constraint(equalTo: toolbar.topAnchor),
@@ -801,10 +809,30 @@ extension RapSheetViewController: UIScrollViewDelegate {
             return
         }
 
+        // Update navigation bar tint for iOS 26+ dynamic colors. Same logic as
+        // CollectionViewController. The dragging/decelerating guard skips programmatic
+        // scrolls (pull-to-refresh's inset dance would otherwise read as "fully scrolled").
+        if #available(iOS 26.0, *), scrollView.isDragging || scrollView.isDecelerating {
+            let topPosition = -scrollView.adjustedContentInset.top
+            let transitionDistance: CGFloat = 30.0
+            let progress = max(0, min(1, (scrollView.contentOffset.y - topPosition) / transitionDistance))
+            updateNavigationBarTint(progress: progress)
+        }
+
         // Ask for the next page when nearing the bottom. (`appendNextPageIfNeeded` does all its own gating, so this is cheap.)
         let distanceToBottom = scrollView.contentSize.height - (scrollView.contentOffset.y + scrollView.bounds.height)
         if scrollView.contentSize.height > 0, distanceToBottom < scrollView.bounds.height * 1.5 {
             appendNextPageIfNeeded()
+        }
+    }
+
+    /// Drives the app's iOS 26 liquid-glass nav bar transition (opaque at top, transparent once
+    /// scrolled). The nav controller class lives in the app target, so reach it by selector like
+    /// `CollectionViewController` does.
+    private func updateNavigationBarTint(progress: CGFloat) {
+        if let navController = navigationController,
+           navController.responds(to: Selector(("updateNavigationBarTintForScrollProgress:"))) {
+            navController.perform(Selector(("updateNavigationBarTintForScrollProgress:")), with: NSNumber(value: Float(progress)))
         }
     }
 }
