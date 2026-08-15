@@ -16,16 +16,6 @@
     "%lld days" : {
 
     },
-    "%lld of %lld" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$lld of %2$lld"
-          }
-        }
-      }
-    },
     "%lld of %lld characters" : {
       "localizations" : {
         "en" : {
@@ -610,9 +600,6 @@
     "Enter text" : {
 
     },
-    "Example searches:" : {
-
-    },
     "Five" : {
 
     },
@@ -943,9 +930,6 @@
           }
         }
       }
-    },
-    "Loading your last search…" : {
-
     },
     "login.consent-to-terms.full-text" : {
       "comment" : "Text shown at the bottom of the login screen that tells the user about the Privacy Policy and Terms & Conditions. Parameters are: 1. a link to the Privacy Policy (translated separately); 2. a link to the Terms of Service (translated separately).",
@@ -1738,22 +1722,7 @@
     "Search" : {
 
     },
-    "Search Forums" : {
-
-    },
-    "Search forums..." : {
-
-    },
-    "Search Results" : {
-
-    },
     "Search smilies…" : {
-
-    },
-    "Search Thread" : {
-
-    },
-    "Search thread..." : {
 
     },
     "Select Forums" : {

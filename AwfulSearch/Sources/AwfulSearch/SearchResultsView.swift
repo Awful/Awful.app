@@ -118,7 +118,7 @@ struct SearchResultsView: View {
         VStack(spacing: 16) {
             ProgressView()
                 .tint(theme[color: "listSecondaryTextColor"])
-            Text("Loading your last search…")
+            Text("Loading your last search…", bundle: .module)
                 .font(.subheadline)
                 .foregroundColor(theme[color: "listSecondaryTextColor"])
         }
@@ -155,7 +155,7 @@ struct SearchResultsView: View {
             
             Spacer()
             
-            Text("\(model.currentPage) of \(model.totalPages)")
+            Text("\(model.currentPage) of \(model.totalPages)", bundle: .module)
                 .font(.headline)
                 .foregroundColor(theme[color: "listTextColor"])
                 .frame(minWidth: 80)
@@ -277,7 +277,7 @@ struct SearchResultCard_Previews: PreviewProvider {
 
 /// Hosts ``SearchResultsView`` as a real screen in the app's navigation stack, so the posts page a
 /// result opens can be backed out of straight into these results.
-final class SearchResultsViewController: HostingController<AnyView> {
+public final class SearchResultsViewController: HostingController<AnyView> {
 
     private let model: SearchPageViewModel
 
@@ -290,23 +290,16 @@ final class SearchResultsViewController: HostingController<AnyView> {
         ))
         opener.open = { [weak self] in self?.open($0) }
 
-        title = "Search Results"
+        title = String(localized: "Search Results", bundle: .module)
     }
 
-    @MainActor required dynamic init?(coder aDecoder: NSCoder) {
+    @MainActor public required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
     private func open(_ result: SearchResult) {
         Task { @MainActor in
-            let postsVC = await PostLocator.withLocatingOverlay(in: view) {
-                try await PostLocator.makePostsPageViewController(
-                    postID: result.postID, updateLastReadPost: false)
-            }
-            guard let postsVC else { return }
-            // Not `pushViewController`: on iPad this belongs in the detail column, and when
-            // collapsed the split view pushes onto this very stack anyway.
-            showDetailViewController(postsVC, sender: self)
+            await model.handlers.openPost(result.postID, self)
         }
     }
 }

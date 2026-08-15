@@ -4,6 +4,7 @@
 
 @preconcurrency import AwfulCore
 import AwfulModelTypes
+import AwfulSearch
 import AwfulSettings
 import AwfulTheming
 import Combine
@@ -1433,7 +1434,7 @@ final class PostsPageViewController: ViewController {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         self.dismiss(animated: false) { [self] in
-            showSearch(SearchFormViewController.makeStack(threadID: thread.threadID))
+            showSearch(SearchFormViewController.makeStack(threadID: thread.threadID, handlers: .awful))
         }
     }
 
@@ -1451,7 +1452,7 @@ final class PostsPageViewController: ViewController {
                 return
             }
             guard let record = LastSearchStore.record else { return }
-            showSearch(SearchFormViewController.makeStack(restoring: record))
+            showSearch(SearchFormViewController.makeStack(restoring: record, handlers: .awful))
         }
     }
 

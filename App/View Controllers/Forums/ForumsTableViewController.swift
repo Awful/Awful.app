@@ -4,6 +4,7 @@
 
 import AwfulCore
 import AwfulGlossary
+import AwfulSearch
 import AwfulSettings
 import AwfulTheming
 import Combine
@@ -490,7 +491,7 @@ final class ForumsTableViewController: CollectionViewController {
         guard let navigationController else { return }
         // Picks up where the last search left off, when its results are still good.
         SearchFormViewController.push(
-            SearchFormViewController.makeStack(restoring: LastSearchStore.record),
+            SearchFormViewController.makeStack(restoring: LastSearchStore.record, handlers: .awful),
             onto: navigationController)
     }
 

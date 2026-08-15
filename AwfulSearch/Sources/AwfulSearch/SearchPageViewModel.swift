@@ -4,7 +4,6 @@
 //
 
 import AwfulCore
-import AwfulTheming
 import HTMLReader
 import SwiftUI
 
@@ -26,6 +25,9 @@ final class SearchPageViewModel: ObservableObject {
     private let previewHTML: String?
     let threadID: String?
 
+    /// What the app does on the search screens' behalf; see ``SearchHandlers``.
+    let handlers: SearchHandlers
+
     /// Called when a search has a page of results worth showing, so the host can push the results
     /// screen. Fires on every successful search, so the host must ignore it when results are
     /// already on top (a restore pushes them up front).
@@ -45,13 +47,15 @@ final class SearchPageViewModel: ObservableObject {
         isPreview: Bool = false,
         previewHTML: String? = nil,
         threadID: String? = nil,
-        restoring: LastSearchStore.Record? = nil
+        restoring: LastSearchStore.Record? = nil,
+        handlers: SearchHandlers = .init(openPost: { _, _ in })
     ) {
         self.forumSelectOptions = forumSelectOptions
         self.searchHelpHints = searchHelpHints
         self.searchResults = searchResults
         self.isPreview = isPreview
         self.previewHTML = previewHTML
+        self.handlers = handlers
         // A restored search keeps the scope it was run in, so the forum picker and the `threadid:`
         // prefix stay consistent if the user backs out and searches again.
         self.threadID = restoring?.threadID ?? threadID
@@ -522,8 +526,8 @@ struct SearchState {
  is.
  */
 @MainActor
-enum LastSearchStore {
-    struct Record {
+public enum LastSearchStore {
+    public struct Record {
         /// The forums' query ID, good for `query.php?action=results&qid=…` until it expires.
         var queryID: String
         var page: Int
@@ -537,18 +541,14 @@ enum LastSearchStore {
 
     private static var stored: Record?
 
-    static var record: Record? { stored }
-    static var hasStoredResults: Bool { stored != nil }
+    public static var record: Record? { stored }
+    public static var hasStoredResults: Bool { stored != nil }
 
     static func save(_ record: Record) {
         stored = record
     }
 
-    static func clear() {
+    public static func clear() {
         stored = nil
     }
-}
-
-extension Int {
-    var isSuccessful: Bool { self == 200 || self == 302 }
 }

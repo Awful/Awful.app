@@ -4,6 +4,7 @@
 
 import AVFoundation
 import AwfulCore
+import AwfulSearch
 import AwfulSettings
 import AwfulTheming
 import Combine

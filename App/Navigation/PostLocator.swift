@@ -3,6 +3,7 @@
 //  Copyright 2026 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
+import AwfulSearch
 import AwfulTheming
 import CoreData
 import MRProgress
@@ -95,6 +96,22 @@ enum PostLocator {
             overlay.dismiss(true)
             return nil
         }
+    }
+}
+
+extension SearchHandlers {
+    /// The app's implementation of what the search screens can't do themselves. Opening a post uses
+    /// `showDetailViewController` rather than a push: on iPad the posts page belongs in the detail
+    /// column, and when collapsed the split view pushes onto the results' stack anyway.
+    @MainActor static var awful: SearchHandlers {
+        SearchHandlers(openPost: { postID, from in
+            let postsVC = await PostLocator.withLocatingOverlay(in: from.view) {
+                try await PostLocator.makePostsPageViewController(
+                    postID: postID, updateLastReadPost: false)
+            }
+            guard let postsVC else { return }
+            from.showDetailViewController(postsVC, sender: from)
+        })
     }
 }
 

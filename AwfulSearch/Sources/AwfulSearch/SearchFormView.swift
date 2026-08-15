@@ -52,7 +52,7 @@ struct SearchFormView: View {
                 
                 ZStack(alignment: .leading) {
                     if model.searchState.query.isEmpty {
-                        Text(model.threadID == nil ? "Search forums..." : "Search thread...")
+                        Text(model.threadID == nil ? "Search forums..." : "Search thread...", bundle: .module)
                             .foregroundColor(theme[color: "listSecondaryTextColor"])
                     }
                     
@@ -93,7 +93,7 @@ struct SearchFormView: View {
     
     private var searchHelp: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Example searches:")
+            Text("Example searches:", bundle: .module)
                 .font(.subheadline.weight(.semibold))
                 .foregroundColor(theme[color: "listSecondaryTextColor"])
             
@@ -116,12 +116,12 @@ struct SearchFormView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
                 HStack {
-                    Text("Select Forums")
+                    Text("Select Forums", bundle: .module)
                         .font(.headline.weight(.semibold))
                         .foregroundColor(theme[color: "listTextColor"])
                     Spacer()
                     Toggle(isOn: model.allForumsBinding) {
-                        Text("Toggle All")
+                        Text("Toggle All", bundle: .module)
                             .font(.body)
                             .foregroundColor(theme[color: "tintColor"])
                     }
@@ -180,7 +180,7 @@ struct CheckboxToggleStyle: ToggleStyle {
 ///
 /// Owns the ``SearchPageViewModel`` and drives the flow: running a search pushes
 /// ``SearchResultsViewController`` on top of this, and a failed restore pops back down to here.
-final class SearchFormViewController: HostingController<AnyView> {
+public final class SearchFormViewController: HostingController<AnyView> {
 
     let model: SearchPageViewModel
     private var cancellables: Set<AnyCancellable> = []
@@ -190,15 +190,22 @@ final class SearchFormViewController: HostingController<AnyView> {
     /// `.plain` rather than `.done`: on iOS 26 a `.done` item renders as a filled, tinted capsule,
     /// which doesn't match the plain glass buttons everywhere else in the app.
     private lazy var searchItem = UIBarButtonItem(
-        title: "Search", style: .plain, target: self, action: #selector(didTapSearch))
+        title: String(localized: "Search", bundle: .module),
+        style: .plain, target: self, action: #selector(didTapSearch))
 
     /// - Parameter restoring: when set, the model goes straight to fetching these results. Pair it
-    ///   with ``makeStack(threadID:restoring:)`` so the results screen is pushed to receive them.
-    init(threadID: String? = nil, restoring: LastSearchStore.Record? = nil) {
-        model = SearchPageViewModel(threadID: threadID, restoring: restoring)
+    ///   with ``makeStack(threadID:restoring:handlers:)`` so the results screen is pushed to receive them.
+    public init(
+        threadID: String? = nil,
+        restoring: LastSearchStore.Record? = nil,
+        handlers: SearchHandlers
+    ) {
+        model = SearchPageViewModel(threadID: threadID, restoring: restoring, handlers: handlers)
         super.init(rootView: AnyView(SearchFormView(model: model).themed()))
 
-        title = model.threadID == nil ? "Search Forums" : "Search Thread"
+        title = model.threadID == nil
+            ? String(localized: "Search Forums", bundle: .module)
+            : String(localized: "Search Thread", bundle: .module)
         // Keeps the tab bar out from under the results screen's pagination controls, and out from
         // under the posts page that opening a result pushes.
         hidesBottomBarWhenPushed = true
@@ -207,7 +214,7 @@ final class SearchFormViewController: HostingController<AnyView> {
         model.onRestoreFailed = { [weak self] message in self?.returnToForm(bannering: message) }
     }
 
-    @MainActor required dynamic init?(coder aDecoder: NSCoder) {
+    @MainActor public required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
@@ -215,20 +222,21 @@ final class SearchFormViewController: HostingController<AnyView> {
     ///
     /// A restorable last search comes back with its results already on top, so backing out of them
     /// lands on the form rather than leaving search altogether.
-    static func makeStack(
+    public static func makeStack(
         threadID: String? = nil,
-        restoring: LastSearchStore.Record? = nil
+        restoring: LastSearchStore.Record? = nil,
+        handlers: SearchHandlers
     ) -> [UIViewController] {
-        let form = SearchFormViewController(threadID: threadID, restoring: restoring)
+        let form = SearchFormViewController(threadID: threadID, restoring: restoring, handlers: handlers)
         guard restoring != nil else { return [form] }
         return [form, SearchResultsViewController(model: form.model)]
     }
 
-    /// Pushes a stack from ``makeStack(threadID:restoring:)`` as a single animated transition.
+    /// Pushes a stack from ``makeStack(threadID:restoring:handlers:)`` as a single animated transition.
     ///
     /// Splicing rather than pushing twice keeps the restored results' arrival to one animation while
     /// still leaving the form underneath them.
-    static func push(_ screens: [UIViewController], onto navigationController: UINavigationController) {
+    public static func push(_ screens: [UIViewController], onto navigationController: UINavigationController) {
         if screens.count == 1 {
             navigationController.pushViewController(screens[0], animated: true)
         } else {
@@ -237,7 +245,7 @@ final class SearchFormViewController: HostingController<AnyView> {
         }
     }
 
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
 
         navigationItem.rightBarButtonItem = searchItem
@@ -249,7 +257,7 @@ final class SearchFormViewController: HostingController<AnyView> {
             .store(in: &cancellables)
     }
 
-    override func viewDidAppear(_ animated: Bool) {
+    public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         if let pendingBannerMessage {
             self.pendingBannerMessage = nil

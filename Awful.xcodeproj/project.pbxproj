@@ -225,9 +225,6 @@
 		2D939F232EC48FDE00F3464B /* PageNumberView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D939F222EC48FDE00F3464B /* PageNumberView.swift */; };
 		2DA10C022F1A2B3C00DE01AA /* PostLocator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA10C012F1A2B3C00DE01AA /* PostLocator.swift */; };
 		2DA10C032F1A2B3C00DE01AA /* UnpopStackTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA10C042F1A2B3C00DE01AA /* UnpopStackTests.swift */; };
-		2DA10C112F1A2B3C00DE01AA /* SearchPageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA10C102F1A2B3C00DE01AA /* SearchPageViewModel.swift */; };
-		2DA10C132F1A2B3C00DE01AA /* SearchFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA10C122F1A2B3C00DE01AA /* SearchFormView.swift */; };
-		2DA10C152F1A2B3C00DE01AA /* SearchResultsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA10C142F1A2B3C00DE01AA /* SearchResultsView.swift */; };
 		2DA10C172F1A2B3C00DE01AA /* NavigationConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA10C162F1A2B3C00DE01AA /* NavigationConfigurator.swift */; };
 		2DB447302EC1E2DA00F03402 /* AttachmentPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB4472F2EC1E2DA00F03402 /* AttachmentPreviewView.swift */; };
 		2DB447312EC1E2DA00F03402 /* AttachmentEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB4472E2EC1E2DA00F03402 /* AttachmentEditView.swift */; };
@@ -269,6 +266,7 @@
 		8CF740EF1681376600C219E4 /* macinyos-heading.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CF740EE1681376600C219E4 /* macinyos-heading.png */; };
 		8FC356EF2132F5C1006EE1A5 /* amberpos-ins.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8FC356EE2132F5C1006EE1A5 /* amberpos-ins.gif */; };
 		AC10AC10AC10AC10AC100001 /* AwfulGlossary in Frameworks */ = {isa = PBXBuildFile; productRef = AC10AC10AC10AC10AC100003 /* AwfulGlossary */; };
+		AC10AC10AC10AC10AC200001 /* AwfulSearch in Frameworks */ = {isa = PBXBuildFile; productRef = AC10AC10AC10AC10AC200003 /* AwfulSearch */; };
 		ACF0FEA7000000000000BF01 /* AccountFeaturesRefresher.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACF0FEA7000000000000FEF1 /* AccountFeaturesRefresher.swift */; };
 		C8BE3CFABA1B4371B058B77E /* URLCleaningTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7066513D77148949920CFF8 /* URLCleaningTextView.swift */; };
 		DDDDDDDD0000000000000002 /* LepersColony.html.stencil in Resources */ = {isa = PBXBuildFile; fileRef = DDDDDDDD0000000000000001 /* LepersColony.html.stencil */; };
@@ -580,9 +578,6 @@
 		2D939F222EC48FDE00F3464B /* PageNumberView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageNumberView.swift; sourceTree = "<group>"; };
 		2DA10C012F1A2B3C00DE01AA /* PostLocator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostLocator.swift; sourceTree = "<group>"; };
 		2DA10C042F1A2B3C00DE01AA /* UnpopStackTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnpopStackTests.swift; sourceTree = "<group>"; };
-		2DA10C102F1A2B3C00DE01AA /* SearchPageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchPageViewModel.swift; sourceTree = "<group>"; };
-		2DA10C122F1A2B3C00DE01AA /* SearchFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchFormView.swift; sourceTree = "<group>"; };
-		2DA10C142F1A2B3C00DE01AA /* SearchResultsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultsView.swift; sourceTree = "<group>"; };
 		2DA10C162F1A2B3C00DE01AA /* NavigationConfigurator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationConfigurator.swift; sourceTree = "<group>"; };
 		2DB4472E2EC1E2DA00F03402 /* AttachmentEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentEditView.swift; sourceTree = "<group>"; };
 		2DB4472F2EC1E2DA00F03402 /* AttachmentPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentPreviewView.swift; sourceTree = "<group>"; };
@@ -622,6 +617,7 @@
 		8CF740EE1681376600C219E4 /* macinyos-heading.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "macinyos-heading.png"; sourceTree = "<group>"; };
 		8FC356EE2132F5C1006EE1A5 /* amberpos-ins.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "amberpos-ins.gif"; sourceTree = "<group>"; };
 		AC10AC10AC10AC10AC100002 /* AwfulGlossary */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AwfulGlossary; sourceTree = "<group>"; };
+		AC10AC10AC10AC10AC200002 /* AwfulSearch */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AwfulSearch; sourceTree = "<group>"; };
 		ACF0FEA7000000000000FEF1 /* AccountFeaturesRefresher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountFeaturesRefresher.swift; sourceTree = "<group>"; };
 		BEA873B27D6269867FC99B16 /* ScreenshotterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotterViewController.swift; sourceTree = "<group>"; };
 		DDDDDDDD0000000000000001 /* LepersColony.html.stencil */ = {isa = PBXFileReference; explicitFileType = text.html; fileEncoding = 4; path = LepersColony.html.stencil; sourceTree = "<group>"; };
@@ -672,6 +668,7 @@
 				1C5345212B8BF48F001DA96A /* ScrollViewDelegateMultiplexer in Frameworks */,
 				1C67313C2B55CE0600A8CF6F /* AwfulSettingsUI in Frameworks */,
 				AC10AC10AC10AC10AC100001 /* AwfulGlossary in Frameworks */,
+				AC10AC10AC10AC10AC200001 /* AwfulSearch in Frameworks */,
 				1CB0B9AB2AEF668500678615 /* NukeExtensions in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1237,9 +1234,6 @@
 				1C16FBBF1CB950BE00C88BD1 /* ThreadTagButton.swift */,
 				2D327DD527F468CE00D21AB0 /* BookmarkColorPicker.swift */,
 				22AED6467DEB2EDF1126D575 /* ArchivesView.swift */,
-				2DA10C102F1A2B3C00DE01AA /* SearchPageViewModel.swift */,
-				2DA10C122F1A2B3C00DE01AA /* SearchFormView.swift */,
-				2DA10C142F1A2B3C00DE01AA /* SearchResultsView.swift */,
 				2DA10C162F1A2B3C00DE01AA /* NavigationConfigurator.swift */,
 				DDDDDDDD0000000000000005 /* LepersFilterView.swift */,
 				DDDDDDDD0000000000000007 /* PollEditorView.swift */,
@@ -1259,6 +1253,7 @@
 				1C13FF0A2B54978300B39A0D /* AwfulSettings */,
 				1C2F1B7E2B8BD05D00808818 /* AwfulSettingsUI */,
 				AC10AC10AC10AC10AC100002 /* AwfulGlossary */,
+				AC10AC10AC10AC10AC200002 /* AwfulSearch */,
 				1C1F0F132B8B091600F097D3 /* AwfulTheming */,
 				1C15334D20708EFF0021A2BD /* Config */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
@@ -1414,6 +1409,7 @@
 				1C13FF0D2B549FBE00B39A0D /* AwfulSettings */,
 				1C67313B2B55CE0600A8CF6F /* AwfulSettingsUI */,
 				AC10AC10AC10AC10AC100003 /* AwfulGlossary */,
+				AC10AC10AC10AC10AC200003 /* AwfulSearch */,
 				1C1F0F152B8B0AD700F097D3 /* AwfulTheming */,
 				1C53451D2B8BF3A7001DA96A /* PSMenuItem */,
 				1C5345202B8BF48F001DA96A /* ScrollViewDelegateMultiplexer */,
@@ -1752,9 +1748,6 @@
 				1CB5F7F920156C990046D080 /* PageIconView.swift in Sources */,
 				1C16FC061CC3E1AF00C88BD1 /* UnpoppingViewHandler.swift in Sources */,
 				2DA10C022F1A2B3C00DE01AA /* PostLocator.swift in Sources */,
-				2DA10C112F1A2B3C00DE01AA /* SearchPageViewModel.swift in Sources */,
-				2DA10C132F1A2B3C00DE01AA /* SearchFormView.swift in Sources */,
-				2DA10C152F1A2B3C00DE01AA /* SearchResultsView.swift in Sources */,
 				2DA10C172F1A2B3C00DE01AA /* NavigationConfigurator.swift in Sources */,
 				1CDC53DC220131400086BD2B /* ImgurAnonymousAPI+Shared.swift in Sources */,
 				1C16FC121CC6FD8600C88BD1 /* ThreadComposeViewController.swift in Sources */,
@@ -2134,6 +2127,10 @@
 		AC10AC10AC10AC10AC100003 /* AwfulGlossary */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AwfulGlossary;
+		};
+		AC10AC10AC10AC10AC200003 /* AwfulSearch */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AwfulSearch;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
