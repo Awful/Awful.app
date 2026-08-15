@@ -4,6 +4,7 @@
 
 import AwfulCore
 import AwfulModelTypes
+import AwfulPolls
 import AwfulSettings
 import AwfulTheming
 import Nuke

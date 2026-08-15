@@ -277,11 +277,11 @@ final class PollEditorModel: ObservableObject {
 
 // MARK: - Hosting controller
 
-final class PollEditorHostingController: UIHostingController<AnyView> {
+public final class PollEditorHostingController: UIHostingController<AnyView> {
 
     /// - Parameter theme: The compose screen's theme, which is forum-specific. Note that we inject
     ///   it directly rather than using `.themed()`, which would resolve the *default* theme.
-    init(
+    public init(
         poll: PollSubmission?,
         theme: Theme,
         onCancel: @escaping () -> Void,
@@ -299,7 +299,7 @@ final class PollEditorHostingController: UIHostingController<AnyView> {
         }
     }
 
-    @MainActor required dynamic init?(coder aDecoder: NSCoder) {
+    @MainActor public required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }

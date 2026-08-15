@@ -1,0 +1,90 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "%lld days" : {
+
+    },
+    "%lld of %lld characters" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld of %2$lld characters"
+          }
+        }
+      }
+    },
+    "%lld votes so far" : {
+
+    },
+    "Add option" : {
+
+    },
+    "Allow multiple choice" : {
+
+    },
+    "Cancel" : {
+
+    },
+    "Done" : {
+
+    },
+    "Forever" : {
+
+    },
+    "Keep them short and to the point. Between %lld and %lld options; blank ones are dropped." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Keep them short and to the point. Between %1$lld and %2$lld options; blank ones are dropped."
+          }
+        }
+      }
+    },
+    "Option" : {
+
+    },
+    "Options" : {
+
+    },
+    "Pick as many as you like." : {
+
+    },
+    "Pick one." : {
+
+    },
+    "Poll" : {
+
+    },
+    "Poll runs for" : {
+
+    },
+    "Question" : {
+
+    },
+    "Remove poll" : {
+
+    },
+    "Results" : {
+
+    },
+    "Results aren't available for this poll." : {
+
+    },
+    "Save" : {
+
+    },
+    "Settings" : {
+
+    },
+    "Try Again" : {
+
+    },
+    "Vote" : {
+
+    },
+    "What are you asking?" : {}
+  },
+  "version" : "1.0"
+}

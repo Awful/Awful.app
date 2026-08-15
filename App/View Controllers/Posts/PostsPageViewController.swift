@@ -4,6 +4,7 @@
 
 @preconcurrency import AwfulCore
 import AwfulModelTypes
+import AwfulPolls
 import AwfulSearch
 import AwfulSettings
 import AwfulTheming
@@ -1631,7 +1632,7 @@ final class PostsPageViewController: ViewController {
 
     private func presentPollViewer() {
         guard let poll else { return }
-        let viewer = PollViewerHostingController(poll: poll, theme: theme) { [weak self] voted in
+        let viewer = PollViewerHostingController(poll: poll, theme: theme, handlers: .awful) { [weak self] voted in
             // Hold onto the fresher copy so reopening the sheet doesn't offer a ballot we've used.
             self?.poll = voted
         }

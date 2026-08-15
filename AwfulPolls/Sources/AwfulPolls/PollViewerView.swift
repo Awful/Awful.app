@@ -6,7 +6,6 @@ import AwfulCore
 import AwfulExtensions
 import AwfulSettings
 import AwfulTheming
-import Smilies
 import SwiftUI
 import UIKit
 
@@ -18,6 +17,8 @@ struct PollViewerView: View {
     @StateObject private var model: PollViewerModel
     @SwiftUI.Environment(\.theme) private var theme
 
+    /// How the app draws smilies in poll options.
+    let handlers: PollHandlers
     /// Closes the sheet (supplied by the hosting controller).
     let onDone: () -> Void
     /// Hands back the poll after a vote lands, so the thread can hold onto the fresher copy.
@@ -25,10 +26,12 @@ struct PollViewerView: View {
 
     init(
         poll: ThreadPoll,
+        handlers: PollHandlers,
         onDone: @escaping () -> Void,
         onVoted: @escaping (ThreadPoll) -> Void
     ) {
         _model = StateObject(wrappedValue: PollViewerModel(poll: poll))
+        self.handlers = handlers
         self.onDone = onDone
         self.onVoted = onVoted
     }
@@ -116,7 +119,7 @@ struct PollViewerView: View {
                     HStack(spacing: 12) {
                         Image(systemName: model.selectionSymbol(for: option))
                             .foregroundColor(theme[color: "tintColor"])
-                        PollOptionLabel(option: option, color: theme[color: "listTextColor"])
+                        PollOptionLabel(option: option, color: theme[color: "listTextColor"], handlers: handlers)
                             .frame(maxWidth: .infinity, alignment: .leading)
                     }
                     .contentShape(Rectangle())
@@ -219,7 +222,7 @@ struct PollViewerView: View {
     private func resultRow(_ option: ThreadPoll.Option, isLeading: Bool) -> some View {
         VStack(alignment: .leading, spacing: 6) {
             HStack(alignment: .firstTextBaseline) {
-                PollOptionLabel(option: option, color: theme[color: "listTextColor"])
+                PollOptionLabel(option: option, color: theme[color: "listTextColor"], handlers: handlers)
                 Spacer(minLength: 12)
                 Text(option.percentage.map { String(format: "%.0f%%", $0) } ?? "")
                     .font(.caption.monospacedDigit())
@@ -255,6 +258,7 @@ struct PollViewerView: View {
 private struct PollOptionLabel: View {
     let option: ThreadPoll.Option
     let color: Color?
+    let handlers: PollHandlers
 
     var body: some View {
         HStack(alignment: .center, spacing: 3) {
@@ -264,7 +268,7 @@ private struct PollOptionLabel: View {
                     Text(string)
                         .foregroundColor(color)
                 case .image(let url, let alt):
-                    PollSmilieView(url: url, alt: alt, color: color)
+                    PollSmilieView(url: url, alt: alt, color: color, handlers: handlers)
                 }
             }
         }
@@ -285,6 +289,7 @@ private struct PollSmilieView: View {
     let url: URL?
     let alt: String
     let color: Color?
+    let handlers: PollHandlers
 
     @AppStorage(Settings.loadImages) private var loadImages
     @State private var stored: (data: Data, size: CGSize)?
@@ -299,7 +304,7 @@ private struct PollSmilieView: View {
             if !loadImages {
                 fallback
             } else if let stored {
-                AnimatedImageView(data: stored.data, imageID: alt)
+                handlers.animatedImageView(stored.data, alt)
                     .frame(width: size(for: stored.size).width, height: size(for: stored.size).height)
             } else if didLookUp, let url {
                 AsyncImage(url: url) { image in
@@ -330,12 +335,8 @@ private struct PollSmilieView: View {
     private func lookUp() {
         guard !didLookUp else { return }
         didLookUp = true
-        guard loadImages,
-              let smilie = SmilieDataStore.shared.fetchSmilie(text: alt),
-              let data = smilie.imageData,
-              let image = UIImage(data: data)
-        else { return }
-        stored = (data, image.size)
+        guard loadImages else { return }
+        stored = handlers.storedSmilie(alt)
     }
 }
 
@@ -464,19 +465,23 @@ final class PollViewerModel: ObservableObject {
 
 // MARK: - Hosting controller
 
-final class PollViewerHostingController: UIHostingController<AnyView> {
+public final class PollViewerHostingController: UIHostingController<AnyView> {
 
-    /// - Parameter theme: The posts page's theme, which is forum-specific. Note that we inject it
-    ///   directly rather than using `.themed()`, which would resolve the *default* theme.
-    init(
+    /// - Parameters:
+    ///   - theme: The posts page's theme, which is forum-specific. Note that we inject it directly
+    ///     rather than using `.themed()`, which would resolve the *default* theme.
+    ///   - handlers: What the app does on the viewer's behalf (drawing smilies).
+    public init(
         poll: ThreadPoll,
         theme: Theme,
+        handlers: PollHandlers,
         onVoted: @escaping (ThreadPoll) -> Void
     ) {
         super.init(rootView: AnyView(EmptyView()))
         rootView = AnyView(
             PollViewerView(
                 poll: poll,
+                handlers: handlers,
                 onDone: { [weak self] in self?.dismiss(animated: true) },
                 onVoted: onVoted
             )
@@ -489,7 +494,7 @@ final class PollViewerHostingController: UIHostingController<AnyView> {
         }
     }
 
-    @MainActor required dynamic init?(coder aDecoder: NSCoder) {
+    @MainActor public required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }

@@ -266,13 +266,12 @@
 		8FC356EF2132F5C1006EE1A5 /* amberpos-ins.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8FC356EE2132F5C1006EE1A5 /* amberpos-ins.gif */; };
 		AC10AC10AC10AC10AC100001 /* AwfulGlossary in Frameworks */ = {isa = PBXBuildFile; productRef = AC10AC10AC10AC10AC100003 /* AwfulGlossary */; };
 		AC10AC10AC10AC10AC200001 /* AwfulSearch in Frameworks */ = {isa = PBXBuildFile; productRef = AC10AC10AC10AC10AC200003 /* AwfulSearch */; };
+		AC10AC10AC10AC10AC300001 /* AwfulPolls in Frameworks */ = {isa = PBXBuildFile; productRef = AC10AC10AC10AC10AC300003 /* AwfulPolls */; };
 		ACF0FEA7000000000000BF01 /* AccountFeaturesRefresher.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACF0FEA7000000000000FEF1 /* AccountFeaturesRefresher.swift */; };
 		C8BE3CFABA1B4371B058B77E /* URLCleaningTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7066513D77148949920CFF8 /* URLCleaningTextView.swift */; };
 		DDDDDDDD0000000000000002 /* LepersColony.html.stencil in Resources */ = {isa = PBXBuildFile; fileRef = DDDDDDDD0000000000000001 /* LepersColony.html.stencil */; };
 		DDDDDDDD0000000000000006 /* LepersFilterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDDDDDDD0000000000000005 /* LepersFilterView.swift */; };
-		DDDDDDDD0000000000000008 /* PollEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDDDDDDD0000000000000007 /* PollEditorView.swift */; };
 		DDDDDDDD000000000000000A /* ModernToolbarActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDDDDDDD0000000000000009 /* ModernToolbarActions.swift */; };
-		DDDDDDDD000000000000000C /* PollViewerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDDDDDDD000000000000000B /* PollViewerView.swift */; };
 		F4233C591917C77900482BD0 /* bg_menu.jpg in Resources */ = {isa = PBXBuildFile; fileRef = F4233C581917C77900482BD0 /* bg_menu.jpg */; };
 		F4B3645819165D5100CCE1EF /* SecondaryTags.plist in Resources */ = {isa = PBXBuildFile; fileRef = F4B3645719165D5100CCE1EF /* SecondaryTags.plist */; };
 		F7DD3BB290F57E0EF4014ECD /* ScreenshotterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEA873B27D6269867FC99B16 /* ScreenshotterViewController.swift */; };
@@ -616,13 +615,12 @@
 		8FC356EE2132F5C1006EE1A5 /* amberpos-ins.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "amberpos-ins.gif"; sourceTree = "<group>"; };
 		AC10AC10AC10AC10AC100002 /* AwfulGlossary */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AwfulGlossary; sourceTree = "<group>"; };
 		AC10AC10AC10AC10AC200002 /* AwfulSearch */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AwfulSearch; sourceTree = "<group>"; };
+		AC10AC10AC10AC10AC300002 /* AwfulPolls */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AwfulPolls; sourceTree = "<group>"; };
 		ACF0FEA7000000000000FEF1 /* AccountFeaturesRefresher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountFeaturesRefresher.swift; sourceTree = "<group>"; };
 		BEA873B27D6269867FC99B16 /* ScreenshotterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotterViewController.swift; sourceTree = "<group>"; };
 		DDDDDDDD0000000000000001 /* LepersColony.html.stencil */ = {isa = PBXFileReference; explicitFileType = text.html; fileEncoding = 4; path = LepersColony.html.stencil; sourceTree = "<group>"; };
 		DDDDDDDD0000000000000005 /* LepersFilterView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LepersFilterView.swift; sourceTree = "<group>"; };
-		DDDDDDDD0000000000000007 /* PollEditorView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PollEditorView.swift; sourceTree = "<group>"; };
 		DDDDDDDD0000000000000009 /* ModernToolbarActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModernToolbarActions.swift; sourceTree = "<group>"; };
-		DDDDDDDD000000000000000B /* PollViewerView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PollViewerView.swift; sourceTree = "<group>"; };
 		F4233C581917C77900482BD0 /* bg_menu.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = bg_menu.jpg; sourceTree = "<group>"; };
 		F4B3645719165D5100CCE1EF /* SecondaryTags.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = SecondaryTags.plist; sourceTree = "<group>"; };
 		F7066513D77148949920CFF8 /* URLCleaningTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLCleaningTextView.swift; sourceTree = "<group>"; };
@@ -667,6 +665,7 @@
 				1C67313C2B55CE0600A8CF6F /* AwfulSettingsUI in Frameworks */,
 				AC10AC10AC10AC10AC100001 /* AwfulGlossary in Frameworks */,
 				AC10AC10AC10AC10AC200001 /* AwfulSearch in Frameworks */,
+				AC10AC10AC10AC10AC300001 /* AwfulPolls in Frameworks */,
 				1CB0B9AB2AEF668500678615 /* NukeExtensions in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1233,8 +1232,6 @@
 				2D327DD527F468CE00D21AB0 /* BookmarkColorPicker.swift */,
 				22AED6467DEB2EDF1126D575 /* ArchivesView.swift */,
 				DDDDDDDD0000000000000005 /* LepersFilterView.swift */,
-				DDDDDDDD0000000000000007 /* PollEditorView.swift */,
-				DDDDDDDD000000000000000B /* PollViewerView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1251,6 +1248,7 @@
 				1C2F1B7E2B8BD05D00808818 /* AwfulSettingsUI */,
 				AC10AC10AC10AC10AC100002 /* AwfulGlossary */,
 				AC10AC10AC10AC10AC200002 /* AwfulSearch */,
+				AC10AC10AC10AC10AC300002 /* AwfulPolls */,
 				1C1F0F132B8B091600F097D3 /* AwfulTheming */,
 				1C15334D20708EFF0021A2BD /* Config */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
@@ -1407,6 +1405,7 @@
 				1C67313B2B55CE0600A8CF6F /* AwfulSettingsUI */,
 				AC10AC10AC10AC10AC100003 /* AwfulGlossary */,
 				AC10AC10AC10AC10AC200003 /* AwfulSearch */,
+				AC10AC10AC10AC10AC300003 /* AwfulPolls */,
 				1C1F0F152B8B0AD700F097D3 /* AwfulTheming */,
 				1C53451D2B8BF3A7001DA96A /* PSMenuItem */,
 				1C5345202B8BF48F001DA96A /* ScrollViewDelegateMultiplexer */,
@@ -1779,8 +1778,6 @@
 				1C82AC4B199F585000CB15FE /* Selectotron.swift in Sources */,
 				71B2B16F35AAEE42EF20CC4B /* ArchivesView.swift in Sources */,
 				DDDDDDDD0000000000000006 /* LepersFilterView.swift in Sources */,
-				DDDDDDDD0000000000000008 /* PollEditorView.swift in Sources */,
-				DDDDDDDD000000000000000C /* PollViewerView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2127,6 +2124,10 @@
 		AC10AC10AC10AC10AC200003 /* AwfulSearch */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AwfulSearch;
+		};
+		AC10AC10AC10AC10AC300003 /* AwfulPolls */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AwfulPolls;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
