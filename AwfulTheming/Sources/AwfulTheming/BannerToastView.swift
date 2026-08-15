@@ -2,14 +2,13 @@
 //
 //  Copyright 2026 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-import AwfulTheming
 import UIKit
 
 /// A transient message pinned to the bottom of a host view, above the keyboard, with an optional action. Tap the banner to dismiss it early; it auto-dismisses after a few seconds.
-final class BannerToastView: UIView {
+public final class BannerToastView: UIView {
 
     /// How the banner offers its action, if it has one.
-    enum Action {
+    public enum Action {
         /// A button after the message, e.g. "Use Original".
         case button(title: String)
         /// A tappable run within the message itself, e.g. "has a poll" in "This thread has a poll".
@@ -21,7 +20,7 @@ final class BannerToastView: UIView {
     /// Pass `action`/`onAction` for a tappable action; omit both for a plain informational toast.
     /// Pass `bottomInset` to clear chrome the safe area doesn't know about, such as a toolbar laid out inside a subview.
     @discardableResult
-    static func show(
+    public static func show(
         in hostView: UIView,
         theme: Theme,
         message: String,
@@ -201,7 +200,7 @@ final class BannerToastView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override func layoutSubviews() {
+    public override func layoutSubviews() {
         super.layoutSubviews()
 
         // A pill, like the liquid glass title view. Clipping happens on the effect view rather than
@@ -252,7 +251,7 @@ final class BannerToastView: UIView {
         return frame
     }
 
-    func dismiss(animated: Bool = true) {
+    public func dismiss(animated: Bool = true) {
         scheduledDismissal?.cancel()
         scheduledDismissal = nil
         guard animated else { return removeFromSuperview() }
@@ -266,7 +265,7 @@ final class BannerToastView: UIView {
 }
 
 extension BannerToastView: UIGestureRecognizerDelegate {
-    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+    public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
         // Let the action button handle its own taps.
         !(touch.view is UIControl)
     }
