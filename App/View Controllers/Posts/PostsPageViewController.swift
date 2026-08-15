@@ -6,6 +6,7 @@
 import AwfulModelTypes
 import AwfulPolls
 import AwfulRapsheet
+import AwfulScreenshot
 import AwfulSearch
 import AwfulSettings
 import AwfulTheming
@@ -1486,7 +1487,7 @@ final class PostsPageViewController: ViewController {
         }
         let visiblePosts = posts.count > hiddenPosts ? Array(posts[hiddenPosts...]) : posts
         guard !visiblePosts.isEmpty else { return }
-        let screenshotterVC = ScreenshotterViewController(posts: visiblePosts, theme: theme)
+        let screenshotterVC = ScreenshotterViewController(posts: visiblePosts, theme: theme, handlers: .awful)
         if traitCollection.userInterfaceIdiom == .pad {
             screenshotterVC.modalPresentationStyle = .pageSheet
         }

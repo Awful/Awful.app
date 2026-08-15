@@ -21,15 +21,16 @@ final class PostScreenshotter {
     static func renderThumbnails(
         for posts: [Post],
         theme: Theme,
+        handlers: ScreenshotHandlers,
         width: CGFloat = 375,
         maxHeight: CGFloat = 300,
         onThumbnail: @MainActor (Int, UIImage) -> Void
     ) async {
-        let loader = WebViewLoader(width: width)
+        let loader = WebViewLoader(width: width, handlers: handlers)
 
         for (index, post) in posts.enumerated() {
             do {
-                let html = try buildHTML(for: [post], theme: theme)
+                let html = try handlers.renderPostsHTML([post], theme)
                 let image = try await loadAndSnapshot(loader: loader, html: html, width: width, forThumbnail: true)
 
                 let thumbWidth: CGFloat = 150
@@ -50,38 +51,15 @@ final class PostScreenshotter {
     static func renderScreenshot(
         for posts: [Post],
         theme: Theme,
+        handlers: ScreenshotHandlers,
         width: CGFloat = 375
     ) async throws -> UIImage {
-        let html = try buildHTML(for: posts, theme: theme)
-        return try await loadAndSnapshot(html: html, width: width)
+        let html = try handlers.renderPostsHTML(posts, theme)
+        let loader = WebViewLoader(width: width, handlers: handlers)
+        return try await loadAndSnapshot(loader: loader, html: html, width: width, forThumbnail: false)
     }
 
     // MARK: - Private
-
-    private static func buildHTML(for posts: [Post], theme: Theme) throws -> String {
-        var context: [String: Any] = [:]
-        context["stylesheet"] = theme[string: "postsViewCSS"] as Any
-        context["externalStylesheet"] = PostsViewExternalStylesheetLoader.shared.stylesheet
-        context["posts"] = posts.map { PostRenderModel($0).context }
-
-        if let forum = posts.first?.thread?.forum, !forum.forumID.isEmpty {
-            context["forumID"] = forum.forumID
-        }
-        if let thread = posts.first?.thread, !thread.threadID.isEmpty {
-            context["threadID"] = thread.threadID
-        }
-        context["tweetTheme"] = theme[string: "postsTweetTheme"] ?? "light"
-
-        return try StencilEnvironment.shared.renderTemplate(.postsView, context: context)
-    }
-
-    private static func loadAndSnapshot(
-        html: String,
-        width: CGFloat
-    ) async throws -> UIImage {
-        let loader = WebViewLoader(width: width)
-        return try await loadAndSnapshot(loader: loader, html: html, width: width, forThumbnail: false)
-    }
 
     private static func loadAndSnapshot(
         loader: WebViewLoader,
@@ -153,7 +131,7 @@ final class PostScreenshotter {
     /// Renders the watermark capsule as a standalone image for use as an annotation overlay.
     static func renderWatermark(isDark: Bool) -> UIImage {
         let logoName = isDark ? "platinum-member" : "platinum-member-white"
-        let logo = UIImage(named: logoName)
+        let logo = UIImage(named: logoName, in: .module, compatibleWith: nil)
 
         let urlText = "forums.somethingawful.com"
 
@@ -198,10 +176,8 @@ private class WebViewLoader: NSObject, WKNavigationDelegate {
     let webView: WKWebView
     private var continuation: CheckedContinuation<Void, Never>?
 
-    init(width: CGFloat) {
-        let config = WKWebViewConfiguration()
-        config.setURLSchemeHandler(ImageURLProtocol(), forURLScheme: ImageURLProtocol.scheme)
-        config.setURLSchemeHandler(ResourceURLProtocol(), forURLScheme: ResourceURLProtocol.scheme)
+    init(width: CGFloat, handlers: ScreenshotHandlers) {
+        let config = handlers.makeWebViewConfiguration()
 
         webView = WKWebView(frame: CGRect(x: 0, y: 0, width: width, height: 1), configuration: config)
         webView.isOpaque = true

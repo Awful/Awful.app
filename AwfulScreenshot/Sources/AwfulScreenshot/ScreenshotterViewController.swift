@@ -4,36 +4,36 @@
 
 import AwfulCore
 import AwfulTheming
-import MRProgress
 import os
-import Smilies
 import SwiftUI
 import UIKit
 
 private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "Screenshotter")
 
 /// Full-screen view controller for selecting posts to screenshot.
-final class ScreenshotterViewController: ViewController {
+public final class ScreenshotterViewController: ViewController {
 
+    private let handlers: ScreenshotHandlers
     private let posts: [Post]
     private let sourceTheme: Theme
     private var hostingController: UIViewController?
 
-    init(posts: [Post], theme: Theme) {
+    public init(posts: [Post], theme: Theme, handlers: ScreenshotHandlers) {
+        self.handlers = handlers
         self.posts = posts
         self.sourceTheme = theme
         super.init(nibName: nil, bundle: nil)
         modalPresentationStyle = .fullScreen
     }
 
-    required init?(coder: NSCoder) {
+    public required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
 
-        let viewModel = ScreenshotterViewModel(posts: posts, theme: sourceTheme)
+        let viewModel = ScreenshotterViewModel(posts: posts, theme: sourceTheme, handlers: handlers)
         let screenshotterView = ScreenshotterView(
             viewModel: viewModel,
             onCancel: { [weak self] in self?.dismiss(animated: true) }
@@ -56,6 +56,7 @@ final class ScreenshotterViewController: ViewController {
 final class ScreenshotterViewModel: ObservableObject {
     let posts: [Post]
     let theme: Theme
+    let handlers: ScreenshotHandlers
 
     @Published var selectedIndices: [Int] = []
     @Published var thumbnails: [Int: UIImage] = [:]
@@ -63,16 +64,17 @@ final class ScreenshotterViewModel: ObservableObject {
     @Published var isLoadingThumbnails = true
     @Published var generatedImage: UIImage?
 
-    init(posts: [Post], theme: Theme) {
+    init(posts: [Post], theme: Theme, handlers: ScreenshotHandlers) {
         self.posts = posts
         self.theme = theme
+        self.handlers = handlers
     }
 
     func loadThumbnails() async {
         isLoadingThumbnails = true
 
         await PostScreenshotter.renderThumbnails(
-            for: posts, theme: theme, width: 375, maxHeight: 300
+            for: posts, theme: theme, handlers: handlers, width: 375, maxHeight: 300
         ) { index, image in
             thumbnails[index] = image
         }
@@ -100,7 +102,7 @@ final class ScreenshotterViewModel: ObservableObject {
         let selectedPosts = selectedIndices.map { posts[$0] }
         do {
             generatedImage = try await PostScreenshotter.renderScreenshot(
-                for: selectedPosts, theme: theme, width: 375
+                for: selectedPosts, theme: theme, handlers: handlers, width: 375
             )
         } catch {
             logger.error("failed to generate screenshot: \(error)")
@@ -172,26 +174,30 @@ struct ScreenshotterView: View {
             }
             .onChange(of: viewModel.isGeneratingScreenshot) { generating in
                 if generating {
-                    showMRProgress(title: "Generating screenshot…")
+                    viewModel.handlers.showProgressOverlay(String(localized: "Generating screenshot…", bundle: .module))
                 } else {
-                    dismissMRProgress()
+                    viewModel.handlers.dismissProgressOverlay()
                 }
             }
-            .navigationTitle("Screenshot Posts")
+            .navigationTitle(Text("Screenshot Posts", bundle: .module))
             .navigationBarTitleDisplayMode(.inline)
             .preferredColorScheme(theme.isDark ? .dark : .light)
             .background(NavigationConfigurator(theme: theme))
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel", action: onCancel)
-                        .foregroundColor(theme[color: "navigationBarTextColor"])
+                    Button(action: onCancel) {
+                        Text("Cancel", bundle: .module)
+                    }
+                    .foregroundColor(theme[color: "navigationBarTextColor"])
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Screenshot") {
+                    Button {
                         Task {
                             await viewModel.generateScreenshot()
                             if viewModel.generatedImage != nil { showingPreview = true }
                         }
+                    } label: {
+                        Text("Screenshot", bundle: .module)
                     }
                     .foregroundColor(theme[color: "navigationBarTextColor"])
                     .disabled(viewModel.selectedIndices.isEmpty || viewModel.isGeneratingScreenshot)
@@ -202,6 +208,7 @@ struct ScreenshotterView: View {
                     ScreenshotPreviewView(
                         image: image,
                         isDark: viewModel.theme.isDark,
+                        handlers: viewModel.handlers,
                         onDone: {
                             showingPreview = false
                             viewModel.generatedImage = nil
@@ -214,24 +221,6 @@ struct ScreenshotterView: View {
         .navigationViewStyle(.stack)
         .task { await viewModel.loadThumbnails() }
     }
-
-    private func showMRProgress(title: String) {
-        guard let window = UIApplication.shared.connectedScenes
-            .compactMap({ $0 as? UIWindowScene })
-            .flatMap(\.windows)
-            .first(where: \.isKeyWindow)
-        else { return }
-        MRProgressOverlayView.showOverlayAdded(to: window, title: title, mode: .indeterminate, animated: true)
-    }
-
-    private func dismissMRProgress() {
-        guard let window = UIApplication.shared.connectedScenes
-            .compactMap({ $0 as? UIWindowScene })
-            .flatMap(\.windows)
-            .first(where: \.isKeyWindow)
-        else { return }
-        MRProgressOverlayView.dismissAllOverlays(for: window, animated: true)
-    }
 }
 
 // MARK: - Screenshot Preview with Annotations
@@ -239,6 +228,7 @@ struct ScreenshotterView: View {
 struct ScreenshotPreviewView: View {
     let image: UIImage
     let isDark: Bool
+    let handlers: ScreenshotHandlers
     let onDone: () -> Void
 
     @SwiftUI.Environment(\.theme) var theme
@@ -290,23 +280,33 @@ struct ScreenshotPreviewView: View {
                     }
                 }
             }
-            .navigationTitle("Preview")
+            .navigationTitle(Text("Preview", bundle: .module))
             .navigationBarTitleDisplayMode(.inline)
             .preferredColorScheme(theme.isDark ? .dark : .light)
             .background(NavigationConfigurator(theme: theme))
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Done", action: onDone)
-                        .foregroundColor(theme[color: "navigationBarTextColor"])
+                    Button(action: onDone) {
+                        Text("Done", bundle: .module)
+                    }
+                    .foregroundColor(theme[color: "navigationBarTextColor"])
                 }
                 ToolbarItemGroup(placement: .bottomBar) {
                     Button { showingTextInput = true } label: {
-                        Label("Add Text", systemImage: "textformat")
+                        Label {
+                            Text("Add Text", bundle: .module)
+                        } icon: {
+                            Image(systemName: "textformat")
+                        }
                     }
                     .foregroundColor(theme[color: "sheetTextColor"])
 
                     Button { showingSmiliePicker = true } label: {
-                        Label("Add Smilie", systemImage: "face.smiling")
+                        Label {
+                            Text("Add Smilie", bundle: .module)
+                        } icon: {
+                            Image(systemName: "face.smiling")
+                        }
                     }
                     .foregroundColor(theme[color: "sheetTextColor"])
 
@@ -320,20 +320,26 @@ struct ScreenshotPreviewView: View {
                     .foregroundColor(theme[color: "sheetTextColor"])
                 }
             }
-            .alert("Add Text", isPresented: $showingTextInput) {
-                TextField("Enter text", text: $textInputValue)
-                Button("Add") {
+            .alert(Text("Add Text", bundle: .module), isPresented: $showingTextInput) {
+                TextField(String(localized: "Enter text", bundle: .module), text: $textInputValue)
+                Button {
                     guard !textInputValue.isEmpty else { return }
                     let color: UIColor = isDark ? .white : .black
                     annotations.append(AnnotationItem(content: .text(textInputValue, color)))
                     textInputValue = ""
+                } label: {
+                    Text("Add", bundle: .module)
                 }
-                Button("Cancel", role: .cancel) { textInputValue = "" }
+                Button(role: .cancel) {
+                    textInputValue = ""
+                } label: {
+                    Text("Cancel", bundle: .module)
+                }
             }
             .sheet(isPresented: $showingSmiliePicker) {
-                SmiliePickerView(dataStore: .shared) { smilie in
-                    if let data = smilie.imageData, let img = UIImage(data: data) {
-                        annotations.append(AnnotationItem(content: .smilie(img)))
+                handlers.makeSmiliePicker { image in
+                    if let image {
+                        annotations.append(AnnotationItem(content: .smilie(image)))
                     }
                     showingSmiliePicker = false
                 }
@@ -370,24 +376,13 @@ struct ScreenshotPreviewView: View {
         guard let presenter else { return }
 
         let activityVC = UIActivityViewController(activityItems: [composited], applicationActivities: nil)
-        activityVC.completionWithItemsHandler = { _, completed, _, _ in
-            if completed { showSavedOverlay() }
+        activityVC.completionWithItemsHandler = { [handlers] _, completed, _, _ in
+            if completed {
+                Task { @MainActor in handlers.showSavedOverlay() }
+            }
         }
         activityVC.popoverPresentationController?.sourceView = presenter.view
         presenter.present(activityVC, animated: true)
-    }
-
-    private func showSavedOverlay() {
-        guard let window = UIApplication.shared.connectedScenes
-            .compactMap({ $0 as? UIWindowScene })
-            .flatMap(\.windows)
-            .first(where: \.isKeyWindow)
-        else { return }
-
-        let overlay = MRProgressOverlayView.showOverlayAdded(to: window, title: "Saved", mode: .checkmark, animated: true)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-            overlay?.dismiss(true)
-        }
     }
 
     // MARK: - Compositing
