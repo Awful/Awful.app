@@ -146,7 +146,6 @@ class ComposeTextViewController: ViewController, ModernToolbarActionHandling {
     var toolbarTextView: URLCleaningTextView { textView as! URLCleaningTextView }
     var toolbarMenuTree: CompositionMenuTree? { menuTree }
 
-
     fileprivate func beginObservingTextChangeNotification() {
         guard textDidChangeObserver == nil else { return }
         textDidChangeObserver = NotificationCenter.default.addObserver(forName: UITextView.textDidChangeNotification, object: textView, queue: OperationQueue.main, using: { [weak self] (note: Notification) in
@@ -400,7 +399,7 @@ class ComposeTextViewController: ViewController, ModernToolbarActionHandling {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         menuTree = CompositionMenuTree(textView: textView)
 
         // Replies get this toolbar from CompositionViewController; wire up the same thing here so

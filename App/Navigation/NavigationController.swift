@@ -235,8 +235,8 @@ final class NavigationController: UINavigationController, Themeable {
 
     /// Routes describing the swipe-from-right-edge "unpop" stack, used by `SceneDelegate` to
     /// preserve it across cold launches. View controllers that don't conform to
-    /// `RestorableLocation` (or whose `restorationRoute` is nil) can't be carried, since the scene
-    /// activity only holds route-shaped data.
+    /// `RestorableLocation` (or whose `restorationRoute` is nil) are dropped, since the scene
+    /// activity can only carry route-shaped data.
     ///
     /// The stack is consumed from the end, so an entry that can't be saved makes everything below
     /// it unreachable too. This truncates there rather than dropping entries individually: keeping
@@ -370,9 +370,9 @@ final class NavigationController: UINavigationController, Themeable {
     
     override func pushViewController(_ viewController: UIViewController, animated: Bool) {
         pushAnimationInProgress = true
-
+        
         super.pushViewController(viewController, animated: animated)
-
+        
         unpopHandler?.navigationController(self, didPushViewController: viewController)
     }
 
@@ -657,10 +657,6 @@ final class NavigationController: UINavigationController, Themeable {
     /// type erasure makes a direct `is UIHostingController<…>` check awkward,
     /// so match on the class name instead. Catches both vanilla
     /// `UIHostingController` and Awful's `HostingController` subclass.
-    ///
-    /// This can't be replaced by an opt-*out* protocol: the screens it exists
-    /// for are SwiftUI's own `NavigationLink` destinations, which are private
-    /// classes we can't conform to anything.
     private static func isHostingController(_ vc: UIViewController) -> Bool {
         var cls: AnyClass? = type(of: vc)
         while let c = cls {

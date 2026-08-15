@@ -29,7 +29,7 @@ enum ImageUploadError: Error, LocalizedError {
             return "Unsupported Image Format"
         }
     }
-
+    
     var failureReason: String? {
         switch self {
         case .missingIdentifiedAsset:

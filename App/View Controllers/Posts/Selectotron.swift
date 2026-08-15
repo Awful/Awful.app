@@ -46,7 +46,7 @@ final class Selectotron : ViewController {
         postsViewController.goToLastPost()
         dismiss(animated: true, completion: nil)
     }
-
+    
     fileprivate func dismissAndLoadPage(_ page: ThreadPage) {
         postsViewController.loadPage(page, updatingCache: true, updatingLastReadPost: true)
         dismiss(animated: true, completion: nil)
@@ -60,7 +60,7 @@ final class Selectotron : ViewController {
             updateJumpButtonTitle()
         }
     }
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -132,20 +132,20 @@ final class Selectotron : ViewController {
         // so give the button a title for the `.nextUnread`/nil cases too.
         updateJumpButtonTitle()
     }
-
+    
     override func themeDidChange() {
         super.themeDidChange()
-
+        
         view.tintColor = theme["tintColor"]
         view.backgroundColor = theme["sheetBackgroundColor"]
         popoverPresentationController?.backgroundColor = theme["sheetBackgroundColor"]
         buttonRow.backgroundColor = theme["sheetTitleBackgroundColor"]
         picker.reloadAllComponents()
     }
-
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-
+        
         switch postsViewController.page {
         case .last?:
             selectedPage = picker.numberOfRows(inComponent: 0)
@@ -177,11 +177,11 @@ extension Selectotron: UIPickerViewDataSource, UIPickerViewAccessibilityDelegate
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }
-
+    
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         return Int(postsViewController.numberOfPages)
     }
-
+    
     func pickerView(_ pickerView: UIPickerView, attributedTitleForRow row: Int, forComponent component: Int) -> NSAttributedString? {
         let attributes = [
             NSAttributedString.Key.foregroundColor: theme["sheetTextColor"]!,
@@ -189,11 +189,11 @@ extension Selectotron: UIPickerViewDataSource, UIPickerViewAccessibilityDelegate
         ]
         return NSAttributedString(string: "\(row + 1)", attributes: attributes)
     }
-
+    
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         updateJumpButtonTitle()
     }
-
+    
     func pickerView(_ pickerView: UIPickerView, accessibilityLabelForComponent component: Int) -> String? {
         return "Page \(component + 1)"
     }

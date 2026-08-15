@@ -86,7 +86,7 @@ final class RefreshMinder {
         static let lepersColony = Refresh(key: "com.awfulapp.Awful.LastLepersColonyRefreshDate", interval: 60 * 5)
         static let loggedInUser = Refresh(key: "LastLoggedInUserRefreshDate", interval: 60 * 5)
         static let privateMessagesInbox = Refresh(key: "LastPrivateMessageInboxRefreshDate", interval: 60 * 10)
-
+        
         static var all: [Refresh] {
             return [.accountFeatures, .announcements, .avatar, .bookmarks, .externalStylesheet, .forumList, .lepersColony, .loggedInUser, .privateMessagesInbox]
         }

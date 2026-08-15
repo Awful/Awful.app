@@ -76,22 +76,22 @@ extension Theme {
     public var descriptiveName: String {
         return effectiveValue(forKey: "descriptiveName") as? String ?? name
     }
-
+    
     /// A color representative of the theme, suitable for presentation.
     public var descriptiveColor: UIColor {
         return self["descriptive"]!
     }
-
+    
     /// The ID of the forum for which the theme is designed, or nil if there was no forum in mind.
     var forumID: String? {
         return effectiveValue(forKey: "relevantForumID") as? String
     }
-
+    
     /// Does the theme use standed system font or rounded
     public var roundedFonts: Bool {
         return effectiveValue(forKey: "roundedFonts") as? Bool ?? false
     }
-
+    
     /// The desired appearance for the keyboard. If unspecified by the theme and its ancestors, returns .Default.
     public var keyboardAppearance: UIKeyboardAppearance {
         let appearance = effectiveValue(forKey: "keyboardAppearance") as? String
