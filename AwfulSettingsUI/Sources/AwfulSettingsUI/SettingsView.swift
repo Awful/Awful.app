@@ -4,6 +4,7 @@
 
 import AwfulExtensions
 import AwfulSettings
+import AwfulThemeEditor
 import AwfulTheming
 import NukeUI
 import SwiftUI
@@ -263,7 +264,7 @@ public struct SettingsView: View {
                         .environment(\.managedObjectContext, managedObjectContext) // Not inherited from SettingsView's environment?
                         .navigationTitle("Forum-Specific Themes", bundle: .module)
                 }
-                NavigationLink("Custom Theme Editor") {
+                NavigationLink("Custom Theme Editor", bundle: .module) {
                     CustomThemeEditorView()
                 }
                 Toggle("Dark Mode", bundle: .module, isOn: $darkModeManuallyEnabled)

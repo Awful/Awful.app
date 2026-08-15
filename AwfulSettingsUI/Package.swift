@@ -13,6 +13,7 @@ let package = Package(
         .package(path: "../AwfulCore"),
         .package(path: "../AwfulExtensions"),
         .package(path: "../AwfulSettings"),
+        .package(path: "../AwfulThemeEditor"),
         .package(path: "../AwfulTheming"),
         .package(url: "https://github.com/kean/Nuke", from: "12.1.6"),
     ],
@@ -23,6 +24,7 @@ let package = Package(
                 "AwfulCore",
                 "AwfulExtensions",
                 "AwfulSettings",
+                "AwfulThemeEditor",
                 "AwfulTheming",
                 .product(name: "NukeUI", package: "Nuke"),
             ]

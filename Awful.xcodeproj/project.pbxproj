@@ -267,6 +267,7 @@
 		AC10AC10AC10AC10AC300001 /* AwfulPolls in Frameworks */ = {isa = PBXBuildFile; productRef = AC10AC10AC10AC10AC300003 /* AwfulPolls */; };
 		AC10AC10AC10AC10AC400001 /* AwfulArchives in Frameworks */ = {isa = PBXBuildFile; productRef = AC10AC10AC10AC10AC400003 /* AwfulArchives */; };
 		AC10AC10AC10AC10AC500001 /* AwfulRapsheet in Frameworks */ = {isa = PBXBuildFile; productRef = AC10AC10AC10AC10AC500003 /* AwfulRapsheet */; };
+		AC10AC10AC10AC10AC700001 /* AwfulThemeEditor in Frameworks */ = {isa = PBXBuildFile; productRef = AC10AC10AC10AC10AC700003 /* AwfulThemeEditor */; };
 		AC10AC10AC10AC10AC500011 /* RapsheetHandlers+Awful.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC10AC10AC10AC10AC500012 /* RapsheetHandlers+Awful.swift */; };
 		ACF0FEA7000000000000BF01 /* AccountFeaturesRefresher.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACF0FEA7000000000000FEF1 /* AccountFeaturesRefresher.swift */; };
 		C8BE3CFABA1B4371B058B77E /* URLCleaningTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7066513D77148949920CFF8 /* URLCleaningTextView.swift */; };
@@ -616,6 +617,7 @@
 		AC10AC10AC10AC10AC300002 /* AwfulPolls */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AwfulPolls; sourceTree = "<group>"; };
 		AC10AC10AC10AC10AC400002 /* AwfulArchives */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AwfulArchives; sourceTree = "<group>"; };
 		AC10AC10AC10AC10AC500002 /* AwfulRapsheet */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AwfulRapsheet; sourceTree = "<group>"; };
+		AC10AC10AC10AC10AC700002 /* AwfulThemeEditor */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AwfulThemeEditor; sourceTree = "<group>"; };
 		AC10AC10AC10AC10AC500012 /* RapsheetHandlers+Awful.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RapsheetHandlers+Awful.swift"; sourceTree = "<group>"; };
 		ACF0FEA7000000000000FEF1 /* AccountFeaturesRefresher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountFeaturesRefresher.swift; sourceTree = "<group>"; };
 		BEA873B27D6269867FC99B16 /* ScreenshotterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotterViewController.swift; sourceTree = "<group>"; };
@@ -669,6 +671,7 @@
 				AC10AC10AC10AC10AC300001 /* AwfulPolls in Frameworks */,
 				AC10AC10AC10AC10AC400001 /* AwfulArchives in Frameworks */,
 				AC10AC10AC10AC10AC500001 /* AwfulRapsheet in Frameworks */,
+				AC10AC10AC10AC10AC700001 /* AwfulThemeEditor in Frameworks */,
 				1CB0B9AB2AEF668500678615 /* NukeExtensions in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1251,6 +1254,7 @@
 				AC10AC10AC10AC10AC200002 /* AwfulSearch */,
 				AC10AC10AC10AC10AC300002 /* AwfulPolls */,
 				AC10AC10AC10AC10AC500002 /* AwfulRapsheet */,
+				AC10AC10AC10AC10AC700002 /* AwfulThemeEditor */,
 				AC10AC10AC10AC10AC600002 /* AwfulTilt */,
 				1C1F0F132B8B091600F097D3 /* AwfulTheming */,
 				1C15334D20708EFF0021A2BD /* Config */,
@@ -1411,6 +1415,7 @@
 				AC10AC10AC10AC10AC300003 /* AwfulPolls */,
 				AC10AC10AC10AC10AC400003 /* AwfulArchives */,
 				AC10AC10AC10AC10AC500003 /* AwfulRapsheet */,
+				AC10AC10AC10AC10AC700003 /* AwfulThemeEditor */,
 				AC10AC10AC10AC10AC600003 /* AwfulTilt */,
 	1C1F0F152B8B0AD700F097D3 /* AwfulTheming */,
 				1C53451D2B8BF3A7001DA96A /* PSMenuItem */,
@@ -2143,6 +2148,10 @@
 		AC10AC10AC10AC10AC500003 /* AwfulRapsheet */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AwfulRapsheet;
+		};
+		AC10AC10AC10AC10AC700003 /* AwfulThemeEditor */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AwfulThemeEditor;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

@@ -2,6 +2,7 @@
 //
 //  Copyright 2025 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import AwfulExtensions
 import AwfulTheming
 import SwiftUI
 import UniformTypeIdentifiers
@@ -37,31 +38,35 @@ public struct CustomThemeEditorView: View {
                 }
             }
         }
-        .navigationTitle("Custom Theme")
+        .navigationTitle("Custom Theme", bundle: .module)
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
                 Menu {
-                    Button("Export Theme") {
+                    Button("Export Theme", bundle: .module) {
                         exportTheme()
                     }
-                    Button("Import Theme") {
+                    Button("Import Theme", bundle: .module) {
                         showingImportPicker = true
                     }
                     Divider()
-                    Button("Reset All to Defaults", role: .destructive) {
+                    Button(role: .destructive) {
                         showingResetConfirmation = true
+                    } label: {
+                        Text("Reset All to Defaults", bundle: .module)
                     }
                 } label: {
                     Image(systemName: "ellipsis.circle")
                 }
             }
         }
-        .confirmationDialog("Reset Custom Theme?", isPresented: $showingResetConfirmation) {
-            Button("Reset All to Defaults", role: .destructive) {
+        .confirmationDialog(Text("Reset Custom Theme?", bundle: .module), isPresented: $showingResetConfirmation) {
+            Button(role: .destructive) {
                 manager.resetToDefaults()
+            } label: {
+                Text("Reset All to Defaults", bundle: .module)
             }
         } message: {
-            Text("This will remove all your customizations and revert to the default theme values.")
+            Text("This will remove all your customizations and revert to the default theme values.", bundle: .module)
         }
         .sheet(isPresented: $showingThemePicker) {
             ThemeStartingPointPicker { theme in
@@ -84,8 +89,8 @@ public struct CustomThemeEditorView: View {
                 }
             }
         }
-        .alert("Import Error", isPresented: $showingImportError) {
-            Button("OK") {}
+        .alert(Text("Import Error", bundle: .module), isPresented: $showingImportError) {
+            Button("OK", bundle: .module) {}
         } message: {
             Text(importError ?? "Unknown error")
         }
@@ -94,33 +99,33 @@ public struct CustomThemeEditorView: View {
     // MARK: - Sections
 
     private var startingPointSection: some View {
-        Section(header: Text("Starting Point")) {
+        Section(header: Text("Starting Point", bundle: .module)) {
             if let baseName = manager.baseThemeName {
                 HStack {
-                    Text("Based on")
+                    Text("Based on", bundle: .module)
                     Spacer()
                     Text(baseName)
                         .foregroundColor(.secondary)
                 }
             }
-            Button("Start from Existing Theme\u{2026}") {
+            Button("Start from Existing Theme\u{2026}", bundle: .module) {
                 showingThemePicker = true
             }
         }
     }
 
     private var stylesheetSection: some View {
-        Section(header: Text("WebView Stylesheet")) {
-            NavigationLink("Edit Stylesheet") {
+        Section(header: Text("WebView Stylesheet", bundle: .module)) {
+            NavigationLink("Edit Stylesheet", bundle: .module) {
                 CSSEditorView()
             }
             if manager.customCSS != nil {
                 let lineCount = manager.customCSS?.components(separatedBy: "\n").count ?? 0
-                Text("\(lineCount) lines")
+                Text("\(lineCount) lines", bundle: .module)
                     .font(.caption)
                     .foregroundColor(.secondary)
             } else {
-                Text("Using bundled default stylesheet")
+                Text("Using bundled default stylesheet", bundle: .module)
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
@@ -172,7 +177,7 @@ public struct CustomThemeEditorView: View {
         }
         .swipeActions(edge: .trailing) {
             if isOverridden {
-                Button("Reset") {
+                Button("Reset", bundle: .module) {
                     manager.removeValue(forKey: property.key)
                 }
             }
@@ -191,7 +196,7 @@ public struct CustomThemeEditorView: View {
         }
         .swipeActions(edge: .trailing) {
             if isOverridden {
-                Button("Reset") {
+                Button("Reset", bundle: .module) {
                     manager.removeValue(forKey: property.key)
                 }
             }
@@ -214,7 +219,7 @@ public struct CustomThemeEditorView: View {
         }
         .swipeActions(edge: .trailing) {
             if isOverridden {
-                Button("Reset") {
+                Button("Reset", bundle: .module) {
                     manager.removeValue(forKey: property.key)
                 }
             }
@@ -228,7 +233,7 @@ public struct CustomThemeEditorView: View {
             overrideIndicator(isOverridden)
             Text(property.displayName)
             Spacer()
-            TextField("Value", text: Binding(
+            TextField(String(localized: "Value", bundle: .module), text: Binding(
                 get: { currentValue },
                 set: { manager.setValue($0, forKey: property.key) }
             ))
@@ -238,7 +243,7 @@ public struct CustomThemeEditorView: View {
         }
         .swipeActions(edge: .trailing) {
             if isOverridden {
-                Button("Reset") {
+                Button("Reset", bundle: .module) {
                     manager.removeValue(forKey: property.key)
                 }
             }
@@ -272,7 +277,7 @@ public struct CustomThemeEditorView: View {
         }
         .swipeActions(edge: .trailing) {
             if isOverridden {
-                Button("Reset") {
+                Button("Reset", bundle: .module) {
                     manager.removeValue(forKey: property.key)
                 }
             }
@@ -281,7 +286,7 @@ public struct CustomThemeEditorView: View {
 
     private func fontNameRow(for property: ThemeProperty, isOverridden: Bool) -> some View {
         let currentValue = currentStringValue(for: property.key) ?? ""
-        let displayName = currentValue.isEmpty ? "System Default" : currentValue
+        let displayName = currentValue.isEmpty ? String(localized: "System Default", bundle: .module) : currentValue
 
         return HStack {
             overrideIndicator(isOverridden)
@@ -308,7 +313,7 @@ public struct CustomThemeEditorView: View {
         }
         .swipeActions(edge: .trailing) {
             if isOverridden {
-                Button("Reset") {
+                Button("Reset", bundle: .module) {
                     manager.removeValue(forKey: property.key)
                 }
             }
@@ -410,7 +415,7 @@ struct CSSEditorView: View {
                 currentMatch: $currentMatch
             )
         }
-        .navigationTitle("Stylesheet")
+        .navigationTitle("Stylesheet", bundle: .module)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
                 Button {
@@ -423,7 +428,7 @@ struct CSSEditorView: View {
                 }
             }
             ToolbarItem(placement: .confirmationAction) {
-                Button("Apply") {
+                Button("Apply", bundle: .module) {
                     manager.setCustomCSS(editingCSS.isEmpty ? nil : editingCSS)
                 }
             }
@@ -438,7 +443,7 @@ struct CSSEditorView: View {
             HStack {
                 Image(systemName: "magnifyingglass")
                     .foregroundColor(.secondary)
-                TextField("Find", text: $searchText)
+                TextField(String(localized: "Find", bundle: .module), text: $searchText)
                     .textFieldStyle(.plain)
                     .autocapitalization(.none)
                     .disableAutocorrection(true)
@@ -456,7 +461,7 @@ struct CSSEditorView: View {
             .cornerRadius(8)
 
             if !searchText.isEmpty && matchCount > 0 {
-                Text("\(currentMatch)/\(matchCount)")
+                Text("\(currentMatch)/\(matchCount)", bundle: .module)
                     .font(.caption)
                     .foregroundColor(.secondary)
                     .frame(minWidth: 40)
@@ -603,7 +608,7 @@ struct FontPickerView: View {
                     dismiss()
                 } label: {
                     HStack {
-                        Text("System Default")
+                        Text("System Default", bundle: .module)
                             .foregroundColor(.primary)
                         Spacer()
                         if selectedFont.isEmpty {
@@ -636,7 +641,7 @@ struct FontPickerView: View {
                 }
             }
         }
-        .searchable(text: $searchText, prompt: "Search fonts")
+        .searchable(text: $searchText, prompt: Text("Search fonts", bundle: .module))
     }
 }
 
@@ -662,26 +667,28 @@ struct ThemeStartingPointPicker: View {
                     }
                 }
             }
-            .navigationTitle("Start from Theme")
+            .navigationTitle("Start from Theme", bundle: .module)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { dismiss() }
+                    Button("Cancel", bundle: .module) { dismiss() }
                 }
             }
             .confirmationDialog(
-                "Replace Custom Theme?",
+                Text("Replace Custom Theme?", bundle: .module),
                 isPresented: Binding(
                     get: { confirmTheme != nil },
                     set: { if !$0 { confirmTheme = nil } }
                 )
             ) {
                 if let theme = confirmTheme {
-                    Button("Replace with \(theme.descriptiveName)", role: .destructive) {
+                    Button(role: .destructive) {
                         onSelect(theme)
+                    } label: {
+                        Text("Replace with \(theme.descriptiveName)", bundle: .module)
                     }
                 }
             } message: {
-                Text("This will replace all your current custom theme values with the selected theme's values.")
+                Text("This will replace all your current custom theme values with the selected theme's values.", bundle: .module)
             }
         }
     }

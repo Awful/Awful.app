@@ -1,0 +1,103 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "" : {
+
+    },
+    "%lld lines" : {
+
+    },
+    "%lld/%lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld/%2$lld"
+          }
+        }
+      }
+    },
+    "0" : {
+
+    },
+    "Apply" : {
+
+    },
+    "Based on" : {
+
+    },
+    "Cancel" : {
+
+    },
+    "Custom Theme" : {
+
+    },
+    "Edit Stylesheet" : {
+
+    },
+    "Export Theme" : {
+
+    },
+    "Find" : {
+
+    },
+    "Import Error" : {
+
+    },
+    "Import Theme" : {
+
+    },
+    "OK" : {
+
+    },
+    "Replace Custom Theme?" : {
+
+    },
+    "Replace with %@" : {
+
+    },
+    "Reset" : {
+
+    },
+    "Reset All to Defaults" : {
+
+    },
+    "Reset Custom Theme?" : {
+
+    },
+    "Search fonts" : {
+
+    },
+    "Start from Existing Theme…" : {
+
+    },
+    "Start from Theme" : {
+
+    },
+    "Starting Point" : {
+
+    },
+    "Stylesheet" : {
+
+    },
+    "System Default" : {
+
+    },
+    "This will remove all your customizations and revert to the default theme values." : {
+
+    },
+    "This will replace all your current custom theme values with the selected theme's values." : {
+
+    },
+    "Using bundled default stylesheet" : {
+
+    },
+    "Value" : {
+
+    },
+    "WebView Stylesheet" : {
+
+    }
+  },
+  "version" : "1.0"
+}
