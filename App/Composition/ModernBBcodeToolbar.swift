@@ -4,6 +4,7 @@
 
 import UIKit
 import AwfulSettings
+import AwfulTheming
 
 /// Actions that can be triggered from the modern toolbar
 enum ModernToolbarAction {
