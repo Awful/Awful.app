@@ -282,12 +282,6 @@ struct SmiliePickerView: View {
     }
 }
 
-extension Theme {
-    var isDark: Bool {
-        keyboardAppearance == .dark
-    }
-}
-
 #if DEBUG
 import SwiftUI
 

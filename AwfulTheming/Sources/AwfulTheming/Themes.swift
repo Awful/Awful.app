@@ -109,7 +109,12 @@ extension Theme {
             fatalError("Unrecognized keyboard appearance: \(appearance) (in theme \(name)")
         }
     }
-    
+
+    /// Whether the theme is a dark theme.
+    public var isDark: Bool {
+        keyboardAppearance == .dark
+    }
+
     /// The desired scroll indicator style for scrollbars. Must be specified by the theme or one of its ancestors.
     public var scrollIndicatorStyle: UIScrollView.IndicatorStyle {
         guard let style = effectiveValue(forKey: "scrollIndicatorStyle") as? String ?? parent?["scrollIndicatorStyle"] else { return .default }
