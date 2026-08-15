@@ -1,0 +1,56 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "Admin" : {
+
+    },
+    "All" : {
+
+    },
+    "Any" : {
+
+    },
+    "Cancel" : {
+
+    },
+    "Clear" : {
+
+    },
+    "Display Options" : {
+
+    },
+    "Go" : {
+
+    },
+    "Leper’s Colony" : {
+
+    },
+    "Lepers" : {
+
+    },
+    "Month" : {
+
+    },
+    "Rap Sheet" : {
+
+    },
+    "rap-sheet.empty" : {
+      "comment" : "Text shown when a user's rap sheet has no entries in it.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nothing to see here…"
+          }
+        }
+      }
+    },
+    "Type" : {
+
+    },
+    "Year" : {
+
+    }
+  },
+  "version" : "1.0"
+}

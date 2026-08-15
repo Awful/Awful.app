@@ -3,20 +3,23 @@
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
+import AwfulExtensions
 import AwfulSettings
 import AwfulTheming
 import ScrollViewDelegateMultiplexer
 import UIKit
-import WebKit
 
 /// Displays a list of probations and bans, rendered in a web view (like the posts page). Serves as both the
 /// Leper's Colony tab (`user == nil`) and a single user's Rap Sheet (`user != nil`).
-final class RapSheetViewController: ViewController {
+public final class RapSheetViewController: ViewController {
 
     private let user: User?
 
+    /// What the app does on our behalf (rendering machinery, refresh bookkeeping, navigation).
+    private let handlers: RapsheetHandlers
+
     /// True for the Leper's Colony tab root, false for a single user's rap sheet.
-    var isLepersColony: Bool { user == nil }
+    public var isLepersColony: Bool { user == nil }
 
     // MARK: Paging state
 
@@ -48,7 +51,7 @@ final class RapSheetViewController: ViewController {
 
     private var currentPunishments: [LepersColonyScrapeResult.Punishment] = []
 
-    private var loadingView: LoadingView?
+    private var loadingView: UIView?
     private var loadingBackground: UIView?
 
     private lazy var banDateFormatter: DateFormatter = {
@@ -58,15 +61,23 @@ final class RapSheetViewController: ViewController {
         return formatter
     }()
 
-    private lazy var renderView: RenderView = {
-        // No frog/ghost animations here, so skip injecting the sizable lottie-player.js.
-        let renderView = RenderView(includesLottiePlayer: false)
-        renderView.delegate = self
-        renderView.registerMessage(DidTapPunishmentPost.self)
-        return renderView
+    private lazy var renderView: RapsheetRenderer = {
+        let renderer = handlers.makeRenderer()
+        renderer.didTapPunishmentPost = { [weak self] postID in
+            guard !postID.isEmpty else { return }
+            self?.openPost(id: postID)
+        }
+        renderer.didTapLink = { [weak self] url in
+            guard let self else { return }
+            self.handlers.handleLink(url, self)
+        }
+        renderer.renderProcessDidTerminate = { [weak self] in
+            self?.renderPunishments()
+        }
+        return renderer
     }()
 
-    private lazy var toolbar = Toolbar(frame: CGRect(x: 0, y: 0, width: 320, height: 44))
+    private lazy var toolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: 320, height: 44))
 
     /// Keeps the paging controls from sitting flush against the root tab bar.
     private static let toolbarBottomPadding: CGFloat = 2
@@ -127,8 +138,9 @@ final class RapSheetViewController: ViewController {
         return item
     }()
 
-    init(user: User? = nil) {
+    public init(user: User? = nil, handlers: RapsheetHandlers) {
         self.user = user
+        self.handlers = handlers
         super.init(nibName: nil, bundle: nil)
 
         if user == nil {
@@ -145,27 +157,27 @@ final class RapSheetViewController: ViewController {
         themeDidChange()
     }
 
-    required init?(coder: NSCoder) {
+    public required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
     // MARK: - View lifecycle
 
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.addSubview(renderView)
+        view.addSubview(renderView.view)
         view.addSubview(toolbar)
-        renderView.translatesAutoresizingMaskIntoConstraints = false
+        renderView.view.translatesAutoresizingMaskIntoConstraints = false
         toolbar.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             // The render view fills below the nav bar all the way to the screen bottom, so content scrolls
             // behind the floating toolbar and the (glass) tab bar. `updateScrollViewInsets()` reserves the
             // matching bottom inset so content still clears them.
-            renderView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            renderView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            renderView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            renderView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            renderView.view.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            renderView.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            renderView.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            renderView.view.bottomAnchor.constraint(equalTo: view.bottomAnchor),
 
             toolbar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             toolbar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
@@ -187,19 +199,19 @@ final class RapSheetViewController: ViewController {
         themeDidChange()
     }
 
-    override func viewWillAppear(_ animated: Bool) {
+    public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
         // Whether we need a Done button depends on how we were presented, which isn't known until now.
         updateRightBarButtons()
     }
 
-    override func viewDidLayoutSubviews() {
+    public override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         updateScrollViewInsets()
     }
 
-    override func viewSafeAreaInsetsDidChange() {
+    public override func viewSafeAreaInsetsDidChange() {
         super.viewSafeAreaInsetsDidChange()
         updateScrollViewInsets()
     }
@@ -216,13 +228,13 @@ final class RapSheetViewController: ViewController {
         renderView.scrollView.verticalScrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
     }
 
-    override func viewDidAppear(_ animated: Bool) {
+    public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
         if isLepersColony {
             // Refresh when the tab is shown, but only if it's been a while (like the other tabs), so
             // returning from a post doesn't reload every time.
-            if page == 0 || RefreshMinder.sharedMinder.shouldRefresh(.lepersColony) {
+            if page == 0 || handlers.shouldRefreshLepersColony() {
                 refresh()
             }
         } else {
@@ -230,7 +242,7 @@ final class RapSheetViewController: ViewController {
         }
     }
 
-    override func themeDidChange() {
+    public override func themeDidChange() {
         super.themeDidChange()
 
         if theme[bool: "showRootTabBarLabel"] == false {
@@ -322,7 +334,7 @@ final class RapSheetViewController: ViewController {
             punishmentPages = [(page, result.punishments)]
             renderPunishments()
             if isLepersColony {
-                RefreshMinder.sharedMinder.didRefresh(.lepersColony)
+                handlers.didRefreshLepersColony()
             }
         } catch {
             present(UIAlertController(networkError: error), animated: true)
@@ -355,11 +367,11 @@ final class RapSheetViewController: ViewController {
                 }
                 self.punishmentPages.append((self.page, fresh))
                 self.currentPunishments.append(contentsOf: fresh)
-                let rowsHTML = (try? StencilEnvironment.shared.renderTemplate(.lepersColony, context: [
+                let rowsHTML = self.handlers.renderTemplate([
                     "rowsOnly": true,
                     "punishments": self.rows(for: fresh, pageDivider: "Page \(self.page) of \(self.pageCount)"),
-                ])) ?? ""
-                await self.renderView.appendPostHTML(rowsHTML, containerID: "punishments")
+                ])
+                await self.renderView.append(html: rowsHTML, containerID: "punishments")
                 self.updateToolbar()
             } catch {
                 // Stay quiet; scrolling near the bottom again retries.
@@ -372,8 +384,9 @@ final class RapSheetViewController: ViewController {
     private func renderPunishments() {
         // Build the context on the main actor (it reads the theme), then render off-main like the posts page.
         let context = renderContext()
+        let renderTemplate = handlers.renderTemplate
         Task.detached(priority: .userInitiated) {
-            let html = (try? StencilEnvironment.shared.renderTemplate(.lepersColony, context: context)) ?? ""
+            let html = renderTemplate(context)
             await self.renderView.render(html: html, baseURL: ForumsClient.shared.baseURL)
         }
     }
@@ -393,7 +406,7 @@ final class RapSheetViewController: ViewController {
         return [
             "stylesheet": theme[string: "postsViewCSS"] ?? "",
             "lepersCSS": (try? theme.stylesheet(named: "lepers")) ?? "",
-            "emptyText": LocalizedString("rap-sheet.empty"),
+            "emptyText": String(localized: "rap-sheet.empty", bundle: .module),
             "punishments": allRows,
         ]
     }
@@ -407,7 +420,7 @@ final class RapSheetViewController: ViewController {
             let sentenceClass = Self.sentenceClass(for: punishment.sentence)
             var row: [String: Any] = [
                 "sentenceClass": sentenceClass,
-                "iconURL": Self.iconURL(for: sentenceClass),
+                "iconURL": iconURL(for: sentenceClass),
                 "subjectUsername": punishment.subjectUsername,
                 "subtitle": subtitle(for: punishment),
                 "reasonHTML": punishment.reason,
@@ -428,7 +441,7 @@ final class RapSheetViewController: ViewController {
         guard loadingView == nil else { return }
 
         // Keep the floating toolbar above the overlay so paging stays visible/interactive.
-        let loadingView = LoadingView.loadingViewWithTheme(theme)
+        let loadingView = handlers.makeLoadingView(theme)
         loadingView.alpha = 1
         loadingView.translatesAutoresizingMaskIntoConstraints = false
         // Inserting triggers the loading view's `retheme()`, which sets its background color.
@@ -443,14 +456,14 @@ final class RapSheetViewController: ViewController {
         view.insertSubview(background, belowSubview: loadingView)
 
         NSLayoutConstraint.activate([
-            background.topAnchor.constraint(equalTo: renderView.topAnchor),
-            background.leadingAnchor.constraint(equalTo: renderView.leadingAnchor),
-            background.trailingAnchor.constraint(equalTo: renderView.trailingAnchor),
+            background.topAnchor.constraint(equalTo: renderView.view.topAnchor),
+            background.leadingAnchor.constraint(equalTo: renderView.view.leadingAnchor),
+            background.trailingAnchor.constraint(equalTo: renderView.view.trailingAnchor),
             background.bottomAnchor.constraint(equalTo: view.bottomAnchor),
 
-            loadingView.topAnchor.constraint(equalTo: renderView.topAnchor),
-            loadingView.leadingAnchor.constraint(equalTo: renderView.leadingAnchor),
-            loadingView.trailingAnchor.constraint(equalTo: renderView.trailingAnchor),
+            loadingView.topAnchor.constraint(equalTo: renderView.view.topAnchor),
+            loadingView.leadingAnchor.constraint(equalTo: renderView.view.leadingAnchor),
+            loadingView.trailingAnchor.constraint(equalTo: renderView.view.trailingAnchor),
             loadingView.bottomAnchor.constraint(equalTo: toolbar.topAnchor),
         ])
         self.loadingView = loadingView
@@ -491,8 +504,8 @@ final class RapSheetViewController: ViewController {
     }
 
     /// The two ban icons are loose bundle resources; probation lives only in an asset catalog (unreachable
-    /// by `awful-resource://`), so it's served once from memory via `awful-image://`.
-    private static func iconURL(for sentenceClass: String) -> String {
+    /// by `awful-resource://`), so the app serves it once from memory via `awful-image://`.
+    private func iconURL(for sentenceClass: String) -> String {
         switch sentenceClass {
         case "probation": return probationIconURL
         case "permaban": return "awful-resource://title-permabanned.gif"
@@ -500,14 +513,7 @@ final class RapSheetViewController: ViewController {
         }
     }
 
-    private static let probationIconURL: String = {
-        // The path must start with "/" — `awful-image://` URLs have an empty authority, so a relative path
-        // would make `URLComponents.url` nil (and `ImageURLProtocol` force-unwraps it).
-        guard let image = UIImage(named: "title-probation"),
-              let url = ImageURLProtocol.serveImage(image, atPath: "/leper-probation")
-        else { return "" }
-        return url.absoluteString
-    }()
+    private lazy var probationIconURL: String = handlers.probationIconURL()
 
     // MARK: - Toolbar
 
@@ -581,21 +587,21 @@ final class RapSheetViewController: ViewController {
             // the SwiftUI `.glassEffect(.identity)` hosting view to preserve the theme's tint.
             var arranged: [UIView] = []
             if let refreshImage {
-                arranged.append(NavigationController.makeSidebarImageHostingView(
-                    image: refreshImage,
-                    accessibilityLabel: "Refresh",
-                    pointSize: Self.padIconPointSize,
-                    target: self,
-                    action: #selector(refreshButtonTapped)
+                arranged.append(handlers.makeSidebarImageButton(
+                    refreshImage,
+                    "Refresh",
+                    Self.padIconPointSize,
+                    self,
+                    #selector(refreshButtonTapped)
                 ))
             }
             if let filterImage {
-                arranged.append(NavigationController.makeSidebarImageHostingView(
-                    image: filterImage,
-                    accessibilityLabel: "Filter",
-                    pointSize: Self.padIconPointSize,
-                    target: self,
-                    action: #selector(filterButtonTapped)
+                arranged.append(handlers.makeSidebarImageButton(
+                    filterImage,
+                    "Filter",
+                    Self.padIconPointSize,
+                    self,
+                    #selector(filterButtonTapped)
                 ))
             }
             let stack = UIStackView(arrangedSubviews: arranged)
@@ -747,86 +753,22 @@ final class RapSheetViewController: ViewController {
         present(controller, animated: true)
     }
 
-    /// Opens the post a user was punished for. From the tab this shows in the split-view detail column
-    /// (like tapping a thread in the forums list) rather than pushing into the sidebar the way
-    /// `open(route:)` does here; the modal Rap Sheet dismisses and lets the router place the post.
+    /// Opens the post a user was punished for. Placement is the handler's call: from the tab it shows
+    /// in the split-view detail column (like tapping a thread in the forums list), while the modal Rap
+    /// Sheet dismisses and lets the app's router place the post.
     private func openPost(id postID: String) {
-        if presentingViewController != nil {
-            AppDelegate.instance.open(route: .post(id: postID, .noseen))
-            dismiss(animated: true)
-            return
-        }
-
-        // No loading overlay here: the detail's `PostsPageViewController` shows its own while it loads, so
-        // the sidebar list shouldn't flash a refresh spinner just for opening a post.
-        Task { @MainActor in
-            do {
-                let (post, page) = try await ForumsClient.shared.locatePost(id: postID, updateLastReadPost: false)
-                guard let thread = post.thread else { return }
-                let postsVC = PostsPageViewController(thread: thread)
-                postsVC.loadPage(page, updatingCache: true, updatingLastReadPost: false)
-                postsVC.scrollPostToVisible(post)
-                showDetailViewController(postsVC, sender: self)
-            } catch {
-                present(UIAlertController(networkError: error), animated: true)
-            }
-        }
+        handlers.openPost(postID, self)
     }
 
     @objc private func didTapDone() {
         dismiss(animated: true, completion: nil)
-    }
-
-    // MARK: Gunk
-
-    private struct DidTapPunishmentPost: RenderViewMessage {
-        static let messageName = "didTapPunishmentPost"
-        let postID: String?
-
-        init?(rawMessage: WKScriptMessage, in renderView: RenderView) {
-            assert(rawMessage.name == DidTapPunishmentPost.messageName)
-            postID = (rawMessage.body as? [String: Any])?["postID"] as? String
-        }
-    }
-}
-
-// MARK: - RenderViewDelegate
-
-extension RapSheetViewController: RenderViewDelegate {
-    func didFinishRenderingHTML(in view: RenderView) {
-        // nop
-    }
-
-    func didReceive(message: RenderViewMessage, in view: RenderView) {
-        switch message {
-        case let message as DidTapPunishmentPost:
-            guard let postID = message.postID, !postID.isEmpty else { return }
-            openPost(id: postID)
-
-        default:
-            break
-        }
-    }
-
-    func didTapLink(to url: URL, in view: RenderView) {
-        if let route = try? AwfulRoute(url) {
-            AppDelegate.instance.open(route: route)
-        } else if url.opensInBrowser {
-            URLMenuPresenter(linkURL: url).presentInDefaultBrowser(fromViewController: self)
-        } else {
-            UIApplication.shared.open(url)
-        }
-    }
-
-    func renderProcessDidTerminate(in view: RenderView) {
-        renderPunishments()
     }
 }
 
 // MARK: - UIScrollViewDelegate (endless scroll trigger)
 
 extension RapSheetViewController: UIScrollViewDelegate {
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         // WKWebView may trigger scroll events on background threads during content loading (same caveat as PostsPageView).
         guard Thread.isMainThread else {
             DispatchQueue.main.async { [weak self] in
@@ -840,15 +782,6 @@ extension RapSheetViewController: UIScrollViewDelegate {
         if scrollView.contentSize.height > 0, distanceToBottom < scrollView.bounds.height * 1.5 {
             appendNextPageIfNeeded()
         }
-    }
-}
-
-// MARK: - RestorableLocation
-
-extension RapSheetViewController: RestorableLocation {
-    var restorationRoute: AwfulRoute? {
-        // Only the tab-root instance needs to advertise a route; user-specific rap sheets are pushed/presented on top of a parent that already conforms, so walking past them is correct.
-        isLepersColony ? .lepersColony : nil
     }
 }
 

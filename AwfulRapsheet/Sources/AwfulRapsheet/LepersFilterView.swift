@@ -41,19 +41,23 @@ struct LepersFilterView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .principal) {
-                    Text("Display Options")
+                    Text("Display Options", bundle: .module)
                         .font(.headline)
                         .foregroundColor(theme[color: "navigationBarTextColor"])
                 }
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button("Cancel", action: onExit)
-                        .liquidGlassBarButtonColor(theme[color: "navigationBarTextColor"])
+                    Button(action: onExit) {
+                        Text("Cancel", bundle: .module)
+                    }
+                    .liquidGlassBarButtonColor(theme[color: "navigationBarTextColor"])
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Clear") {
+                    Button {
                         model.reset()
                         onApply(model.filter)
                         onExit()
+                    } label: {
+                        Text("Clear", bundle: .module)
                     }
                     .liquidGlassBarButtonColor(theme[color: "navigationBarTextColor"])
                     .disabled(model.isDefault)
@@ -134,7 +138,7 @@ struct LepersFilterView: View {
 
     private var adminPicker: some View {
         Picker("Admin", selection: $model.selectedAdminID) {
-            Text("All").tag(UserID?.none)
+            Text("All", bundle: .module).tag(UserID?.none)
             ForEach(model.admins, id: \.id) { admin in
                 Text(admin.username).tag(UserID?.some(admin.id))
             }
@@ -146,7 +150,7 @@ struct LepersFilterView: View {
 
     private var monthPicker: some View {
         Picker("Month", selection: $model.selectedMonth) {
-            Text("Any").tag(Int?.none)
+            Text("Any", bundle: .module).tag(Int?.none)
             ForEach(1...12, id: \.self) { month in
                 Text(LepersFilterViewModel.monthNames[month - 1]).tag(Int?.some(month))
             }
@@ -158,7 +162,7 @@ struct LepersFilterView: View {
 
     private var yearPicker: some View {
         Picker("Year", selection: $model.selectedYear) {
-            Text("Any").tag(Int?.none)
+            Text("Any", bundle: .module).tag(Int?.none)
             // `String(year)` avoids the number formatter's grouping separator (e.g. "2,015").
             ForEach(model.years, id: \.self) { year in
                 Text(String(year)).tag(Int?.some(year))

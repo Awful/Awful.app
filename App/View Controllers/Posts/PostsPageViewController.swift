@@ -5,6 +5,7 @@
 @preconcurrency import AwfulCore
 import AwfulModelTypes
 import AwfulPolls
+import AwfulRapsheet
 import AwfulSearch
 import AwfulSettings
 import AwfulTheming
@@ -1715,7 +1716,7 @@ final class PostsPageViewController: ViewController {
         }
 
         self.dismiss(animated: false) {
-            let rapSheetVC = RapSheetViewController(user: self.selectedUser!)
+            let rapSheetVC = RapSheetViewController(user: self.selectedUser!, handlers: .awful)
             if UIDevice.current.userInterfaceIdiom == .pad {
                 self.present(rapSheetVC.enclosingNavigationController, animated: true, completion: nil)
             } else {

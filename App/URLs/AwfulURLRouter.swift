@@ -3,6 +3,7 @@
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
+import AwfulRapsheet
 import AwfulSettings
 import AwfulTheming
 import CoreData
@@ -79,7 +80,7 @@ struct AwfulURLRouter {
             }
 
             // Fall back to the historical modal present if the tab isn't in the hierarchy.
-            let rapSheetVC = RapSheetViewController(user: nil)
+            let rapSheetVC = RapSheetViewController(handlers: .awful)
             rootViewController.present(rapSheetVC.enclosingNavigationController, animated: true)
             return true
 
@@ -159,7 +160,7 @@ struct AwfulURLRouter {
             Task { @MainActor in
                 do {
                     let user = try await fetchUser(withUserID: userID)
-                    let rapSheetVC = RapSheetViewController(user: user)
+                    let rapSheetVC = RapSheetViewController(user: user, handlers: .awful)
                     rootViewController.present(rapSheetVC.enclosingNavigationController, animated: true)
                 } catch {
                     let alert = UIAlertController(title: "Could Not Find User", error: error)

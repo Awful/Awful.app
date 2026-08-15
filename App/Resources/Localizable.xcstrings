@@ -46,12 +46,6 @@
     "Added Bookmark" : {
 
     },
-    "Admin" : {
-
-    },
-    "All" : {
-
-    },
     "announcement.title" : {
       "comment" : "Fallback title of an announcement screen (the announcement's title is used when available).",
       "extractionState" : "manual",
@@ -229,9 +223,6 @@
       }
     },
     "Cancel" : {
-
-    },
-    "Clear" : {
 
     },
     "compose.accessibility-label" : {
@@ -548,9 +539,6 @@
     "Cute" : {
 
     },
-    "Display Options" : {
-
-    },
     "Doggo" : {
 
     },
@@ -632,9 +620,6 @@
     "Ghost" : {
 
     },
-    "Go" : {
-
-    },
     "handoff.bookmarks-title" : {
       "comment" : "Title of Handoff activity when reading bookmarks.",
       "extractionState" : "migrated",
@@ -700,12 +685,6 @@
           }
         }
       }
-    },
-    "Leper’s Colony" : {
-
-    },
-    "Lepers" : {
-
     },
     "link-action.copy-image" : {
       "comment" : "Title of button that copies an image to the pasteboard.",
@@ -1540,21 +1519,6 @@
         }
       }
     },
-    "Rap Sheet" : {
-
-    },
-    "rap-sheet.empty" : {
-      "comment" : "Text shown when a user's rap sheet has no entries in it.",
-      "extractionState" : "migrated",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nothing to see here…"
-          }
-        }
-      }
-    },
     "Rated five" : {
 
     },
@@ -1837,9 +1801,6 @@
 
     },
     "Try Again" : {
-
-    },
-    "Type" : {
 
     },
     "V" : {

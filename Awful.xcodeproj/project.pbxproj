@@ -45,7 +45,6 @@
 		1C16FC021CC29B2C00C88BD1 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FC011CC29B2C00C88BD1 /* LoadingView.swift */; };
 		1C16FC041CC3D84500C88BD1 /* PostsPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FC031CC3D84500C88BD1 /* PostsPageView.swift */; };
 		1C16FC061CC3E1AF00C88BD1 /* UnpoppingViewHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FC051CC3E1AF00C88BD1 /* UnpoppingViewHandler.swift */; };
-		1C16FC081CC3F01B00C88BD1 /* RapSheetViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FC071CC3F01B00C88BD1 /* RapSheetViewController.swift */; };
 		1C16FC0C1CC41A7800C88BD1 /* ThreadTagLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FC0B1CC41A7800C88BD1 /* ThreadTagLoader.swift */; };
 		1C16FC0E1CC477B200C88BD1 /* ThreadTagPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FC0D1CC477B200C88BD1 /* ThreadTagPickerViewController.swift */; };
 		1C16FC101CC6F19700C88BD1 /* ThreadPreviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FC0F1CC6F19700C88BD1 /* ThreadPreviewViewController.swift */; };
@@ -267,10 +266,11 @@
 		AC10AC10AC10AC10AC200001 /* AwfulSearch in Frameworks */ = {isa = PBXBuildFile; productRef = AC10AC10AC10AC10AC200003 /* AwfulSearch */; };
 		AC10AC10AC10AC10AC300001 /* AwfulPolls in Frameworks */ = {isa = PBXBuildFile; productRef = AC10AC10AC10AC10AC300003 /* AwfulPolls */; };
 		AC10AC10AC10AC10AC400001 /* AwfulArchives in Frameworks */ = {isa = PBXBuildFile; productRef = AC10AC10AC10AC10AC400003 /* AwfulArchives */; };
+		AC10AC10AC10AC10AC500001 /* AwfulRapsheet in Frameworks */ = {isa = PBXBuildFile; productRef = AC10AC10AC10AC10AC500003 /* AwfulRapsheet */; };
+		AC10AC10AC10AC10AC500011 /* RapsheetHandlers+Awful.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC10AC10AC10AC10AC500012 /* RapsheetHandlers+Awful.swift */; };
 		ACF0FEA7000000000000BF01 /* AccountFeaturesRefresher.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACF0FEA7000000000000FEF1 /* AccountFeaturesRefresher.swift */; };
 		C8BE3CFABA1B4371B058B77E /* URLCleaningTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7066513D77148949920CFF8 /* URLCleaningTextView.swift */; };
 		DDDDDDDD0000000000000002 /* LepersColony.html.stencil in Resources */ = {isa = PBXBuildFile; fileRef = DDDDDDDD0000000000000001 /* LepersColony.html.stencil */; };
-		DDDDDDDD0000000000000006 /* LepersFilterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDDDDDDD0000000000000005 /* LepersFilterView.swift */; };
 		DDDDDDDD000000000000000A /* ModernToolbarActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDDDDDDD0000000000000009 /* ModernToolbarActions.swift */; };
 		F4233C591917C77900482BD0 /* bg_menu.jpg in Resources */ = {isa = PBXBuildFile; fileRef = F4233C581917C77900482BD0 /* bg_menu.jpg */; };
 		F4B3645819165D5100CCE1EF /* SecondaryTags.plist in Resources */ = {isa = PBXBuildFile; fileRef = F4B3645719165D5100CCE1EF /* SecondaryTags.plist */; };
@@ -365,7 +365,6 @@
 		1C16FC011CC29B2C00C88BD1 /* LoadingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
 		1C16FC031CC3D84500C88BD1 /* PostsPageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostsPageView.swift; sourceTree = "<group>"; };
 		1C16FC051CC3E1AF00C88BD1 /* UnpoppingViewHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnpoppingViewHandler.swift; sourceTree = "<group>"; };
-		1C16FC071CC3F01B00C88BD1 /* RapSheetViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapSheetViewController.swift; sourceTree = "<group>"; };
 		1C16FC0B1CC41A7800C88BD1 /* ThreadTagLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadTagLoader.swift; sourceTree = "<group>"; };
 		1C16FC0D1CC477B200C88BD1 /* ThreadTagPickerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadTagPickerViewController.swift; sourceTree = "<group>"; };
 		1C16FC0F1CC6F19700C88BD1 /* ThreadPreviewViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadPreviewViewController.swift; sourceTree = "<group>"; };
@@ -616,10 +615,11 @@
 		AC10AC10AC10AC10AC200002 /* AwfulSearch */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AwfulSearch; sourceTree = "<group>"; };
 		AC10AC10AC10AC10AC300002 /* AwfulPolls */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AwfulPolls; sourceTree = "<group>"; };
 		AC10AC10AC10AC10AC400002 /* AwfulArchives */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AwfulArchives; sourceTree = "<group>"; };
+		AC10AC10AC10AC10AC500002 /* AwfulRapsheet */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AwfulRapsheet; sourceTree = "<group>"; };
+		AC10AC10AC10AC10AC500012 /* RapsheetHandlers+Awful.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RapsheetHandlers+Awful.swift"; sourceTree = "<group>"; };
 		ACF0FEA7000000000000FEF1 /* AccountFeaturesRefresher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountFeaturesRefresher.swift; sourceTree = "<group>"; };
 		BEA873B27D6269867FC99B16 /* ScreenshotterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotterViewController.swift; sourceTree = "<group>"; };
 		DDDDDDDD0000000000000001 /* LepersColony.html.stencil */ = {isa = PBXFileReference; explicitFileType = text.html; fileEncoding = 4; path = LepersColony.html.stencil; sourceTree = "<group>"; };
-		DDDDDDDD0000000000000005 /* LepersFilterView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LepersFilterView.swift; sourceTree = "<group>"; };
 		DDDDDDDD0000000000000009 /* ModernToolbarActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModernToolbarActions.swift; sourceTree = "<group>"; };
 		F4233C581917C77900482BD0 /* bg_menu.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = bg_menu.jpg; sourceTree = "<group>"; };
 		F4B3645719165D5100CCE1EF /* SecondaryTags.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = SecondaryTags.plist; sourceTree = "<group>"; };
@@ -667,6 +667,7 @@
 				AC10AC10AC10AC10AC200001 /* AwfulSearch in Frameworks */,
 				AC10AC10AC10AC10AC300001 /* AwfulPolls in Frameworks */,
 				AC10AC10AC10AC10AC400001 /* AwfulArchives in Frameworks */,
+				AC10AC10AC10AC10AC500001 /* AwfulRapsheet in Frameworks */,
 				1CB0B9AB2AEF668500678615 /* NukeExtensions in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -857,7 +858,7 @@
 		1C29C3842258544B00E1217A /* Rap Sheet */ = {
 			isa = PBXGroup;
 			children = (
-				1C16FC071CC3F01B00C88BD1 /* RapSheetViewController.swift */,
+				AC10AC10AC10AC10AC500012 /* RapsheetHandlers+Awful.swift */,
 			);
 			path = "Rap Sheet";
 			sourceTree = "<group>";
@@ -1231,7 +1232,6 @@
 				1C353C061E416FE200CCBA51 /* SpriteSheetView.swift */,
 				1C16FBBF1CB950BE00C88BD1 /* ThreadTagButton.swift */,
 				2D327DD527F468CE00D21AB0 /* BookmarkColorPicker.swift */,
-				DDDDDDDD0000000000000005 /* LepersFilterView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1250,6 +1250,7 @@
 				AC10AC10AC10AC10AC100002 /* AwfulGlossary */,
 				AC10AC10AC10AC10AC200002 /* AwfulSearch */,
 				AC10AC10AC10AC10AC300002 /* AwfulPolls */,
+				AC10AC10AC10AC10AC500002 /* AwfulRapsheet */,
 				1C1F0F132B8B091600F097D3 /* AwfulTheming */,
 				1C15334D20708EFF0021A2BD /* Config */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
@@ -1408,6 +1409,7 @@
 				AC10AC10AC10AC10AC200003 /* AwfulSearch */,
 				AC10AC10AC10AC10AC300003 /* AwfulPolls */,
 				AC10AC10AC10AC10AC400003 /* AwfulArchives */,
+				AC10AC10AC10AC10AC500003 /* AwfulRapsheet */,
 	1C1F0F152B8B0AD700F097D3 /* AwfulTheming */,
 				1C53451D2B8BF3A7001DA96A /* PSMenuItem */,
 				1C5345202B8BF48F001DA96A /* ScrollViewDelegateMultiplexer */,
@@ -1676,7 +1678,6 @@
 				1C16FBBA1CB8961F00C88BD1 /* ImageURLProtocol.swift in Sources */,
 				1C09BFF21A09F86A007C11F5 /* InAppActionCollectionView.swift in Sources */,
 				1C48538E1F93BADF0042531A /* HTMLRenderingHelpers.swift in Sources */,
-				1C16FC081CC3F01B00C88BD1 /* RapSheetViewController.swift in Sources */,
 				1CE55A7A1A1072D900E474A6 /* ForumsTableViewController.swift in Sources */,
 				1C42A2271FD47AEB00F67BA1 /* Forum+Presentation.swift in Sources */,
 				1CBE1B0A19CA050300510187 /* ImageViewController.swift in Sources */,
@@ -1742,6 +1743,7 @@
 				1C16FC041CC3D84500C88BD1 /* PostsPageView.swift in Sources */,
 				1C16FBA01CB492C600C88BD1 /* ComposeField.swift in Sources */,
 				1C3E181D224FAE9500BD88E5 /* SmilieDataStore+Query.swift in Sources */,
+				AC10AC10AC10AC10AC500011 /* RapsheetHandlers+Awful.swift in Sources */,
 				1C42A2251FD46B4400F67BA1 /* ForumListDataSource.swift in Sources */,
 				1CB5F7F920156C990046D080 /* PageIconView.swift in Sources */,
 				1C16FC061CC3E1AF00C88BD1 /* UnpoppingViewHandler.swift in Sources */,
@@ -1778,7 +1780,6 @@
 				2D62DEA62EBFE95B00F7121B /* PostsPageTopBarLiquidGlass.swift in Sources */,
 				1CA887B01F40AE1A0059FEEC /* User+Presentation.swift in Sources */,
 				1C82AC4B199F585000CB15FE /* Selectotron.swift in Sources */,
-				DDDDDDDD0000000000000006 /* LepersFilterView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2133,6 +2134,10 @@
 		AC10AC10AC10AC10AC400003 /* AwfulArchives */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AwfulArchives;
+		};
+		AC10AC10AC10AC10AC500003 /* AwfulRapsheet */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AwfulRapsheet;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
