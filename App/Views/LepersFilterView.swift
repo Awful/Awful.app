@@ -3,6 +3,7 @@
 //  Copyright 2026 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
+import AwfulExtensions
 import AwfulTheming
 import SwiftUI
 import UIKit

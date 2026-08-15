@@ -3,6 +3,7 @@
 //  Copyright © 2025 Awful Contributors. All rights reserved.
 //
 
+import AwfulExtensions
 import AwfulTheming
 import Combine
 import SwiftUI
