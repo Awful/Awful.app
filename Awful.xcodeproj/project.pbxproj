@@ -237,7 +237,6 @@
 		30E0C51F2E35C89D0030DC0A /* SmilieSearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30E0C51A2E35C89D0030DC0A /* SmilieSearchViewModel.swift */; };
 		30E0C5202E35C89D0030DC0A /* SmilieGridItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30E0C5182E35C89D0030DC0A /* SmilieGridItem.swift */; };
 		6FDFDD5EDA73CAB878C6B73C /* PostScreenshotter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DE60C98634B2C3A47AEE07C /* PostScreenshotter.swift */; };
-		71B2B16F35AAEE42EF20CC4B /* ArchivesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22AED6467DEB2EDF1126D575 /* ArchivesView.swift */; };
 		83410EF219A582B8002CD019 /* DateFormatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83410EF119A582B8002CD019 /* DateFormatters.swift */; };
 		8C0F4F561682CCFA00E25D7E /* macinyos-heading-center.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C0F4F541682CCFA00E25D7E /* macinyos-heading-center.png */; };
 		8C0F4F571682CCFA00E25D7E /* macinyos-heading-right.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C0F4F551682CCFA00E25D7E /* macinyos-heading-right.png */; };
@@ -267,6 +266,7 @@
 		AC10AC10AC10AC10AC100001 /* AwfulGlossary in Frameworks */ = {isa = PBXBuildFile; productRef = AC10AC10AC10AC10AC100003 /* AwfulGlossary */; };
 		AC10AC10AC10AC10AC200001 /* AwfulSearch in Frameworks */ = {isa = PBXBuildFile; productRef = AC10AC10AC10AC10AC200003 /* AwfulSearch */; };
 		AC10AC10AC10AC10AC300001 /* AwfulPolls in Frameworks */ = {isa = PBXBuildFile; productRef = AC10AC10AC10AC10AC300003 /* AwfulPolls */; };
+		AC10AC10AC10AC10AC400001 /* AwfulArchives in Frameworks */ = {isa = PBXBuildFile; productRef = AC10AC10AC10AC10AC400003 /* AwfulArchives */; };
 		ACF0FEA7000000000000BF01 /* AccountFeaturesRefresher.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACF0FEA7000000000000FEF1 /* AccountFeaturesRefresher.swift */; };
 		C8BE3CFABA1B4371B058B77E /* URLCleaningTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7066513D77148949920CFF8 /* URLCleaningTextView.swift */; };
 		DDDDDDDD0000000000000002 /* LepersColony.html.stencil in Resources */ = {isa = PBXBuildFile; fileRef = DDDDDDDD0000000000000001 /* LepersColony.html.stencil */; };
@@ -535,7 +535,6 @@
 		1CFC99691BD3F402001180A7 /* PostsPageRefreshArrowView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostsPageRefreshArrowView.swift; sourceTree = "<group>"; };
 		1D6058910D05DD3D006BFB54 /* AwfulDebug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AwfulDebug.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DE60C98634B2C3A47AEE07C /* PostScreenshotter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostScreenshotter.swift; sourceTree = "<group>"; };
-		22AED6467DEB2EDF1126D575 /* ArchivesView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ArchivesView.swift; sourceTree = "<group>"; };
 		2D0BB35827F440AF00242D2A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2D19BA3229C330A2009DD94F /* mainthrobber60.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = mainthrobber60.json; sourceTree = "<group>"; };
 		2D19BA3429C33273009DD94F /* ghost60.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ghost60.json; sourceTree = "<group>"; };
@@ -616,6 +615,7 @@
 		AC10AC10AC10AC10AC100002 /* AwfulGlossary */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AwfulGlossary; sourceTree = "<group>"; };
 		AC10AC10AC10AC10AC200002 /* AwfulSearch */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AwfulSearch; sourceTree = "<group>"; };
 		AC10AC10AC10AC10AC300002 /* AwfulPolls */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AwfulPolls; sourceTree = "<group>"; };
+		AC10AC10AC10AC10AC400002 /* AwfulArchives */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AwfulArchives; sourceTree = "<group>"; };
 		ACF0FEA7000000000000FEF1 /* AccountFeaturesRefresher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountFeaturesRefresher.swift; sourceTree = "<group>"; };
 		BEA873B27D6269867FC99B16 /* ScreenshotterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotterViewController.swift; sourceTree = "<group>"; };
 		DDDDDDDD0000000000000001 /* LepersColony.html.stencil */ = {isa = PBXFileReference; explicitFileType = text.html; fileEncoding = 4; path = LepersColony.html.stencil; sourceTree = "<group>"; };
@@ -666,6 +666,7 @@
 				AC10AC10AC10AC10AC100001 /* AwfulGlossary in Frameworks */,
 				AC10AC10AC10AC10AC200001 /* AwfulSearch in Frameworks */,
 				AC10AC10AC10AC10AC300001 /* AwfulPolls in Frameworks */,
+				AC10AC10AC10AC10AC400001 /* AwfulArchives in Frameworks */,
 				1CB0B9AB2AEF668500678615 /* NukeExtensions in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1230,7 +1231,6 @@
 				1C353C061E416FE200CCBA51 /* SpriteSheetView.swift */,
 				1C16FBBF1CB950BE00C88BD1 /* ThreadTagButton.swift */,
 				2D327DD527F468CE00D21AB0 /* BookmarkColorPicker.swift */,
-				22AED6467DEB2EDF1126D575 /* ArchivesView.swift */,
 				DDDDDDDD0000000000000005 /* LepersFilterView.swift */,
 			);
 			path = Views;
@@ -1240,6 +1240,7 @@
 			isa = PBXGroup;
 			children = (
 				1C3857A115675AFE0078AF95 /* App */,
+				AC10AC10AC10AC10AC400002 /* AwfulArchives */,
 				1CDAC85C2AE10966006CEE88 /* AwfulCore */,
 				1CDAC85E2AE10966006CEE88 /* AwfulExtensions */,
 				1C1F0F0E2B8A8C9700F097D3 /* AwfulModelTypes */,
@@ -1406,7 +1407,8 @@
 				AC10AC10AC10AC10AC100003 /* AwfulGlossary */,
 				AC10AC10AC10AC10AC200003 /* AwfulSearch */,
 				AC10AC10AC10AC10AC300003 /* AwfulPolls */,
-				1C1F0F152B8B0AD700F097D3 /* AwfulTheming */,
+				AC10AC10AC10AC10AC400003 /* AwfulArchives */,
+	1C1F0F152B8B0AD700F097D3 /* AwfulTheming */,
 				1C53451D2B8BF3A7001DA96A /* PSMenuItem */,
 				1C5345202B8BF48F001DA96A /* ScrollViewDelegateMultiplexer */,
 				306F740A2D90AA01000717BC /* KeychainAccess */,
@@ -1776,7 +1778,6 @@
 				2D62DEA62EBFE95B00F7121B /* PostsPageTopBarLiquidGlass.swift in Sources */,
 				1CA887B01F40AE1A0059FEEC /* User+Presentation.swift in Sources */,
 				1C82AC4B199F585000CB15FE /* Selectotron.swift in Sources */,
-				71B2B16F35AAEE42EF20CC4B /* ArchivesView.swift in Sources */,
 				DDDDDDDD0000000000000006 /* LepersFilterView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2128,6 +2129,10 @@
 		AC10AC10AC10AC10AC300003 /* AwfulPolls */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AwfulPolls;
+		};
+		AC10AC10AC10AC10AC400003 /* AwfulArchives */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AwfulArchives;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

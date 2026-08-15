@@ -2,6 +2,7 @@
 //
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import AwfulArchives
 import AwfulCore
 import AwfulGlossary
 import AwfulSearch
@@ -203,7 +204,7 @@ final class ForumsTableViewController: CollectionViewController {
     private func configureArchivesBannerView(_ view: ForumsArchivesBannerView) {
         guard let timeframe = ForumsClient.shared.currentArchivesTimeframe else { return }
         view.configure(
-            text: ThreadsTableViewController.archivesBannerText(timeframe),
+            text: timeframe.bannerText,
             backgroundColor: theme[uicolor: "archivesBannerBackgroundColor"],
             textColor: theme[uicolor: "archivesBannerTextColor"],
             font: UIFont.preferredFontForTextStyle(.body, sizeAdjustment: -2.5, weight: .semibold))

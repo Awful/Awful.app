@@ -35,12 +35,12 @@ struct ArchivesView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .principal) {
-                    Text("Archives")
+                    Text("Archives", bundle: .module)
                         .font(.headline)
                         .foregroundColor(theme[color: "navigationBarTextColor"])
                 }
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button("Cancel", action: onExit)
+                    Button(action: onExit) { Text("Cancel", bundle: .module) }
                         .liquidGlassBarButtonColor(theme[color: "navigationBarTextColor"])
                 }
             }
@@ -55,7 +55,7 @@ struct ArchivesView: View {
     private var form: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                Text("Browse the forums as they were on a past date. This locks every forum to the selected timeframe until you return to live.")
+                Text("Browse the forums as they were on a past date. This locks every forum to the selected timeframe until you return to live.", bundle: .module)
                     .font(.footnote)
                     .foregroundColor(theme[color: "listSecondaryTextColor"])
 
@@ -102,9 +102,9 @@ struct ArchivesView: View {
 
     // MARK: Pieces
 
-    private func pickerRow<Content: View>(_ title: String, @ViewBuilder content: () -> Content) -> some View {
+    private func pickerRow<Content: View>(_ title: LocalizedStringKey, @ViewBuilder content: () -> Content) -> some View {
         HStack {
-            Text(title)
+            Text(title, bundle: .module)
                 .foregroundColor(theme[color: "listTextColor"])
             Spacer()
             content()
@@ -119,8 +119,8 @@ struct ArchivesView: View {
             .frame(height: 0.5)
     }
 
-    private func buttonLabel(_ title: String, background: Color, foreground: Color) -> some View {
-        Text(title)
+    private func buttonLabel(_ title: LocalizedStringKey, background: Color, foreground: Color) -> some View {
+        Text(title, bundle: .module)
             .fontWeight(.semibold)
             .frame(maxWidth: .infinity)
             .padding()
@@ -131,7 +131,7 @@ struct ArchivesView: View {
 
     private var monthPicker: some View {
         Picker("Month", selection: $model.selectedMonth) {
-            Text("Any").tag(Int?.none)
+            Text("Any", bundle: .module).tag(Int?.none)
             ForEach(1...12, id: \.self) { month in
                 Text(ArchivesViewModel.monthNames[month - 1]).tag(Int?.some(month))
             }
@@ -143,7 +143,7 @@ struct ArchivesView: View {
 
     private var dayPicker: some View {
         Picker("Day", selection: $model.selectedDay) {
-            Text("Any").tag(Int?.none)
+            Text("Any", bundle: .module).tag(Int?.none)
             ForEach(1...31, id: \.self) { day in
                 Text(String(day)).tag(Int?.some(day))
             }
@@ -214,7 +214,7 @@ final class ArchivesViewModel: ObservableObject {
             if !availableYears.contains(selectedYear) {
                 selectedYear = availableYears.first ?? selectedYear
             }
-            errorMessage = "Couldn't load archive years from the Forums; showing a default range."
+            errorMessage = String(localized: "Couldn't load archive years from the Forums; showing a default range.", bundle: .module)
         }
         isLoading = false
     }
@@ -226,7 +226,7 @@ final class ArchivesViewModel: ObservableObject {
             try await ForumsClient.shared.setArchivesTimeframe(month: selectedMonth, day: selectedDay, year: selectedYear)
             return true
         } catch {
-            errorMessage = "Couldn't switch to archives: \(error.localizedDescription)"
+            errorMessage = String(localized: "Couldn't switch to archives: \(error.localizedDescription)", bundle: .module)
             return false
         }
     }
@@ -238,7 +238,7 @@ final class ArchivesViewModel: ObservableObject {
             try await ForumsClient.shared.removeArchivesTimeframe()
             return true
         } catch {
-            errorMessage = "Couldn't return to live forums: \(error.localizedDescription)"
+            errorMessage = String(localized: "Couldn't return to live forums: \(error.localizedDescription)", bundle: .module)
             return false
         }
     }
@@ -248,9 +248,9 @@ final class ArchivesViewModel: ObservableObject {
 
 /// Hosts ``ArchivesView`` as a themed medium sheet. Present modally from the Forums screen. Mirrors
 /// the other modal SwiftUI sheets so the status-bar style stays consistent with the app theme.
-final class ArchivesHostingController: UIHostingController<AnyView> {
+public final class ArchivesHostingController: UIHostingController<AnyView> {
 
-    init() {
+    public init() {
         super.init(rootView: AnyView(EmptyView()))
         rootView = AnyView(
             ArchivesView(onExit: { [weak self] in self?.dismiss(animated: true) })
@@ -269,23 +269,23 @@ final class ArchivesHostingController: UIHostingController<AnyView> {
         }
     }
 
-    @MainActor required dynamic init?(coder aDecoder: NSCoder) {
+    @MainActor public required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         modalPresentationCapturesStatusBarAppearance = true
     }
 
-    override var preferredStatusBarStyle: UIStatusBarStyle {
+    public override var preferredStatusBarStyle: UIStatusBarStyle {
         let theme = Theme.defaultTheme()
         return (theme["statusBarBackground"] == "light") ? .darkContent : .lightContent
     }
 
-    override var childForStatusBarStyle: UIViewController? { nil }
+    public override var childForStatusBarStyle: UIViewController? { nil }
 
-    override func viewWillAppear(_ animated: Bool) {
+    public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         setNeedsStatusBarAppearanceUpdate()
     }

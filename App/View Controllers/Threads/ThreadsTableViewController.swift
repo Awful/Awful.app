@@ -2,6 +2,7 @@
 //
 //  Copyright 2015 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import AwfulArchives
 import AwfulCore
 import AwfulModelTypes
 import AwfulSettings
@@ -368,7 +369,7 @@ final class ThreadsTableViewController: CollectionViewController, ComposeTextVie
     /// invalidate layout, so it's safe to call from the header-registration closure (during layout).
     private func configureArchivesBanner() {
         if let timeframe = ForumsClient.shared.currentArchivesTimeframe {
-            archivesBanner.text = Self.archivesBannerText(timeframe)
+            archivesBanner.text = timeframe.bannerText
             archivesBanner.isHidden = false
         } else {
             archivesBanner.isHidden = true
@@ -385,22 +386,6 @@ final class ThreadsTableViewController: CollectionViewController, ComposeTextVie
         if isViewLoaded {
             collectionView.collectionViewLayout.invalidateLayout()
         }
-    }
-
-    /// "Archives view: {…}" with the three valid shapes: year only, month + year, or month + day + year.
-    static func archivesBannerText(_ timeframe: ArchivesTimeframe) -> String {
-        let date: String
-        if let month = timeframe.month, (1...12).contains(month) {
-            let monthName = Calendar.current.monthSymbols[month - 1]
-            if let day = timeframe.day {
-                date = "\(monthName) \(day), \(timeframe.year)"
-            } else {
-                date = "\(monthName) \(timeframe.year)"
-            }
-        } else {
-            date = String(timeframe.year)
-        }
-        return "Archives view: \(date)"
     }
 
     @objc private func didTapArchivesBanner() {

@@ -67,9 +67,6 @@
     "Any" : {
 
     },
-    "Archives" : {
-
-    },
     "Author Profile" : {
 
     },
@@ -219,9 +216,6 @@
           }
         }
       }
-    },
-    "Browse the forums as they were on a past date. This locks every forum to the selected timeframe until you return to live." : {
-
     },
     "cancel" : {
       "comment" : "Title of button that dismisses without taking any action.",
@@ -552,9 +546,6 @@
 
     },
     "Cute" : {
-
-    },
-    "Day" : {
 
     },
     "Display Options" : {
