@@ -3,19 +3,22 @@
 //  Copyright © 2025 Awful Contributors. All rights reserved.
 //
 
-import AwfulTheming
 import SwiftUI
 import UIKit
 
-struct NavigationConfigurator: UIViewControllerRepresentable {
+public struct NavigationConfigurator: UIViewControllerRepresentable {
     let theme: Theme
+
+    public init(theme: Theme) {
+        self.theme = theme
+    }
     
-    func makeUIViewController(context: Context) -> UIViewController {
+    public func makeUIViewController(context: Context) -> UIViewController {
         let viewController = UIViewController()
         return viewController
     }
     
-    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
+    public func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
         DispatchQueue.main.async {
             if let navigationController = uiViewController.navigationController {
                 // Configure navigation bar
@@ -102,7 +105,7 @@ extension View {
     /// matching the app's main Forums bar. Pair with `liquidGlassNavigationTint` so SwiftUI doesn't
     /// stamp a per-item tint that would override the bar's cleared `tintColor` (see NavigationConfigurator).
     @ViewBuilder
-    func liquidGlassBarButtonColor(_ color: Color?) -> some View {
+    public func liquidGlassBarButtonColor(_ color: Color?) -> some View {
         if #available(iOS 26.0, *) {
             self
         } else {
@@ -114,7 +117,7 @@ extension View {
     /// Liquid Glass bar's buttons follow the bar's cleared `tintColor` and render black/white
     /// dynamically. Content sets its own colors, so dropping the ambient tint here is safe.
     @ViewBuilder
-    func liquidGlassNavigationTint(_ color: Color?) -> some View {
+    public func liquidGlassNavigationTint(_ color: Color?) -> some View {
         if #available(iOS 26.0, *) {
             self
         } else {
