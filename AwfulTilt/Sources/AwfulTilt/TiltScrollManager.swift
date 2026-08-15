@@ -2,6 +2,7 @@
 //
 //  Copyright 2025 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import AwfulExtensions
 import AwfulSettings
 import Combine
 import CoreMotion
@@ -15,7 +16,7 @@ import UIKit
 /// dead zone. Enabled via `Settings.tiltScrollEnabled`; speed scales with
 /// `Settings.tiltScrollSensitivity`.
 @MainActor
-final class TiltScrollManager: NSObject {
+public final class TiltScrollManager: NSObject {
 
     // MARK: - Constants
 
@@ -44,9 +45,9 @@ final class TiltScrollManager: NSObject {
 
     // MARK: - Dependencies
 
-    weak var scrollView: UIScrollView?
+    private weak var scrollView: UIScrollView?
 
-    func configure(scrollView: UIScrollView) {
+    public func configure(scrollView: UIScrollView) {
         self.scrollView = scrollView
     }
 
@@ -68,7 +69,7 @@ final class TiltScrollManager: NSObject {
     private var filteredAngle: CGFloat?
     private var lastInterfaceOrientation: UIInterfaceOrientation = .portrait
 
-    override init() {
+    public override init() {
         super.init()
 
         $tiltScrollEnabled
@@ -92,12 +93,12 @@ final class TiltScrollManager: NSObject {
 
     // MARK: - Lifecycle
 
-    func viewDidAppear() {
+    public func viewDidAppear() {
         isViewVisible = true
         updateEngagement()
     }
 
-    func viewWillDisappear() {
+    public func viewWillDisappear() {
         isViewVisible = false
         updateEngagement()
     }
@@ -105,24 +106,24 @@ final class TiltScrollManager: NSObject {
     /// Adopts the device's current pose as the new "at rest" zero point, so
     /// scrolling is driven by tilt relative to however the user is holding
     /// the device right now (e.g. lying in bed).
-    func recalibrate() {
+    public func recalibrate() {
         neutralAngle = nil
         filteredAngle = nil
     }
 
     // MARK: - Scroll view interaction
 
-    func handleScrollViewWillBeginDragging() {
+    public func handleScrollViewWillBeginDragging() {
         isUserInteracting = true
     }
 
-    func handleScrollViewDidEndDragging(willDecelerate: Bool) {
+    public func handleScrollViewDidEndDragging(willDecelerate: Bool) {
         if !willDecelerate {
             isUserInteracting = false
         }
     }
 
-    func handleScrollViewDidEndDecelerating() {
+    public func handleScrollViewDidEndDecelerating() {
         isUserInteracting = false
     }
 
@@ -239,13 +240,5 @@ final class TiltScrollManager: NSObject {
         let newY = (scrollView.contentOffset.y + velocity * CGFloat(dt)).clamp(minY...maxY)
         guard newY != scrollView.contentOffset.y else { return }
         scrollView.contentOffset = CGPoint(x: scrollView.contentOffset.x, y: newY)
-    }
-}
-
-// MARK: - Helper Extensions
-
-private extension Comparable {
-    func clamp(_ limits: ClosedRange<Self>) -> Self {
-        return min(max(self, limits.lowerBound), limits.upperBound)
     }
 }

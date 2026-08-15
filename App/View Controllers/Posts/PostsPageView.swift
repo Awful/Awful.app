@@ -4,6 +4,7 @@
 
 import AwfulSettings
 import AwfulTheming
+import AwfulTilt
 import os
 import ScrollViewDelegateMultiplexer
 import UIKit

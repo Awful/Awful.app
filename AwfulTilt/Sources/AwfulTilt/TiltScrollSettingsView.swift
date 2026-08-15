@@ -11,7 +11,7 @@ import UIKit
 /// Scroll" switch and, below it, a sensitivity slider, an "Invert Direction"
 /// switch, and a "Set Zero Point" button that are only shown while tilt
 /// scrolling is enabled.
-final class TiltScrollSettingsView: UIStackView {
+public final class TiltScrollSettingsView: UIStackView {
 
     @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
     @FoilDefaultStorage(Settings.tiltScrollEnabled) private var tiltScrollEnabled
@@ -21,11 +21,11 @@ final class TiltScrollSettingsView: UIStackView {
 
     /// Set by the presenter; called when the user taps "Set Zero Point" so the
     /// tilt scroll manager adopts the device's current pose as neutral.
-    var recalibrate: (() -> Void)?
+    public var recalibrate: (() -> Void)?
 
     /// Called when rows are shown or hidden, so the containing sheet can
     /// update its preferred content size.
-    var sizeDidChange: (() -> Void)?
+    public var sizeDidChange: (() -> Void)?
 
     private let toggleLabel = UILabel()
     private let toggleSwitch = UISwitch()
@@ -37,14 +37,14 @@ final class TiltScrollSettingsView: UIStackView {
     private let invertRow = UIStackView()
     private let zeroButton = UIButton(type: .system)
 
-    init() {
+    public init() {
         super.init(frame: .zero)
 
         axis = .vertical
         spacing = 16
         translatesAutoresizingMaskIntoConstraints = false
 
-        toggleLabel.text = "Tilt to Scroll"
+        toggleLabel.text = String(localized: "Tilt to Scroll", bundle: .module)
         toggleLabel.font = UIFont.preferredFont(forTextStyle: .body)
 
         toggleSwitch.isOn = tiltScrollEnabled
@@ -55,7 +55,7 @@ final class TiltScrollSettingsView: UIStackView {
         toggleRow.distribution = .equalSpacing
         toggleRow.alignment = .center
 
-        sensitivityLabel.text = "Sensitivity"
+        sensitivityLabel.text = String(localized: "Sensitivity", bundle: .module)
         sensitivityLabel.font = UIFont.preferredFont(forTextStyle: .body)
         sensitivityLabel.setContentHuggingPriority(.required, for: .horizontal)
 
@@ -72,7 +72,7 @@ final class TiltScrollSettingsView: UIStackView {
         sensitivityRow.alignment = .center
         sensitivityRow.isHidden = !tiltScrollEnabled
 
-        invertLabel.text = "Invert Direction"
+        invertLabel.text = String(localized: "Invert Direction", bundle: .module)
         invertLabel.font = UIFont.preferredFont(forTextStyle: .body)
 
         invertSwitch.isOn = tiltScrollInverted
@@ -85,7 +85,7 @@ final class TiltScrollSettingsView: UIStackView {
         invertRow.alignment = .center
         invertRow.isHidden = !tiltScrollEnabled
 
-        zeroButton.setTitle("Set Zero Point", for: .normal)
+        zeroButton.setTitle(String(localized: "Set Zero Point", bundle: .module), for: .normal)
         zeroButton.titleLabel?.font = UIFont.preferredFont(forTextStyle: .body)
         zeroButton.addTarget(self, action: #selector(setTiltZeroPoint(_:)), for: .touchUpInside)
         zeroButton.isHidden = !tiltScrollEnabled
@@ -119,7 +119,7 @@ final class TiltScrollSettingsView: UIStackView {
             .store(in: &cancellables)
     }
 
-    func applyTheme(_ theme: Theme) {
+    public func applyTheme(_ theme: Theme) {
         toggleLabel.textColor = theme["sheetTextColor"] ?? UIColor.label
         toggleSwitch.onTintColor = theme["settingsSwitchColor"]
         sensitivityLabel.textColor = theme["sheetTextColor"] ?? UIColor.label
@@ -153,7 +153,7 @@ final class TiltScrollSettingsView: UIStackView {
         }
     }
 
-    required init(coder: NSCoder) {
+    public required init(coder: NSCoder) {
         fatalError("NSCoding is not supported")
     }
 }

@@ -9,6 +9,7 @@ import AwfulRapsheet
 import AwfulSearch
 import AwfulSettings
 import AwfulTheming
+import AwfulTilt
 import Combine
 @preconcurrency import CoreData
 import MobileCoreServices

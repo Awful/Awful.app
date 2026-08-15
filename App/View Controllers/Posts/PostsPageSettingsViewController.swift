@@ -5,6 +5,7 @@
 import AwfulCore
 import AwfulSettings
 import AwfulTheming
+import AwfulTilt
 import Combine
 import UIKit
 
