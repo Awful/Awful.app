@@ -20,9 +20,6 @@ final class PostsPageSettingsViewController: ViewController, UIPopoverPresentati
     @FoilDefaultStorage(Settings.immersiveModeEnabled) private var immersiveModeEnabled
     @FoilDefaultStorage(Settings.showAvatars) private var showAvatars
     @FoilDefaultStorage(Settings.loadImages) private var showImages
-    @FoilDefaultStorage(Settings.tiltScrollEnabled) private var tiltScrollEnabled
-    @FoilDefaultStorage(Settings.tiltScrollInverted) private var tiltScrollInverted
-    @FoilDefaultStorage(Settings.tiltScrollSensitivity) private var tiltScrollSensitivity
 
     init() {
         super.init(nibName: "PostsPageSettings", bundle: nil)
@@ -86,39 +83,11 @@ final class PostsPageSettingsViewController: ViewController, UIPopoverPresentati
         dismiss(animated: true)
     }
 
-    private var tiltScrollStack: UIStackView?
-    private var tiltScrollLabel: UILabel?
-    private var tiltScrollSwitch: UISwitch?
-    private var tiltSensitivityStack: UIStackView?
-    private var tiltSensitivityLabel: UILabel?
-    private var tiltSensitivitySlider: UISlider?
-    private var tiltInvertStack: UIStackView?
-    private var tiltInvertLabel: UILabel?
-    private var tiltInvertSwitch: UISwitch?
-    private var tiltZeroButton: UIButton?
+    private var tiltScrollSettingsView: TiltScrollSettingsView?
 
     /// Set by the presenter; called when the user taps "Set Zero Point" so the
     /// tilt scroll manager adopts the device's current pose as neutral.
     var tiltScrollRecalibrate: (() -> Void)?
-
-    @objc private func toggleTiltScroll(_ sender: UISwitch) {
-        performHapticFeedback()
-        tiltScrollEnabled = sender.isOn
-    }
-
-    @objc private func tiltSensitivityDidChange(_ sender: UISlider) {
-        tiltScrollSensitivity = Double(sender.value)
-    }
-
-    @objc private func toggleTiltScrollInverted(_ sender: UISwitch) {
-        performHapticFeedback()
-        tiltScrollInverted = sender.isOn
-    }
-
-    @objc private func setTiltZeroPoint(_ sender: UIButton) {
-        performHapticFeedback()
-        tiltScrollRecalibrate?()
-    }
 
     // MARK: - Helper Methods
 
@@ -199,28 +168,6 @@ final class PostsPageSettingsViewController: ViewController, UIPopoverPresentati
             }
             .store(in: &cancellables)
 
-        $tiltScrollEnabled
-            .receive(on: RunLoop.main)
-            .sink { [weak self] enabled in
-                guard let self else { return }
-                tiltScrollSwitch?.isOn = enabled
-                tiltSensitivityStack?.isHidden = !enabled
-                tiltInvertStack?.isHidden = !enabled
-                tiltZeroButton?.isHidden = !enabled
-                updatePreferredContentSize()
-            }
-            .store(in: &cancellables)
-
-        $tiltScrollSensitivity
-            .receive(on: RunLoop.main)
-            .sink { [weak self] in self?.tiltSensitivitySlider?.value = Float($0) }
-            .store(in: &cancellables)
-
-        $tiltScrollInverted
-            .receive(on: RunLoop.main)
-            .sink { [weak self] in self?.tiltInvertSwitch?.isOn = $0 }
-            .store(in: &cancellables)
-
         DispatchQueue.main.async { [weak self] in
             self?.setupImmersiveModeUI()
             self?.setupEndlessScrollUI()
@@ -297,94 +244,24 @@ final class PostsPageSettingsViewController: ViewController, UIPopoverPresentati
         updatePreferredContentSize()
     }
 
-    /// Adds a "Tilt to Scroll" switch row and, below it, a sensitivity slider
-    /// row that's only shown while tilt scrolling is enabled.
+    /// Adds the tilt-to-scroll rows: a "Tilt to Scroll" switch and, below it,
+    /// sensitivity/invert/zero-point rows only shown while tilt scrolling is
+    /// enabled.
     private func setupTiltScrollUI() {
-        guard isViewLoaded, tiltScrollStack == nil else { return }
+        guard isViewLoaded, tiltScrollSettingsView == nil else { return }
 
-        let label = UILabel()
-        label.text = "Tilt to Scroll"
-        label.font = UIFont.preferredFont(forTextStyle: .body)
-        label.textColor = theme["sheetTextColor"] ?? UIColor.label
-        tiltScrollLabel = label
-
-        let tiltSwitch = UISwitch()
-        tiltSwitch.isOn = tiltScrollEnabled
-        tiltSwitch.onTintColor = theme["settingsSwitchColor"]
-        tiltSwitch.addTarget(self, action: #selector(toggleTiltScroll(_:)), for: .valueChanged)
-        tiltScrollSwitch = tiltSwitch
-
-        let toggleStack = UIStackView(arrangedSubviews: [label, tiltSwitch])
-        toggleStack.axis = .horizontal
-        toggleStack.distribution = .equalSpacing
-        toggleStack.alignment = .center
-        toggleStack.translatesAutoresizingMaskIntoConstraints = false
-        tiltScrollStack = toggleStack
-
-        let sensitivityLabel = UILabel()
-        sensitivityLabel.text = "Sensitivity"
-        sensitivityLabel.font = UIFont.preferredFont(forTextStyle: .body)
-        sensitivityLabel.textColor = theme["sheetTextColor"] ?? UIColor.label
-        sensitivityLabel.setContentHuggingPriority(.required, for: .horizontal)
-        tiltSensitivityLabel = sensitivityLabel
-
-        let slider = UISlider()
-        slider.minimumValue = 0
-        slider.maximumValue = 1
-        slider.value = Float(tiltScrollSensitivity)
-        slider.isContinuous = true
-        slider.minimumTrackTintColor = theme["settingsSwitchColor"]
-        slider.addTarget(self, action: #selector(tiltSensitivityDidChange(_:)), for: .valueChanged)
-        tiltSensitivitySlider = slider
-
-        let sliderStack = UIStackView(arrangedSubviews: [sensitivityLabel, slider])
-        sliderStack.axis = .horizontal
-        sliderStack.spacing = 12
-        sliderStack.alignment = .center
-        sliderStack.translatesAutoresizingMaskIntoConstraints = false
-        sliderStack.isHidden = !tiltScrollEnabled
-        tiltSensitivityStack = sliderStack
-
-        let invertLabel = UILabel()
-        invertLabel.text = "Invert Direction"
-        invertLabel.font = UIFont.preferredFont(forTextStyle: .body)
-        invertLabel.textColor = theme["sheetTextColor"] ?? UIColor.label
-        tiltInvertLabel = invertLabel
-
-        let invertSwitch = UISwitch()
-        invertSwitch.isOn = tiltScrollInverted
-        invertSwitch.onTintColor = theme["settingsSwitchColor"]
-        invertSwitch.addTarget(self, action: #selector(toggleTiltScrollInverted(_:)), for: .valueChanged)
-        tiltInvertSwitch = invertSwitch
-
-        let invertStack = UIStackView(arrangedSubviews: [invertLabel, invertSwitch])
-        invertStack.axis = .horizontal
-        invertStack.distribution = .equalSpacing
-        invertStack.alignment = .center
-        invertStack.translatesAutoresizingMaskIntoConstraints = false
-        invertStack.isHidden = !tiltScrollEnabled
-        tiltInvertStack = invertStack
-
-        let zeroButton = UIButton(type: .system)
-        zeroButton.setTitle("Set Zero Point", for: .normal)
-        zeroButton.titleLabel?.font = UIFont.preferredFont(forTextStyle: .body)
-        zeroButton.addTarget(self, action: #selector(setTiltZeroPoint(_:)), for: .touchUpInside)
-        zeroButton.isHidden = !tiltScrollEnabled
-        zeroButton.heightAnchor.constraint(greaterThanOrEqualToConstant: 44).isActive = true
-        tiltZeroButton = zeroButton
+        let section = TiltScrollSettingsView()
+        section.recalibrate = { [weak self] in self?.tiltScrollRecalibrate?() }
+        section.sizeDidChange = { [weak self] in self?.updatePreferredContentSize() }
+        section.applyTheme(theme)
+        tiltScrollSettingsView = section
 
         if let anchor: UIView = endlessScrollButton ?? immersiveModeStack ?? darkModeStack,
            let parentStack = anchor.superview as? UIStackView {
             if let index = parentStack.arrangedSubviews.firstIndex(of: anchor) {
-                parentStack.insertArrangedSubview(toggleStack, at: index + 1)
-                parentStack.insertArrangedSubview(sliderStack, at: index + 2)
-                parentStack.insertArrangedSubview(invertStack, at: index + 3)
-                parentStack.insertArrangedSubview(zeroButton, at: index + 4)
+                parentStack.insertArrangedSubview(section, at: index + 1)
             } else {
-                parentStack.addArrangedSubview(toggleStack)
-                parentStack.addArrangedSubview(sliderStack)
-                parentStack.addArrangedSubview(invertStack)
-                parentStack.addArrangedSubview(zeroButton)
+                parentStack.addArrangedSubview(section)
             }
         }
 
@@ -414,12 +291,7 @@ final class PostsPageSettingsViewController: ViewController, UIPopoverPresentati
         immersiveModeLabel?.textColor = theme["sheetTextColor"] ?? UIColor.label
         immersiveModeSwitch?.onTintColor = theme["settingsSwitchColor"]
 
-        tiltScrollLabel?.textColor = theme["sheetTextColor"] ?? UIColor.label
-        tiltScrollSwitch?.onTintColor = theme["settingsSwitchColor"]
-        tiltSensitivityLabel?.textColor = theme["sheetTextColor"] ?? UIColor.label
-        tiltSensitivitySlider?.minimumTrackTintColor = theme["settingsSwitchColor"]
-        tiltInvertLabel?.textColor = theme["sheetTextColor"] ?? UIColor.label
-        tiltInvertSwitch?.onTintColor = theme["settingsSwitchColor"]
+        tiltScrollSettingsView?.applyTheme(theme)
     }
     
     // MARK: UIAdaptivePresentationControllerDelegate

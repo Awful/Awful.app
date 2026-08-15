@@ -106,6 +106,7 @@
 		1C47122C2664CB8C00E5AA74 /* Smilies in Frameworks */ = {isa = PBXBuildFile; productRef = 1C47122B2664CB8C00E5AA74 /* Smilies */; };
 		1C47122F2664CE4E00E5AA74 /* WebArchive in Frameworks */ = {isa = PBXBuildFile; productRef = 1C47122E2664CE4E00E5AA74 /* WebArchive */; };
 		1C47AF4A19A7905F0098B828 /* PostsPageSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C47AF4919A7905F0098B828 /* PostsPageSettingsViewController.swift */; };
+		AC10AC10AC10AC10AC600011 /* TiltScrollSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC10AC10AC10AC10AC600010 /* TiltScrollSettingsView.swift */; };
 		1C47AF4C19A790910098B828 /* PostsPageSettings.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C47AF4B19A790910098B828 /* PostsPageSettings.xib */; };
 		1C48538E1F93BADF0042531A /* HTMLRenderingHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C48538D1F93BADF0042531A /* HTMLRenderingHelpers.swift */; };
 		1C4E68311B32558A00FC2A02 /* ForumListSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4E68301B32558A00FC2A02 /* ForumListSectionHeaderView.swift */; };
@@ -440,6 +441,7 @@
 		1C47122D2664CCE700E5AA74 /* Awful.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = Awful.xctestplan; sourceTree = SOURCE_ROOT; };
 		1C47AF4919A7905F0098B828 /* PostsPageSettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostsPageSettingsViewController.swift; sourceTree = "<group>"; };
 		1C47AF4B19A790910098B828 /* PostsPageSettings.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PostsPageSettings.xib; sourceTree = "<group>"; };
+		AC10AC10AC10AC10AC600010 /* TiltScrollSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TiltScrollSettingsView.swift; sourceTree = "<group>"; };
 		1C48538D1F93BADF0042531A /* HTMLRenderingHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLRenderingHelpers.swift; sourceTree = "<group>"; };
 		1C4D63842B6704CA005EB25C /* SystemCapabilities */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = SystemCapabilities; sourceTree = "<group>"; };
 		1C4E68301B32558A00FC2A02 /* ForumListSectionHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForumListSectionHeaderView.swift; sourceTree = "<group>"; };
@@ -829,6 +831,7 @@
 				1CD0C54E1BE674D700C3AC80 /* PostsPageRefreshSpinnerView.swift */,
 				1C47AF4B19A790910098B828 /* PostsPageSettings.xib */,
 				1C47AF4919A7905F0098B828 /* PostsPageSettingsViewController.swift */,
+				AC10AC10AC10AC10AC600010 /* TiltScrollSettingsView.swift */,
 				1C16FBD61CBAA00200C88BD1 /* PostsPageTopBar.swift */,
 				1C16FC031CC3D84500C88BD1 /* PostsPageView.swift */,
 				1C0D7FFD1CF38CA2003EE2D1 /* PostsPageViewController.swift */,
@@ -1730,6 +1733,7 @@
 				1CC58F5D1B5AC4330016EE83 /* UIKit.swift in Sources */,
 				1C16FC021CC29B2C00C88BD1 /* LoadingView.swift in Sources */,
 				1C47AF4A19A7905F0098B828 /* PostsPageSettingsViewController.swift in Sources */,
+				AC10AC10AC10AC10AC600011 /* TiltScrollSettingsView.swift in Sources */,
 				1C0D7FFE1CF38CA2003EE2D1 /* PostsPageViewController.swift in Sources */,
 				6FDFDD5EDA73CAB878C6B73C /* PostScreenshotter.swift in Sources */,
 				F7DD3BB290F57E0EF4014ECD /* ScreenshotterViewController.swift in Sources */,
