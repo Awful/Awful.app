@@ -104,7 +104,6 @@ public struct ThreadPollScrapeResult: ScrapeResult {
                 id: id,
                 text: plainText(of: labelSegments),
                 segments: labelSegments,
-                rawHTML: labelCell?.innerHTML ?? "",
                 formName: name,
                 // Never assume "yes"; read what the markup actually wants.
                 formValue: input["value"] ?? "on"
@@ -189,7 +188,6 @@ public struct ThreadPollScrapeResult: ScrapeResult {
                 id: index + 1,
                 text: plainText(of: labelSegments),
                 segments: labelSegments,
-                rawHTML: labelCell.innerHTML,
                 voteCount: countCell.flatMap { integer(in: $0.textContent) },
                 percentage: percentCell.flatMap { percentage(in: $0.textContent) },
                 formName: nil,

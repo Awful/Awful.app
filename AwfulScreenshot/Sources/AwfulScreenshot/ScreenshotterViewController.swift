@@ -16,7 +16,6 @@ public final class ScreenshotterViewController: ViewController {
     private let handlers: ScreenshotHandlers
     private let posts: [Post]
     private let sourceTheme: Theme
-    private var hostingController: UIViewController?
 
     public init(posts: [Post], theme: Theme, handlers: ScreenshotHandlers) {
         self.handlers = handlers
@@ -46,7 +45,6 @@ public final class ScreenshotterViewController: ViewController {
         hc.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         view.addSubview(hc.view)
         hc.didMove(toParent: self)
-        hostingController = hc
     }
 }
 
@@ -61,7 +59,6 @@ final class ScreenshotterViewModel: ObservableObject {
     @Published var selectedIndices: [Int] = []
     @Published var thumbnails: [Int: UIImage] = [:]
     @Published var isGeneratingScreenshot = false
-    @Published var isLoadingThumbnails = true
     @Published var generatedImage: UIImage?
 
     init(posts: [Post], theme: Theme, handlers: ScreenshotHandlers) {
@@ -71,15 +68,11 @@ final class ScreenshotterViewModel: ObservableObject {
     }
 
     func loadThumbnails() async {
-        isLoadingThumbnails = true
-
         await PostScreenshotter.renderThumbnails(
             for: posts, theme: theme, handlers: handlers, width: 375, maxHeight: 300
         ) { index, image in
             thumbnails[index] = image
         }
-
-        isLoadingThumbnails = false
     }
 
     func toggleSelection(at index: Int) {

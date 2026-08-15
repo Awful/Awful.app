@@ -68,7 +68,7 @@ struct GlossaryMessageView: View {
                 .multilineTextAlignment(.center)
                 .foregroundColor(theme[color: "listSecondaryTextColor"])
             if let retry {
-                Button("Try Again", action: retry)
+                Button(action: retry) { Text("Try Again", bundle: .module) }
                     .tint(theme[color: "tintColor"])
             }
         }

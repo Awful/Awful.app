@@ -21,6 +21,23 @@ extension HTMLSelector {
     }
 }
 
+extension Form {
+    /**
+     The value the forums expect when the named checkbox is ticked, or `nil` if there's no such
+     enabled checkbox.
+
+     Worth reading back out of the markup rather than assuming: `Form` defaults a checkbox with no
+     `value` attribute to `"on"`, and SA isn't consistent about supplying one.
+     */
+    func checkboxValue(named name: String) -> String? {
+        for case .checkbox(name: let controlName, value: let value, isChecked: _, isDisabled: false)
+        in controls where controlName == name {
+            return value
+        }
+        return nil
+    }
+}
+
 func LocalizedString(_ key: String) -> String {
     return NSLocalizedString(key, bundle: Bundle(for: ForumsClient.self), comment: "")
 }

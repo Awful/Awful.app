@@ -130,18 +130,17 @@ public final class ForumsClient {
     ///
     /// Mirrors the Forums' server-side, cookie-scoped "time machine" state. It's refreshed from every
     /// thread-list load and by the archives methods below. Observe ``archivesTimeframeDidChange``.
-    public private(set) var currentArchivesTimeframe: ArchivesTimeframe? {
+    @MainActor public private(set) var currentArchivesTimeframe: ArchivesTimeframe? {
         didSet {
             guard oldValue != currentArchivesTimeframe else { return }
-            let timeframe = currentArchivesTimeframe
-            Task { @MainActor in
-                NotificationCenter.default.post(
-                    name: Self.archivesTimeframeDidChange,
-                    object: self,
-                    userInfo: timeframe.map { ["timeframe": $0] } ?? [:]
-                )
-            }
+            NotificationCenter.default.post(name: Self.archivesTimeframeDidChange, object: self)
         }
+    }
+
+    /// Hop for the fetch methods below, which run on arbitrary executors while the property (and
+    /// everyone observing it) lives on the main actor.
+    @MainActor private func updateArchivesTimeframe(_ timeframe: ArchivesTimeframe?) {
+        currentArchivesTimeframe = timeframe
     }
 
     enum Error: Swift.Error {
@@ -412,7 +411,7 @@ public final class ForumsClient {
         // Keep the archives mirror in sync for free. Only update when the form is present (upgrade
         // owners) so a page without it never clobbers a known lock.
         if let archivesForm = result.archivesForm {
-            currentArchivesTimeframe = archivesForm.selectedTimeframe
+            await updateArchivesTimeframe(archivesForm.selectedTimeframe)
         }
         let backgroundThreads = try await backgroundContext.perform {
             let threads = try result.upsert(into: backgroundContext)
@@ -482,7 +481,7 @@ public final class ForumsClient {
         ])
         let (document, url) = try parseHTML(data: data, response: response)
         let result = try ArchivesFormScrapeResult(document, url: url)
-        currentArchivesTimeframe = result.selectedTimeframe
+        await updateArchivesTimeframe(result.selectedTimeframe)
         return result
     }
 
@@ -504,23 +503,26 @@ public final class ForumsClient {
                 "set": "GO",
             ]
         )
-        // Prefer the server's echoed state; fall back to what we asked for if the page won't parse.
-        if let (document, url) = try? parseHTML(data: data, response: response),
-           let scraped = try? ArchivesFormScrapeResult(document, url: url) {
-            currentArchivesTimeframe = scraped.selectedTimeframe
+        // Let server error pages (banned, database down, …) throw before recording anything.
+        let (document, url) = try parseHTML(data: data, response: response)
+        // Prefer the server's echoed state; fall back to what we asked for if the form won't scrape.
+        if let scraped = try? ArchivesFormScrapeResult(document, url: url) {
+            await updateArchivesTimeframe(scraped.selectedTimeframe)
         } else {
-            currentArchivesTimeframe = ArchivesTimeframe(month: month, day: day, year: year)
+            await updateArchivesTimeframe(ArchivesTimeframe(month: month, day: day, year: year))
         }
     }
 
     /// Returns to live forums (posts the time machine's "Remove").
     public func removeArchivesTimeframe() async throws {
-        _ = try await fetch(
+        let (data, response) = try await fetch(
             method: .post,
             urlString: "forumdisplay.php?forumid=\(archivesAnchorForumID)",
             parameters: ["rem": "Remove"]
         )
-        currentArchivesTimeframe = nil
+        // Let server error pages throw so we don't record a switch that never happened.
+        _ = try parseHTML(data: data, response: response)
+        await updateArchivesTimeframe(nil)
     }
 
     public func setThread(
@@ -694,31 +696,39 @@ public final class ForumsClient {
        }
         // Asking for a poll just means ticking a box on this form; the poll itself gets filled in
         // afterwards, on a second page, by which point the thread is already live.
-        var pollParametersWereSet = false
+        // Track each control separately so a partial failure doesn't send the same parameter both
+        // via the form and via the hand-rolled fallback below.
+        var pollBoxWasTicked = false
+        var pollOptionCountWasEntered = false
         let clampedPollOptionCount = pollOptionCount.map {
             min(max($0, PollSubmission.optionCountRange.lowerBound), PollSubmission.optionCountRange.upperBound)
         }
         if let clampedPollOptionCount {
             do {
-                guard let tickedValue = checkboxValue(in: formData.form, named: "postpoll") else {
+                guard let tickedValue = formData.form.checkboxValue(named: "postpoll") else {
                     throw SubmittableForm.Error.missingControl(type: "checkbox", named: "postpoll")
                 }
                 try form.select(value: tickedValue, for: "postpoll")
+                pollBoxWasTicked = true
                 // `polloptions` ships with a value already in it, and `enter` appends, so clear first.
                 try form.clearText(for: "polloptions")
                 try form.enter(text: "\(clampedPollOptionCount)", for: "polloptions")
-                pollParametersWereSet = true
+                pollOptionCountWasEntered = true
             } catch is SubmittableForm.Error {
                 // This forum's form doesn't have the poll controls, or the preview response dropped
-                // them. Fall through and send the parameters by hand below.
+                // them. Fall through and send the missing parameters by hand below.
             }
         }
 
         let submission = form.submit(button: formData.form.submitButton(named: "submit"))
         var params = prepareFormEntries(submission)
-        if let clampedPollOptionCount, !pollParametersWereSet {
-            params.append((key: "postpoll", value: "yes"))
-            params.append((key: "polloptions", value: "\(clampedPollOptionCount)"))
+        if let clampedPollOptionCount {
+            if !pollBoxWasTicked {
+                params.append((key: "postpoll", value: "yes"))
+            }
+            if !pollOptionCountWasEntered {
+                params.append((key: "polloptions", value: "\(clampedPollOptionCount)"))
+            }
         }
         let (data, response) = try await fetch(method: .post, urlString: "newthread.php", parameters: params)
         let (document, url) = try parseHTML(data: data, response: response)
@@ -777,7 +787,7 @@ public final class ForumsClient {
             let update = try form.makeOptionCountUpdateForm(count: poll.options.count)
             let (data, response) = try await fetch(
                 method: .post,
-                urlString: "poll.php",
+                urlString: form.actionPath,
                 parameters: prepareFormEntries(update.submit(button: form.updateOptionCountButton))
             )
             let (document, url) = try parseHTML(data: data, response: response)
@@ -791,7 +801,7 @@ public final class ForumsClient {
         let submission = try form.makeSubmittableForm().submit(button: form.submitButton)
         let (data, response) = try await fetch(
             method: .post,
-            urlString: "poll.php",
+            urlString: form.actionPath,
             parameters: prepareFormEntries(submission)
         )
 
@@ -884,6 +894,13 @@ public final class ForumsClient {
             // `?? "on"` matches what `Form` assumes for a checkbox with no `value` attribute; in
             // practice the scraper always fills this in.
             params.append((key: name, value: (option.formValue ?? "on") as Any))
+        }
+        // Every ID skipped (e.g. options scraped from a results table, which carry no form
+        // controls) would mean POSTing a "vote" with nothing picked.
+        guard params.count > ballot.hiddenFields.count else {
+            throw AwfulCoreError.pollVoteInvalid(message: String(
+                localized: "Please pick an option.", bundle: .module
+            ))
         }
 
         let (data, response) = try await fetch(method: .post, urlString: ballot.actionPath, parameters: params)
@@ -1099,6 +1116,7 @@ public final class ForumsClient {
          - posts: The posts that appeared on the page of the thread.
          - firstUnreadPost: The index of the first unread post on the page (this index starts at 1), or `nil` if no unread post is found.
          - advertisementHTML: Raw HTML of an SA-hosted banner ad.
+         - poll: The thread's poll, if the page had one.
      */
     public func listPosts(
         in thread: AwfulThread,
@@ -2459,21 +2477,6 @@ private func checkServerErrors(_ document: HTMLDocument) throws {
 
 private func prepareFormEntries(_ submission: SubmittableForm.PreparedSubmission) -> [Dictionary<String, Any>.Element] {
     return submission.entries.map { ($0.name, $0.value ) }
-}
-
-
-/**
- The value the forums expect when a checkbox is ticked.
-
- Worth reading back out of the markup rather than assuming: `Form` defaults a checkbox with no
- `value` attribute to `"on"`, and SA isn't consistent about supplying one.
- */
-private func checkboxValue(in form: Form, named name: String) -> String? {
-    for case .checkbox(name: let controlName, value: let value, isChecked: _, isDisabled: false)
-    in form.controls where controlName == name {
-        return value
-    }
-    return nil
 }
 
 

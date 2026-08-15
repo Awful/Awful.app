@@ -112,6 +112,7 @@ public final class CustomThemeManager: ObservableObject {
 
     public func copyFromTheme(_ theme: Theme) {
         var resolved = theme.allResolvedValues()
+        let cssKey = resolved["postsViewCSS"] as? String ?? "posts-view"
         for key in Self.excludedKeys {
             resolved.removeValue(forKey: key)
         }
@@ -119,8 +120,7 @@ public final class CustomThemeManager: ObservableObject {
         baseThemeName = theme.name
 
         // Load the source theme's compiled CSS
-        let cssKey = theme.allResolvedValues()["postsViewCSS"] as? String ?? "posts-view"
-        if let url = Bundle.module.url(forResource: cssKey, withExtension: ".css"),
+        if let url = Bundle.module.url(forResource: cssKey, withExtension: "css"),
            let css = try? String(contentsOf: url, encoding: .utf8) {
             customCSS = css
         }
@@ -147,7 +147,7 @@ public final class CustomThemeManager: ObservableObject {
             return customCSS
         }
         // Fall back to the bundled default CSS
-        guard let url = Bundle.module.url(forResource: "posts-view", withExtension: ".css"),
+        guard let url = Bundle.module.url(forResource: "posts-view", withExtension: "css"),
               let css = try? String(contentsOf: url, encoding: .utf8) else {
             return nil
         }

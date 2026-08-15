@@ -18,8 +18,8 @@
     {% for p in punishments %}
         {% if p.pageDivider %}<div class="endless-page-divider">{{ p.pageDivider|htmlEscape }}</div>{% endif %}
         <post class="{{ p.sentenceClass }}" {% if p.postID %}data-post-id="{{ p.postID|htmlEscape }}"{% endif %}>
-            <header>
-                <img class="avatar" src="{{ p.iconURL }}" alt="{{ p.sentenceClass }}">
+            <header role="text" aria-label="{{ p.accessibilityLabel|htmlEscape }}">
+                <img class="avatar" src="{{ p.iconURL }}" alt="">
                 <section class="nameanddate">
                     <span class="username">{{ p.subjectUsername|htmlEscape }}</span>
                     <span class="regdate">{{ p.subtitle|htmlEscape }}</span>

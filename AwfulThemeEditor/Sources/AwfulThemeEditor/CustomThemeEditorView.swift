@@ -16,6 +16,8 @@ public struct CustomThemeEditorView: View {
     @State private var showingImportPicker = false
     @State private var importError: String?
     @State private var showingImportError = false
+    @State private var exportError: String?
+    @State private var showingExportError = false
 
     private static let exportTimestampFormatter: DateFormatter = {
         let f = DateFormatter()
@@ -93,6 +95,11 @@ public struct CustomThemeEditorView: View {
             Button("OK", bundle: .module) {}
         } message: {
             Text(importError ?? "Unknown error")
+        }
+        .alert(Text("Export Error", bundle: .module), isPresented: $showingExportError) {
+            Button("OK", bundle: .module) {}
+        } message: {
+            Text(exportError ?? "Unknown error")
         }
     }
 
@@ -387,8 +394,8 @@ public struct CustomThemeEditorView: View {
                 presenter.present(activityVC, animated: true)
             }
         } catch {
-            importError = "Export failed: \(error.localizedDescription)"
-            showingImportError = true
+            exportError = error.localizedDescription
+            showingExportError = true
         }
     }
 }
@@ -513,7 +520,6 @@ struct SearchableTextEditor: UIViewRepresentable {
 
     class Coordinator: NSObject, UITextViewDelegate {
         var parent: SearchableTextEditor
-        private var matchRanges: [NSRange] = []
 
         init(_ parent: SearchableTextEditor) {
             self.parent = parent
@@ -531,7 +537,6 @@ struct SearchableTextEditor: UIViewRepresentable {
             storage.removeAttribute(.backgroundColor, range: fullRange)
 
             guard !searchText.isEmpty else {
-                matchRanges = []
                 DispatchQueue.main.async {
                     self.parent.matchCount = 0
                     self.parent.currentMatch = 0
@@ -543,17 +548,14 @@ struct SearchableTextEditor: UIViewRepresentable {
             let text = storage.string as NSString
             var ranges: [NSRange] = []
             var searchRange = NSRange(location: 0, length: text.length)
-            let needle = searchText.lowercased() as NSString
 
             while searchRange.location < text.length {
-                let range = text.range(of: needle as String, options: .caseInsensitive, range: searchRange)
+                let range = text.range(of: searchText, options: .caseInsensitive, range: searchRange)
                 guard range.location != NSNotFound else { break }
                 ranges.append(range)
                 searchRange.location = range.location + range.length
                 searchRange.length = text.length - searchRange.location
             }
-
-            matchRanges = ranges
 
             // Highlight all matches
             for range in ranges {
@@ -737,12 +739,12 @@ struct DocumentPickerView: UIViewControllerRepresentable {
 extension Color {
     /// Creates a Color from a CSS hex string (e.g., "#ff0000", "#f00", "#ff000080").
     init?(hex: String) {
-        let hexString = hex.hasPrefix("#") ? String(hex.dropFirst()) : hex
-        guard let uiColor = UIColor(cssHex: hexString) else { return nil }
+        guard let uiColor = UIColor(hex: hex) else { return nil }
         self.init(uiColor)
     }
 
-    /// Returns a hex string representation of this color.
+    /// Returns a hex string representation of this color, in the `#rrggbb[aa]` form the theme's
+    /// CSS values use.
     var hexString: String {
         let uiColor = UIColor(self)
         var r: CGFloat = 0, g: CGFloat = 0, b: CGFloat = 0, a: CGFloat = 0
@@ -753,41 +755,5 @@ extension Color {
         }
         return String(format: "#%02x%02x%02x",
                       Int(r * 255), Int(g * 255), Int(b * 255))
-    }
-}
-
-private extension UIColor {
-    convenience init?(cssHex hexString: String) {
-        let scanner = Scanner(string: hexString)
-        guard let hex = scanner.scanUInt64(representation: .hexadecimal) else { return nil }
-        let length = hexString.count
-        switch length {
-        case 3:
-            self.init(
-                red: CGFloat((hex & 0xF00) >> 8) / 15,
-                green: CGFloat((hex & 0x0F0) >> 4) / 15,
-                blue: CGFloat((hex & 0x00F) >> 0) / 15,
-                alpha: 1)
-        case 4:
-            self.init(
-                red: CGFloat((hex & 0xF000) >> 12) / 15,
-                green: CGFloat((hex & 0x0F00) >> 8) / 15,
-                blue: CGFloat((hex & 0x00F0) >> 4) / 15,
-                alpha: CGFloat((hex & 0x000F) >> 0) / 15)
-        case 6:
-            self.init(
-                red: CGFloat((hex & 0xFF0000) >> 16) / 255,
-                green: CGFloat((hex & 0x00FF00) >> 8) / 255,
-                blue: CGFloat((hex & 0x0000FF) >> 0) / 255,
-                alpha: 1)
-        case 8:
-            self.init(
-                red: CGFloat((hex & 0xFF000000) >> 24) / 255,
-                green: CGFloat((hex & 0x00FF0000) >> 16) / 255,
-                blue: CGFloat((hex & 0x0000FF00) >> 8) / 255,
-                alpha: CGFloat((hex & 0x000000FF) >> 0) / 255)
-        default:
-            return nil
-        }
     }
 }

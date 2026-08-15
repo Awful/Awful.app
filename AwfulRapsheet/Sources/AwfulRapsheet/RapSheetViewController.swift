@@ -6,8 +6,11 @@ import AwfulCore
 import AwfulExtensions
 import AwfulSettings
 import AwfulTheming
+import os
 import ScrollViewDelegateMultiplexer
 import UIKit
+
+private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "RapSheetViewController")
 
 /// Displays a list of probations and bans, rendered in a web view (like the posts page). Serves as both the
 /// Leper's Colony tab (`user == nil`) and a single user's Rap Sheet (`user != nil`).
@@ -40,6 +43,9 @@ public final class RapSheetViewController: ViewController {
     /// (theme change, web process termination) can reproduce the accumulated document with dividers.
     private var punishmentPages: [(page: Int, punishments: [LepersColonyScrapeResult.Punishment])] = []
     private var isAppending = false
+    /// When the last append attempt failed, so a persistent failure backs off instead of retrying
+    /// on every scroll event while parked at the bottom.
+    private var lastAppendFailure: Date?
     private var scrollViewDelegateMux: ScrollViewDelegateMultiplexer?
 
     private var isEndlessScrolling: Bool { isLepersColony && endlessScrollLepers }
@@ -89,16 +95,7 @@ public final class RapSheetViewController: ViewController {
 
     private lazy var doneItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(didTapDone))
 
-    private lazy var refreshControl: UIRefreshControl = {
-        let control = UIRefreshControl()
-        control.addAction(UIAction { [weak self] _ in
-            guard let self else { return }
-            // The pull-to-refresh control shows its own spinner, so skip the full loading overlay.
-            self.pageCache.removeAll()
-            Task { await self.load(max(self.page, 1), showsLoadingOverlay: false) }
-        }, for: .valueChanged)
-        return control
-    }()
+    private let pullToRefresh = NigglyPullToRefresh()
 
     /// Nav-bar Filter/Refresh button views on the standard (non–iOS 26 iPad) path, kept so
     /// `updateButtonColors()` can retint them on theme changes — mirroring `ForumsTableViewController`.
@@ -185,7 +182,12 @@ public final class RapSheetViewController: ViewController {
         ])
 
         renderView.scrollView.contentInsetAdjustmentBehavior = .never
-        renderView.scrollView.refreshControl = refreshControl
+        pullToRefresh.install(on: renderView.scrollView, theme: theme) { [weak self] in
+            guard let self else { return }
+            // The pull-to-refresh view shows its own spinner, so skip the full loading overlay.
+            self.pageCache.removeAll()
+            Task { await self.load(max(self.page, 1), showsLoadingOverlay: false) }
+        }
 
         // Watch for nearing the bottom to drive endless scroll. (The multiplexer preserves WKWebView's own scroll-view delegation.)
         scrollViewDelegateMux = ScrollViewDelegateMultiplexer(scrollView: renderView.scrollView)
@@ -262,7 +264,7 @@ public final class RapSheetViewController: ViewController {
         toolbar.tintColor = theme["toolbarTextColor"]
         configureToolbarAppearance()
         updateButtonColors()
-        refreshControl.tintColor = theme["listTextColor"]
+        pullToRefresh.themeDidChange(theme)
 
         renderView.setThemeStylesheet(theme[string: "postsViewCSS"] ?? "")
     }
@@ -311,7 +313,7 @@ public final class RapSheetViewController: ViewController {
         }
         defer {
             isLoading = false
-            refreshControl.endRefreshing()
+            pullToRefresh.endRefreshing()
             hideLoadingView()
             updateToolbar()
         }
@@ -346,6 +348,7 @@ public final class RapSheetViewController: ViewController {
     /// here so calls are cheap and idempotent.
     private func appendNextPageIfNeeded() {
         guard isEndlessScrolling, !isLoading, !isAppending, page >= 1, page < pageCount else { return }
+        if let lastAppendFailure, -lastAppendFailure.timeIntervalSinceNow < 5 { return }
         isAppending = true
         let nextPage = page + 1
         Task { [weak self] in
@@ -373,8 +376,11 @@ public final class RapSheetViewController: ViewController {
                 ])
                 await self.renderView.append(html: rowsHTML, containerID: "punishments")
                 self.updateToolbar()
+                self.lastAppendFailure = nil
             } catch {
-                // Stay quiet; scrolling near the bottom again retries.
+                // No alert: scrolling near the bottom again retries (after a short back-off).
+                self.lastAppendFailure = Date()
+                logger.error("endless scroll could not load banlist page \(nextPage): \(error)")
             }
         }
     }
@@ -385,8 +391,9 @@ public final class RapSheetViewController: ViewController {
         // Build the context on the main actor (it reads the theme), then render off-main like the posts page.
         let context = renderContext()
         let renderTemplate = handlers.renderTemplate
-        Task.detached(priority: .userInitiated) {
+        Task.detached(priority: .userInitiated) { [weak self] in
             let html = renderTemplate(context)
+            guard let self else { return }
             await self.renderView.render(html: html, baseURL: ForumsClient.shared.baseURL)
         }
     }
@@ -424,6 +431,7 @@ public final class RapSheetViewController: ViewController {
                 "subjectUsername": punishment.subjectUsername,
                 "subtitle": subtitle(for: punishment),
                 "reasonHTML": punishment.reason,
+                "accessibilityLabel": accessibilityLabel(for: punishment),
             ]
             if let postID = punishment.post?.rawValue {
                 row["postID"] = postID
@@ -501,6 +509,22 @@ public final class RapSheetViewController: ViewController {
         case .permaban?: return "permaban"
         case .ban?, .autoban?, .none: return "ban"
         }
+    }
+
+    /// One sentence for VoiceOver covering the whole header ("Username was banned <date> by <requester>"),
+    /// since the icon and separate username/date spans don't read meaningfully on their own.
+    private func accessibilityLabel(for punishment: LepersColonyScrapeResult.Punishment) -> String {
+        let verb: String = switch punishment.sentence {
+        case .probation?: "probated"
+        case .permaban?: "permabanned"
+        case .ban?, .autoban?, .none: "banned"
+        }
+        var label = "\(punishment.subjectUsername) was \(verb)"
+        let details = subtitle(for: punishment)
+        if !details.isEmpty {
+            label += " \(details)"
+        }
+        return label
     }
 
     /// The two ban icons are loose bundle resources; probation lives only in an asset catalog (unreachable

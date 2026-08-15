@@ -30,8 +30,6 @@ public struct ThemeViewModifier: ViewModifier {
 
     var theme: Theme {
         // TODO: Wrap this up somewhere closer to the Theme.defaultTheme() implementation so we have one source of truth for resolving "default theme".
-        // Access customThemeManager.overrides to establish a dependency for SwiftUI change tracking.
-        _ = customThemeManager.overrides.count
         return Theme.theme(named: (darkMode ? darkThemeName : lightThemeName).rawValue)!
     }
 

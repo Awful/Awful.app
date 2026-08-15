@@ -27,7 +27,8 @@ public struct NavigationConfigurator: UIViewControllerRepresentable {
                 navAppearance.backgroundColor = theme[uicolor: "navigationBarTintColor"]
                 navAppearance.shadowColor = .clear
 
-                let textColor = theme[uicolor: "navigationBarTextColor"]!
+                // Custom themes can drop this key, so don't crash the whole screen over it.
+                let textColor = theme[uicolor: "navigationBarTextColor"] ?? .label
                 navAppearance.titleTextAttributes = [.foregroundColor: textColor]
 
                 // Use the app's custom back image from assets instead of the system chevron.

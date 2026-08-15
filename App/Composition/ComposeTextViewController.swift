@@ -143,7 +143,7 @@ class ComposeTextViewController: ViewController, ModernToolbarActionHandling {
 
     // MARK: - ModernToolbarActionHandling
 
-    var toolbarTextView: URLCleaningTextView { view as! URLCleaningTextView }
+    var toolbarTextView: URLCleaningTextView { textView as! URLCleaningTextView }
     var toolbarMenuTree: CompositionMenuTree? { menuTree }
 
 
@@ -374,10 +374,7 @@ class ComposeTextViewController: ViewController, ModernToolbarActionHandling {
 
     // MARK: - Tracking removal
 
-    private var activeCleaningNotice: URLCleaningNotice?
-
     private func showURLCleanedBanner(_ notice: URLCleaningNotice) {
-        activeCleaningNotice = notice
         // Not our own view: that's the scrollable text view itself, so the banner would scroll away with the content.
         let host = navigationController?.view ?? view!
         BannerToastView.show(
@@ -386,9 +383,9 @@ class ComposeTextViewController: ViewController, ModernToolbarActionHandling {
             message: notice.bannerMessage,
             action: .button(title: "Use Original")
         ) { [weak self] in
-            guard let self, let notice = self.activeCleaningNotice else { return }
-            self.textView.restoreOriginalURLs(from: notice)
-            self.activeCleaningNotice = nil
+            // Each banner restores its own notice, so tapping an older banner after a second
+            // paste doesn't restore the newer paste's URL.
+            self?.textView.restoreOriginalURLs(from: notice)
         }
     }
     

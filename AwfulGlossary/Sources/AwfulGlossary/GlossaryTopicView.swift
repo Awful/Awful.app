@@ -40,7 +40,7 @@ struct GlossaryTopicView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
 
                     if topic.entries.isEmpty {
-                        Text("This topic has no entries yet.")
+                        Text("This topic has no entries yet.", bundle: .module)
                             .foregroundColor(theme[color: "listSecondaryTextColor"])
                     } else {
                         ForEach(topic.entries) { entry in
@@ -57,8 +57,8 @@ struct GlossaryTopicView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                Button("Exit", action: glossaryExit)
-                    .glossaryBarButtonColor(theme[color: "navigationBarTextColor"])
+                Button(action: glossaryExit) { Text("Exit", bundle: .module) }
+                    .liquidGlassBarButtonColor(theme[color: "navigationBarTextColor"])
             }
             // The `if` lives inside the ToolbarItem's ViewBuilder (iOS 15-safe); a conditional
             // *ToolbarContent* would require iOS 16.
@@ -69,8 +69,8 @@ struct GlossaryTopicView: View {
                     } label: {
                         Image(systemName: "shuffle")
                     }
-                    .glossaryBarButtonColor(theme[color: "navigationBarTextColor"])
-                    .accessibilityLabel("Random Topic")
+                    .liquidGlassBarButtonColor(theme[color: "navigationBarTextColor"])
+                    .accessibilityLabel(Text("Random Topic", bundle: .module))
                 }
             }
         }

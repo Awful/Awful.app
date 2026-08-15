@@ -72,18 +72,6 @@ public struct LepersColonyScrapeResult: ScrapeResult {
         case regularBans = 0
         case autobans = 7
         case permabans = 9
-
-        /// The label the SA website uses for this filter.
-        public var displayName: String {
-            switch self {
-            case .any: return "Any"
-            case .probations: return "Probations"
-            case .allBans: return "All bans"
-            case .regularBans: return "Regular bans"
-            case .autobans: return "Autobans"
-            case .permabans: return "Permabans"
-            }
-        }
     }
 
     public init(_ html: HTMLNode, url: URL?) throws {

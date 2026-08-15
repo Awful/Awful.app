@@ -238,13 +238,15 @@ private func configureLogger(for uploader: ImgurUploader) {
     ImgurUploader.logger = { level, messageProvider in
         let message = messageProvider()
         switch level {
+        // Info messages are diagnostics we wrote ourselves, safe to leave public. Debug and error
+        // stay redacted (os.Logger's default): both can carry photo filenames and image picker
+        // contents — e.g. the uploader logs the whole picker info dictionary at error level.
         case .debug:
             uploaderLogger.debug("\(message)")
-        // These are diagnostics we wrote ourselves, not user data, and os.Logger redacts interpolated strings by default. Debug stays redacted as it includes photo filenames and image picker contents.
         case .info:
             uploaderLogger.info("\(message, privacy: .public)")
         case .error:
-            uploaderLogger.error("\(message, privacy: .public)")
+            uploaderLogger.error("\(message)")
         }
     }
 }

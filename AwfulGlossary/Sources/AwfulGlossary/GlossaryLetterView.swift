@@ -58,8 +58,8 @@ struct GlossaryLetterView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                Button("Exit", action: glossaryExit)
-                    .glossaryBarButtonColor(theme[color: "navigationBarTextColor"])
+                Button(action: glossaryExit) { Text("Exit", bundle: .module) }
+                    .liquidGlassBarButtonColor(theme[color: "navigationBarTextColor"])
             }
         }
         .task {

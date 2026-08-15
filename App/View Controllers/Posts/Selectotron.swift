@@ -19,9 +19,9 @@ final class Selectotron : ViewController {
 
     private let buttonRow = UIView()
     private let firstPostButton = UIButton(type: .system)
-    let jumpButton = UIButton(type: .system)
+    private let jumpButton = UIButton(type: .system)
     private let lastPostButton = UIButton(type: .system)
-    let picker = UIPickerView()
+    private let picker = UIPickerView()
 
     @FoilDefaultStorage(Settings.endlessScrollPosts) private var endlessScrollPosts
     private let endlessScrollButton = UIButton(type: .system)
@@ -31,12 +31,6 @@ final class Selectotron : ViewController {
         super.init(nibName: nil, bundle: nil)
         modalPresentationStyle = .popover
         popoverPresentationController!.delegate = self
-    }
-
-    // Even with a nil nibName, UIKit falls back to loading a nib named after the class — which would
-    // find the orphaned Selectotron.xib and crash wiring its removed outlets. Build the view directly.
-    override func loadView() {
-        view = UIView()
     }
 
     private func firstPostButtonTapped() {
@@ -58,7 +52,7 @@ final class Selectotron : ViewController {
         dismiss(animated: true, completion: nil)
     }
 
-    var selectedPage: Int {
+    private var selectedPage: Int {
         get {
             return picker.selectedRow(inComponent: 0) + 1
         } set {
@@ -133,6 +127,10 @@ final class Selectotron : ViewController {
 
         let preferredHeight = view.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
         preferredContentSize = CGSize(width: 320, height: preferredHeight)
+
+        // `viewWillAppear` only sets `selectedPage` (which updates the title) for known page numbers,
+        // so give the button a title for the `.nextUnread`/nil cases too.
+        updateJumpButtonTitle()
     }
 
     override func themeDidChange() {
@@ -158,7 +156,7 @@ final class Selectotron : ViewController {
         }
     }
 
-    public func updateJumpButtonTitle() {
+    private func updateJumpButtonTitle() {
         let title = .specific(selectedPage) == postsViewController.page ? "Reload" : "Jump"
         jumpButton.setTitle(title, for: .normal)
         jumpButton.titleLabel?.font = UIFont.preferredFontForTextStyle(.body, weight: .medium)

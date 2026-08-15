@@ -30,7 +30,7 @@ public struct GlossaryRootView: View {
                     } label: {
                         HStack(spacing: 10) {
                             Image(systemName: "shuffle")
-                            Text("Random Topic")
+                            Text("Random Topic", bundle: .module)
                                 .fontWeight(.medium)
                             Spacer(minLength: 8)
                             Image(systemName: "chevron.right")
@@ -47,7 +47,7 @@ public struct GlossaryRootView: View {
                     .buttonStyle(.plain)
 
                     VStack(alignment: .leading, spacing: 10) {
-                        Text("BROWSE BY LETTER")
+                        Text("BROWSE BY LETTER", bundle: .module)
                             .font(.footnote)
                             .foregroundColor(theme[color: "listSecondaryTextColor"])
 
@@ -73,18 +73,18 @@ public struct GlossaryRootView: View {
             .frame(maxWidth: .infinity)
             .background(theme[color: "backgroundColor"]!)
             .backport.fontDesign(theme.roundedFonts ? .rounded : nil)
-            .navigationTitle("SAclopedia")
+            .navigationTitle(Text("SAclopedia", bundle: .module))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button("Exit", action: onExit)
-                        .glossaryBarButtonColor(theme[color: "navigationBarTextColor"])
+                    Button(action: onExit) { Text("Exit", bundle: .module) }
+                        .liquidGlassBarButtonColor(theme[color: "navigationBarTextColor"])
                 }
             }
             .background(NavigationConfigurator(theme: theme))
         }
         .navigationViewStyle(.stack)
-        .glossaryNavigationTint(theme[color: "tintColor"])
+        .liquidGlassNavigationTint(theme[color: "tintColor"])
         .environment(\.glossaryExit, onExit)
     }
 }

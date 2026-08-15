@@ -29,6 +29,8 @@ final class PostScreenshotter {
         let loader = WebViewLoader(width: width, handlers: handlers)
 
         for (index, post) in posts.enumerated() {
+            // The view drives this from `.task`; stop churning the web view once we've been dismissed.
+            guard !Task.isCancelled else { break }
             do {
                 let html = try handlers.renderPostsHTML([post], theme)
                 let image = try await loadAndSnapshot(loader: loader, html: html, width: width, forThumbnail: true)
@@ -71,12 +73,16 @@ final class PostScreenshotter {
         await loader.waitForLoad()
 
         if !forThumbnail {
+            // `didFinish` fires before images decode and late layout settles; give the final
+            // full-quality shot a beat so nothing renders half-loaded.
             try await Task.sleep(nanoseconds: 300_000_000)
         }
 
         var contentHeight = try await loader.webView.evaluateJavaScript("document.body.scrollHeight") as? CGFloat ?? 1
 
         if forThumbnail {
+            // Cap thumbnails at a square-ish crop; a long post's full height is wasted work for a
+            // 150pt-wide preview.
             contentHeight = min(contentHeight, width)
         }
 
@@ -175,6 +181,11 @@ final class PostScreenshotter {
 private class WebViewLoader: NSObject, WKNavigationDelegate {
     let webView: WKWebView
     private var continuation: CheckedContinuation<Void, Never>?
+    private var currentNavigation: WKNavigation?
+
+    /// Backstop so a navigation that never reports back (or a load that fails in some way WebKit
+    /// doesn't deliver to this delegate) can't wedge the caller forever.
+    private static let loadTimeout: TimeInterval = 10
 
     init(width: CGFloat, handlers: ScreenshotHandlers) {
         let config = handlers.makeWebViewConfiguration()
@@ -189,24 +200,42 @@ private class WebViewLoader: NSObject, WKNavigationDelegate {
     }
 
     func load(html: String) {
-        webView.loadHTMLString(html, baseURL: ForumsClient.shared.baseURL)
+        currentNavigation = webView.loadHTMLString(html, baseURL: ForumsClient.shared.baseURL)
     }
 
     func waitForLoad() async {
+        let timeout = Task {
+            try? await Task.sleep(nanoseconds: UInt64(Self.loadTimeout * 1_000_000_000))
+            guard !Task.isCancelled else { return }
+            finishLoad()
+        }
         await withCheckedContinuation { self.continuation = $0 }
+        timeout.cancel()
+    }
+
+    private func finishLoad() {
+        continuation?.resume()
+        continuation = nil
     }
 
     nonisolated func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         MainActor.assumeIsolated {
-            continuation?.resume()
-            continuation = nil
+            guard navigation === currentNavigation else { return }
+            finishLoad()
         }
     }
 
     nonisolated func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
         MainActor.assumeIsolated {
-            continuation?.resume()
-            continuation = nil
+            guard navigation === currentNavigation else { return }
+            finishLoad()
+        }
+    }
+
+    nonisolated func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
+        MainActor.assumeIsolated {
+            guard navigation === currentNavigation else { return }
+            finishLoad()
         }
     }
 }

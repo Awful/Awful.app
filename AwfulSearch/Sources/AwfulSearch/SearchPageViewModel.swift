@@ -5,24 +5,25 @@
 
 import AwfulCore
 import HTMLReader
+import os
 import SwiftUI
+
+private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "SearchPageViewModel")
 
 // MARK: - View Models
 @MainActor
 final class SearchPageViewModel: ObservableObject {
     @Published var searchState = SearchState()
-    @Published var forumSelectOptions: [ForumSelectOption]
-    @Published private(set) var searchResults: [SearchResult]
-    @Published private(set) var searchHelpHints: [SearchHelpHint]
+    @Published var forumSelectOptions: [ForumSelectOption] = []
+    @Published private(set) var searchResults: [SearchResult] = []
+    @Published private(set) var searchHelpHints: [SearchHelpHint] = []
     /// True while a restored search is being fetched, so the results screen can show a spinner
     /// instead of an empty list.
     @Published private(set) var isRestoring = false
     @Published private(set) var currentPage: Int = 1
     @Published private(set) var totalPages: Int = 1
     
-    private let isPreview: Bool
     private var searchQueryID: String?
-    private let previewHTML: String?
     let threadID: String?
 
     /// What the app does on the search screens' behalf; see ``SearchHandlers``.
@@ -41,20 +42,10 @@ final class SearchPageViewModel: ObservableObject {
     private var restoredForumIDs: [String] = []
 
     init(
-        forumSelectOptions: [ForumSelectOption] = [],
-        searchHelpHints: [SearchHelpHint] = [],
-        searchResults: [SearchResult] = [],
-        isPreview: Bool = false,
-        previewHTML: String? = nil,
         threadID: String? = nil,
         restoring: LastSearchStore.Record? = nil,
         handlers: SearchHandlers = .init(openPost: { _, _ in })
     ) {
-        self.forumSelectOptions = forumSelectOptions
-        self.searchHelpHints = searchHelpHints
-        self.searchResults = searchResults
-        self.isPreview = isPreview
-        self.previewHTML = previewHTML
         self.handlers = handlers
         // A restored search keeps the scope it was run in, so the forum picker and the `threadid:`
         // prefix stay consistent if the user backs out and searches again.
@@ -66,7 +57,6 @@ final class SearchPageViewModel: ObservableObject {
             isRestoring = true
         }
 
-        // Move the Task creation to after initialization
         Task { [weak self] in
             if let restoring {
                 await self?.restoreLastResults(restoring)
@@ -78,9 +68,12 @@ final class SearchPageViewModel: ObservableObject {
     
     var allForumsBinding: Binding<Bool> {
         Binding<Bool>(
-            get: { !self.forumSelectOptions.isEmpty && self.forumSelectOptions.allSatisfy(\.isSelected) },
-            set: { newValue in
-                guard newValue != self.forumSelectOptions.allSatisfy(\.isSelected) else { return }
+            get: { [weak self] in
+                guard let self else { return false }
+                return !self.forumSelectOptions.isEmpty && self.forumSelectOptions.allSatisfy(\.isSelected)
+            },
+            set: { [weak self] newValue in
+                guard let self, newValue != self.forumSelectOptions.allSatisfy(\.isSelected) else { return }
                 for i in self.forumSelectOptions.indices {
                     self.forumSelectOptions[i].isSelected = newValue
                 }
@@ -94,48 +87,15 @@ final class SearchPageViewModel: ObservableObject {
     
     func fetchAndParseSearchPage() async {
         let htmlString: String
-        
-        if isPreview {
-            // Use preview HTML for previews
-            print("🔍 SearchView: Using preview HTML")
-            if let previewHTML = previewHTML, !previewHTML.isEmpty {
-                htmlString = previewHTML
-                print("✅ SearchView: Successfully loaded preview HTML")
-            } else {
-                print("❌ SearchView: No preview HTML provided, using minimal fallback")
-                htmlString = """
-                <form action="query.php" method="post" accept-charset="UTF-8">
-                <div class="search_help">
-                    <div class="title">Example Searches</div>
-                    <div class="term">Search functionality available in preview mode</div>
-                </div>
-                <div class="clearfix forumlist_container standard">
-                    <div class="forumlist">
-                        <div data-forumid="48" class="search_forum depth0">
-                            <input type="checkbox" class="forumcheck" name="forums[]" value="48">
-                            Main
-                        </div>
-                        <div data-forumid="51" class="search_forum depth0">
-                            <input type="checkbox" class="forumcheck" name="forums[]" value="51">
-                            Discussion
-                        </div>
-                    </div>
-                </div>
-                </form>
-                """
-            }
-        } else {
-            // Fetch dynamically from server for real app
-            do {
-                let document = try await ForumsClient.shared.fetchSearchPage()
-                htmlString = document.innerHTML
-            } catch {
-                print("❌ SearchView: Failed to fetch search page: \(error)")
-                searchState.message = "Failed to load search page: \(error.localizedDescription)"
-                return
-            }
+        do {
+            let document = try await ForumsClient.shared.fetchSearchPage()
+            htmlString = document.innerHTML
+        } catch {
+            logger.error("could not fetch the search page: \(error)")
+            searchState.message = "Failed to load search page: \(error.localizedDescription)"
+            return
         }
-        
+
         await scrapeForumSelectOptions(from: HTMLDocument(string: htmlString))
     }
 
@@ -200,13 +160,11 @@ final class SearchPageViewModel: ObservableObject {
                 threadTitle: searchResult.firstNode(matchingParsedSelector: .cached(".threadtitle"))?.textContent ?? "",
                 resultNumber: searchResult.firstNode(matchingParsedSelector: .cached(".result_number"))?.textContent ?? "",
                 blurb: blurb,
-                forumTitle: searchResult.firstNode(matchingParsedSelector: .cached(".forumtitle"))?.textContent ?? "",
                 postID: searchResult.firstNode(matchingParsedSelector: .cached(".threadtitle"))?["href"]
                     .flatMap { URLComponents(string: $0) }?
                     .queryItems?
                     .first { $0.name == "postid" }?
                     .value ?? "",
-                userName: searchResult.firstNode(matchingParsedSelector: .cached(".username"))?.textContent ?? "",
                 postedDateTime: searchResult.firstNode(matchingParsedSelector: .cached(".hit_info"))?.textContent ?? ""
             )
         }
@@ -254,7 +212,7 @@ final class SearchPageViewModel: ObservableObject {
     /// Called from every successful scrape rather than on the way out, so the record is already
     /// safely stored by the time the model goes away with the sheet.
     private func persistLastSearch() {
-        guard !isPreview, let searchQueryID else { return }
+        guard let searchQueryID else { return }
         // Nothing worth coming back to if the page held neither results nor the "no results" blurb.
         guard !searchResults.isEmpty || !searchState.resultInfo.isEmpty else { return }
 
@@ -283,7 +241,7 @@ final class SearchPageViewModel: ObservableObject {
            let components = URLComponents(url: responseURL, resolvingAgainstBaseURL: true),
            let qid = components.queryItems?.first(where: { $0.name == "qid" })?.value,
            !qid.isEmpty {
-            print("🔍 SearchView: query ID \(qid) from response URL")
+            logger.debug("query ID \(qid) from response URL")
             return qid
         }
 
@@ -295,11 +253,11 @@ final class SearchPageViewModel: ObservableObject {
                   let qid = components.queryItems?.first(where: { $0.name == "qid" })?.value,
                   !qid.isEmpty
             else { continue }
-            print("🔍 SearchView: query ID \(qid) from a link on the results page")
+            logger.debug("query ID \(qid) from a link on the results page")
             return qid
         }
 
-        print("❌ SearchView: no query ID on this results page; it won't be restorable")
+        logger.warning("no query ID on this results page; it won't be restorable")
         return nil
     }
 
@@ -362,7 +320,7 @@ final class SearchPageViewModel: ObservableObject {
 
         } catch {
             searchState.message = "Search failed: \(error.localizedDescription)"
-            print("Search error: \(error)")
+            logger.error("search failed: \(error)")
         }
     }
 
@@ -390,7 +348,7 @@ final class SearchPageViewModel: ObservableObject {
 
         } catch {
             searchState.resultsMessage = "Failed to load page: \(error.localizedDescription)"
-            print("Page load error: \(error)")
+            logger.error("could not load results page: \(error)")
         }
     }
 
@@ -407,7 +365,7 @@ final class SearchPageViewModel: ObservableObject {
                 page: record.page
             )
         } catch {
-            print("Search restore error: \(error)")
+            logger.error("search restore failed: \(error)")
             await fallBackToSearchForm(document: nil, preservingForumIDs: record.forumIDs)
             return
         }
@@ -485,11 +443,8 @@ struct SearchResult: Identifiable, Equatable {
     let threadTitle: String
     let resultNumber: String
     let blurb: String
-    let forumTitle: String
     let postID: String
-    let userName: String
     let postedDateTime: String
-    var highlight: String = ""
 }
 
 struct SearchHelpHint: Identifiable, Equatable {

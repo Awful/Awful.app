@@ -45,8 +45,11 @@ public struct PostsPageScrapeResult: ScrapeResult {
         var scrapedPoll = body.firstNode(matchingParsedSelector: .cached("input[name = 'pollid'], td.graphbar")) != nil
             ? (try? ThreadPollScrapeResult(body, url: url))?.poll
             : nil
-        // Only the page knows which thread this is; the poll markup never says.
-        scrapedPoll?.threadID = body["data-thread"] as String?
+        // The page body is the most reliable source for which thread this is; keep whatever the
+        // scraper dug out of the breadcrumbs if the body doesn't say.
+        if let threadID = body["data-thread"] as String? {
+            scrapedPoll?.threadID = threadID
+        }
         poll = scrapedPoll
 
         let posts = try body

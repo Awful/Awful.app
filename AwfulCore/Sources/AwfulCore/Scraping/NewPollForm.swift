@@ -29,6 +29,12 @@ public struct NewPollForm {
         form.submitButton(named: "submit")
     }
 
+    /// Where the form posts. Read from the form's `action` attribute — which can be `poll.php`,
+    /// `/poll.php`, or fully qualified — rather than assumed.
+    public var actionPath: String {
+        form.submissionURL?.relativeString ?? "poll.php"
+    }
+
     /// Submitting with this button reloads the form with a different number of option fields.
     public var updateOptionCountButton: Form.SubmitButton? {
         form.submitButton(named: "updatenumber")
@@ -86,8 +92,10 @@ public struct NewPollForm {
         let poll = poll.normalized
         try poll.validate()
 
+        // Not a scrape failure: the caller asked for more options than this form has slots (e.g.
+        // the site clamped an option-count update), so report it as a validation problem.
         guard poll.options.count <= optionCount else {
-            throw ScrapingError.missingExpectedElement("input[name = '\(optionName(poll.options.count))']")
+            throw PollSubmission.ValidationError.tooManyOptions(maximum: optionCount)
         }
 
         let submittable = SubmittableForm(form)
@@ -115,7 +123,7 @@ public struct NewPollForm {
 
         // `parseurl` ships checked and `disablesmilies` ships unchecked, and `SubmittableForm.init`
         // carries both states forward, so neither needs touching here.
-        if poll.allowsMultipleChoice, let value = checkboxValue(named: multipleChoiceName) {
+        if poll.allowsMultipleChoice, let value = form.checkboxValue(named: multipleChoiceName) {
             try submittable.select(value: value, for: multipleChoiceName)
         }
 
@@ -133,19 +141,9 @@ public struct NewPollForm {
         return submittable
     }
 
-    /// The value the forums expect for a checkbox, which we read back out of the markup rather than
-    /// assuming: `Form` defaults a checkbox with no `value` attribute to `"on"`.
-    private func checkboxValue(named name: String) -> String? {
-        for case .checkbox(name: let controlName, value: let value, isChecked: _, isDisabled: false)
-        in form.controls where controlName == name {
-            return value
-        }
-        return nil
-    }
 }
 
 
-// `NewPollForm` basically encapsulates these nuggets of info here.
 private let hiddenActionInput = (name: "action", value: "postpoll")
 private let threadIDName = "threadid"
 private let questionName = "question"

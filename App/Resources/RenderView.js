@@ -1807,7 +1807,3 @@ if (Awful.domContentLoadedFired) {
         }
     });
 }
-
-// THIS SHOULD STAY AT THE BOTTOM OF THE FILE!
-// All done; tell the native side we're ready. (No Swift side registers "didRender", so guard to avoid a TypeError.)
-window.webkit.messageHandlers.didRender?.postMessage({});

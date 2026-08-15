@@ -421,8 +421,8 @@ final class PostsPageViewController: ViewController {
                 // We can get out-of-sync here as there's no cancelling the overall scraping operation. Make sure we've got the right page.
                 guard self.page == newPage else { return }
 
-                // The only place the poll is assigned. Set it before `renderPosts()` below so the
-                // render's completion callback can offer the toast.
+                // Set before `renderPosts()` below so the render's completion callback can offer
+                // the toast. (Also updated after a vote, in `presentPollViewer`.)
                 //
                 // Sticky on purpose: we don't know for sure that the forums put the poll block on
                 // every page of a thread, and a later page coming back without one shouldn't yank
@@ -1039,8 +1039,11 @@ final class PostsPageViewController: ViewController {
         let nextPage = currentPage + 1
         let thread = self.thread
         let author = self.author
-        appendTask = Task { [weak self] in
-            defer { self?.appendTask = nil }
+        var task: Task<Void, Never>?
+        task = Task { [weak self] in
+            // Clear the gate only if it's still ours: a cancelled task finishing late must not
+            // clobber the handle of a newer append that `loadPage` kicked off in the meantime.
+            defer { if self?.appendTask == task { self?.appendTask = nil } }
             do {
                 let result = try await ForumsClient.shared.listPosts(in: thread, writtenBy: author, page: .specific(nextPage), updateLastReadPost: true)
                 guard let self, !Task.isCancelled,
@@ -1087,6 +1090,7 @@ final class PostsPageViewController: ViewController {
                 logger.error("endless scroll could not load page \(nextPage): \(error)")
             }
         }
+        appendTask = task
     }
 
     @objc func currentPageButtonTapped(_ sender: UIBarButtonItem) {
@@ -1491,9 +1495,13 @@ final class PostsPageViewController: ViewController {
         if traitCollection.userInterfaceIdiom == .pad {
             screenshotterVC.modalPresentationStyle = .pageSheet
         }
-        // Present from the root to avoid being constrained to a split view column
-        let presenter = view.window?.rootViewController ?? self
-        presenter.present(screenshotterVC, animated: true)
+        Task {
+            // The anchored menu counts as a presentation; it has to go away before we present.
+            await dismiss(animated: false)
+            // Present from the root to avoid being constrained to a split view column
+            let presenter = view.window?.rootViewController ?? self
+            presenter.present(screenshotterVC, animated: true)
+        }
     }
 
     private func bookmark(action: UIAction) {

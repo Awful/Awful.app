@@ -34,6 +34,7 @@ func refreshAccountFeatures(client: ForumsClient = .shared) async throws -> Acco
 /// Unlike `PrivateMessageInboxRefresher`, this must *not* gate on `canSendPrivateMessages`: doing so
 /// would prevent ever detecting a newly purchased Platinum upgrade (the flag would be false, so we'd
 /// never re-check and never flip it true).
+@MainActor
 final class AccountFeaturesRefresher {
     private let client: ForumsClient
     private let minder: RefreshMinder
@@ -47,13 +48,15 @@ final class AccountFeaturesRefresher {
         startTimer(reason: .initialization)
 
         tokens.append(NotificationCenter.default.addObserver(forName: UIApplication.willEnterForegroundNotification, object: UIApplication.shared, queue: .main, using: { [unowned self] notification in
-
-            self.startTimer(reason: .willEnterForeground)
+            MainActor.assumeIsolated {
+                self.startTimer(reason: .willEnterForeground)
+            }
         }))
 
         tokens.append(NotificationCenter.default.addObserver(forName: UIApplication.didEnterBackgroundNotification, object: UIApplication.shared, queue: .main, using: { [unowned self] notification in
-
-            self.timer?.invalidate()
+            MainActor.assumeIsolated {
+                self.timer?.invalidate()
+            }
         }))
     }
 
@@ -114,7 +117,9 @@ final class AccountFeaturesRefresher {
         logger.debug("next automatic account features refresh is in \(interval) seconds")
 
         timer = Timer.scheduledTimer(withTimeInterval: interval, repeats: false) { [weak self] timer in
-            self?.refreshIfNecessary()
+            MainActor.assumeIsolated {
+                self?.refreshIfNecessary()
+            }
         }
     }
 }

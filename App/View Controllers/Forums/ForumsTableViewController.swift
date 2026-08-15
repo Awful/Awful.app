@@ -33,8 +33,9 @@ final class ForumsTableViewController: CollectionViewController {
     /// The live banner view, so its text can be refreshed in place when the timeframe changes without
     /// the layout re-dequeuing it (which it doesn't for an active→active date change).
     private weak var archivesBannerView: ForumsArchivesBannerView?
-    /// Whether the layout currently includes the banner, to detect appear/disappear vs. text-only changes.
-    private var isArchivesBannerInLayout = false
+    /// Whether the layout currently includes the banner, to detect appear/disappear vs. text-only
+    /// changes. Starts in sync with the `showArchivesBanner` the layout is built with in `init`.
+    private var isArchivesBannerInLayout = ForumsClient.shared.currentArchivesTimeframe != nil
     /// Layout element kind for the maroon "Archives view" banner shown above every section.
     private static let archivesBannerElementKind = "ForumsArchivesBanner"
     /// The right-bar overflow (⋯) and Search button views on the standard (non–iOS 26 iPad) path, kept so

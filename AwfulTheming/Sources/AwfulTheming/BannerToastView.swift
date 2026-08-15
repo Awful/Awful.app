@@ -182,7 +182,7 @@ public final class BannerToastView: UIView {
         }
 
         if case .link(_, let actionName) = action {
-            // A styled run of text is invisible to VoiceOver, so offer the action explicitly — this is what the button used to give us for free.
+            // A styled run of text is invisible to VoiceOver, so offer the action explicitly.
             isAccessibilityElement = true
             accessibilityLabel = message
             accessibilityCustomActions = [UIAccessibilityCustomAction(name: actionName) { [weak self] _ in

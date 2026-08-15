@@ -35,7 +35,7 @@ struct SearchFormView: View {
                 Spacer()
             }
         }
-        .background(theme[color: "backgroundColor"]!.ignoresSafeArea(.all))
+        .background((theme[color: "backgroundColor"] ?? Color(.systemBackground)).ignoresSafeArea(.all))
         .contentShape(Rectangle())
         .onTapGesture {
             isSearchFieldFocused = false
@@ -80,7 +80,7 @@ struct SearchFormView: View {
                 }
             }
             .padding(10)
-            .background(theme[color: "backgroundColor"]!)
+            .background(theme[color: "backgroundColor"] ?? Color(.systemBackground))
             .cornerRadius(8)
             
             if !model.searchState.message.isEmpty {
@@ -102,13 +102,13 @@ struct SearchFormView: View {
                     ScrollView(.horizontal, showsIndicators: false) {
                         Text(hint.text)
                             .font(.footnote)
-                            .foregroundStyle(theme[color: "listSecondaryTextColor"]!)
+                            .foregroundStyle(theme[color: "listSecondaryTextColor"] ?? Color(.secondaryLabel))
                     }
                 }
             }
         }
         .padding(12)
-        .background(theme[color: "backgroundColor"]!)
+        .background(theme[color: "backgroundColor"] ?? Color(.systemBackground))
         .cornerRadius(8)
     }
     
@@ -162,7 +162,7 @@ struct CheckboxToggleStyle: ToggleStyle {
             Image(systemName: configuration.isOn ? "checkmark.square.fill" : "square")
                 .resizable()
                 .frame(width: 22, height: 22)
-                .foregroundColor(configuration.isOn ? theme[color: "tintColor"]! : isEnabled ? theme[color: "listTextColor"]! : theme[color: "placeholderTextColor"]!)
+                .foregroundColor(configuration.isOn ? (theme[color: "tintColor"] ?? Color.accentColor) : isEnabled ? (theme[color: "listTextColor"] ?? Color(.label)) : (theme[color: "placeholderTextColor"] ?? Color(.placeholderText)))
         }
         .font(.body)
         .contentShape(Rectangle())

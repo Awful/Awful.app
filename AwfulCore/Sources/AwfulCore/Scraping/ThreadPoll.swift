@@ -103,9 +103,6 @@ public struct ThreadPoll: Equatable, Sendable {
         /// The option broken into runs of text and images, so smilies can be drawn as smilies.
         public var segments: [Segment]
 
-        /// The option's markup, kept around in case we ever want to render it properly.
-        public var rawHTML: RawHTML
-
         /// Nil on a ballot, which doesn't say how anyone voted.
         public var voteCount: Int?
 
@@ -122,7 +119,6 @@ public struct ThreadPoll: Equatable, Sendable {
             id: Int,
             text: String,
             segments: [Segment] = [],
-            rawHTML: RawHTML = "",
             voteCount: Int? = nil,
             percentage: Double? = nil,
             formName: String? = nil,
@@ -131,7 +127,6 @@ public struct ThreadPoll: Equatable, Sendable {
             self.id = id
             self.text = text
             self.segments = segments.isEmpty && !text.isEmpty ? [.text(text)] : segments
-            self.rawHTML = rawHTML
             self.voteCount = voteCount
             self.percentage = percentage
             self.formName = formName

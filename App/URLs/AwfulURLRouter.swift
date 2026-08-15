@@ -79,7 +79,7 @@ struct AwfulURLRouter {
                 return true
             }
 
-            // Fall back to the historical modal present if the tab isn't in the hierarchy.
+            // Fall back to presenting modally if the tab isn't in the hierarchy.
             let rapSheetVC = RapSheetViewController(handlers: .awful)
             rootViewController.present(rapSheetVC.enclosingNavigationController, animated: true)
             return true

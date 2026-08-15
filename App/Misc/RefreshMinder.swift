@@ -5,6 +5,9 @@
 import AwfulCore
 import CoreData
 import Foundation
+import os
+
+private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "RefreshMinder")
 
 final class RefreshMinder {
     private let userDefaults: UserDefaults
@@ -42,15 +45,22 @@ final class RefreshMinder {
     /// Used when the archives timeframe changes — that invalidates the cached (wrong-timeframe) threads
     /// for every forum, not just the one on screen.
     func forgetAllForums(in context: NSManagedObjectContext) {
-        let request = NSFetchRequest<Forum>(entityName: Forum.entityName)
-        request.predicate = NSPredicate(format: "lastRefresh != nil OR lastFilteredRefresh != nil")
-        guard let forums = try? context.fetch(request), !forums.isEmpty else { return }
-        for forum in forums {
-            forum.lastRefresh = nil
-            forum.lastFilteredRefresh = nil
-        }
-        if context.hasChanges {
-            try? context.save()
+        do {
+            let request = NSFetchRequest<Forum>(entityName: Forum.entityName)
+            request.predicate = NSPredicate(format: "lastRefresh != nil OR lastFilteredRefresh != nil")
+            let forums = try context.fetch(request)
+            guard !forums.isEmpty else { return }
+            for forum in forums {
+                forum.lastRefresh = nil
+                forum.lastFilteredRefresh = nil
+            }
+            if context.hasChanges {
+                try context.save()
+            }
+        } catch {
+            // Not fatal, but stale (wrong-timeframe) thread lists will stick around until their
+            // usual refresh; don't let that pass silently.
+            logger.error("could not clear forum refresh timestamps after archives change: \(error)")
         }
     }
     

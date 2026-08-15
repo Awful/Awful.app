@@ -7,8 +7,7 @@ import Foundation
 /**
  A poll the user wants to attach to a thread they're posting.
 
- This is the *request* side of polls. Reading an existing poll out of a thread is a separate type
- (there isn't one yet).
+ This is the *request* side of polls. Reading an existing poll out of a thread is `ThreadPoll`.
 
  - Seealso: `NewPollForm`, which turns one of these into something submittable to `poll.php`.
  */

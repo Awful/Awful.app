@@ -64,6 +64,9 @@ public final class TiltScrollManager: NSObject {
     private var isUserInteracting = false
     private var isEngaged = false
     private var displayLink: CADisplayLink?
+    /// CADisplayLink retains its target, so aim it at a weak-forwarding proxy to keep the run loop
+    /// from retaining this manager (which would also keep the accelerometer running).
+    private let proxy = DisplayLinkProxy()
     /// The tilt angle considered "at rest". `nil` means capture on next sample.
     private var neutralAngle: CGFloat?
     private var filteredAngle: CGFloat?
@@ -71,6 +74,8 @@ public final class TiltScrollManager: NSObject {
 
     public override init() {
         super.init()
+
+        proxy.target = self
 
         $tiltScrollEnabled
             .receive(on: RunLoop.main)
@@ -101,6 +106,18 @@ public final class TiltScrollManager: NSObject {
     public func viewWillDisappear() {
         isViewVisible = false
         updateEngagement()
+    }
+
+    deinit {
+        // If appearance callbacks never delivered a final `viewWillDisappear()`, make sure this
+        // instance's engagement (and its share of the device-motion updates) still winds down.
+        displayLink?.invalidate()
+        if isEngaged {
+            Self.engagedCount -= 1
+            if Self.engagedCount == 0 {
+                Self.motionManager.stopDeviceMotionUpdates()
+            }
+        }
     }
 
     /// Adopts the device's current pose as the new "at rest" zero point, so
@@ -152,7 +169,7 @@ public final class TiltScrollManager: NSObject {
             neutralAngle = nil
             filteredAngle = nil
 
-            let link = CADisplayLink(target: self, selector: #selector(tick(_:)))
+            let link = CADisplayLink(target: proxy, selector: #selector(DisplayLinkProxy.tick(_:)))
             link.add(to: .main, forMode: .common)
             displayLink = link
         } else {
@@ -168,7 +185,7 @@ public final class TiltScrollManager: NSObject {
 
     // MARK: - Scrolling
 
-    @objc private func tick(_ link: CADisplayLink) {
+    fileprivate func tick(_ link: CADisplayLink) {
         guard let scrollView, let motion = Self.motionManager.deviceMotion else { return }
         let dt = link.targetTimestamp - link.timestamp
         guard dt > 0 else { return }
@@ -240,5 +257,16 @@ public final class TiltScrollManager: NSObject {
         let newY = (scrollView.contentOffset.y + velocity * CGFloat(dt)).clamp(minY...maxY)
         guard newY != scrollView.contentOffset.y else { return }
         scrollView.contentOffset = CGPoint(x: scrollView.contentOffset.x, y: newY)
+    }
+}
+
+/// Weak-forwarding CADisplayLink target, so the run loop's strong reference to the link's target
+/// doesn't keep the manager alive.
+@MainActor
+private final class DisplayLinkProxy: NSObject {
+    weak var target: TiltScrollManager?
+
+    @objc func tick(_ link: CADisplayLink) {
+        target?.tick(link)
     }
 }

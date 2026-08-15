@@ -83,7 +83,7 @@ struct SearchResultsView: View {
                             }
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding()
-                            .background(theme[color: "sheetBackgroundColor"]!)
+                            .background(theme[color: "sheetBackgroundColor"] ?? Color(.secondarySystemGroupedBackground))
                             .cornerRadius(12)
                             .id(topID)
                             .padding()
@@ -98,7 +98,7 @@ struct SearchResultsView: View {
                             .padding()
                         }
                     }
-                    .background(theme[color: "backgroundColor"]!)
+                    .background(theme[color: "backgroundColor"] ?? Color(.systemBackground))
                     .onChange(of: model.currentPage) { _ in
                         withAnimation {
                             proxy.scrollTo(topID, anchor: .top)
@@ -109,7 +109,7 @@ struct SearchResultsView: View {
 
             paginationBar
         }
-        .background(theme[color: "backgroundColor"]!.ignoresSafeArea(.all))
+        .background((theme[color: "backgroundColor"] ?? Color(.systemBackground)).ignoresSafeArea(.all))
         .applyFontDesign(if: theme.roundedFonts)
     }
 
@@ -128,6 +128,8 @@ struct SearchResultsView: View {
     /// The app's `NavigationController` doesn't manage a bottom toolbar — `PostsPageView` and
     /// `RapSheetViewController` each carry their own — and a nav toolbar would compete with the tab
     /// bar for the same space, so the pagination controls live in the content instead.
+    @SwiftUI.Environment(\.displayScale) private var displayScale
+
     private var paginationBar: some View {
         paginationControls
             .padding(.horizontal)
@@ -136,7 +138,7 @@ struct SearchResultsView: View {
                 theme[color: "tabBarBackgroundColor"]
                     .overlay(alignment: .top) {
                         theme[color: "bottomBarTopBorderColor"]?
-                            .frame(height: 1 / UIScreen.main.scale)
+                            .frame(height: 1 / displayScale)
                     }
             )
     }
@@ -189,7 +191,7 @@ struct SearchResultCard: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding()
-        .background(theme[color: "sheetBackgroundColor"]!)
+        .background(theme[color: "sheetBackgroundColor"] ?? Color(.secondarySystemGroupedBackground))
         .cornerRadius(12)
         .shadow(color: .black.opacity(0.1), radius: 2, y: 1)
         .contentShape(Rectangle())
@@ -240,9 +242,10 @@ struct SearchResultCard: View {
 }
 
 // MARK: - Preview Provider
+#if DEBUG
 struct SearchResultCard_Previews: PreviewProvider {
     static let testTheme = Theme.theme(named: "brightLight") ?? Theme.defaultTheme()
-    
+
     static var previews: some View {
         Group {
             VStack(spacing: 16) {
@@ -250,19 +253,15 @@ struct SearchResultCard_Previews: PreviewProvider {
                     threadTitle: "Thread title blah blah blah Thread title blah blah blah",
                     resultNumber: "1.",
                     blurb: "This is a test blurb that shows how the card handles multiple lines of text in a more natural way",
-                    forumTitle: "Test Forum",
                     postID: "123",
-                    userName: "TestUser",
                     postedDateTime: "by Someone in ForumA at Jul 1, 2023 8:04 PM"
                 ))
-                
+
                 SearchResultCard(result: SearchResult(
                     threadTitle: "Short title",
                     resultNumber: "2.",
                     blurb: "Short blurb",
-                    forumTitle: "Another Forum",
                     postID: "456",
-                    userName: "AnotherUser",
                     postedDateTime: "by Someone in ForumB at Jul 2, 2023 9:04 PM"
                 ))
             }
@@ -272,6 +271,7 @@ struct SearchResultCard_Previews: PreviewProvider {
         .environment(\.theme, testTheme)
     }
 }
+#endif
 
 // MARK: - View controller
 

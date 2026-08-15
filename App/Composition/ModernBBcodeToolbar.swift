@@ -45,8 +45,9 @@ final class ModernBBcodeToolbar: UIView {
             guard showsPollButton != oldValue else { return }
             if showsPollButton {
                 stackView.addArrangedSubview(pollButton)
-                pollButton.heightAnchor.constraint(
-                    equalToConstant: Self.buttonHeight).isActive = true
+                // A self-referential constraint survives removal from the superview, so make it
+                // once rather than stacking a duplicate every time the button comes back.
+                pollButtonHeightConstraint.isActive = true
             } else {
                 stackView.removeArrangedSubview(pollButton)
                 pollButton.removeFromSuperview()
@@ -55,6 +56,8 @@ final class ModernBBcodeToolbar: UIView {
             updateButtonFonts()
         }
     }
+
+    private lazy var pollButtonHeightConstraint = pollButton.heightAnchor.constraint(equalToConstant: Self.buttonHeight)
 
     /// Marks the Poll button to show the thread already has a poll attached.
     var pollIsAttached = false {

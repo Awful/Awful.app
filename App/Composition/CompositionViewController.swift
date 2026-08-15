@@ -300,19 +300,16 @@ final class CompositionViewController: ViewController, ModernToolbarActionHandli
 
     // MARK: - Tracking removal
 
-    private var activeCleaningNotice: URLCleaningNotice?
-
     private func showURLCleanedBanner(_ notice: URLCleaningNotice) {
-        activeCleaningNotice = notice
         BannerToastView.show(
             in: view,
             theme: theme,
             message: notice.bannerMessage,
             action: .button(title: "Use Original")
         ) { [weak self] in
-            guard let self, let notice = self.activeCleaningNotice else { return }
-            self.textView.restoreOriginalURLs(from: notice)
-            self.activeCleaningNotice = nil
+            // Each banner restores its own notice, so tapping an older banner after a second
+            // paste doesn't restore the newer paste's URL.
+            self?.textView.restoreOriginalURLs(from: notice)
         }
     }
 

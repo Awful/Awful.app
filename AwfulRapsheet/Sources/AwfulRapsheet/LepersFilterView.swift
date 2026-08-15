@@ -82,14 +82,14 @@ struct LepersFilterView: View {
                     rowDivider
                     pickerRow("Year") { yearPicker }
                 }
-                .background(theme[color: "sheetBackgroundColor"]!)
+                .background(theme[color: "sheetBackgroundColor"] ?? Color(.secondarySystemGroupedBackground))
                 .cornerRadius(12)
 
                 Button {
                     onApply(model.filter)
                     onExit()
                 } label: {
-                    buttonLabel("Apply", background: theme[color: "tintColor"]!, foreground: .white)
+                    buttonLabel("Apply", background: theme[color: "tintColor"] ?? Color.accentColor, foreground: .white)
                 }
             }
             .padding()
@@ -98,9 +98,9 @@ struct LepersFilterView: View {
 
     // MARK: Pieces
 
-    private func pickerRow<Content: View>(_ title: String, @ViewBuilder content: () -> Content) -> some View {
+    private func pickerRow<Content: View>(_ title: LocalizedStringKey, @ViewBuilder content: () -> Content) -> some View {
         HStack {
-            Text(title)
+            Text(title, bundle: .module)
                 .foregroundColor(theme[color: "listTextColor"])
             Spacer()
             content()
@@ -115,8 +115,8 @@ struct LepersFilterView: View {
             .frame(height: 0.5)
     }
 
-    private func buttonLabel(_ title: String, background: Color, foreground: Color) -> some View {
-        Text(title)
+    private func buttonLabel(_ title: LocalizedStringKey, background: Color, foreground: Color) -> some View {
+        Text(title, bundle: .module)
             .fontWeight(.semibold)
             .frame(maxWidth: .infinity)
             .padding()
@@ -171,6 +171,20 @@ struct LepersFilterView: View {
         .labelsHidden()
         .pickerStyle(.menu)
         .tint(theme[color: "tintColor"])
+    }
+}
+
+private extension LepersColonyScrapeResult.PunishmentFilter {
+    /// The label the SA website uses for this filter.
+    var displayName: String {
+        switch self {
+        case .any: String(localized: "Any", bundle: .module)
+        case .probations: String(localized: "Probations", bundle: .module)
+        case .allBans: String(localized: "All bans", bundle: .module)
+        case .regularBans: String(localized: "Regular bans", bundle: .module)
+        case .autobans: String(localized: "Autobans", bundle: .module)
+        case .permabans: String(localized: "Permabans", bundle: .module)
+        }
     }
 }
 

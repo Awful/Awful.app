@@ -10,6 +10,15 @@
     "Any" : {
 
     },
+    "Apply" : {
+
+    },
+    "All bans" : {
+
+    },
+    "Autobans" : {
+
+    },
     "Cancel" : {
 
     },
@@ -31,6 +40,12 @@
     "Month" : {
 
     },
+    "Permabans" : {
+
+    },
+    "Probations" : {
+
+    },
     "Rap Sheet" : {
 
     },
@@ -44,6 +59,9 @@
           }
         }
       }
+    },
+    "Regular bans" : {
+
     },
     "Type" : {
 
