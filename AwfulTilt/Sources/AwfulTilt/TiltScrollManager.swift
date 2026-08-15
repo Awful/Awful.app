@@ -113,9 +113,13 @@ public final class TiltScrollManager: NSObject {
         // instance's engagement (and its share of the device-motion updates) still winds down.
         displayLink?.invalidate()
         if isEngaged {
-            Self.engagedCount -= 1
-            if Self.engagedCount == 0 {
-                Self.motionManager.stopDeviceMotionUpdates()
+            // Owners are view controllers, so deallocation happens on the main thread — but deinit
+            // is formally nonisolated, so assert isolation to reach the shared engagement count.
+            MainActor.assumeIsolated {
+                Self.engagedCount -= 1
+                if Self.engagedCount == 0 {
+                    Self.motionManager.stopDeviceMotionUpdates()
+                }
             }
         }
     }
