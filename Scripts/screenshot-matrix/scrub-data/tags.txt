@@ -1,0 +1,16 @@
+# Preferred thread tag image names (without .png), one per line.
+# Lines starting with # and blank lines are ignored.
+#
+# Tags are swapped by repointing threads at tag rows ALREADY cached in that
+# simulator's store — tag images load from awfulapp.com by name, so an
+# imageName the store has never seen would render as the empty-tag
+# placeholder. Names listed here are used only where they intersect the
+# store's cached inventory; when this file is empty (or nothing intersects),
+# the full cached inventory is used instead.
+#
+# Examples seen in a real store, uncomment to prefer:
+# shitpost
+# chooch
+# sadev-bugs
+# dd-war
+# shsc-apple

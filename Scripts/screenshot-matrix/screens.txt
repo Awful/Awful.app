@@ -1,0 +1,32 @@
+# Registry of capturable screens — the id vocabulary for `run-all.sh --screens`.
+#
+#   id | when | script | description
+#
+# when:   always      = captured on every device.
+#         interactive = only where devices.txt gives a device views=all, i.e.
+#                       the two 402x874pt phones capture-interactive.sh is
+#                       calibrated for.
+# script: which capture script takes it. `both` means it is deep-linked during
+#         the theme pass and grabbed again interactively; the interactive grab
+#         wins, because the profile sheet can swallow the deep link (README
+#         trap 3). That double capture is why pass A is 12 files, not 13.
+#
+# Ids are also the filename suffixes: <ios>_<device>_<theme>_<id>.png, and the
+# NN prefix fixes slideshow order. The gaps are the uncaptured screens listed
+# in shotlist.md.
+#
+# KEEP IN SYNC with the `shot`/`grab` calls in capture-theme.sh and
+# capture-interactive.sh — this file is what `--screens` validates against, so
+# an id here that no capture script emits will silently capture nothing.
+01-forums-list|always|theme|Forums list
+02-thread-list|always|theme|Thread list, test forum
+03-posts-view|always|theme|Posts view, last page
+04-bookmarks|always|theme|Bookmarks
+05-pm-list|always|theme|Private message list
+07-settings|always|theme|Settings
+09-lepers-colony|always|theme|Leper's Colony
+10-profile|always|theme|Own profile
+11-rap-sheet|always|both|Rap sheet (empty — the account has no bans)
+13-post-compose|interactive|interactive|Post compose, draft never submitted
+15-post-preview|interactive|interactive|Post preview of that draft
+19-poll-thread|always|theme|Poll thread

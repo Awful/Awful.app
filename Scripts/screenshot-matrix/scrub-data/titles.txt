@@ -1,0 +1,94 @@
+# Fake thread titles for list-view screenshots, one per line.
+# Lines starting with # and blank lines are ignored.
+# Assignment is deterministic (thread rank % line count): identical output
+# every run until this file changes. Add a line to see it rendered — note
+# that changing the line count reshuffles which thread gets which title.
+# Thread titles cap at 75 characters on the forums; the longest entries
+# here sit exactly there, and the shortest are 2, so cells get exercised
+# at both extremes. Anything longer is an invalid test.
+Let's talk about mechanical keyboards
+The definitive guide to sourdough starters
+PSA regarding budget road bikes
+Ask me anything about retro game consoles
+I can't stop thinking about container gardening
+Hot takes on airline seat maps
+Recommend me some regional pizza styles
+The official fountain pen thread
+Unpopular opinions about home espresso setups
+A beginner's guide to trail running shoes
+Why does nobody mention board game night etiquette
+Post your favorite vintage synthesizers
+Cast iron cookware: myths and legends
+Model trains are back, baby
+Birdwatching apps compared, spring edition
+The homebrew NAS thread: now with more drives
+What's the deal with heat pumps?
+Rate my sticker-covered laptop lid
+City cycling megathread: bells, lanes, and rage
+Sim racing rigs for small apartments
+The great olive oil taste test
+Houseplants I have known and killed
+Flashlight enthusiasts, assemble
+Your weirdest thrift store find
+Standing desks: a year later
+The pixel art appreciation station
+Beginner woodworking without losing a finger
+Coffee gear minimalism challenge
+What are you reading this month?
+Retro handhelds tier list, fight me
+The eternal tabs vs. spaces thread
+Show us your junk drawer
+Camping stoves ranked by regret
+My kingdom for a quiet keyboard
+Photography on a shoestring budget
+The soup thread returns
+Speedrunning my morning commute
+Adventures in fermentation gone wrong
+Budget monitor recommendations 2026
+The napping optimization thread
+Small apartment gym setups that actually work
+The bread machine redemption arc
+Tell me about your commuter bag
+Mechanical pencils: an appreciation
+The official bad movie night thread
+Balcony astronomy on a budget
+Your best slow cooker disasters
+The great sock drawer reorganization
+Learning piano at 35, week one
+Dashcam footage discussion thread
+The minimal wallet arms race
+Home network cable management shame thread
+Tea kettles: electric vs. stovetop showdown
+My neighbor's wifi names, ranked
+The eternal quest for a good desk chair
+Board games that ruined friendships
+Pickling everything that isn't nailed down
+The grocery store self-checkout gauntlet
+Restoring a flea market typewriter
+Air fryer skeptics support group
+The public transit appreciation thread
+Weird fonts I have installed and why
+Backyard birdfeeder drama continues
+The three-monitor lifestyle intervention
+Hiking snacks: a taxonomy
+My smart home has become self-aware
+The library card renaissance
+Umbrella technology has peaked
+Spreadsheets for things that don't need spreadsheets
+The lost art of the burned CD
+Parallel parking horror stories
+Every phone case I have ever owned
+The condiment fridge door crisis
+Learning to whistle: a progress thread
+Vacuum robot naming conventions
+The staircase squeak investigation
+Souvenir magnets from places I've never been
+The perfect omelette does not exist
+ok
+help
+why
+lol
+It happened again
+Does anyone else find that the new update quietly broke everything for them
+I have been thinking about this for a very long time and cannot decide yet!
+The exhaustively researched guide to buying a decent kitchen timer in 2026

@@ -1,0 +1,18 @@
+# raw theme name | slug | dark(1/0)
+# Modes come from the "mode" key in AwfulTheming/Sources/AwfulTheming/Themes.plist.
+# customDefault is skipped: it renders only when the user has defined a custom theme.
+default|default|0
+alternateDefault|alt-default|0
+brightLight|bright-light|0
+spankykongLight|sk-light|0
+FYAD|fyad|0
+Gas Chamber|gas-chamber|0
+Macinyos|macinyos|0
+BYOB|byob|0
+Winpos 95|winpos95|0
+dark|classic-dark|1
+alternateDark|alt-dark|1
+oledDark|oled-dark|1
+spankykongDark|sk-dark|1
+YOSPOS|yospos|1
+YOSPOS (amber)|yospos-amber|1

@@ -1,0 +1,64 @@
+# Fake usernames for PM senders, thread "Killed by" names, and authors of
+# scrubbed threads ("Posted by" on unread rows).
+# Lines starting with # and blank lines are ignored.
+# The account's own username is never scrubbed.
+# Deliberate mix of very short, very long, and spaced names to exercise
+# cell layout. 18 characters is the forums' maximum, so the longest
+# entries sit exactly there — longer tests a case that cannot happen.
+Bo
+Ax
+Q
+meh
+zug
+quiet keyboard fan
+the fifth postman
+old crouton smell
+ExtremelyLongName1
+horse with no name
+ProNapEnthusiast04
+CrunchyWaffle
+VelvetBadger
+TurboMitten
+GrumpyPylon
+MildCactus
+AncientSprocket
+SneakyNoodle
+CosmicBucket
+SoggyFalcon
+PoliteTurnip
+FeralGremlin
+QuantumAnvil
+BreezyMarmot
+RustyKazoo
+DapperWombat
+FrostyBagel
+WobblyLantern
+SilentYodel
+PlaidComet
+HumbleWalrus
+ZestyPistachio
+MellowGriffin
+PeppyDumpling
+StoicPretzel
+GigglyFjord
+LumpyAsteroid
+BashfulTuba
+PerkyGlacier
+SleepyBollard
+JauntyPickle
+NimbleTeapot
+GruffMeringue
+SolemnKite
+BubblyTrowel
+CasualObelisk
+MightyCrouton
+TepidFanfare
+BrisklyMoseying
+VagueHorizon
+PunctualLlama
+CryptidAdjacent
+ModestFurnace
+DustyGazebo
+LoudCardigan
+TranquilRhubarb
+OrbitingCalmly
