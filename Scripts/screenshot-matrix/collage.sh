@@ -78,6 +78,11 @@ esac
 screens_rows() { grep -vE '^[[:space:]]*(#|$)' "$SCRIPT_DIR/screens.txt"; }
 themes_rows()  { grep -vE '^[[:space:]]*(#|$)' "$SCRIPT_DIR/themes.txt"; }
 
+# --by family defaults to every theme: each device captures all 15, so the grid
+# is full rather than ragged, and one sheet showing every device against every
+# theme is the point of that mode. Narrow with -t for a shorter sheet.
+[ "$MODE" = family ] && [ -z "$THEMES" ] && THEMES=all
+
 # -t all means every theme in themes.txt, which is only useful now that every
 # device captures all of them.
 if [ "$THEMES" = all ]; then
@@ -113,6 +118,49 @@ want_screen() {
 # its cell: devices and themes render at different heights, montage centres by
 # default, and that leaves every caption strip on a different line.
 FONT='/System/Library/Fonts/Supplemental/Arial Bold.ttf'
+
+# A 6-wide by 15-tall grid is 6420x13059 — correct, but a column you scroll for
+# five screens is not a comparison. Folding takes the bottom half of the rows
+# and sets it beside the top half: same tiles, same scale, half the height,
+# twice the width. Repeat while the sheet is still taller than wide.
+#
+# Sets FOLD_FILES and FOLD_COLS. Ragged folds are padded so columns stay
+# aligned to whatever they were aligned to before.
+fold_grid() { # fold_grid <cols> <pad-file> <files...>
+    local cols="$1" pad="$2"; shift 2
+    local all=("$@") rows half r i
+    rows=$(( (${#all[@]} + cols - 1) / cols ))
+    half=$(( (rows + 1) / 2 ))
+
+    FOLD_FILES=()
+    for (( r = 0; r < half; r++ )); do
+        for (( i = 0; i < cols; i++ )); do
+            local top=$(( r * cols + i ))
+            FOLD_FILES+=("${all[$top]:-$pad}")
+        done
+        for (( i = 0; i < cols; i++ )); do
+            local bot=$(( (r + half) * cols + i ))
+            FOLD_FILES+=("${all[$bot]:-$pad}")
+        done
+    done
+    FOLD_COLS=$(( cols * 2 ))
+}
+
+# Fold until the sheet stops being taller than wide, or twice at most: beyond
+# that the rows are so interleaved that reading across one stops being useful.
+autofold() { # autofold <cols> <tile-w> <tile-h> <pad> <files...>
+    local cols="$1" tw="$2" th="$3" pad="$4"; shift 4
+    FOLD_FILES=("$@"); FOLD_COLS="$cols"
+    [ "${tw:-0}" -eq 0 ] || [ "${th:-0}" -eq 0 ] && return 0
+    local n
+    for n in 1 2; do
+        local rows=$(( (${#FOLD_FILES[@]} + FOLD_COLS - 1) / FOLD_COLS ))
+        [ "$rows" -lt 4 ] && break
+        awk -v c="$FOLD_COLS" -v r="$rows" -v tw="$tw" -v th="$th" \
+            'BEGIN { exit !((c * tw) / (r * th) < 1) }' || break
+        fold_grid "$FOLD_COLS" "$pad" "${FOLD_FILES[@]}"
+    done
+}
 
 build_sheet() { # build_sheet <out> <title> <cols> <files...>
     local out="$1" title="$2" tile="$3"; shift 3
@@ -193,16 +241,22 @@ if [ "$MODE" = theme ]; then
         done < <(screens_rows)
     done
 elif [ "$MODE" = family ]; then
-    # Default to the themes every device actually has. Pass A phones carry 13
-    # more, and -t will include them, but then the grid is ragged by nature and
-    # only two of its columns have anything in the extra rows.
-    [ -z "$THEMES" ] && THEMES="default,classic-dark"
+    # Every device now captures all 15 themes, so the grid is full rather than
+    # ragged and there is no reason to withhold rows. This makes tall sheets —
+    # six iPads by fifteen themes is 6420x13059 — but that IS the comparison:
+    # one image showing every device against every theme for a view. Narrow it
+    # with -t when a shorter sheet is more useful than a complete one.
+    :
 
     # One placeholder for absent device/theme combinations. A 1x1 tile costs
     # nothing and montage pads it out to the cell size, which is what keeps
     # every column aligned to one device.
+    # 100x100, not 1x1: montage scales every tile by --scale, and a 1px pad
+    # rounds to zero below 50%, which fails the whole sheet with "negative or
+    # zero image size". Its actual size does not matter — montage pads each
+    # cell out to the largest tile regardless.
     PAD=$(mktemp -d)/pad.png
-    magick -size 1x1 xc:'#1c1c1e' "$PAD" 2>/dev/null
+    magick -size 100x100 xc:'#1c1c1e' "$PAD" 2>/dev/null
     FAMILY_SCALE_DEFAULT="$SCALE"
 
     for family in iphone ipad; do
@@ -290,9 +344,11 @@ elif [ "$MODE" = family ]; then
             fi
             [ "$found" -eq 0 ] && continue
 
+            autofold "$cols" "$widest" "$tallest" "$PAD" "${files[@]}"
+            [ "$FOLD_COLS" -gt "$cols" ] && layout="$layout, folded"
             build_sheet "$DEST/by-family/${family}s/${id}-grid.png" \
                 "${id#*-}  ·  ${family}s  ·  $layout" \
-                "$cols" "${files[@]}" && made=$((made + 1))
+                "$FOLD_COLS" "${FOLD_FILES[@]}" && made=$((made + 1))
         done < <(screens_rows)
     done
 else
@@ -363,8 +419,11 @@ else
             [ ${#files[@]} -lt "$tile" ] && tile=${#files[@]}
             [ "${tile:-0}" -lt 1 ] && tile=1
 
+            DEV_PAD="${DEV_PAD:-$(mktemp -d)/pad.png}"
+            [ -f "$DEV_PAD" ] || magick -size 100x100 xc:'#1c1c1e' "$DEV_PAD" 2>/dev/null
+            autofold "$tile" "$tw" "$th" "$DEV_PAD" "${files[@]}"
             build_sheet "$DEST/by-device/$devdir/${id}-themes.png" \
-                "${id#*-}  ·  $devdir" "$tile" "${files[@]}" && made=$((made + 1))
+                "${id#*-}  ·  $devdir" "$FOLD_COLS" "${FOLD_FILES[@]}" && made=$((made + 1))
         done < <(screens_rows)
     done
 fi
