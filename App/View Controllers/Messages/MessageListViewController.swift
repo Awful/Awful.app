@@ -75,7 +75,7 @@ final class MessageListViewController: CollectionViewController {
     private static func makeLayout(separatorLeadingInset: CGFloat, separatorColor: UIColor?) -> UICollectionViewLayout {
         var listConfig = UICollectionLayoutListConfiguration(appearance: .plain)
         listConfig.headerMode = .supplementary
-        listConfig.headerTopPadding = 8
+        listConfig.headerTopPadding = 2
         listConfig.backgroundColor = .clear
 
         var separatorConfig = UIListSeparatorConfiguration(listAppearance: .plain)
@@ -117,10 +117,12 @@ final class MessageListViewController: CollectionViewController {
                 header.addSubview(picker)
 
                 NSLayoutConstraint.activate([
-                    picker.leadingAnchor.constraint(equalTo: header.leadingAnchor),
+                    picker.leadingAnchor.constraint(equalTo: header.leadingAnchor, constant: 16),
                     picker.trailingAnchor.constraint(equalTo: header.trailingAnchor, constant: -16),
+                    // headerTopPadding already gives 4pt above the header, so only pad below
+                    // to keep the picker vertically centered between nav bar and first cell.
                     picker.topAnchor.constraint(equalTo: header.topAnchor),
-                    picker.bottomAnchor.constraint(equalTo: header.bottomAnchor),
+                    picker.bottomAnchor.constraint(equalTo: header.bottomAnchor, constant: -4),
                     picker.heightAnchor.constraint(equalToConstant: LayoutConstants.folderPickerHeight),
                 ])
             }
