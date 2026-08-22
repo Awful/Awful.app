@@ -6,6 +6,7 @@
 import SwiftUI
 import HTMLReader
 import AwfulCore
+import AwfulExtensions
 import AwfulTheming
 
 struct SearchResultsView: View {

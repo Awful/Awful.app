@@ -4,7 +4,7 @@
 
 import SwiftUI
 
-extension View {
+public extension View {
     @ViewBuilder
     func applyFontDesign(if condition: Bool) -> some View {
         if #available(iOS 16.1, *) {

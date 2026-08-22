@@ -77,7 +77,7 @@ extension Theme {
     
     /// The ID of the forum for which the theme is designed, or nil if there was no forum in mind.
     var forumID: String? {
-        return dictionary["relevantForumID"] as! String?
+        return dictionary["relevantForumID"] as? String
     }
     
     /// Does the theme use standed system font or rounded
@@ -102,7 +102,12 @@ extension Theme {
             fatalError("Unrecognized keyboard appearance: \(appearance) (in theme \(name)")
         }
     }
-    
+
+    /// Whether the theme is a dark theme.
+    public var isDark: Bool {
+        keyboardAppearance == .dark
+    }
+
     /// The desired scroll indicator style for scrollbars. Must be specified by the theme or one of its ancestors.
     public var scrollIndicatorStyle: UIScrollView.IndicatorStyle {
         guard let style = dictionary["scrollIndicatorStyle"] as? String ?? parent?["scrollIndicatorStyle"] else { return .default }
@@ -175,12 +180,20 @@ extension Theme {
         }
     }
 
+    /// Bundled CSS is immutable for the life of the process, so cache file contents by name. (`NSCache` is thread-safe.)
+    private static let stylesheetCache = NSCache<NSString, NSString>()
+
     /// Returns the contents of `name.css`.
     public func stylesheet(named name: String) throws -> String? {
+        if let cached = Self.stylesheetCache.object(forKey: name as NSString) {
+            return cached as String
+        }
         guard let url = Bundle.module.url(forResource: name, withExtension: ".css") else {
             return nil
         }
-        return try String(contentsOf: url, encoding: .utf8)
+        let css = try String(contentsOf: url, encoding: .utf8)
+        Self.stylesheetCache.setObject(css as NSString, forKey: name as NSString)
+        return css
     }
 
     /**

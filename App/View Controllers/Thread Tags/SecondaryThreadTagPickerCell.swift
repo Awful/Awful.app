@@ -2,6 +2,7 @@
 //
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import AwfulTheming
 import UIKit
 
 /// A secondary thread tag (like Ask in Ask/Tell) in a ThreadTagPickerViewController.
