@@ -62,6 +62,9 @@
         }
       }
     },
+    "Archives" : {
+
+    },
     "Automatic Dark Mode" : {
 
     },
@@ -116,6 +119,9 @@
     "Enable Haptics" : {
 
     },
+    "Enabled" : {
+
+    },
     "Forum-Specific Themes" : {
 
     },
@@ -155,6 +161,12 @@
     "New Smilie Picker" : {
 
     },
+    "No Ads" : {
+
+    },
+    "No upgrade" : {
+
+    },
     "Off" : {
 
     },
@@ -162,6 +174,9 @@
 
     },
     "Open YouTube in YouTube" : {
+
+    },
+    "Platinum" : {
 
     },
     "Post feedback, bug reports, and feature suggestions. Do not contact anyone who works for Something Awful about this app." : {
@@ -225,6 +240,9 @@
 
     },
     "Unread Announcements Badge" : {
+
+    },
+    "Upgrades detected on your Something Awful account." : {
 
     },
     "What to open when tapping an external link. Long-press any link for more options." : {

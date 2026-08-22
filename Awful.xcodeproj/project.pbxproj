@@ -270,6 +270,7 @@
 		8CF740EF1681376600C219E4 /* macinyos-heading.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CF740EE1681376600C219E4 /* macinyos-heading.png */; };
 		8FC356EF2132F5C1006EE1A5 /* amberpos-ins.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8FC356EE2132F5C1006EE1A5 /* amberpos-ins.gif */; };
 		AC10AC10AC10AC10AC100001 /* AwfulGlossary in Frameworks */ = {isa = PBXBuildFile; productRef = AC10AC10AC10AC10AC100003 /* AwfulGlossary */; };
+		ACF0FEA7000000000000BF01 /* AccountFeaturesRefresher.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACF0FEA7000000000000FEF1 /* AccountFeaturesRefresher.swift */; };
 		F4233C591917C77900482BD0 /* bg_menu.jpg in Resources */ = {isa = PBXBuildFile; fileRef = F4233C581917C77900482BD0 /* bg_menu.jpg */; };
 		F4B3645819165D5100CCE1EF /* SecondaryTags.plist in Resources */ = {isa = PBXBuildFile; fileRef = F4B3645719165D5100CCE1EF /* SecondaryTags.plist */; };
 /* End PBXBuildFile section */
@@ -619,6 +620,7 @@
 		8CF740EE1681376600C219E4 /* macinyos-heading.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "macinyos-heading.png"; sourceTree = "<group>"; };
 		8FC356EE2132F5C1006EE1A5 /* amberpos-ins.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "amberpos-ins.gif"; sourceTree = "<group>"; };
 		AC10AC10AC10AC10AC100002 /* AwfulGlossary */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AwfulGlossary; sourceTree = "<group>"; };
+		ACF0FEA7000000000000FEF1 /* AccountFeaturesRefresher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountFeaturesRefresher.swift; sourceTree = "<group>"; };
 		F4233C581917C77900482BD0 /* bg_menu.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = bg_menu.jpg; sourceTree = "<group>"; };
 		F4B3645719165D5100CCE1EF /* SecondaryTags.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = SecondaryTags.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -786,6 +788,7 @@
 		1C25AC501F5777EC00977D6F /* Refreshers */ = {
 			isa = PBXGroup;
 			children = (
+				ACF0FEA7000000000000FEF1 /* AccountFeaturesRefresher.swift */,
 				1C25AC511F57784A00977D6F /* AnnouncementListRefresher.swift */,
 				1C16FBFD1CBF237800C88BD1 /* PrivateMessageInboxRefresher.swift */,
 			);
@@ -1737,6 +1740,7 @@
 				2D327DD627F468CE00D21AB0 /* BookmarkColorPicker.swift in Sources */,
 				1C4506C41A2BAB3800767306 /* Handoff.swift in Sources */,
 				1C16FBFE1CBF237800C88BD1 /* PrivateMessageInboxRefresher.swift in Sources */,
+				ACF0FEA7000000000000BF01 /* AccountFeaturesRefresher.swift in Sources */,
 				1C3E181B224FAE1200BD88E5 /* SmilieDataStore+Shared.swift in Sources */,
 				2D571B472EC83DD00026826C /* AttachmentCardView.swift in Sources */,
 				1C16FC1A1CD42EB300C88BD1 /* PostPreviewViewController.swift in Sources */,

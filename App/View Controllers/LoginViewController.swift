@@ -144,9 +144,17 @@ class LoginViewController: ViewController {
                     username: usernameTextField.text ?? "",
                     password: passwordTextField.text ?? ""
                 )
-                canSendPrivateMessages = user.canReceivePrivateMessages
                 userID = user.userID
                 username = user.username
+                // Detect purchased upgrades (Platinum/Archives/No-Ads); this also derives
+                // `canSendPrivateMessages` from Platinum. Fall back to the profile's PM flag so a
+                // failed fetch never leaves the user unable to message.
+                do {
+                    try await refreshAccountFeatures()
+                } catch {
+                    logger.warning("account features fetch failed at login, falling back to PM proxy: \(error)")
+                    canSendPrivateMessages = user.canReceivePrivateMessages
+                }
                 completionBlock?(self)
             } catch {
                 logger.error("Could not log in: \(error)")

@@ -50,6 +50,7 @@ final class RefreshMinder {
             self.interval = interval
         }
 
+        static let accountFeatures = Refresh(key: "LastAccountFeaturesRefreshDate", interval: 60 * 15)
         static let announcements = Refresh(key: "com.awfulapp.Awful.LastAnnouncementsRefreshDate", interval: 60 * 60 * 20)
         static let avatar = Refresh(key: "LastLoggedInUserAvatarRefreshDate", interval: 60 * 10)
         static let bookmarks = Refresh(key: "com.awfulapp.Awful.LastBookmarksRefreshDate", interval: 60 * 10)
@@ -59,7 +60,7 @@ final class RefreshMinder {
         static let privateMessagesInbox = Refresh(key: "LastPrivateMessageInboxRefreshDate", interval: 60 * 10)
         
         static var all: [Refresh] {
-            return [.announcements, .avatar, .bookmarks, .externalStylesheet, .forumList, .loggedInUser, .privateMessagesInbox]
+            return [.accountFeatures, .announcements, .avatar, .bookmarks, .externalStylesheet, .forumList, .loggedInUser, .privateMessagesInbox]
         }
     }
     

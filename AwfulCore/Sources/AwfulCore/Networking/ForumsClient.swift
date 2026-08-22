@@ -344,6 +344,17 @@ public final class ForumsClient {
         return try GlossaryIndexScrapeResult(document, url: url)
     }
 
+    // MARK: Account features (member.php?action=accountfeatures)
+
+    /// Fetches the logged-in user's purchased upgrades (Platinum, Archives, No-Ads).
+    public func accountFeatures() async throws -> AccountFeaturesScrapeResult {
+        let (data, response) = try await fetch(method: .get, urlString: "member.php", parameters: [
+            "action": "accountfeatures",
+        ])
+        let (document, url) = try parseHTML(data: data, response: response)
+        return try AccountFeaturesScrapeResult(document, url: url)
+    }
+
     // MARK: Threads
 
     /// - Parameter tagged: A thread tag to use for filtering forums, or `nil` for no filtering.

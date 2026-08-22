@@ -18,6 +18,7 @@ private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: 
 final class AppDelegate: UIResponder, UIApplicationDelegate {
     private(set) static var instance: AppDelegate!
 
+    private var accountFeaturesRefresher: AccountFeaturesRefresher?
     private var announcementListRefresher: AnnouncementListRefresher?
     @FoilDefaultStorage(Settings.autoDarkTheme) private var automaticDarkTheme
     private var cancellables: Set<AnyCancellable> = []
@@ -78,6 +79,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     ) -> Bool {
         ignoreSilentSwitchWhenPlayingEmbeddedVideo()
 
+        accountFeaturesRefresher = AccountFeaturesRefresher(client: ForumsClient.shared, minder: RefreshMinder.sharedMinder)
         announcementListRefresher = AnnouncementListRefresher(client: ForumsClient.shared, minder: RefreshMinder.sharedMinder)
         inboxRefresher = PrivateMessageInboxRefresher(client: ForumsClient.shared, minder: RefreshMinder.sharedMinder)
         PostsViewExternalStylesheetLoader.shared.refreshIfNecessary()
