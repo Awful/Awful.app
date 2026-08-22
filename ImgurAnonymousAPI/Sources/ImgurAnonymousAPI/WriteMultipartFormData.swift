@@ -43,10 +43,16 @@ internal final class WriteMultipartFormData: AsynchronousOperation<FormDataFile>
             .appendingPathComponent("request", isDirectory: false)
             .appendingPathExtension("dat")
 
+        // Some servers sniff the filename extension in addition to the Content-Type, so give them one where we can.
+        let filename = uti
+            .flatMap { UTTypeCopyPreferredTagWithClass($0, kUTTagClassFilenameExtension)?.takeRetainedValue() as String? }
+            .map { "image.\($0)" }
+            ?? "image"
+
         let boundary = makeBoundary()
         
         let pieces: [DataPiece] = [
-            .inMemory({ makeTopData(boundary: boundary, mimeType: mimeType) }),
+            .inMemory({ makeTopData(boundary: boundary, filename: filename, mimeType: mimeType) }),
             .fromFile(imageFile.url),
             .inMemory({ makeBottomData(boundary: boundary) })]
         
@@ -67,10 +73,10 @@ private func makeBoundary() -> String {
 
 private let boundaryDigits = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
 
-private func makeTopData(boundary: String, mimeType: String) -> DispatchData {
+private func makeTopData(boundary: String, filename: String, mimeType: String) -> DispatchData {
     let top = [
         "--\(boundary)",
-        "Content-Disposition: form-data; name=\"image\"; filename=\"image\"",
+        "Content-Disposition: form-data; name=\"image\"; filename=\"\(filename)\"",
         "Content-Type: \(mimeType)",
         "\r\n",
         ]

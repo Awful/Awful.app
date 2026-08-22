@@ -15,7 +15,8 @@ enum ImageUploadError: Error, LocalizedError {
     case missingIdentifiedAsset
     case authenticationRequired
     case authenticationFailed
-    
+    case unsupportedImageFormat
+
     var errorDescription: String? {
         switch self {
         case .missingIdentifiedAsset:
@@ -24,6 +25,8 @@ enum ImageUploadError: Error, LocalizedError {
             return "Imgur Authentication Required"
         case .authenticationFailed:
             return "Imgur Authentication Failed"
+        case .unsupportedImageFormat:
+            return "Unsupported Image Format"
         }
     }
     
@@ -35,8 +38,18 @@ enum ImageUploadError: Error, LocalizedError {
             return "You need to log in to Imgur to upload images with your account."
         case .authenticationFailed:
             return "Could not log in to Imgur. Please try again or switch to anonymous uploads in settings."
+        case .unsupportedImageFormat:
+            return "Imgur wouldn't accept this image. Attaching a screenshot of it instead usually works."
         }
     }
+}
+
+/// Turns an Imgur rejection we recognize into something the reader can act on. The original error is logged either way.
+private func friendlierError(_ error: Error) -> Error {
+    if let apiError = error as? ImgurUploader.APIError, apiError.isUnsupportedFileType {
+        return ImageUploadError.unsupportedImageFormat
+    }
+    return error
 }
 
 /**
@@ -137,8 +150,8 @@ private func uploadImages(fromSources sources: [ImageTag.Source], completion: @e
                 case .success(let response):
                     uploadComplete(response.link, error: nil)
                 case .failure(let error):
-                    logger.error("Could not upload UIImage: \(error)")
-                    uploadComplete(nil, error: error)
+                    logger.error("Could not upload UIImage: \(error, privacy: .public)")
+                    uploadComplete(nil, error: friendlierError(error))
                 }
             })
             
@@ -154,8 +167,8 @@ private func uploadImages(fromSources sources: [ImageTag.Source], completion: @e
                 case .success(let response):
                     uploadComplete(response.link, error: nil)
                 case .failure(let error):
-                    logger.error("Could not upload PHAsset: \(error)")
-                    uploadComplete(nil, error: error)
+                    logger.error("Could not upload PHAsset: \(error, privacy: .public)")
+                    uploadComplete(nil, error: friendlierError(error))
                 }
             })
         }

@@ -32,6 +32,27 @@ extension ImgurUploader {
                 return "\(detail.message) (\(detail.type) code \(detail.code))"
             }
         }
+
+        /// Whether Imgur turned down the upload because it didn't like the image's format, as opposed to some other problem.
+        public var isUnsupportedFileType: Bool {
+            switch error {
+            case .left(let string):
+                return APIError.mentionsFileType(string)
+            case .right(let detail):
+                // 1003 is Imgur's documented "File type invalid".
+                return detail.code == 1003 || APIError.mentionsFileType(detail.message)
+            }
+        }
+
+        private static func mentionsFileType(_ message: String) -> Bool {
+            let message = message.lowercased()
+
+            // Being over the file size limit is a different problem with a different answer, and Imgur says "File is over the size limit" which would otherwise look like a complaint about the file itself.
+            guard !message.contains("size limit"), !message.contains("too large") else { return false }
+
+            return ["file type", "filetype", "invalid file", "invalid image", "not an image", "image format", "unsupported"]
+                .contains { message.contains($0) }
+        }
     }
 
     public struct DetailedAPIError {
