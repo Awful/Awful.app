@@ -5,6 +5,7 @@
 import AwfulCore
 import AwfulSettings
 import AwfulTheming
+import AwfulTilt
 import Combine
 import UIKit
 
@@ -82,6 +83,12 @@ final class PostsPageSettingsViewController: ViewController, UIPopoverPresentati
         endlessScrollPosts = false
         dismiss(animated: true)
     }
+
+    private var tiltScrollSettingsView: TiltScrollSettingsView?
+
+    /// Set by the presenter; called when the user taps "Set Zero Point" so the
+    /// tilt scroll manager adopts the device's current pose as neutral.
+    var tiltScrollRecalibrate: (() -> Void)?
 
     // MARK: - Helper Methods
 
@@ -165,6 +172,7 @@ final class PostsPageSettingsViewController: ViewController, UIPopoverPresentati
         DispatchQueue.main.async { [weak self] in
             self?.setupImmersiveModeUI()
             self?.setupEndlessScrollUI()
+            self?.setupTiltScrollUI()
         }
     }
     
@@ -237,6 +245,30 @@ final class PostsPageSettingsViewController: ViewController, UIPopoverPresentati
         updatePreferredContentSize()
     }
 
+    /// Adds the tilt-to-scroll rows: a "Tilt to Scroll" switch and, below it,
+    /// sensitivity/invert/zero-point rows only shown while tilt scrolling is
+    /// enabled.
+    private func setupTiltScrollUI() {
+        guard isViewLoaded, tiltScrollSettingsView == nil else { return }
+
+        let section = TiltScrollSettingsView()
+        section.recalibrate = { [weak self] in self?.tiltScrollRecalibrate?() }
+        section.sizeDidChange = { [weak self] in self?.updatePreferredContentSize() }
+        section.applyTheme(theme)
+        tiltScrollSettingsView = section
+
+        if let anchor: UIView = endlessScrollButton ?? immersiveModeStack ?? darkModeStack,
+           let parentStack = anchor.superview as? UIStackView {
+            if let index = parentStack.arrangedSubviews.firstIndex(of: anchor) {
+                parentStack.insertArrangedSubview(section, at: index + 1)
+            } else {
+                parentStack.addArrangedSubview(section)
+            }
+        }
+
+        updatePreferredContentSize()
+    }
+
     private func updatePreferredContentSize() {
         let preferredHeight = view.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
         preferredContentSize = CGSize(width: 320, height: max(preferredHeight, 246))
@@ -259,6 +291,8 @@ final class PostsPageSettingsViewController: ViewController, UIPopoverPresentati
         
         immersiveModeLabel?.textColor = theme["sheetTextColor"] ?? UIColor.label
         immersiveModeSwitch?.onTintColor = theme["settingsSwitchColor"]
+
+        tiltScrollSettingsView?.applyTheme(theme)
     }
     
     // MARK: UIAdaptivePresentationControllerDelegate

@@ -273,6 +273,7 @@
 		8FC356EF2132F5C1006EE1A5 /* amberpos-ins.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8FC356EE2132F5C1006EE1A5 /* amberpos-ins.gif */; };
 		AC10AC10AC10AC10AC100001 /* AwfulGlossary in Frameworks */ = {isa = PBXBuildFile; productRef = AC10AC10AC10AC10AC100003 /* AwfulGlossary */; };
 		AC10AC10AC10AC10AC200001 /* AwfulSearch in Frameworks */ = {isa = PBXBuildFile; productRef = AC10AC10AC10AC10AC200003 /* AwfulSearch */; };
+		AC10AC10AC10AC10AC600001 /* AwfulTilt in Frameworks */ = {isa = PBXBuildFile; productRef = AC10AC10AC10AC10AC600003 /* AwfulTilt */; };
 		AC10AC10AC10AC10AC300001 /* AwfulPolls in Frameworks */ = {isa = PBXBuildFile; productRef = AC10AC10AC10AC10AC300003 /* AwfulPolls */; };
 		AC10AC10AC10AC10AC400001 /* AwfulArchives in Frameworks */ = {isa = PBXBuildFile; productRef = AC10AC10AC10AC10AC400003 /* AwfulArchives */; };
 		ACF0FEA7000000000000BF01 /* AccountFeaturesRefresher.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACF0FEA7000000000000FEF1 /* AccountFeaturesRefresher.swift */; };
@@ -628,6 +629,7 @@
 		8FC356EE2132F5C1006EE1A5 /* amberpos-ins.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "amberpos-ins.gif"; sourceTree = "<group>"; };
 		AC10AC10AC10AC10AC100002 /* AwfulGlossary */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AwfulGlossary; sourceTree = "<group>"; };
 		AC10AC10AC10AC10AC200002 /* AwfulSearch */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AwfulSearch; sourceTree = "<group>"; };
+		AC10AC10AC10AC10AC600002 /* AwfulTilt */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AwfulTilt; sourceTree = "<group>"; };
 		AC10AC10AC10AC10AC300002 /* AwfulPolls */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AwfulPolls; sourceTree = "<group>"; };
 		AC10AC10AC10AC10AC400002 /* AwfulArchives */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AwfulArchives; sourceTree = "<group>"; };
 		ACF0FEA7000000000000FEF1 /* AccountFeaturesRefresher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountFeaturesRefresher.swift; sourceTree = "<group>"; };
@@ -682,6 +684,7 @@
 				1C67313C2B55CE0600A8CF6F /* AwfulSettingsUI in Frameworks */,
 				AC10AC10AC10AC10AC100001 /* AwfulGlossary in Frameworks */,
 				AC10AC10AC10AC10AC200001 /* AwfulSearch in Frameworks */,
+				AC10AC10AC10AC10AC600001 /* AwfulTilt in Frameworks */,
 				AC10AC10AC10AC10AC400001 /* AwfulArchives in Frameworks */,
 				AC10AC10AC10AC10AC500001 /* AwfulRapsheet in Frameworks */,
 				AC10AC10AC10AC10AC300001 /* AwfulPolls in Frameworks */,
@@ -1266,6 +1269,7 @@
 				AC10AC10AC10AC10AC400002 /* AwfulArchives */,
 				AC10AC10AC10AC10AC500002 /* AwfulRapsheet */,
 				AC10AC10AC10AC10AC300002 /* AwfulPolls */,
+				AC10AC10AC10AC10AC600002 /* AwfulTilt */,
 				1C1F0F132B8B091600F097D3 /* AwfulTheming */,
 				1C15334D20708EFF0021A2BD /* Config */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
@@ -1446,6 +1450,7 @@
 				AC10AC10AC10AC10AC400003 /* AwfulArchives */,
 				AC10AC10AC10AC10AC500003 /* AwfulRapsheet */,
 				AC10AC10AC10AC10AC300003 /* AwfulPolls */,
+				AC10AC10AC10AC10AC600003 /* AwfulTilt */,
 				1C1F0F152B8B0AD700F097D3 /* AwfulTheming */,
 				1C53451D2B8BF3A7001DA96A /* PSMenuItem */,
 				1C5345202B8BF48F001DA96A /* ScrollViewDelegateMultiplexer */,
@@ -2215,6 +2220,10 @@
 		AC10AC10AC10AC10AC500003 /* AwfulRapsheet */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AwfulRapsheet;
+		};
+		AC10AC10AC10AC10AC600003 /* AwfulTilt */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AwfulTilt;
 		};
 		AC10AC10AC10AC10AC300003 /* AwfulPolls */ = {
 			isa = XCSwiftPackageProductDependency;
