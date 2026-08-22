@@ -5,7 +5,7 @@
 import UIKit
 
 /// A text view suitable for composing replies, posts, and private messages.
-final class ComposeTextView: UITextView, CompositionHidesMenuItems {
+final class ComposeTextView: URLCleaningTextView, CompositionHidesMenuItems {
     var hidesBuiltInMenuItems = false
     fileprivate lazy var BBcodeBar: CompositionInputAccessoryView = {
         let bar = CompositionInputAccessoryView(textView: self)

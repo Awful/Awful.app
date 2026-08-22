@@ -568,8 +568,10 @@ fileprivate let rootItems = [
 fileprivate let URLItems = [
     MenuItem(title: "[url]", action: linkifySelection),
     MenuItem(title: "Paste", action: { tree in
-        if let URL = UIPasteboard.general.coercedURL {
-            wrapSelectionInTag("[url=\(URL.absoluteString)]" as NSString)(tree)
+        if let (url, original) = UIPasteboard.general.cleanedCoercedURL {
+            let insertionStart = tree.textView.selectedRange.location
+            wrapSelectionInTag("[url=\(url.absoluteString)]" as NSString)(tree)
+            reportCleaned(tree, original: original, cleaned: url.absoluteString, at: insertionStart + ("[url=" as NSString).length)
         }
     })
 ]
@@ -579,8 +581,12 @@ fileprivate func imageItems(tree: CompositionMenuTree) -> [MenuItem] {
 
     if UIPasteboard.general.coercedURL != nil {
         items.append(MenuItem(title: "Paste URL", action: { tree in
-            if let textRange = tree.textView.selectedTextRange {
-                tree.textView.replace(textRange, withText:("[img]" + UIPasteboard.general.coercedURL!.absoluteString + "[/img]"))
+            if let (url, original) = UIPasteboard.general.cleanedCoercedURL,
+               let textRange = tree.textView.selectedTextRange
+            {
+                let insertionStart = tree.textView.selectedRange.location
+                tree.textView.replace(textRange, withText: "[img]\(url.absoluteString)[/img]")
+                reportCleaned(tree, original: original, cleaned: url.absoluteString, at: insertionStart + ("[img]" as NSString).length)
             }
         }))
     }
@@ -631,15 +637,16 @@ fileprivate let videoSubmenuItems = [
     MenuItem(title: "[video]", action: wrapSelectionInTag("[video]")),
     MenuItem(title: "Paste", action: { tree in
         if
-            let copiedURL = UIPasteboard.general.coercedURL,
-            let URL = videoTagURLForURL(copiedURL as URL)
+            let (copiedURL, original) = UIPasteboard.general.cleanedCoercedURL,
+            let URL = videoTagURLForURL(copiedURL)
         {
             let textView = tree.textView
             if let selectedTextRange = textView.selectedTextRange {
+                let insertionStart = textView.selectedRange.location
                 let tag = "[video]\(URL.absoluteString)[/video]"
-                let textView = tree.textView
                 textView.replace(selectedTextRange, withText: tag)
                 textView.selectedRange = NSRange(location: textView.selectedRange.location + (tag as NSString).length, length: 0)
+                reportCleaned(tree, original: original, cleaned: URL.absoluteString, at: insertionStart + ("[video]" as NSString).length)
             }
         }
     })
@@ -755,4 +762,16 @@ fileprivate func isPickerAvailable(_ sourceType: UIImagePickerController.SourceT
     return {
         return UIImagePickerController.isSourceTypeAvailable(sourceType)
     }
+}
+
+/// Routes a tracking-removal event to the text view's owner so it can offer to restore the original URL.
+fileprivate func reportCleaned(_ tree: CompositionMenuTree, original: URL?, cleaned: String, at location: Int) {
+    guard let original else { return }
+    (tree.textView as? URLCleaningTextView)?.reportCleaned(URLCleaningNotice(replacements: [
+        .init(
+            original: original.absoluteString,
+            cleaned: cleaned,
+            range: NSRange(location: location, length: (cleaned as NSString).length)
+        ),
+    ]))
 }

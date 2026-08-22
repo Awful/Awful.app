@@ -348,9 +348,29 @@ class ComposeTextViewController: ViewController {
         let textView = ComposeTextView()
         textView.font = UIFont.preferredFontForTextStyle(.body, sizeAdjustment: -0.5, weight: .regular)
         textView.delegate = self
+        textView.onURLsCleaned = { [weak self] notice in
+            self?.showURLCleanedBanner(notice)
+        }
         view = textView
     }
-    
+
+    // MARK: - Tracking removal
+
+    private func showURLCleanedBanner(_ notice: URLCleaningNotice) {
+        // Not our own view: that's the scrollable text view itself, so the banner would scroll away with the content.
+        let host = navigationController?.view ?? view!
+        BannerToastView.show(
+            in: host,
+            theme: theme,
+            message: notice.bannerMessage,
+            action: .button(title: "Use Original")
+        ) { [weak self] in
+            // Each banner restores its own notice, so tapping an older banner after a second
+            // paste doesn't restore the newer paste's URL.
+            self?.textView.restoreOriginalURLs(from: notice)
+        }
+    }
+
     override func themeDidChange() {
         super.themeDidChange()
         

@@ -31,6 +31,7 @@ public struct SettingsView: View {
     @AppStorage(Settings.openTwitterLinksInTwitter) private var openLinksInTwitter
     @AppStorage(Settings.openYouTubeLinksInYouTube) private var openLinksInYouTube
     @AppStorage(Settings.pullForNext) private var pullForNextPage
+    @AppStorage(Settings.cleanPastedURLs) private var removeTrackingFromLinks
     @AppStorage(Settings.restoreLastThreadOnLaunch) private var restoreLastThreadOnLaunch
     @AppStorage(Settings.showAvatars) private var showAvatars
     @AppStorage(Settings.showThreadTags) private var showThreadTags
@@ -174,6 +175,7 @@ public struct SettingsView: View {
             Section {
                 Toggle("[timg] Large Images", bundle: .module, isOn: $timgLargeImages)
                 Toggle("New Smilie Picker", bundle: .module, isOn: $useNewSmiliePicker)
+                Toggle("Remove Tracking from Links", bundle: .module, isOn: $removeTrackingFromLinks)
                 Picker("Imgur Uploads", bundle: .module, selection: $imgurUploadMode) {
                     Text("Off").tag("Off")
                     Text("Imgur Account").tag("Imgur Account")
@@ -188,8 +190,11 @@ public struct SettingsView: View {
                 Text("Posting", bundle: .module)
                     .header()
             } footer: {
-                Text("\"Anonymous\" submits images to Imgur without a user account. Imgur may delete these uploads without warning. Using an Imgur account is recommended.", bundle: .module)
-                    .footer()
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Remove Tracking from Links strips tracking parameters (like utm_ and fbclid) from links pasted into the composer. A Use Original button appears after each cleaned paste.", bundle: .module)
+                    Text("\"Anonymous\" submits images to Imgur without a user account. Imgur may delete these uploads without warning. Using an Imgur account is recommended.", bundle: .module)
+                }
+                .footer()
             }
             .section()
 

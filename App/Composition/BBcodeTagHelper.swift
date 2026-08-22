@@ -100,8 +100,10 @@ struct BBcodeTagHelper {
 
     /// Insert a URL tag, optionally with a URL from clipboard
     func insertURLTag(withClipboardURL: Bool = false) {
-        if withClipboardURL, let url = UIPasteboard.general.coercedURL {
+        if withClipboardURL, let (url, original) = UIPasteboard.general.cleanedCoercedURL {
+            let insertionStart = textView.selectedRange.location
             wrapSelectionInTag("[url=\(url.absoluteString)]")
+            reportCleaned(original: original, cleaned: url.absoluteString, at: insertionStart + ("[url=" as NSString).length)
         } else {
             // Check if selection is already a URL
             if let selectionRange = textView.selectedTextRange,
@@ -120,9 +122,11 @@ struct BBcodeTagHelper {
 
     /// Insert an image tag, optionally with a URL from clipboard
     func insertImageTag(withClipboardURL: Bool = false) {
-        if withClipboardURL, let url = UIPasteboard.general.coercedURL {
+        if withClipboardURL, let (url, original) = UIPasteboard.general.cleanedCoercedURL {
             if let textRange = textView.selectedTextRange {
+                let insertionStart = textView.selectedRange.location
                 textView.replace(textRange, withText: "[img]\(url.absoluteString)[/img]")
+                reportCleaned(original: original, cleaned: url.absoluteString, at: insertionStart + ("[img]" as NSString).length)
             }
         } else {
             wrapSelectionInTag("[img]")
@@ -132,16 +136,30 @@ struct BBcodeTagHelper {
     /// Insert a video tag, optionally with a URL from clipboard
     func insertVideoTag(withClipboardURL: Bool = false) {
         if withClipboardURL,
-           let copiedURL = UIPasteboard.general.coercedURL,
+           let (copiedURL, original) = UIPasteboard.general.cleanedCoercedURL,
            let videoURL = Self.videoTagURL(for: copiedURL) {
             if let selectedTextRange = textView.selectedTextRange {
+                let insertionStart = textView.selectedRange.location
                 let tag = "[video]\(videoURL.absoluteString)[/video]"
                 textView.replace(selectedTextRange, withText: tag)
                 textView.selectedRange = NSRange(location: textView.selectedRange.location + (tag as NSString).length, length: 0)
+                reportCleaned(original: original, cleaned: videoURL.absoluteString, at: insertionStart + ("[video]" as NSString).length)
             }
         } else {
             wrapSelectionInTag("[video]")
         }
+    }
+
+    /// Routes a tracking-removal event to the text view's owner so it can offer to restore the original URL.
+    private func reportCleaned(original: URL?, cleaned: String, at location: Int) {
+        guard let original else { return }
+        (textView as? URLCleaningTextView)?.reportCleaned(URLCleaningNotice(replacements: [
+            .init(
+                original: original.absoluteString,
+                cleaned: cleaned,
+                range: NSRange(location: location, length: (cleaned as NSString).length)
+            ),
+        ]))
     }
 
     /// Check if a URL is a valid video URL for the [video] tag
