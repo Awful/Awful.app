@@ -21,6 +21,23 @@ extension HTMLSelector {
     }
 }
 
+extension Form {
+    /**
+     The value the forums expect when the named checkbox is ticked, or `nil` if there's no such
+     enabled checkbox.
+
+     Worth reading back out of the markup rather than assuming: `Form` defaults a checkbox with no
+     `value` attribute to `"on"`, and SA isn't consistent about supplying one.
+     */
+    func checkboxValue(named name: String) -> String? {
+        for case .checkbox(name: let controlName, value: let value, isChecked: _, isDisabled: false)
+        in controls where controlName == name {
+            return value
+        }
+        return nil
+    }
+}
+
 func LocalizedString(_ key: String) -> String {
     return NSLocalizedString(key, bundle: Bundle(for: ForumsClient.self), comment: "")
 }
@@ -66,6 +83,19 @@ extension HTMLElement {
             if let index = children.firstIndex(where: { $0 === self }), index + 1 < children.count {
                 return children[index + 1]
             }
+        }
+        return nil
+    }
+
+    /// The nearest ancestor with the given tag name, or nil if there isn't one. HTMLReader has no
+    /// equivalent of the DOM's `closest()`.
+    func ancestorElement(tagName: String) -> HTMLElement? {
+        var candidate = parentElement
+        while let element = candidate {
+            if element.tagName.lowercased() == tagName.lowercased() {
+                return element
+            }
+            candidate = element.parentElement
         }
         return nil
     }

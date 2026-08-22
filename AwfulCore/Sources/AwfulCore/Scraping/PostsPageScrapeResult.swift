@@ -13,6 +13,8 @@ public struct PostsPageScrapeResult: ScrapeResult {
     public let jumpToPostIndex: Int?
     public let pageCount: Int?
     public let pageNumber: Int?
+    /// The thread's poll, if it has one. Sits outside `#thread`, between the breadcrumbs and the thread bar.
+    public let poll: ThreadPoll?
     public let posts: [PostScrapeResult]
     public let postsPerPage: Int?
     public let threadID: ThreadID?
@@ -37,6 +39,18 @@ public struct PostsPageScrapeResult: ScrapeResult {
         let pageNavData = scrapePageNavigationData(body)
         pageNumber = pageNavData?.currentPage
         pageCount = pageNavData?.totalPages
+
+        // Almost no thread has a poll, so check for one cheaply before doing any real work. `try?`
+        // because a poll we can't make sense of is no reason to fail the whole page.
+        var scrapedPoll = body.firstNode(matchingParsedSelector: .cached("input[name = 'pollid'], td.graphbar")) != nil
+            ? (try? ThreadPollScrapeResult(body, url: url))?.poll
+            : nil
+        // The page body is the most reliable source for which thread this is; keep whatever the
+        // scraper dug out of the breadcrumbs if the body doesn't say.
+        if let threadID = body["data-thread"] as String? {
+            scrapedPoll?.threadID = threadID
+        }
+        poll = scrapedPoll
 
         let posts = try body
             .nodes(matchingParsedSelector: .cached("table.post"))

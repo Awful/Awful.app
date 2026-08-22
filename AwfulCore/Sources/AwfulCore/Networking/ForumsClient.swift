@@ -631,6 +631,7 @@ public final class ForumsClient {
             try backgroundContext.save()
             return (primary: managed.primary, secondary: managed.secondary)
         }
+
         return await mainContext.perform {
             (
                 primary: backgroundTags.primary.compactMap { mainContext.object(with: $0.objectID) as? ThreadTag },
@@ -639,14 +640,27 @@ public final class ForumsClient {
         }
     }
 
-    /// - Parameter postData: A `PostNewThreadFormData` returned by `previewOriginalPostForThread(in:bbcode:)`.
+    public struct PostNewThreadResult {
+        public let thread: AwfulThread
+        /// Where to add the poll, when a poll was asked for and the forums handed us the form in
+        /// their response. Nil otherwise; fall back to `newPollForm(threadID:optionCount:)`.
+        public let pollForm: NewPollForm?
+    }
+
+    /**
+     - Parameter formData: A `PostNewThreadFormData` returned by `previewOriginalPostForThread(in:bbcode:)`.
+     - Parameter pollOptionCount: How many options the poll should start with, or nil for no poll.
+       Note that asking for a poll makes the forums serve up a second form (see `pollForm` on the
+       result); the thread itself is live either way.
+     */
     public func postThread(
         using formData: PostNewThreadFormData,
         subject: String,
         threadTag someThreadTag: ThreadTag?,
         secondaryTag someSecondaryTag: ThreadTag?,
-        bbcode: String
-    ) async throws -> AwfulThread {
+        bbcode: String,
+        pollOptionCount: Int? = nil
+    ) async throws -> PostNewThreadResult {
         guard let backgroundContext = backgroundManagedObjectContext,
               let mainContext = managedObjectContext
         else { throw Error.missingManagedObjectContext }
@@ -679,22 +693,308 @@ public final class ForumsClient {
        {
            try form.select(value: icon.id, for: formData.postIcons.selectedSecondaryIconFormName)
        }
+        // Asking for a poll just means ticking a box on this form; the poll itself gets filled in
+        // afterwards, on a second page, by which point the thread is already live.
+        // Track each control separately so a partial failure doesn't send the same parameter both
+        // via the form and via the hand-rolled fallback below.
+        var pollBoxWasTicked = false
+        var pollOptionCountWasEntered = false
+        let clampedPollOptionCount = pollOptionCount.map {
+            min(max($0, PollSubmission.optionCountRange.lowerBound), PollSubmission.optionCountRange.upperBound)
+        }
+        if let clampedPollOptionCount {
+            do {
+                guard let tickedValue = formData.form.checkboxValue(named: "postpoll") else {
+                    throw SubmittableForm.Error.missingControl(type: "checkbox", named: "postpoll")
+                }
+                try form.select(value: tickedValue, for: "postpoll")
+                pollBoxWasTicked = true
+                // `polloptions` ships with a value already in it, and `enter` appends, so clear first.
+                try form.clearText(for: "polloptions")
+                try form.enter(text: "\(clampedPollOptionCount)", for: "polloptions")
+                pollOptionCountWasEntered = true
+            } catch is SubmittableForm.Error {
+                // This forum's form doesn't have the poll controls, or the preview response dropped
+                // them. Fall through and send the missing parameters by hand below.
+            }
+        }
+
         let submission = form.submit(button: formData.form.submitButton(named: "submit"))
-        let params = prepareFormEntries(submission)
+        var params = prepareFormEntries(submission)
+        if let clampedPollOptionCount {
+            if !pollBoxWasTicked {
+                params.append((key: "postpoll", value: "yes"))
+            }
+            if !pollOptionCountWasEntered {
+                params.append((key: "polloptions", value: "\(clampedPollOptionCount)"))
+            }
+        }
         let (data, response) = try await fetch(method: .post, urlString: "newthread.php", parameters: params)
-        let (document, _) = try parseHTML(data: data, response: response)
-        guard let link = document.firstNode(matchingParsedSelector: .cached("a[href *= 'showthread']")),
-              let href = link["href"],
-              let components = URLComponents(string: href),
-              let queryItems = components.queryItems,
-              let threadIDPair = queryItems.first(where: { $0.name == "threadid" }),
-              let threadID = threadIDPair.value
-        else {
+        let (document, url) = try parseHTML(data: data, response: response)
+
+        // Only worth looking when we asked for a poll: the response to an ordinary thread post has
+        // no poll form on it, and we'd rather not change how that path behaves at all.
+        let pollForm = pollOptionCount == nil ? nil : firstPollForm(in: document, url: url)
+
+        guard let threadID = findNewThreadID(
+            in: document,
+            response: response,
+            pollForm: pollForm,
+            expectingPoll: pollOptionCount != nil
+        ) else {
             throw AwfulCoreError.parseError(description: "The new thread could not be located. Maybe it didn't actually get made. Double-check if your thread has appeared, then try again.")
         }
-        return await mainContext.perform {
+        let thread = await mainContext.perform {
             AwfulThread.objectForKey(objectKey: ThreadKey(threadID: threadID), in: mainContext)
         }
+        return PostNewThreadResult(thread: thread, pollForm: pollForm)
+    }
+
+    /**
+     Fetches the form for adding a poll to a thread that was posted with `postpoll=yes`.
+
+     Also the retry path: the thread is live regardless of whether the poll made it, so this can be
+     called again later with the same thread ID.
+     */
+    public func newPollForm(
+        threadID: String,
+        optionCount: Int
+    ) async throws -> NewPollForm {
+        let (data, response) = try await fetch(method: .get, urlString: "poll.php", parameters: [
+            "threadid": threadID,
+            "polloptions": "\(optionCount)",
+        ])
+        let (document, url) = try parseHTML(data: data, response: response)
+        guard let form = firstPollForm(in: document, url: url) else {
+            throw AwfulCoreError.parseError(description: "Could not find the new poll form. The thread may already have a poll.")
+        }
+        return form
+    }
+
+    /// Adds a poll to the thread that `form` came from.
+    public func postPoll(
+        using form: NewPollForm,
+        _ poll: PollSubmission
+    ) async throws {
+        let poll = poll.normalized
+        try poll.validate()
+
+        // The forums decide how many option fields to serve up, and may not have given us as many
+        // as we need (we can ask for more, but SA clamps at 25). Ask again rather than give up.
+        var form = form
+        if form.optionCount < poll.options.count {
+            let update = try form.makeOptionCountUpdateForm(count: poll.options.count)
+            let (data, response) = try await fetch(
+                method: .post,
+                urlString: form.actionPath,
+                parameters: prepareFormEntries(update.submit(button: form.updateOptionCountButton))
+            )
+            let (document, url) = try parseHTML(data: data, response: response)
+            guard let updated = firstPollForm(in: document, url: url) else {
+                throw AwfulCoreError.parseError(description: "Could not find the new poll form after asking for more options.")
+            }
+            form = updated
+        }
+
+        form.poll = poll
+        let submission = try form.makeSubmittableForm().submit(button: form.submitButton)
+        let (data, response) = try await fetch(
+            method: .post,
+            urlString: form.actionPath,
+            parameters: prepareFormEntries(submission)
+        )
+
+        // `parseHTML` already throws for the forums' standard error pages, which covers most
+        // rejections. Beyond that we only have a heuristic: vBulletin re-renders the form it didn't
+        // accept. Deliberately lenient — a false "it failed" is worse than a false "it worked",
+        // because retrying would post a second poll to a live thread.
+        // TODO: capture a real poll.php POST response as a fixture and tighten this up.
+        let (document, _) = try parseHTML(data: data, response: response)
+        if document.firstNode(matchingParsedSelector: .cached("input[name = 'question']")) != nil {
+            let message = document
+                .firstNode(matchingParsedSelector: .cached("#content center div.standard"))
+                .map { $0.textContent.trimmingCharacters(in: .whitespacesAndNewlines) }
+            throw AwfulCoreError.pollSubmissionRejected(message: message?.isEmpty == false ? message : nil)
+        }
+    }
+
+    /**
+     Fetches a poll's results without voting on it.
+
+     This is how "see the results first" works: a thread page shows either a ballot or results, never
+     both, so the only way to peek is to ask `poll.php` directly.
+     */
+    public func pollResults(pollID: String) async throws -> ThreadPoll {
+        let (data, response) = try await fetch(method: .get, urlString: "poll.php", parameters: [
+            "action": "showresults",
+            "pollid": pollID,
+        ])
+        let (document, url) = try parseHTML(data: data, response: response)
+        guard let result = try? ThreadPollScrapeResult(document, url: url) else {
+            throw AwfulCoreError.parseError(description: "Could not find the poll's results.")
+        }
+        return result.poll
+    }
+
+    /**
+     Reads a thread's poll straight off the thread page.
+
+     The thread page is the authoritative rendering — it's what the reader sees, and its totals are
+     the ones they'll compare against. Asks for a single post per page since we only want the poll
+     block, which sits outside the posts anyway.
+     */
+    public func threadPoll(threadID: String) async throws -> ThreadPoll {
+        let (data, response) = try await fetch(method: .get, urlString: "showthread.php", parameters: [
+            "threadid": threadID,
+            "perpage": "1",
+            "pagenumber": "1",
+            "noseen": "1",
+        ])
+        let (document, url) = try parseHTML(data: data, response: response)
+        guard var poll = (try? ThreadPollScrapeResult(document, url: url))?.poll else {
+            throw AwfulCoreError.parseError(description: "Could not find the thread's poll.")
+        }
+        poll.threadID = threadID
+        return poll
+    }
+
+    /**
+     Votes on a poll.
+
+     - Parameter optionIDs: The `ThreadPoll.Option.id`s the user picked.
+     - Returns: The poll as it stands after voting, with results where we could get them.
+     */
+    @discardableResult
+    public func votePoll(
+        _ poll: ThreadPoll,
+        choosing optionIDs: [Int]
+    ) async throws -> ThreadPoll {
+        guard let ballot = poll.ballot else {
+            throw AwfulCoreError.pollVotingUnavailable
+        }
+        guard !optionIDs.isEmpty else {
+            throw AwfulCoreError.pollVoteInvalid(message: String(
+                localized: "Please pick an option.", bundle: .module
+            ))
+        }
+        guard ballot.allowsMultipleChoice || optionIDs.count == 1 else {
+            throw AwfulCoreError.pollVoteInvalid(message: String(
+                localized: "This poll only takes one answer.", bundle: .module
+            ))
+        }
+
+        var params: [(key: String, value: Any)] = ballot.hiddenFields.map {
+            (key: $0.name, value: $0.value as Any)
+        }
+        for id in optionIDs {
+            guard let option = poll.options.first(where: { $0.id == id }),
+                  let name = option.formName
+            else { continue }
+            // `?? "on"` matches what `Form` assumes for a checkbox with no `value` attribute; in
+            // practice the scraper always fills this in.
+            params.append((key: name, value: (option.formValue ?? "on") as Any))
+        }
+        // Every ID skipped (e.g. options scraped from a results table, which carry no form
+        // controls) would mean POSTing a "vote" with nothing picked.
+        guard params.count > ballot.hiddenFields.count else {
+            throw AwfulCoreError.pollVoteInvalid(message: String(
+                localized: "Please pick an option.", bundle: .module
+            ))
+        }
+
+        let (data, response) = try await fetch(method: .post, urlString: ballot.actionPath, parameters: params)
+
+        // `parseHTML` throws for the forums' standard error pages, which is how a rejected vote
+        // ("you already voted", "this poll is closed") reaches the user with a real message.
+        // Everything past that is a guess, and we guess in favour of "it worked": a false failure
+        // would have people voting twice.
+        // TODO: capture a real poll.php pollvote response as a fixture and tighten this up.
+        let (document, url) = try parseHTML(data: data, response: response)
+        var voted = poll
+        voted.hasVoted = true
+        voted.ballot = nil
+
+        /*
+         Once you've voted the thread page shows the results itself, and those are the numbers to
+         report: they're what the reader sees, and they have been seen to disagree with the ones
+         `poll.php?action=showresults` gives for the same poll. So take the vote response only when
+         it actually *is* a thread page — `body[data-thread]` is the giveaway — then go and read the
+         thread page, and only fall back to the results page if we can't.
+         */
+        let respondedWithThreadPage = document
+            .firstNode(matchingParsedSelector: .cached("body[data-thread]")) != nil
+        if respondedWithThreadPage,
+           var result = (try? ThreadPollScrapeResult(document, url: url))?.poll,
+           result.hasResults
+        {
+            result.threadID = result.threadID ?? poll.threadID
+            return result
+        }
+        if let threadID = poll.threadID,
+           let results = try? await threadPoll(threadID: threadID),
+           results.hasResults
+        {
+            return results
+        }
+        if let pollID = poll.pollID, let results = try? await pollResults(pollID: pollID) {
+            return results
+        }
+
+        return voted
+    }
+
+    /// The first `<form>` on the page that looks like a new poll form, if any.
+    private func firstPollForm(in document: HTMLDocument, url: URL?) -> NewPollForm? {
+        // Match on shape rather than the `action` attribute, which could be "poll.php", "/poll.php",
+        // or fully qualified.
+        for element in document.nodes(matchingParsedSelector: .cached("form")) {
+            guard let form = try? Form(element, url: url),
+                  let pollForm = try? NewPollForm(form)
+            else { continue }
+            return pollForm
+        }
+        return nil
+    }
+
+    /**
+     Digs the new thread's ID out of the response to posting it.
+
+     Posting with a poll lands on `poll.php` rather than the usual "thread posted" page, so when we
+     asked for one there are extra places worth looking. Without a poll this is exactly the
+     long-standing behaviour: the first `showthread` link on the page.
+     */
+    private func findNewThreadID(
+        in document: HTMLDocument,
+        response: URLResponse,
+        pollForm: NewPollForm?,
+        expectingPoll: Bool
+    ) -> String? {
+        func threadID(fromURLString string: String) -> String? {
+            URLComponents(string: string)?
+                .queryItems?
+                .first { $0.name == "threadid" }?
+                .value
+        }
+
+        if expectingPoll {
+            if let url = response.url?.absoluteString, let threadID = threadID(fromURLString: url) {
+                return threadID
+            }
+            if let pollForm, !pollForm.threadID.isEmpty {
+                return pollForm.threadID
+            }
+            for selector in ["a[href *= 'poll.php']", "a.bclast[href *= 'showthread']"] {
+                if let href = document.firstNode(matchingParsedSelector: .cached(selector))?["href"],
+                   let threadID = threadID(fromURLString: href)
+                {
+                    return threadID
+                }
+            }
+        }
+
+        return document
+            .firstNode(matchingParsedSelector: .cached("a[href *= 'showthread']"))?["href"]
+            .flatMap(threadID(fromURLString:))
     }
 
     public struct PostNewThreadFormData {
@@ -815,13 +1115,14 @@ public final class ForumsClient {
          - posts: The posts that appeared on the page of the thread.
          - firstUnreadPost: The index of the first unread post on the page (this index starts at 1), or `nil` if no unread post is found.
          - advertisementHTML: Raw HTML of an SA-hosted banner ad.
+         - poll: The thread's poll, if the page had one.
      */
     public func listPosts(
         in thread: AwfulThread,
         writtenBy author: User?,
         page: ThreadPage,
         updateLastReadPost: Bool
-    ) async throws -> (posts: [Post], firstUnreadPost: Int?, advertisementHTML: String) {
+    ) async throws -> (posts: [Post], firstUnreadPost: Int?, advertisementHTML: String, poll: ThreadPoll?) {
         guard let backgroundContext = backgroundManagedObjectContext,
               let mainContext = managedObjectContext
         else { throw Error.missingManagedObjectContext }
@@ -885,7 +1186,8 @@ public final class ForumsClient {
             posts: posts,
             // post index is 1-based
             firstUnreadPost: result.jumpToPostIndex.map { $0 + 1 },
-            advertisementHTML: result.advertisement
+            advertisementHTML: result.advertisement,
+            poll: result.poll
         )
     }
 

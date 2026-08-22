@@ -21,8 +21,20 @@ final class ComposeTextView: URLCleaningTextView, CompositionHidesMenuItems {
     
     // MARK: UIResponder
     
+    /// Shown above the keyboard instead of the plain BBcode bar. The view controller sets this so
+    /// composition screens get the modern toolbar too; `becomeFirstResponder` reinstalls the
+    /// accessory view every time, so it has to be told which one to use.
+    var accessoryView: UIView? {
+        didSet {
+            if isFirstResponder {
+                inputAccessoryView = accessoryView ?? BBcodeBar
+                reloadInputViews()
+            }
+        }
+    }
+
     override func becomeFirstResponder() -> Bool {
-        inputAccessoryView = BBcodeBar
+        inputAccessoryView = accessoryView ?? BBcodeBar
         guard super.becomeFirstResponder() else {
             inputAccessoryView = nil
             return false

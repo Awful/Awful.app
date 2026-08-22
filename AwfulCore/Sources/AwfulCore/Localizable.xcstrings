@@ -1,10 +1,37 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "A poll can have at most %lld options." : {
+
+    },
+    "A poll can't run for a negative number of days." : {
+
+    },
+    "A poll needs at least %lld options." : {
+
+    },
+    "A poll question can be at most %lld characters." : {
+
+    },
     "Congratulations! Please visit the Something Awful Forums website to learn why you were banned, to contact a mod or admin, to read the rules, or to reactivate your account." : {
 
     },
+    "Please ask a question." : {
+
+    },
+    "Please pick an option." : {
+
+    },
     "Scraping failed" : {
+
+    },
+    "The forums didn't accept the poll." : {
+
+    },
+    "This poll isn't taking votes." : {
+
+    },
+    "This poll only takes one answer." : {
 
     },
     "You've Been Banned" : {

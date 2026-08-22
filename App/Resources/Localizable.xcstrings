@@ -4,7 +4,13 @@
     "" : {
 
     },
+    "(%lld)" : {
+
+    },
     "%@" : {
+
+    },
+    "%lld" : {
 
     },
     "%lld of %lld" : {
@@ -32,6 +38,12 @@
         }
       }
     },
+    "Add" : {
+
+    },
+    "Add a poll" : {
+
+    },
     "Add Bookmark" : {
 
     },
@@ -49,6 +61,9 @@
           }
         }
       }
+    },
+    "Any" : {
+
     },
     "Author Profile" : {
 
@@ -210,6 +225,9 @@
           }
         }
       }
+    },
+    "Cancel" : {
+
     },
     "compose.accessibility-label" : {
       "comment" : "Accessibility label of compose button in posts screen.",
@@ -891,6 +909,9 @@
     "Mark Unread" : {
 
     },
+    "Month" : {
+
+    },
     "No smilies found" : {
 
     },
@@ -915,6 +936,9 @@
           }
         }
       }
+    },
+    "Poll" : {
+
     },
     "posts-page.copied-post" : {
       "comment" : "Title of alert shown when post successfully copied to pasteboard.",
@@ -1083,6 +1107,9 @@
           }
         }
       }
+    },
+    "Preview" : {
+
     },
     "private-message-folder.add-message" : {
       "comment" : "Message in new folder dialog",
@@ -1517,6 +1544,9 @@
     "Riker" : {
 
     },
+    "Save" : {
+
+    },
     "save-action.error" : {
       "comment" : "Title of error message presented when saving video fails.",
       "extractionState" : "migrated",
@@ -1652,6 +1682,9 @@
         }
       }
     },
+    "Skip Poll" : {
+
+    },
     "smilie-action.add-to-favorites" : {
       "comment" : "Title of button that adds a smilie to the user's favorites. Parameter is the text used to insert the smilie into a post.",
       "extractionState" : "migrated",
@@ -1707,6 +1740,9 @@
           }
         }
       }
+    },
+    "Thread posted, poll wasn't" : {
+
     },
     "thread-list.filter-button.change-filter" : {
       "comment" : "Button title atop the thread list when some filter is set.",
@@ -1774,7 +1810,19 @@
     "Try a different search term" : {
 
     },
+    "Try Again" : {
+
+    },
     "V" : {
+
+    },
+    "Vote" : {
+
+    },
+    "Year" : {
+
+    },
+    "Your thread is up, but the poll couldn't be added: %@" : {
 
     }
   },
