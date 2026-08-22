@@ -35,7 +35,15 @@ extension IndexScrapeResult {
         for ((raw, _), i) in zip(rawForums, Int32(0)...) {
             let forum = unorderedForums[raw.id]
             raw.update(forum)
-            if forum.index != i { forum.index = i }
+            if forum.index != i {
+                let wasDelisted = forum.index < 0
+                forum.index = i
+
+                // The favorites list's fetched results controller observes ForumMetadata but leans
+                // on Forum.index, so a forum the site has started listing again needs a change the
+                // metadata controller can actually see.
+                if wasDelisted { forum.metadata.tickleForFetchedResultsController() }
+            }
         }
         let moderators = rawForums.flatMap { $0.forum.moderators }
         let unorderedUsers = UpsertBatch(
@@ -87,6 +95,46 @@ extension IndexScrapeResult {
             }
 
             forumStack.append(forum)
+        }
+
+        // Forums come and go. Anything the site has stopped listing drops out of the forum list,
+        // but we keep the row: threads, per-forum themes, and the favorite flag hang off it, and a
+        // forum that reappears should come back with its favorite intact. A scrape with no forums
+        // in it is nonsense (a mangled response, say) and acting on it would blank the whole list.
+        if !rawForums.isEmpty {
+            let scrapedForumIDs = rawForums.map { $0.forum.id }
+            let delisted = Forum.fetch(in: context) {
+                $0.predicate = .and(
+                    .init("NOT (\(\Forum.forumID) IN \(scrapedForumIDs))"),
+                    .or(.init("\(\Forum.index) >= 0"),
+                        .init("\(\Forum.metadata.visibleInForumList) == YES")))
+                $0.returnsObjectsAsFaults = false
+            }
+            for forum in delisted {
+                if forum.metadata.visibleInForumList {
+                    forum.metadata.visibleInForumList = false
+                }
+
+                // A negative index is how we say "the site isn't listing this right now". Setting
+                // it unconditionally doubles as the pointless set that the Forum-observing fetched
+                // results controller needs, and…
+                forum.index = -1
+
+                // …the favorites list observes ForumMetadata, so it needs its own nudge.
+                forum.metadata.tickleForFetchedResultsController()
+            }
+        }
+
+        if !rawGroups.isEmpty {
+            let scrapedGroupIDs = rawGroups.map { $0.id }
+            let delisted = ForumGroup.fetch(in: context) {
+                $0.predicate = .and(
+                    .init("NOT (\(\ForumGroup.groupID) IN \(scrapedGroupIDs))"),
+                    .init("\(\ForumGroup.index) >= 0"))
+            }
+            for group in delisted {
+                group.index = -1
+            }
         }
 
         let profile = currentUser.upsert(into: context)

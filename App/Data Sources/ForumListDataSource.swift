@@ -56,9 +56,15 @@ final class ForumListDataSource: NSObject {
             cacheName: nil)
 
         let favoriteForumsRequest = ForumMetadata.makeFetchRequest()
-        favoriteForumsRequest.predicate = NSPredicate(format: "%K == YES", #keyPath(ForumMetadata.favorite))
+        // A favorite whose forum the site no longer lists (index < 0) stays favorited but stops
+        // showing up, so it comes back intact if the forum does.
+        favoriteForumsRequest.predicate = NSPredicate(
+            format: "%K == YES AND %K >= 0",
+            #keyPath(ForumMetadata.favorite),
+            #keyPath(ForumMetadata.forum.index))
         favoriteForumsRequest.sortDescriptors = [
-            NSSortDescriptor(key: #keyPath(ForumMetadata.favoriteIndex), ascending: true)]
+            NSSortDescriptor(key: #keyPath(ForumMetadata.favoriteIndex), ascending: true),
+            NSSortDescriptor(key: #keyPath(ForumMetadata.forum.forumID), ascending: true)]
         favoriteForumsController = NSFetchedResultsController(
             fetchRequest: favoriteForumsRequest,
             managedObjectContext: managedObjectContext,
@@ -323,7 +329,7 @@ final class ForumListDataSource: NSObject {
             return ForumListCell.ViewModel(
                 backgroundColor: theme["listBackgroundColor"]!,
                 expansion: {
-                    if forum.childForums.isEmpty {
+                    if !forum.childForums.contains(where: { $0.index >= 0 }) {
                         return .none
                     } else if forum.metadata.showsChildrenInForumList {
                         return .isExpanded
