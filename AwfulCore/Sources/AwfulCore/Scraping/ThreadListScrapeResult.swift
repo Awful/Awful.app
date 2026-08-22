@@ -8,6 +8,8 @@ import HTMLReader
 
 public struct ThreadListScrapeResult: ScrapeResult {
     public let announcements: [Announcement]
+    /// The archives ("time machine") form, when present. `nil` when the user lacks the Archives upgrade.
+    public let archivesForm: ArchivesFormScrapeResult?
     public let breadcrumbs: ForumBreadcrumbsScrapeResult?
     public let canPostNewThread: Bool
     public let filterableIcons: [PostIcon]
@@ -61,6 +63,8 @@ public struct ThreadListScrapeResult: ScrapeResult {
         let body = try html.requiredNode(matchingSelector: "body")
 
         (announcements, threads) = scrapeAnnouncementsAndThreads(body.nodes(matchingParsedSelector: .cached("tr.thread")))
+
+        archivesForm = try? ArchivesFormScrapeResult(body, url: url)
 
         breadcrumbs = try? ForumBreadcrumbsScrapeResult(body, url: url)
 

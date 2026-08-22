@@ -117,6 +117,32 @@ public final class ForumsClient {
         loginCookie?.expiresDate
     }
 
+    // MARK: Archives (time machine)
+
+    /// Posted (on the main queue) whenever ``currentArchivesTimeframe`` changes.
+    public static let archivesTimeframeDidChange = Notification.Name("AwfulArchivesTimeframeDidChange")
+
+    /// The forum used to read/write the session-wide archives lock. The lock is cookie-scoped and not
+    /// forum-specific, so any always-present public forum works; GBS (1) is a stable choice.
+    private let archivesAnchorForumID = "1"
+
+    /// The archived timeframe the session is currently locked to, or `nil` for live forums.
+    ///
+    /// Mirrors the Forums' server-side, cookie-scoped "time machine" state. It's refreshed from every
+    /// thread-list load and by the archives methods below. Observe ``archivesTimeframeDidChange``.
+    @MainActor public private(set) var currentArchivesTimeframe: ArchivesTimeframe? {
+        didSet {
+            guard oldValue != currentArchivesTimeframe else { return }
+            NotificationCenter.default.post(name: Self.archivesTimeframeDidChange, object: self)
+        }
+    }
+
+    /// Hop for the fetch methods below, which run on arbitrary executors while the property (and
+    /// everyone observing it) lives on the main actor.
+    @MainActor private func updateArchivesTimeframe(_ timeframe: ArchivesTimeframe?) {
+        currentArchivesTimeframe = timeframe
+    }
+
     enum Error: Swift.Error {
         case failedTransferToMainContext
         case missingURLSession
@@ -381,6 +407,11 @@ public final class ForumsClient {
         let (data, response) = try await fetch(method: .get, urlString: "forumdisplay.php", parameters: parameters)
         let (document, url) = try parseHTML(data: data, response: response)
         let result = try ThreadListScrapeResult(document, url: url)
+        // Keep the archives mirror in sync for free. Only update when the form is present (upgrade
+        // owners) so a page without it never clobbers a known lock.
+        if let archivesForm = result.archivesForm {
+            await updateArchivesTimeframe(archivesForm.selectedTimeframe)
+        }
         let backgroundThreads = try await backgroundContext.perform {
             let threads = try result.upsert(into: backgroundContext)
             _ = try result.upsertAnnouncements(into: backgroundContext)
@@ -437,6 +468,60 @@ public final class ForumsClient {
         return await mainContext.perform {
             backgroundThreads.compactMap { mainContext.object(with: $0.objectID) as? AwfulThread }
         }
+    }
+
+    // MARK: Archives (time machine)
+
+    /// Loads a forum page and scrapes the archives form: the years the site offers plus the current
+    /// lock state. Requires the Archives upgrade (throws otherwise, since the form isn't rendered).
+    public func fetchArchivesForm() async throws -> ArchivesFormScrapeResult {
+        let (data, response) = try await fetch(method: .get, urlString: "forumdisplay.php", parameters: [
+            "forumid": archivesAnchorForumID,
+        ])
+        let (document, url) = try parseHTML(data: data, response: response)
+        let result = try ArchivesFormScrapeResult(document, url: url)
+        await updateArchivesTimeframe(result.selectedTimeframe)
+        return result
+    }
+
+    /// Locks the session into an archived timeframe (posts the time machine's "GO"). `year` is
+    /// required; a `nil` `month` means the whole year, and `day` is ignored without a `month`.
+    public func setArchivesTimeframe(month: Int?, day: Int?, year: Int) async throws {
+        let day = month == nil ? nil : day
+        let dayValue = day.map(String.init) ?? ""
+        let (data, response) = try await fetch(
+            method: .post,
+            urlString: "forumdisplay.php?forumid=\(archivesAnchorForumID)",
+            parameters: [
+                "ac_month": month.map(String.init) ?? "",
+                // The day field is named `bday_day` on the live site but `ac_day` in some captures;
+                // send both (the backend ignores the unknown one) so the day sticks either way.
+                "bday_day": dayValue,
+                "ac_day": dayValue,
+                "ac_year": String(year),
+                "set": "GO",
+            ]
+        )
+        // Let server error pages (banned, database down, …) throw before recording anything.
+        let (document, url) = try parseHTML(data: data, response: response)
+        // Prefer the server's echoed state; fall back to what we asked for if the form won't scrape.
+        if let scraped = try? ArchivesFormScrapeResult(document, url: url) {
+            await updateArchivesTimeframe(scraped.selectedTimeframe)
+        } else {
+            await updateArchivesTimeframe(ArchivesTimeframe(month: month, day: day, year: year))
+        }
+    }
+
+    /// Returns to live forums (posts the time machine's "Remove").
+    public func removeArchivesTimeframe() async throws {
+        let (data, response) = try await fetch(
+            method: .post,
+            urlString: "forumdisplay.php?forumid=\(archivesAnchorForumID)",
+            parameters: ["rem": "Remove"]
+        )
+        // Let server error pages throw so we don't record a switch that never happened.
+        _ = try parseHTML(data: data, response: response)
+        await updateArchivesTimeframe(nil)
     }
 
     public func setThread(

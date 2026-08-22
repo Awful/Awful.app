@@ -1,0 +1,45 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "Any" : {
+
+    },
+    "Archives" : {
+
+    },
+    "Browse the forums as they were on a past date. This locks every forum to the selected timeframe until you return to live." : {
+
+    },
+    "Cancel" : {
+
+    },
+    "Couldn't load archive years from the Forums; showing a default range." : {
+
+    },
+    "Couldn't return to live forums: %@" : {
+
+    },
+    "Couldn't switch to archives: %@" : {
+
+    },
+    "Day" : {
+
+    },
+    "Month" : {
+
+    },
+    "Return to Live Forums" : {
+
+    },
+    "Update Archives View" : {
+
+    },
+    "View Archives" : {
+
+    },
+    "Year" : {
+
+    }
+  },
+  "version" : "1.0"
+}

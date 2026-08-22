@@ -2,6 +2,7 @@
 //
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import AwfulArchives
 import AwfulCore
 import AwfulGlossary
 import AwfulSettings
@@ -19,6 +20,7 @@ final class ForumsTableViewController: CollectionViewController {
     private var cancellables: Set<AnyCancellable> = []
     @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
     @FoilDefaultStorage(Settings.canSendPrivateMessages) private var canSendPrivateMessages
+    @FoilDefaultStorage(Settings.hasArchives) private var hasArchives
     private var favoriteForumCountObserver: ManagedObjectCountObserver!
     private var listDataSource: ForumListDataSource!
     let managedObjectContext: NSManagedObjectContext
@@ -26,6 +28,15 @@ final class ForumsTableViewController: CollectionViewController {
     private var unreadAnnouncementCountObserver: ManagedObjectCountObserver!
     private var cellRegistration: UICollectionView.CellRegistration<ForumListCell, ForumListDataSource.Item>!
     private var headerRegistration: UICollectionView.SupplementaryRegistration<ForumListSectionHeaderView>!
+    private var archivesBannerRegistration: UICollectionView.SupplementaryRegistration<ForumsArchivesBannerView>!
+    /// The live banner view, so its text can be refreshed in place when the timeframe changes without
+    /// the layout re-dequeuing it (which it doesn't for an active→active date change).
+    private weak var archivesBannerView: ForumsArchivesBannerView?
+    /// Whether the layout currently includes the banner, to detect appear/disappear vs. text-only
+    /// changes. Starts in sync with the `showArchivesBanner` the layout is built with in `init`.
+    private var isArchivesBannerInLayout = ForumsClient.shared.currentArchivesTimeframe != nil
+    /// Layout element kind for the maroon "Archives view" banner shown above every section.
+    private static let archivesBannerElementKind = "ForumsArchivesBanner"
     /// The right-bar overflow (⋯) and Search button views on the standard (non–iOS 26 iPad) path, kept so
     /// `updateButtonColors()` can retint them on theme changes — mirroring `BookmarksTableViewController`.
     private var moreButtonView: UIButton?
@@ -33,7 +44,7 @@ final class ForumsTableViewController: CollectionViewController {
 
     init(managedObjectContext: NSManagedObjectContext) {
         self.managedObjectContext = managedObjectContext
-        super.init(collectionViewLayout: ForumsTableViewController.makeLayout(separatorLeadingInset: tableSeparatorLeftMargin, separatorColor: nil, swipeActionsProvider: nil))
+        super.init(collectionViewLayout: ForumsTableViewController.makeLayout(separatorLeadingInset: tableSeparatorLeftMargin, separatorColor: nil, showArchivesBanner: ForumsClient.shared.currentArchivesTimeframe != nil, swipeActionsProvider: nil))
 
         title = "Forums"
         tabBarItem.image = UIImage(named: "forum-list")
@@ -69,6 +80,7 @@ final class ForumsTableViewController: CollectionViewController {
 
         cellRegistration = makeCellRegistration()
         headerRegistration = makeHeaderRegistration()
+        archivesBannerRegistration = makeArchivesBannerRegistration()
 
         themeDidChange()
     }
@@ -80,6 +92,7 @@ final class ForumsTableViewController: CollectionViewController {
     private static func makeLayout(
         separatorLeadingInset: CGFloat,
         separatorColor: UIColor?,
+        showArchivesBanner: Bool,
         swipeActionsProvider: ((IndexPath) -> UISwipeActionsConfiguration?)?
     ) -> UICollectionViewLayout {
         var config = UICollectionLayoutListConfiguration(appearance: .sidebar)
@@ -99,17 +112,38 @@ final class ForumsTableViewController: CollectionViewController {
             }
         }
 
-        return CollectionViewController.makeListLayout(using: config)
+        let layout = CollectionViewController.makeListLayout(using: config)
+
+        // A full-width maroon banner pinned above every section (so it sits above "Favorite Forums")
+        // whenever archives mode is active.
+        if showArchivesBanner {
+            let bannerItem = NSCollectionLayoutBoundarySupplementaryItem(
+                layoutSize: NSCollectionLayoutSize(
+                    widthDimension: .fractionalWidth(1.0),
+                    heightDimension: .estimated(36)),
+                elementKind: archivesBannerElementKind,
+                alignment: .top)
+            // Scrolls away with the list (like the thread-list banner) rather than staying pinned.
+            bannerItem.pinToVisibleBounds = false
+            let layoutConfig = layout.configuration
+            layoutConfig.contentInsetsReference = .none
+            layoutConfig.boundarySupplementaryItems = [bannerItem]
+            layout.configuration = layoutConfig
+        }
+
+        return layout
     }
 
     private func rebuildLayout() {
         let layout = ForumsTableViewController.makeLayout(
             separatorLeadingInset: tableSeparatorLeftMargin,
             separatorColor: theme[uicolor: "listSeparatorColor"],
+            showArchivesBanner: ForumsClient.shared.currentArchivesTimeframe != nil,
             swipeActionsProvider: { [weak self] indexPath in
                 self?.swipeActionsConfig(at: indexPath)
             }
         )
+        isArchivesBannerInLayout = ForumsClient.shared.currentArchivesTimeframe != nil
         collectionView.setCollectionViewLayout(layout, animated: false)
     }
 
@@ -156,6 +190,36 @@ final class ForumsTableViewController: CollectionViewController {
                 font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .regular),
                 sectionName: self.listDataSource.titleForSection(indexPath.section),
                 textColor: self.theme["listHeaderTextColor"])
+        }
+    }
+
+    private func makeArchivesBannerRegistration() -> UICollectionView.SupplementaryRegistration<ForumsArchivesBannerView> {
+        UICollectionView.SupplementaryRegistration<ForumsArchivesBannerView>(elementKind: Self.archivesBannerElementKind) { [weak self] view, _, _ in
+            guard let self else { return }
+            self.archivesBannerView = view
+            self.configureArchivesBannerView(view)
+        }
+    }
+
+    private func configureArchivesBannerView(_ view: ForumsArchivesBannerView) {
+        guard let timeframe = ForumsClient.shared.currentArchivesTimeframe else { return }
+        view.configure(
+            text: timeframe.bannerText,
+            backgroundColor: theme[uicolor: "archivesBannerBackgroundColor"],
+            textColor: theme[uicolor: "archivesBannerTextColor"],
+            font: UIFont.preferredFontForTextStyle(.body, sizeAdjustment: -2.5, weight: .semibold))
+        view.onTap = { [weak self] in self?.showArchives() }
+    }
+
+    /// Reflects the current archives timeframe in the banner. Rebuilds the layout when the banner needs
+    /// to appear or disappear; otherwise updates the existing banner's text in place (the layout won't
+    /// re-dequeue it for an active→active date change).
+    private func syncArchivesBanner() {
+        let nowActive = ForumsClient.shared.currentArchivesTimeframe != nil
+        if nowActive != isArchivesBannerInLayout {
+            rebuildLayout()
+        } else if nowActive, let view = archivesBannerView {
+            configureArchivesBannerView(view)
         }
     }
 
@@ -258,11 +322,24 @@ final class ForumsTableViewController: CollectionViewController {
             collectionView: collectionView,
             cellRegistration: cellRegistration,
             supplementaryViewProvider: { [weak self] cv, kind, indexPath in
-                guard let self, kind == UICollectionView.elementKindSectionHeader else { return nil }
-                return cv.dequeueConfiguredReusableSupplementary(using: self.headerRegistration, for: indexPath)
+                guard let self else { return nil }
+                switch kind {
+                case UICollectionView.elementKindSectionHeader:
+                    return cv.dequeueConfiguredReusableSupplementary(using: self.headerRegistration, for: indexPath)
+                case ForumsTableViewController.archivesBannerElementKind:
+                    return cv.dequeueConfiguredReusableSupplementary(using: self.archivesBannerRegistration, for: indexPath)
+                default:
+                    return nil
+                }
             }
         )
         listDataSource.delegate = self
+
+        // Show/hide (and refresh) the archives banner as the timeframe is set/removed elsewhere.
+        NotificationCenter.default.publisher(for: ForumsClient.archivesTimeframeDidChange)
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in self?.syncArchivesBanner() }
+            .store(in: &cancellables)
 
         // Now that the data source exists, rebuild the layout with a swipe-actions
         // provider that consults it.
@@ -277,14 +354,18 @@ final class ForumsTableViewController: CollectionViewController {
 
         updateRightBarButtons()
 
-        // Rebuild the right-side buttons when Search availability changes.
+        // Rebuild the right-side buttons when Search availability or Archives ownership changes.
         $canSendPrivateMessages
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in self?.updateRightBarButtons() }
+            .store(in: &cancellables)
+        $hasArchives
             .receive(on: RunLoop.main)
             .sink { [weak self] _ in self?.updateRightBarButtons() }
             .store(in: &cancellables)
     }
 
-    /// The overflow menu: currently just SAclopedia.
+    /// The overflow menu: Archives (upgrade owners only) then SAclopedia.
     private func moreMenu() -> UIMenu {
         let glossaryAction = UIAction(
             title: "SAclopedia",
@@ -292,7 +373,13 @@ final class ForumsTableViewController: CollectionViewController {
         ) { [weak self] _ in
             self?.showGlossary()
         }
-        return UIMenu(title: "", children: [glossaryAction])
+        let archivesAction = UIAction(
+            title: "Archives",
+            image: UIImage(systemName: "clock.arrow.circlepath")
+        ) { [weak self] _ in
+            self?.showArchives()
+        }
+        return UIMenu(title: "", children: hasArchives ? [archivesAction, glossaryAction] : [glossaryAction])
     }
 
     /// Builds the Search + overflow (⋯) buttons as an icon pair, mirroring
@@ -411,6 +498,10 @@ final class ForumsTableViewController: CollectionViewController {
         present(glossary, animated: true)
     }
 
+    @objc private func showArchives() {
+        present(ArchivesHostingController(), animated: true)
+    }
+
     @objc private func searchForums() {
         let searchView = SearchHostingController()
         if traitCollection.userInterfaceIdiom == .pad {
@@ -424,6 +515,10 @@ final class ForumsTableViewController: CollectionViewController {
     override func themeDidChange() {
         if isViewLoaded {
             rebuildLayout()
+            // The layout may reuse the banner without re-dequeuing it, so refresh its colors directly.
+            if let view = archivesBannerView {
+                configureArchivesBannerView(view)
+            }
             updateButtonColors()
         }
 
@@ -439,6 +534,9 @@ final class ForumsTableViewController: CollectionViewController {
         super.viewDidAppear(animated)
 
         refreshIfNecessary()
+
+        // Catch a timeframe change made from a thread list while this screen was covered.
+        syncArchivesBanner()
 
         becomeFirstResponder()
     }
@@ -526,5 +624,43 @@ extension ForumsTableViewController {
 extension ForumsTableViewController: RestorableLocation {
     var restorationRoute: AwfulRoute? {
         .forumList
+    }
+}
+
+/// The full-width maroon "Archives view: …" banner pinned above the forum list. Tapping it reopens
+/// the archives sheet.
+private final class ForumsArchivesBannerView: UICollectionReusableView {
+    private let label = UILabel()
+    var onTap: (() -> Void)?
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        label.textAlignment = .center
+        label.adjustsFontSizeToFitWidth = true
+        label.minimumScaleFactor = 0.7
+        label.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(label)
+        NSLayoutConstraint.activate([
+            label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12),
+            label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12),
+            label.topAnchor.constraint(equalTo: topAnchor, constant: 6),
+            label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -6),
+        ])
+        addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleTap)))
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    @objc private func handleTap() {
+        onTap?()
+    }
+
+    func configure(text: String, backgroundColor: UIColor?, textColor: UIColor?, font: UIFont) {
+        label.text = text
+        label.textColor = textColor
+        label.font = font
+        self.backgroundColor = backgroundColor
     }
 }
