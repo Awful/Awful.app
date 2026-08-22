@@ -41,6 +41,7 @@ final class SettingsViewController: HostingController<SettingsContainerView> {
             isPad: UIDevice.current.userInterfaceIdiom == .pad,
             logOut: { AppDelegate.instance.logOut() },
             managedObjectContext: managedObjectContext,
+            onScrollOffsetFromTop: { box.contents.updateNavigationBarForScrollOffset($0) },
             resetSettings: { box.contents.resetSettings() }
         ))
         self.cacheSizeText = cacheSizeText
@@ -79,8 +80,21 @@ final class SettingsViewController: HostingController<SettingsContainerView> {
             isPad: rootView.isPad,
             logOut: rootView.logOut,
             managedObjectContext: rootView.managedObjectContext,
+            onScrollOffsetFromTop: rootView.onScrollOffsetFromTop,
             resetSettings: rootView.resetSettings
         )
+    }
+
+    /// Drives the iOS 26 liquid-glass nav bar transition (opaque at top, transparent once
+    /// scrolled) from the SwiftUI Form's scroll position, which otherwise never reaches the
+    /// navigation controller.
+    private func updateNavigationBarForScrollOffset(_ offsetFromTop: CGFloat) {
+        guard #available(iOS 26.0, *),
+              let navController = navigationController as? NavigationController
+        else { return }
+        let transitionDistance: CGFloat = 30.0
+        let progress = max(0, min(1, offsetFromTop / transitionDistance))
+        navController.updateNavigationBarTintForScrollProgress(NSNumber(value: Float(progress)))
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -214,11 +228,27 @@ struct SettingsContainerView: View {
     let isPad: Bool
     let logOut: () -> Void
     let managedObjectContext: NSManagedObjectContext
+    let onScrollOffsetFromTop: (CGFloat) -> Void
     let resetSettings: () -> Void
 
     @State private var displayedCacheSize: String = "Calculating…"
 
     var body: some View {
+        if #available(iOS 26.0, *) {
+            // Report the Form's scroll position so the hosting controller can drive the
+            // liquid-glass nav bar transition. The transformed value only changes with
+            // vertical scrolling, so inner horizontal scrollers (the app icon grid) don't fire it.
+            core.onScrollGeometryChange(for: CGFloat.self) { geometry in
+                geometry.contentOffset.y + geometry.contentInsets.top
+            } action: { _, offsetFromTop in
+                onScrollOffsetFromTop(offsetFromTop)
+            }
+        } else {
+            core
+        }
+    }
+
+    private var core: some View {
         SettingsView(
             appIconDataSource: appIconDataSource,
             avatarURL: currentUser.avatarURL,
