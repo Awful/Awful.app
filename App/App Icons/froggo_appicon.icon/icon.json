@@ -3,7 +3,7 @@
   "fill" : {
     "linear-gradient" : [
       "srgb:0.00000,0.40000,1.00000,1.00000",
-      "display-p3:0.00000,0.30000,0.75000,1.00000"
+      "srgb:0.98824,0.82950,0.01961,1.00000"
     ]
   },
   "groups" : [
@@ -50,7 +50,7 @@
       },
       "shadow" : {
         "kind" : "layer-color",
-        "opacity" : 0.4
+        "opacity" : 0.9
       },
       "specular" : true,
       "translucency" : {
@@ -60,16 +60,72 @@
     },
     {
       "blend-mode" : "normal",
-      "blur-material" : 0.5,
+      "blur-material" : null,
+      "hidden" : false,
+      "layers" : [
+        {
+          "fill" : {
+            "solid" : "display-p3:0.80000,0.16000,0.16000,1.00000"
+          },
+          "hidden" : false,
+          "image-name" : "numouth.svg",
+          "name" : "numouth",
+          "position" : {
+            "scale" : 1,
+            "translation-in-points" : [
+              0,
+              12
+            ]
+          }
+        }
+      ],
+      "name" : "Group",
+      "shadow" : {
+        "kind" : "layer-color",
+        "opacity" : 0.2
+      },
+      "specular" : true,
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.45000000000000007
+      }
+    },
+    {
+      "blend-mode" : "normal",
+      "blur-material" : 1,
+      "hidden" : false,
       "layers" : [
         {
           "hidden" : false,
           "image-name" : "3.svg",
-          "name" : "3"
+          "name" : "3",
+          "position" : {
+            "scale" : 1,
+            "translation-in-points" : [
+              0,
+              3
+            ]
+          }
+        },
+        {
+          "fill" : {
+            "solid" : "srgb:0.18356,0.40000,0.00440,1.00000"
+          },
+          "glass" : false,
+          "hidden" : false,
+          "image-name" : "nose.svg",
+          "name" : "nose",
+          "position" : {
+            "scale" : 1,
+            "translation-in-points" : [
+              0,
+              -144
+            ]
+          }
         }
       ],
       "position" : {
-        "scale" : 1.0000000000000002,
+        "scale" : 1.001,
         "translation-in-points" : [
           0,
           0
@@ -82,41 +138,7 @@
       "specular" : true,
       "translucency" : {
         "enabled" : true,
-        "value" : 0.24999999999999997
-      }
-    },
-    {
-      "blur-material" : null,
-      "hidden" : false,
-      "layers" : [
-        {
-          "hidden" : false,
-          "image-name" : "mouth inner2.svg",
-          "name" : "mouth inner2",
-          "position" : {
-            "scale" : 1,
-            "translation-in-points" : [
-              0,
-              0
-            ]
-          }
-        }
-      ],
-      "position" : {
-        "scale" : 1.143,
-        "translation-in-points" : [
-          0,
-          0
-        ]
-      },
-      "shadow" : {
-        "kind" : "layer-color",
-        "opacity" : 0
-      },
-      "specular" : false,
-      "translucency" : {
-        "enabled" : true,
-        "value" : 0.15
+        "value" : 0.55
       }
     }
   ],
