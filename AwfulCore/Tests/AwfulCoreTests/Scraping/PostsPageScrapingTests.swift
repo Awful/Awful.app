@@ -107,8 +107,16 @@ final class PostsPageScrapingTests: XCTestCase {
         let ignored = result.posts.filter { $0.isIgnored }
         XCTAssertEqual(ignored.count, 1)
 
-        let post = ignored[0]
+        let post = try XCTUnwrap(ignored.first)
         XCTAssertEqual(post.id.rawValue, "428957756")
+    }
+
+    func testNewPageNavigationAttributes() throws {
+        // Newer posts pages put the page navigation info in data attributes on the pages div, instead of a select menu.
+        let result = try scrapeHTMLFixture(PostsPageScrapeResult.self, named: "showthread-newpagenav")
+        XCTAssertEqual(result.posts.count, 40)
+        XCTAssertEqual(result.pageNumber, 17)
+        XCTAssertEqual(result.pageCount, 21)
     }
 
     func testOneUserOnepage() throws {

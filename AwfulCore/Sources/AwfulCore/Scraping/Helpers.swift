@@ -204,7 +204,22 @@ func scrapePageNavigationData(_ node: HTMLNode) -> PageNavigationData? {
         )
     }
 
-    return nil
+    // Fall back to the older markup: a select menu listing the pages, with the current page selected. A pages div without a select menu means there's only the one page.
+    let pageSelect = pageDiv.firstNode(matchingParsedSelector: .cached("select"))
+    let totalPages = pageSelect?.childElementNodes.count ?? 1
+
+    let currentPage = pageSelect
+        .flatMap { $0.firstNode(matchingParsedSelector: .cached("option[selected]")) }
+        .flatMap { $0["value"] }
+        .flatMap { Int($0) }
+        ?? 1
+
+    return PageNavigationData(
+        currentPage: currentPage,
+        totalPages: totalPages,
+        baseURL: pageSelect?["data-url"],
+        perPage: nil
+    )
 }
 
 enum ForumGroupID: String {

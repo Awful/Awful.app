@@ -28,9 +28,10 @@ final class LepersColonyPageScrapingTests: XCTestCase {
         XCTAssertEqual(first.approver, first.requester)
         XCTAssertEqual(first.approverUsername, first.requesterUsername)
 
-        // This older fixture's `<div class="pages">` has no data-* attributes, so pagination is absent.
-        XCTAssertNil(result.pageNumber)
-        XCTAssertNil(result.pageCount)
+        // This older fixture's `<div class="pages">` has no data-* attributes, so pagination
+        // comes from the select-menu fallback.
+        XCTAssertEqual(result.pageNumber, 1)
+        XCTAssertEqual(result.pageCount, 2369)
 
         // The display-options form is present, so admin/year options parse.
         let options = try XCTUnwrap(result.filterOptions)
