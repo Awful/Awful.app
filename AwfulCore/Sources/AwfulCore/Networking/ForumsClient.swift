@@ -284,11 +284,13 @@ public final class ForumsClient {
     /// - Parameters:
     ///   - query: The search query string
     ///   - forumIDs: Array of forum ID strings to search within
-    /// - Returns: HTMLDocument containing the search results
+    /// - Returns: The search results document, and the URL it was ultimately loaded from. The URL
+    ///   matters because the forums redirect a search POST to `query.php?action=results&qid=N`, and
+    ///   that query ID is the only handle on the results once the search screen goes away.
     public func searchForums(
         query: String,
         forumIDs: [String]
-    ) async throws -> HTMLDocument {
+    ) async throws -> (document: HTMLDocument, url: URL?) {
         guard let urlSession else { throw Error.missingURLSession }
         guard let baseURL else { throw Error.invalidBaseURL }
         guard var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: true) else {
@@ -315,8 +317,7 @@ public final class ForumsClient {
         request.httpBody = queryString
 
         let (data, response) = try await urlSession.data(for: request)
-        let (document, _) = try parseHTML(data: data, response: response)
-        return document
+        return try parseHTML(data: data, response: response)
     }
 
     /// Navigates to a specific page of forum search results.

@@ -299,11 +299,16 @@ extension RootViewControllerStack {
     ) -> UIViewController? {
         kindaFixReallyAnnoyingSplitViewHideSidebarInLandscapeBehavior()
         
-        let viewControllers = primaryNavigationController.viewControllers 
-        let (primaryStack, secondaryStack) = partition(viewControllers) { vc in
-            guard let vc = vc as? HasSplitViewPreference else { return false }
-            return vc.prefersSecondaryViewController
-        }
+        // Only a *trailing* run of secondary-preferring view controllers moves to the detail column.
+        // Splitting at the first one instead would drag whatever was pushed on top of it along too
+        // — e.g. search screens opened from a posts page — into the detail column, where showing a
+        // new detail replaces the entire stack and throws them away.
+        let viewControllers = primaryNavigationController.viewControllers
+        let secondaryCount = viewControllers.reversed()
+            .prefix { ($0 as? HasSplitViewPreference)?.prefersSecondaryViewController == true }
+            .count
+        let primaryStack = viewControllers.dropLast(secondaryCount)
+        let secondaryStack = viewControllers.suffix(secondaryCount)
         primaryNavigationController.viewControllers = Array(primaryStack)
         let secondaryNavigationController = createEmptyDetailNavigationController()
         if secondaryStack.isEmpty {
@@ -380,13 +385,6 @@ extension RootViewControllerStack {
         // dynamically based on the content behind the detail nav bar.
         return UIBarButtonItem(image: UIImage(named: "back"), style: .plain, target: realItem.target, action: realItem.action)
     }
-}
-
-func partition<C: Collection>(_ c: C, test: (C.Iterator.Element) -> Bool) -> (C.SubSequence, C.SubSequence) {
-    if let i = c.firstIndex(where: test) {
-        return (c.prefix(upTo: i), c.suffix(from: i))
-    }
-    return (c.prefix(upTo: c.endIndex), c.suffix(from: c.endIndex))
 }
 
 protocol HasSplitViewPreference {

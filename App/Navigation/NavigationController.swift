@@ -237,9 +237,18 @@ final class NavigationController: UINavigationController, Themeable {
     /// preserve it across cold launches. View controllers that don't conform to
     /// `RestorableLocation` (or whose `restorationRoute` is nil) are dropped, since the scene
     /// activity can only carry route-shaped data.
+    ///
+    /// The stack is consumed from the end, so an entry that can't be saved makes everything below
+    /// it unreachable too. This truncates there rather than dropping entries individually: keeping
+    /// non-adjacent survivors would leave a restored unpop pushing a view controller that wasn't
+    /// the next one up.
     var unpopRoutes: [AwfulRoute] {
         guard let handler = unpopHandler else { return [] }
-        return handler.viewControllers.compactMap { ($0 as? RestorableLocation)?.restorationRoute }
+        let restorable = handler.viewControllers
+            .reversed()
+            .prefix { ($0 as? RestorableLocation)?.restorationRoute != nil }
+            .reversed()
+        return restorable.compactMap { ($0 as? RestorableLocation)?.restorationRoute }
     }
 
     /// Replaces the unpop stack contents with the given view controllers without performing any
@@ -365,6 +374,16 @@ final class NavigationController: UINavigationController, Themeable {
         super.pushViewController(viewController, animated: animated)
         
         unpopHandler?.navigationController(self, didPushViewController: viewController)
+    }
+
+    /// Note this is only the `setViewControllers(_:animated:)` method. Assigning the `viewControllers`
+    /// property is a separate selector and deliberately isn't overridden, so the split view's
+    /// collapse/separate handling (which assigns the property) keeps behaving as it does today —
+    /// see the unpop TODO in `RootViewControllerStack.splitViewController(_:separateSecondaryFrom:)`.
+    override func setViewControllers(_ viewControllers: [UIViewController], animated: Bool) {
+        super.setViewControllers(viewControllers, animated: animated)
+
+        unpopHandler?.navigationControllerDidReplaceStack(self)
     }
     
     // MARK: View lifecycle
@@ -605,7 +624,10 @@ final class NavigationController: UINavigationController, Themeable {
         // Skip SwiftUI hosting controllers (e.g. anything pushed via a SwiftUI
         // `NavigationLink` from the Settings tab — theme picker, app icon
         // picker, etc.). SwiftUI manages its own back button on these and
-        // injecting our own results in two visible back chevrons.
+        // injecting our own results in two visible back chevrons. This holds
+        // even for hosting controllers that drive their own UIKit chrome (the
+        // pushed search screens): the system back button is still drawn
+        // alongside the injected one, so they keep the system chevron.
         let hasExistingLeft = viewController.navigationItem.leftBarButtonItem != nil
             || (viewController.navigationItem.leftBarButtonItems?.isEmpty == false)
         if !hasExistingLeft,

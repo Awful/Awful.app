@@ -13,16 +13,6 @@
     "%lld" : {
 
     },
-    "%lld of %lld" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$lld of %2$lld"
-          }
-        }
-      }
-    },
     "😕" : {
 
     },
@@ -557,9 +547,6 @@
     },
     "Edit" : {
       "comment" : "Edit button"
-    },
-    "Example searches:" : {
-
     },
     "Five" : {
 
@@ -1610,22 +1597,7 @@
     "Search" : {
 
     },
-    "Search Forums" : {
-
-    },
-    "Search forums..." : {
-
-    },
-    "Search Results" : {
-
-    },
     "Search smilies…" : {
-
-    },
-    "Search Thread" : {
-
-    },
-    "Search thread..." : {
 
     },
     "Select Forums" : {

@@ -5,6 +5,7 @@
 import AwfulArchives
 import AwfulCore
 import AwfulGlossary
+import AwfulSearch
 import AwfulSettings
 import AwfulTheming
 import Combine
@@ -488,6 +489,14 @@ final class ForumsTableViewController: CollectionViewController {
         }
     }
 
+    @objc private func searchForums() {
+        guard let navigationController else { return }
+        // Picks up where the last search left off, when its results are still good.
+        SearchFormViewController.push(
+            SearchFormViewController.makeStack(restoring: LastSearchStore.record, handlers: .awful),
+            onto: navigationController)
+    }
+
     @objc private func showGlossary() {
         let glossary = GlossaryHostingController()
         if traitCollection.userInterfaceIdiom == .pad {
@@ -500,16 +509,6 @@ final class ForumsTableViewController: CollectionViewController {
 
     @objc private func showArchives() {
         present(ArchivesHostingController(), animated: true)
-    }
-
-    @objc private func searchForums() {
-        let searchView = SearchHostingController()
-        if traitCollection.userInterfaceIdiom == .pad {
-            searchView.modalPresentationStyle = .pageSheet
-        } else {
-            searchView.modalPresentationStyle = .fullScreen
-        }
-        present(searchView, animated: true)
     }
 
     override func themeDidChange() {
