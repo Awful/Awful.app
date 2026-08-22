@@ -27,5 +27,37 @@ final class LepersColonyPageScrapingTests: XCTestCase {
         XCTAssertEqual(first.requester?.rawValue, "61644")
         XCTAssertEqual(first.approver, first.requester)
         XCTAssertEqual(first.approverUsername, first.requesterUsername)
+
+        // This older fixture's `<div class="pages">` has no data-* attributes, so pagination is absent.
+        XCTAssertNil(result.pageNumber)
+        XCTAssertNil(result.pageCount)
+
+        // The display-options form is present, so admin/year options parse.
+        let options = try XCTUnwrap(result.filterOptions)
+        XCTAssertEqual(options.admins.first, .init(id: .init(rawValue: "12831")!, username: "elpintogrande"))
+        XCTAssert(options.years.contains(2013))
+    }
+
+    func testPagedFixture() throws {
+        let result = try scrapeHTMLFixture(LepersColonyScrapeResult.self, named: "banlist-paged")
+
+        // Pagination comes from `<div class="pages" data-current-page data-total-pages>`.
+        XCTAssertEqual(result.pageNumber, 1)
+        XCTAssertEqual(result.pageCount, 5866)
+
+        XCTAssertEqual(result.punishments.count, 2)
+        let first = result.punishments[0]
+        XCTAssertEqual(first.sentence, .probation)
+        XCTAssertEqual(first.post?.rawValue, "553203217")
+        XCTAssertEqual(first.subjectUsername, "Ghost Leviathan")
+        XCTAssertEqual(first.subject?.rawValue, "220511")
+        XCTAssertEqual(result.punishments[1].sentence, .permaban)
+
+        let options = try XCTUnwrap(result.filterOptions)
+        XCTAssertEqual(options.admins, [
+            .init(id: .init(rawValue: "18862")!, username: "Nyc_Tattoo"),
+            .init(id: .init(rawValue: "40838")!, username: "VideoGames"),
+        ])
+        XCTAssertEqual(options.years, [2026, 2025])
     }
 }

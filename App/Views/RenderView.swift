@@ -27,6 +27,9 @@ final class RenderView: UIView {
 
     private var registeredMessages: [String: RenderViewMessage.Type] = [:]
 
+    /// Whether lottie-player.js may be injected. Views that never show the frog/ghost animations (e.g. the Leper's Colony) pass `false` to skip the ~400 KB script.
+    private let includesLottiePlayer: Bool
+
     private lazy var webView: WKWebView = {
         let configuration = WKWebViewConfiguration()
 
@@ -34,7 +37,7 @@ final class RenderView: UIView {
 
         // Conditionally load lottie-player.js if frog and ghost animations are enabled
         let frogAndGhostEnabled = FoilDefaultStorage(Settings.frogAndGhostEnabled).wrappedValue
-        if frogAndGhostEnabled {
+        if includesLottiePlayer, frogAndGhostEnabled {
             configuration.userContentController.addUserScript({
                 let url = bundle.url(forResource: "lottie-player.js", withExtension: nil)!
                 let script = try! String(contentsOf: url)
@@ -87,7 +90,8 @@ final class RenderView: UIView {
         return webView
     }()
 
-    override init(frame: CGRect) {
+    init(frame: CGRect = .zero, includesLottiePlayer: Bool = true) {
+        self.includesLottiePlayer = includesLottiePlayer
         super.init(frame: frame)
 
         webView.frame = CGRect(origin: .zero, size: bounds.size)
@@ -726,6 +730,26 @@ extension RenderView {
         }
     }
     
+    /// Insert some newly-rendered posts below all existing rendered posts (endless scroll).
+    /// - Parameter endHTML: End-of-thread marker HTML to place at the end of the body, passed when the appended page is the last one.
+    func appendPostHTML(_ postHTML: String, containerID: String = "posts", endHTML: String? = nil) async {
+        let escapedHTML: String, escapedContainer: String, escapedEnd: String
+        do {
+            escapedHTML = try escapeForEval(postHTML)
+            escapedContainer = try escapeForEval(containerID)
+            escapedEnd = try endHTML.map { try escapeForEval($0) } ?? "null"
+        } catch {
+            logger.warning("could not JSON-escape the post HTML: \(error)")
+            return
+        }
+
+        do {
+            try await webView.eval("if (window.Awful) Awful.appendPosts(\(escapedHTML), \(escapedContainer), \(escapedEnd))")
+        } catch {
+            mentionError(error, explanation: "could not evaluate appendPosts")
+        }
+    }
+
     /// Replaces an existing post with a new rendering (e.g. after loading the contents of an ignored post).
     func replacePostHTML(_ postHTML: String, at i: Int) {
         let escaped: String

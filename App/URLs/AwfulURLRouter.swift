@@ -3,6 +3,7 @@
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
+import AwfulRapsheet
 import AwfulSettings
 import AwfulTheming
 import CoreData
@@ -68,7 +69,18 @@ struct AwfulURLRouter {
             return selectTopmostViewController(containingViewControllerOfClass: ForumsTableViewController.self) != nil
 
         case .lepersColony:
-            let rapSheetVC = RapSheetViewController(user: nil)
+            // The Leper's Colony is a tab, so select it like `.forumList`/`.bookmarks` rather than
+            // presenting a copy. (Presenting is what made scene restoration — which replays this
+            // route on launch — slide the colony over another tab in a sheet.)
+            if selectTopmostViewController(
+                containingViewControllerOfClass: RapSheetViewController.self,
+                matching: \.isLepersColony
+            ) != nil {
+                return true
+            }
+
+            // Fall back to presenting modally if the tab isn't in the hierarchy.
+            let rapSheetVC = RapSheetViewController(handlers: .awful)
             rootViewController.present(rapSheetVC.enclosingNavigationController, animated: true)
             return true
 
@@ -169,7 +181,7 @@ struct AwfulURLRouter {
             Task { @MainActor in
                 do {
                     let user = try await fetchUser(withUserID: userID)
-                    let rapSheetVC = RapSheetViewController(user: user)
+                    let rapSheetVC = RapSheetViewController(user: user, handlers: .awful)
                     rootViewController.present(rapSheetVC.enclosingNavigationController, animated: true)
                 } catch {
                     let alert = UIAlertController(title: "Could Not Find User", error: error)
@@ -209,8 +221,11 @@ struct AwfulURLRouter {
         return false
     }
     
+    /// - parameter predicate: Narrows the search when a class serves more than one screen, e.g.
+    ///   `RapSheetViewController` is both the Leper's Colony tab root and a single user's rap sheet.
     private func selectTopmostViewController<VC: UIViewController>(
-        containingViewControllerOfClass klass: VC.Type
+        containingViewControllerOfClass klass: VC.Type,
+        matching predicate: (VC) -> Bool = { _ in true }
     ) -> VC? {
         if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
@@ -220,7 +235,7 @@ struct AwfulURLRouter {
             let tabBarVC = splitVC.viewControllers.first as? UITabBarController
             else { return nil }
         for topmost in tabBarVC.viewControllers ?? [] {
-            guard let match = topmost.firstDescendant(ofType: VC.self) else { continue }
+            guard let match = topmost.subtree.lazy.compactMap({ $0 as? VC }).first(where: predicate) else { continue }
             tabBarVC.selectedViewController = topmost
             splitVC.showPrimaryViewController()
             return match

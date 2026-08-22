@@ -672,12 +672,6 @@
         }
       }
     },
-    "Leper’s Colony" : {
-
-    },
-    "Lepers" : {
-
-    },
     "link-action.copy-image" : {
       "comment" : "Title of button that copies an image to the pasteboard.",
       "extractionState" : "migrated",
@@ -1498,21 +1492,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Profile"
-          }
-        }
-      }
-    },
-    "Rap Sheet" : {
-
-    },
-    "rap-sheet.empty" : {
-      "comment" : "Text shown when a user's rap sheet has no entries in it.",
-      "extractionState" : "migrated",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nothing to see here…"
           }
         }
       }

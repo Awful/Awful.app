@@ -1,0 +1,54 @@
+{% if not rowsOnly %}
+<!DOCTYPE html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=320, initial-scale=0.99, viewport-fit=cover">
+
+{% if baseURL %}<base href="{{ baseURL|htmlEscape }}">{% endif %}
+
+<title>Awful - Leper's Colony</title>
+
+<style id="awful-inline-style">{{ stylesheet }}</style>
+<style id="awful-lepers-style">{{ lepersCSS }}</style>
+
+{% fontScaleStyle %}
+
+<body class="{{ userInterfaceIdiom }}">
+    <div id="punishments">
+{% endif %}
+    {% for p in punishments %}
+        {% if p.pageDivider %}<div class="endless-page-divider">{{ p.pageDivider|htmlEscape }}</div>{% endif %}
+        <post class="{{ p.sentenceClass }}" {% if p.postID %}data-post-id="{{ p.postID|htmlEscape }}"{% endif %}>
+            <header role="text" aria-label="{{ p.accessibilityLabel|htmlEscape }}">
+                <img class="avatar" src="{{ p.iconURL }}" alt="">
+                <section class="nameanddate">
+                    <span class="username">{{ p.subjectUsername|htmlEscape }}</span>
+                    <span class="regdate">{{ p.subtitle|htmlEscape }}</span>
+                </section>
+            </header>
+            <section class="postbody">{{ p.reasonHTML }}</section>
+        </post>
+    {% endfor %}
+{% if not rowsOnly %}
+    </div>
+
+    {% if not punishments %}<div id="end">{{ emptyText|htmlEscape }}</div>{% endif %}
+
+    <script>
+    (function() {
+        var container = document.getElementById('punishments');
+        if (!container) { return; }
+        container.addEventListener('click', function(event) {
+            // Let taps on links (e.g. inside a reason) route normally through the navigation delegate.
+            if (event.target.closest('a')) { return; }
+            var entry = event.target.closest('post[data-post-id]');
+            if (!entry) { return; }
+            event.preventDefault();
+            var handler = window.webkit.messageHandlers.didTapPunishmentPost;
+            if (handler) {
+                handler.postMessage({ postID: entry.getAttribute('data-post-id') });
+            }
+        });
+    })();
+    </script>
+</body>
+{% endif %}

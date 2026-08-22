@@ -1,0 +1,74 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "Admin" : {
+
+    },
+    "All" : {
+
+    },
+    "Any" : {
+
+    },
+    "Apply" : {
+
+    },
+    "All bans" : {
+
+    },
+    "Autobans" : {
+
+    },
+    "Cancel" : {
+
+    },
+    "Clear" : {
+
+    },
+    "Display Options" : {
+
+    },
+    "Go" : {
+
+    },
+    "Leper’s Colony" : {
+
+    },
+    "Lepers" : {
+
+    },
+    "Month" : {
+
+    },
+    "Permabans" : {
+
+    },
+    "Probations" : {
+
+    },
+    "Rap Sheet" : {
+
+    },
+    "rap-sheet.empty" : {
+      "comment" : "Text shown when a user's rap sheet has no entries in it.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nothing to see here…"
+          }
+        }
+      }
+    },
+    "Regular bans" : {
+
+    },
+    "Type" : {
+
+    },
+    "Year" : {
+
+    }
+  },
+  "version" : "1.0"
+}

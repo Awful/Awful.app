@@ -463,6 +463,28 @@ footer button.action-button {
   cursor: pointer;
 }
 
+// Divider inserted between pages during endless scroll.
+.endless-page-divider {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  // Stay clear of the notch / iPad sidebar, like `post` et al. below.
+  padding-left: calc(16px + constant(safe-area-inset-left));
+  padding-right: calc(16px + constant(safe-area-inset-right));
+  padding-left: calc(16px + env(safe-area-inset-left));
+  padding-right: calc(16px + env(safe-area-inset-right));
+  font-size: 0.8em;
+  opacity: 0.65;
+  -webkit-user-select: none;
+  &::before, &::after {
+    content: "";
+    flex: 1;
+    border-top: 1px solid currentColor;
+    opacity: 0.4;
+  }
+}
+
 // Inset a box itself (not just its content) from the notch / iPad sidebar.
 // For themes whose posts draw chrome (borders, title-bar backgrounds) that
 // must stay visible; background-position is relative to the padding box, so

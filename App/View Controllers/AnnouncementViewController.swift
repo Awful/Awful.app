@@ -3,6 +3,7 @@
 //  Copyright 2017 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
+import AwfulRapsheet
 import AwfulSettings
 import AwfulTheming
 import CoreData
@@ -266,7 +267,7 @@ final class AnnouncementViewController: ViewController {
         }
 
         items.append(IconActionItem(.rapSheet, block: {
-            let rapSheetVC = RapSheetViewController(user: user)
+            let rapSheetVC = RapSheetViewController(user: user, handlers: .awful)
             if self.traitCollection.userInterfaceIdiom == .pad || self.navigationController == nil {
                 self.present(rapSheetVC.enclosingNavigationController, animated: true)
             }

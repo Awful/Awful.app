@@ -74,6 +74,9 @@ public enum Settings {
     /// Make the device vibrate when certain things happen.
     public static let enableHaptics = Setting(key: "enable_haptics", default: false)
 
+    /// Automatically fetch and append the next page when scrolling near the bottom of the Leper's Colony. Hides the paging toolbar while enabled.
+    public static let endlessScrollLepers = Setting(key: "endless_scroll_lepers", default: false)
+
     /// Mode for Imgur image uploads (Off, Anonymous, or with Account)
     public static let imgurUploadMode = Setting(key: "imgur_upload_mode", default: ImgurUploadMode.default)
 

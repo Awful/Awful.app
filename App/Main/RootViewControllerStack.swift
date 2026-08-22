@@ -3,6 +3,7 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
+import AwfulRapsheet
 import AwfulSettings
 import AwfulTheming
 import Combine
@@ -43,7 +44,7 @@ final class RootViewControllerStack: NSObject, AwfulSplitViewControllerDelegate 
         
         let forums = ForumsTableViewController(managedObjectContext: managedObjectContext)
         let bookmarks = BookmarksTableViewController(managedObjectContext: managedObjectContext)
-        let lepers = RapSheetViewController()
+        let lepers = RapSheetViewController(handlers: .awful)
         let settings = SettingsViewController(managedObjectContext: managedObjectContext)
 
         tabBarController.viewControllers = [forums, bookmarks, lepers, settings].map { $0.enclosingNavigationController }

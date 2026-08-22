@@ -3,6 +3,7 @@
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
+import AwfulRapsheet
 import AwfulSettings
 import AwfulTheming
 import Combine
@@ -166,7 +167,7 @@ final class MessageViewController: ViewController {
                     present(ProfileViewController(user: user))
                 }),
                 IconActionItem(.rapSheet, block: {
-                    present(RapSheetViewController(user: user))
+                    present(RapSheetViewController(user: user, handlers: .awful))
                 })
             ]
 
