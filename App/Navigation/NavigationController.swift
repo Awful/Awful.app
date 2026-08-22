@@ -376,14 +376,33 @@ final class NavigationController: UINavigationController, Themeable {
         unpopHandler?.navigationController(self, didPushViewController: viewController)
     }
 
-    /// Note this is only the `setViewControllers(_:animated:)` method. Assigning the `viewControllers`
-    /// property is a separate selector and deliberately isn't overridden, so the split view's
-    /// collapse/separate handling (which assigns the property) keeps behaving as it does today —
-    /// see the unpop TODO in `RootViewControllerStack.splitViewController(_:separateSecondaryFrom:)`.
+    /// UIKit implements the `viewControllers` property setter by calling through to
+    /// `setViewControllers(_:animated:)`, so plain property assignment would otherwise hit the
+    /// override below and clear the unpop stack. The split view's collapse/separate handling
+    /// assigns the property to move stacks between columns and relies on the unpop stack
+    /// surviving — see the unpop TODO in
+    /// `RootViewControllerStack.splitViewController(_:separateSecondaryFrom:)`.
+    private var isAssigningViewControllersProperty = false
+
+    override var viewControllers: [UIViewController] {
+        get { super.viewControllers }
+        set {
+            isAssigningViewControllersProperty = true
+            defer { isAssigningViewControllersProperty = false }
+            super.viewControllers = newValue
+        }
+    }
+
+    /// An explicit `setViewControllers(_:animated:)` call replaces the stack wholesale, so the
+    /// staged unpop view controllers are discarded (otherwise the swipe-from-right-edge gesture
+    /// would splice an unrelated screen back on top). Assigning the `viewControllers` property
+    /// deliberately does *not* clear the stack; see `isAssigningViewControllersProperty` above.
     override func setViewControllers(_ viewControllers: [UIViewController], animated: Bool) {
         super.setViewControllers(viewControllers, animated: animated)
 
-        unpopHandler?.navigationControllerDidReplaceStack(self)
+        if !isAssigningViewControllersProperty {
+            unpopHandler?.navigationControllerDidReplaceStack(self)
+        }
     }
     
     // MARK: View lifecycle

@@ -73,6 +73,12 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
 
+    /// `main.swift` deliberately skips loading the app delegate when running tests, but UIKit
+    /// still instantiates this scene delegate from the Info.plist scene manifest. Every entry
+    /// point that touches `AppDelegate.instance` must bail out in that case, otherwise the
+    /// implicitly-unwrapped nil traps and kills the test host before any test runs.
+    private var appDelegateIfLoaded: AppDelegate? { AppDelegate.instance }
+
     @FoilDefaultStorage(Settings.handoffEnabled) private var handoffEnabled
     @FoilDefaultStorage(Settings.restoreLastThreadOnLaunch) private var restoreLastThreadOnLaunch
 
@@ -92,14 +98,16 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         willConnectTo session: UISceneSession,
         options connectionOptions: UIScene.ConnectionOptions
     ) {
-        guard let windowScene = scene as? UIWindowScene else { return }
+        guard let windowScene = scene as? UIWindowScene,
+              let appDelegate = appDelegateIfLoaded
+        else { return }
 
         let window = UIWindow(windowScene: windowScene)
         window.tintColor = Theme.defaultTheme()["tintColor"]
         self.window = window
 
-        AppDelegate.instance.window = window
-        AppDelegate.instance.installInitialRootViewController(in: window)
+        appDelegate.window = window
+        appDelegate.installInitialRootViewController(in: window)
 
         openCopiedURLController = OpenCopiedURLController(window: window) { route in
             AppDelegate.instance.open(route: route)
@@ -156,18 +164,20 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func sceneDidBecomeActive(_ scene: UIScene) {
+        guard let appDelegate = appDelegateIfLoaded else { return }
+
         // Sync dark mode with system appearance on every foreground entry. The old
         // `applicationDidBecomeActive` path no longer fires under the scene lifecycle.
-        AppDelegate.instance.automaticallyUpdateDarkModeEnabledIfNecessary()
+        appDelegate.automaticallyUpdateDarkModeEnabledIfNecessary()
 
         guard !didProcessConnectionLaunch else { return }
         didProcessConnectionLaunch = true
 
         // Only run the split-view display-mode fix-up on first activation after the scene
         // connects. Running it on every foregrounding can clobber a user-adjusted display mode.
-        AppDelegate.instance.rootViewControllerStackIfLoaded?.didAppear()
+        appDelegate.rootViewControllerStackIfLoaded?.didAppear()
 
-        AppDelegate.instance.showPromptIfLoginCookieExpiresSoon()
+        appDelegate.showPromptIfLoginCookieExpiresSoon()
 
         if let route = pendingLaunchRoute {
             pendingLaunchRoute = nil
@@ -262,16 +272,20 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
-        guard ForumsClient.shared.isLoggedIn,
+        guard let appDelegate = appDelegateIfLoaded,
+              ForumsClient.shared.isLoggedIn,
               let urlContext = URLContexts.first,
               let route = try? AwfulRoute(urlContext.url)
         else { return }
-        AppDelegate.instance.open(route: route)
+        appDelegate.open(route: route)
     }
 
     func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
-        guard ForumsClient.shared.isLoggedIn, let route = userActivity.route else { return }
-        AppDelegate.instance.open(route: route)
+        guard let appDelegate = appDelegateIfLoaded,
+              ForumsClient.shared.isLoggedIn,
+              let route = userActivity.route
+        else { return }
+        appDelegate.open(route: route)
     }
 
     func windowScene(
@@ -279,10 +293,11 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         performActionFor shortcutItem: UIApplicationShortcutItem,
         completionHandler: @escaping (Bool) -> Void
     ) {
-        guard let url = URL(string: shortcutItem.type),
+        guard let appDelegate = appDelegateIfLoaded,
+              let url = URL(string: shortcutItem.type),
               let route = try? AwfulRoute(url)
         else { return completionHandler(false) }
-        AppDelegate.instance.open(route: route)
+        appDelegate.open(route: route)
         completionHandler(true)
     }
 
@@ -292,7 +307,7 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     /// to us in `connectionOptions.session.stateRestorationActivity` after killing the scene for
     /// memory pressure, and we replay it through the existing `AwfulURLRouter`.
     func stateRestorationActivity(for scene: UIScene) -> NSUserActivity? {
-        guard let stack = AppDelegate.instance.rootViewControllerStackIfLoaded,
+        guard let stack = appDelegateIfLoaded?.rootViewControllerStackIfLoaded,
               let route = stack.currentRestorationRoute
         else { return nil }
         let activity = NSUserActivity(activityType: restorationActivityType)
@@ -336,7 +351,9 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 /// scenarios where iOS never calls `stateRestorationActivity(for:)` (Xcode Stop, crash in
 /// background). Only plist-safe keys are written.
 func saveFallbackRestorationActivity(_ activity: NSUserActivity) {
-    guard let userInfo = activity.userInfo else {
+    // An activity with no user info (nil *or* empty — which one you get varies by OS version)
+    // has nothing to restore, so clear the fallback rather than persisting a useless payload.
+    guard let userInfo = activity.userInfo, !userInfo.isEmpty else {
         UserDefaults.standard.removeObject(forKey: restorationFallbackDefaultsKey)
         return
     }
