@@ -15,6 +15,7 @@ final class PostsPageSettingsViewController: ViewController, UIPopoverPresentati
     private var cancellables: Set<AnyCancellable> = []
     @FoilDefaultStorage(Settings.darkMode) private var darkMode
     @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
+    @FoilDefaultStorage(Settings.endlessScrollPosts) private var endlessScrollPosts
     @FoilDefaultStorage(Settings.fontScale) private var fontScale
     @FoilDefaultStorage(Settings.immersiveModeEnabled) private var immersiveModeEnabled
     @FoilDefaultStorage(Settings.showAvatars) private var showAvatars
@@ -72,6 +73,14 @@ final class PostsPageSettingsViewController: ViewController, UIPopoverPresentati
     @objc private func toggleImmersiveMode(_ sender: UISwitch) {
         performHapticFeedback()
         immersiveModeEnabled = sender.isOn
+    }
+
+    private var endlessScrollButton: UIButton?
+
+    @objc private func exitEndlessScroll(_ sender: UIButton) {
+        performHapticFeedback()
+        endlessScrollPosts = false
+        dismiss(animated: true)
     }
 
     // MARK: - Helper Methods
@@ -143,9 +152,19 @@ final class PostsPageSettingsViewController: ViewController, UIPopoverPresentati
             .receive(on: RunLoop.main)
             .sink { [weak self] in self?.immersiveModeSwitch?.isOn = $0 }
             .store(in: &cancellables)
-        
+
+        $endlessScrollPosts
+            .receive(on: RunLoop.main)
+            .sink { [weak self] enabled in
+                guard let self else { return }
+                endlessScrollButton?.isHidden = !enabled
+                updatePreferredContentSize()
+            }
+            .store(in: &cancellables)
+
         DispatchQueue.main.async { [weak self] in
             self?.setupImmersiveModeUI()
+            self?.setupEndlessScrollUI()
         }
     }
     
@@ -192,6 +211,30 @@ final class PostsPageSettingsViewController: ViewController, UIPopoverPresentati
                 stack.heightAnchor.constraint(equalToConstant: 44)
             ])
         }
+    }
+
+    /// Adds an "Exit Endless Scroll" row below the immersive mode row. Hidden unless endless scroll is on — it's the way back to the paging controls, which are hidden while endless scrolling.
+    private func setupEndlessScrollUI() {
+        guard isViewLoaded, endlessScrollButton == nil else { return }
+
+        let button = UIButton(type: .system)
+        button.setTitle("Exit Endless Scroll", for: .normal)
+        button.titleLabel?.font = UIFont.preferredFont(forTextStyle: .body)
+        button.addTarget(self, action: #selector(exitEndlessScroll(_:)), for: .touchUpInside)
+        button.isHidden = !endlessScrollPosts
+        button.heightAnchor.constraint(greaterThanOrEqualToConstant: 44).isActive = true
+        endlessScrollButton = button
+
+        if let anchorStack = immersiveModeStack ?? darkModeStack,
+           let parentStack = anchorStack.superview as? UIStackView {
+            if let index = parentStack.arrangedSubviews.firstIndex(of: anchorStack) {
+                parentStack.insertArrangedSubview(button, at: index + 1)
+            } else {
+                parentStack.addArrangedSubview(button)
+            }
+        }
+
+        updatePreferredContentSize()
     }
 
     private func updatePreferredContentSize() {

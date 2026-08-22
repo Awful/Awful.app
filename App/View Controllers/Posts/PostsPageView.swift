@@ -844,6 +844,12 @@ extension PostsPageView: ScrollViewDelegateExtras {
         if #available(iOS 26.0, *) {
             updateNavigationBarForScrollProgress(scrollView)
         }
+
+        // Endless scroll: ask the view controller to append the next page when nearing the bottom. (It does all its own gating, so this is cheap.)
+        let distanceToBottom = scrollView.contentSize.height - (scrollView.contentOffset.y + scrollView.bounds.height)
+        if scrollView.contentSize.height > 0, distanceToBottom < scrollView.bounds.height * 1.5 {
+            postsPageViewController?.appendNextPageIfNeeded()
+        }
     }
 
     @available(iOS 26.0, *)

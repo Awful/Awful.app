@@ -30,6 +30,9 @@ final class PostsPageViewController: ViewController {
     @FoilDefaultStorage(Settings.embedBlueskyPosts) private var embedBlueskyPosts
     @FoilDefaultStorage(Settings.embedTweets) private var embedTweets
     @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
+    @FoilDefaultStorage(Settings.endlessScrollPosts) private var endlessScrollPosts
+    /// Non-nil while an endless-scroll append of the next page is in flight.
+    private var appendTask: Task<Void, Never>?
     private var flagRequest: Task<Void, Error>?
     @FoilDefaultStorage(Settings.fontScale) private var fontScale
     @FoilDefaultStorage(Settings.frogAndGhostEnabled) private var frogAndGhostEnabled
@@ -237,6 +240,7 @@ final class PostsPageViewController: ViewController {
     deinit {
         cancelNetworkOperation?()
         loadingHoldTask?.cancel()
+        appendTask?.cancel()
     }
 
     var posts: [Post] = []
@@ -290,6 +294,9 @@ final class PostsPageViewController: ViewController {
         flagRequest = nil
         cancelNetworkOperation?()
         cancelNetworkOperation = nil
+        // A fresh page load collapses any endless-scroll accumulation.
+        appendTask?.cancel()
+        appendTask = nil
 
         // prevent white flash caused by webview being opaque during refreshes
         if darkMode {
@@ -510,7 +517,21 @@ final class PostsPageViewController: ViewController {
 
         if posts.count > hiddenPosts {
             let subset = posts[hiddenPosts...]
-            context["posts"] = subset.map { PostRenderModel($0).context }
+            if endlessScrollPosts {
+                // Re-emit page dividers so a full re-render (theme change, web process termination) reproduces the accumulated document.
+                var previousPage: Int?
+                context["posts"] = subset.map { post -> [String: Any] in
+                    var postContext = PostRenderModel(post).context
+                    let postPage = Int(author == nil ? post.page : post.singleUserPage)
+                    if let previousPage, postPage != previousPage {
+                        postContext["pageDivider"] = "Page \(postPage) of \(numberOfPages)"
+                    }
+                    previousPage = postPage
+                    return postContext
+                }
+            } else {
+                context["posts"] = subset.map { PostRenderModel($0).context }
+            }
         }
 
         if let ad = advertisementHTML, !ad.isEmpty {
@@ -803,9 +824,12 @@ final class PostsPageViewController: ViewController {
             self.scrollToBottom(nil)
         }
 
-        if pullForNext {
+        if pullForNext || endlessScrollPosts {
             if case .specific(let pageNumber)? = page, numberOfPages > pageNumber {
-                if !(postsView.refreshControl is PostsPageRefreshArrowView) {
+                if endlessScrollPosts {
+                    // Endless scroll replaces the pull-for-next arrow; the near-bottom trigger loads the next page instead.
+                    postsView.refreshControl = nil
+                } else if !(postsView.refreshControl is PostsPageRefreshArrowView) {
                     postsView.refreshControl = PostsPageRefreshArrowView()
                 }
             } else {
@@ -865,7 +889,11 @@ final class PostsPageViewController: ViewController {
     }
     
     private func updateToolbarItems() {
-        postsView.toolbarItems = [settingsItem, .flexibleSpace(), backItem, currentPageItem, forwardItem, .flexibleSpace(), actionsItem()]
+        if endlessScrollPosts {
+            postsView.toolbarItems = [settingsItem, .flexibleSpace(), actionsItem()]
+        } else {
+            postsView.toolbarItems = [settingsItem, .flexibleSpace(), backItem, currentPageItem, forwardItem, .flexibleSpace(), actionsItem()]
+        }
     }
 
     private func showLoadingView() {
@@ -934,6 +962,73 @@ final class PostsPageViewController: ViewController {
         }
 
         loadPage(nextPage, updatingCache: true, updatingLastReadPost: true)
+    }
+
+    /// Endless scroll: fetches the next page and appends its posts to the rendered document, preceded by a "Page x of y" divider. Called repeatedly as the user scrolls near the bottom; all gating happens here so calls are cheap and idempotent.
+    func appendNextPageIfNeeded() {
+        guard endlessScrollPosts,
+              appendTask == nil,
+              postsView.loadingView == nil,
+              webViewDidLoadOnce,
+              case .specific(let currentPage)? = page,
+              currentPage < numberOfPages
+        else { return }
+
+        let nextPage = currentPage + 1
+        let thread = self.thread
+        let author = self.author
+        var task: Task<Void, Never>?
+        task = Task { [weak self] in
+            // Clear the gate only if it's still ours: a cancelled task finishing late must not
+            // clobber the handle of a newer append that `loadPage` kicked off in the meantime.
+            defer { if self?.appendTask == task { self?.appendTask = nil } }
+            do {
+                let result = try await ForumsClient.shared.listPosts(in: thread, writtenBy: author, page: .specific(nextPage), updateLastReadPost: true)
+                guard let self, !Task.isCancelled,
+                      self.endlessScrollPosts,
+                      // Bail if a loadPage raced us and the document no longer ends with the page we appended after.
+                      self.page == .specific(currentPage),
+                      !result.posts.isEmpty
+                else { return }
+
+                self.posts.append(contentsOf: result.posts)
+                self.page = .specific(nextPage)
+
+                var html = ""
+                for (i, post) in result.posts.enumerated() {
+                    var context = PostRenderModel(post).context
+                    if i == 0 {
+                        context["pageDivider"] = "Page \(nextPage) of \(self.numberOfPages)"
+                    }
+                    do {
+                        html += try StencilEnvironment.shared.renderTemplate(.post, context: context)
+                    } catch {
+                        logger.error("could not render appended post \(post.postID): \(error)")
+                    }
+                }
+                // On the last page, restore the end-of-thread marker (the frog spacer / "End of the thread"), which normally comes from the full-document template.
+                var endHTML: String?
+                if nextPage >= self.numberOfPages {
+                    endHTML = self.frogAndGhostEnabled
+                        ? #"<div id="endf" class=".end" style="height: 100px;"></div>"#
+                        : #"<div id="end" class=".end">End of the thread</div>"#
+                }
+                await self.postsView.renderView.appendPostHTML(html, endHTML: endHTML)
+                if self.embedBlueskyPosts {
+                    self.postsView.renderView.embedBlueskyPosts()
+                }
+
+                if let lastPost = result.posts.last, self.thread.seenPosts < lastPost.threadIndex {
+                    self.thread.seenPosts = lastPost.threadIndex
+                }
+                self.updateUserInterface()
+                self.configureUserActivityIfPossible()
+            } catch {
+                // Stay quiet; scrolling near the bottom again retries.
+                logger.error("endless scroll could not load page \(nextPage): \(error)")
+            }
+        }
+        appendTask = task
     }
 
     @objc func currentPageButtonTapped(_ sender: UIBarButtonItem) {
@@ -2027,6 +2122,17 @@ final class PostsPageViewController: ViewController {
             .dropFirst()
             .receive(on: RunLoop.main)
             .sink { [weak self] in self?.postsView.renderView.setHidePostMetadataForReader($0) }
+            .store(in: &cancellables)
+
+        $endlessScrollPosts
+            .dropFirst()
+            .receive(on: RunLoop.main)
+            .sink { [weak self] enabled in
+                guard let self else { return }
+                self.updateUserInterface()
+                // The user may already be parked at the bottom when they turn endless scroll on.
+                if enabled { self.appendNextPageIfNeeded() }
+            }
             .store(in: &cancellables)
 
         $pullForNext

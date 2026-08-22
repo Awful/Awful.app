@@ -77,6 +77,9 @@ public enum Settings {
     /// Automatically fetch and append the next page when scrolling near the bottom of the Leper's Colony. Hides the paging toolbar while enabled.
     public static let endlessScrollLepers = Setting(key: "endless_scroll_lepers", default: false)
 
+    /// Automatically fetch and append the next page of posts when scrolling near the bottom of a thread. Hides the paging controls while enabled.
+    public static let endlessScrollPosts = Setting(key: "endless_scroll_posts", default: false)
+
     /// Mode for Imgur image uploads (Off, Anonymous, or with Account)
     public static let imgurUploadMode = Setting(key: "imgur_upload_mode", default: ImgurUploadMode.default)
 
