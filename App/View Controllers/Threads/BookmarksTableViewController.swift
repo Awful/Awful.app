@@ -827,6 +827,10 @@ final class BookmarksTableViewController: HostedCollectionViewController {
 
         updateButtonColors()
 
+        // The collection view is full-bleed, so reserve (or reclaim) the search bar's
+        // space with a content inset rather than moving the collection view itself.
+        let wasAtTop = collectionView.contentOffset.y <= -collectionView.adjustedContentInset.top + 0.5
+
         UIView.animate(
             withDuration: 0.4,
             delay: 0,
@@ -837,6 +841,10 @@ final class BookmarksTableViewController: HostedCollectionViewController {
                 guard let self else { return }
                 self.searchBarHeightConstraint.constant = self.isSearchVisible ? 52 : 0
                 self.searchBar.alpha = self.isSearchVisible ? 1 : 0
+                self.collectionView.contentInset.top = self.isSearchVisible ? 52 : 0
+                if wasAtTop {
+                    self.collectionView.contentOffset.y = -self.collectionView.adjustedContentInset.top
+                }
                 self.view.layoutIfNeeded()
             },
             completion: { [weak self] _ in
@@ -1002,13 +1010,17 @@ final class BookmarksTableViewController: HostedCollectionViewController {
     override func loadView() {
         // Custom view hierarchy:
         //   view
-        //   ├── searchBarContainer (height 0 when hidden, 52 when shown)
-        //   │   └── searchBar
-        //   └── collectionView (top pinned to searchBarContainer.bottom)
+        //   ├── collectionView (full-bleed; search bar space reserved via contentInset.top)
+        //   └── searchBarContainer (height 0 when hidden, 52 when shown; overlays scrolled content)
+        //       └── searchBar
         // Hosting the search bar OUTSIDE the collection view sidesteps UIKit's
         // `_resignOrRebaseFirstResponderViewWithIndexPathMapping`, which silently
         // resigns first responder on supplementary views during every snapshot
         // apply (UIKit only protects cells, not supplementary views).
+        // The collection view is pinned to the view's top (not the safe area) so its
+        // content underlaps the translucent iOS 26 navigation bar, making the bar's
+        // scrolled-state transparency visible. Pre-iOS 26 the opaque bar means the
+        // view starts below it and the safe-area top inset is 0, so layout is unchanged.
         let containerView = UIView()
 
         searchBar.translatesAutoresizingMaskIntoConstraints = false
@@ -1016,8 +1028,8 @@ final class BookmarksTableViewController: HostedCollectionViewController {
 
         collectionView.translatesAutoresizingMaskIntoConstraints = false
 
-        containerView.addSubview(searchBarContainer)
         containerView.addSubview(collectionView)
+        containerView.addSubview(searchBarContainer)
 
         searchBarHeightConstraint = searchBarContainer.heightAnchor.constraint(equalToConstant: 0)
 
@@ -1034,7 +1046,7 @@ final class BookmarksTableViewController: HostedCollectionViewController {
 
             collectionView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
-            collectionView.topAnchor.constraint(equalTo: searchBarContainer.bottomAnchor),
+            collectionView.topAnchor.constraint(equalTo: containerView.topAnchor),
             collectionView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
         ])
 

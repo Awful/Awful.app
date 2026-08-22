@@ -463,6 +463,17 @@ footer button.action-button {
   cursor: pointer;
 }
 
+// Inset a box itself (not just its content) from the notch / iPad sidebar.
+// For themes whose posts draw chrome (borders, title-bar backgrounds) that
+// must stay visible; background-position is relative to the padding box, so
+// safe-area *padding* would slide that chrome inward.
+.safe-area-side-margins(@left: 0px, @right: 0px) {
+  margin-left: calc(@left + constant(safe-area-inset-left));
+  margin-right: calc(@right + constant(safe-area-inset-right));
+  margin-left: calc(@left + env(safe-area-inset-left));
+  margin-right: calc(@right + env(safe-area-inset-right));
+}
+
 // Handle iPhone X notch.
 post, #ad, #end {
   padding-left: env(safe-area-inset-left);
