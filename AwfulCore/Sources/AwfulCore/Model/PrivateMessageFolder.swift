@@ -35,7 +35,7 @@ public class PrivateMessageFolder: AwfulManagedObject, Managed {
 }
 
 @objc(PrivateMessageFolderKey)
-public final class PrivateMessageFolderKey: AwfulObjectKey {
+public final class PrivateMessageFolderKey: AwfulObjectKey, @unchecked Sendable {
     @objc public let folderID: String
 
     public init(folderID: String) {

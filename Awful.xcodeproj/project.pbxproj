@@ -269,6 +269,7 @@
 		8CEBABED16800A9300680935 /* macinyos-postactions-bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CEBABEC16800A9300680935 /* macinyos-postactions-bg.png */; };
 		8CF740EF1681376600C219E4 /* macinyos-heading.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CF740EE1681376600C219E4 /* macinyos-heading.png */; };
 		8FC356EF2132F5C1006EE1A5 /* amberpos-ins.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8FC356EE2132F5C1006EE1A5 /* amberpos-ins.gif */; };
+		AC10AC10AC10AC10AC100001 /* AwfulGlossary in Frameworks */ = {isa = PBXBuildFile; productRef = AC10AC10AC10AC10AC100003 /* AwfulGlossary */; };
 		F4233C591917C77900482BD0 /* bg_menu.jpg in Resources */ = {isa = PBXBuildFile; fileRef = F4233C581917C77900482BD0 /* bg_menu.jpg */; };
 		F4B3645819165D5100CCE1EF /* SecondaryTags.plist in Resources */ = {isa = PBXBuildFile; fileRef = F4B3645719165D5100CCE1EF /* SecondaryTags.plist */; };
 /* End PBXBuildFile section */
@@ -617,6 +618,7 @@
 		8CEBABEC16800A9300680935 /* macinyos-postactions-bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "macinyos-postactions-bg.png"; sourceTree = "<group>"; };
 		8CF740EE1681376600C219E4 /* macinyos-heading.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "macinyos-heading.png"; sourceTree = "<group>"; };
 		8FC356EE2132F5C1006EE1A5 /* amberpos-ins.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "amberpos-ins.gif"; sourceTree = "<group>"; };
+		AC10AC10AC10AC10AC100002 /* AwfulGlossary */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AwfulGlossary; sourceTree = "<group>"; };
 		F4233C581917C77900482BD0 /* bg_menu.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = bg_menu.jpg; sourceTree = "<group>"; };
 		F4B3645719165D5100CCE1EF /* SecondaryTags.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = SecondaryTags.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -666,6 +668,7 @@
 				306F740B2D90AA01000717BC /* KeychainAccess in Frameworks */,
 				1C5345212B8BF48F001DA96A /* ScrollViewDelegateMultiplexer in Frameworks */,
 				1C67313C2B55CE0600A8CF6F /* AwfulSettingsUI in Frameworks */,
+				AC10AC10AC10AC10AC100001 /* AwfulGlossary in Frameworks */,
 				1CB0B9AB2AEF668500678615 /* NukeExtensions in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1240,6 +1243,7 @@
 				1CDAC85F2AE10966006CEE88 /* AwfulScraping */,
 				1C13FF0A2B54978300B39A0D /* AwfulSettings */,
 				1C2F1B7E2B8BD05D00808818 /* AwfulSettingsUI */,
+				AC10AC10AC10AC10AC100002 /* AwfulGlossary */,
 				1C1F0F132B8B091600F097D3 /* AwfulTheming */,
 				1C15334D20708EFF0021A2BD /* Config */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
@@ -1415,6 +1419,7 @@
 				1C5E98282B4B5FAE00D891CD /* AwfulExtensions */,
 				1C13FF0D2B549FBE00B39A0D /* AwfulSettings */,
 				1C67313B2B55CE0600A8CF6F /* AwfulSettingsUI */,
+				AC10AC10AC10AC10AC100003 /* AwfulGlossary */,
 				1C1F0F152B8B0AD700F097D3 /* AwfulTheming */,
 				1C53451D2B8BF3A7001DA96A /* PSMenuItem */,
 				1C5345202B8BF48F001DA96A /* ScrollViewDelegateMultiplexer */,
@@ -2170,6 +2175,10 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 306F74092D90AA01000717BC /* XCRemoteSwiftPackageReference "KeychainAccess" */;
 			productName = KeychainAccess;
+		};
+		AC10AC10AC10AC10AC100003 /* AwfulGlossary */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AwfulGlossary;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

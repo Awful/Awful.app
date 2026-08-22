@@ -311,6 +311,39 @@ public final class ForumsClient {
         return document
     }
 
+    // MARK: SAclopedia (dictionary.php)
+
+    /// Fetches a random SAclopedia topic (`dictionary.php` with no parameters).
+    public func randomGlossaryTopic() async throws -> GlossaryTopicScrapeResult {
+        let (data, response) = try await fetch(method: .get, urlString: "dictionary.php", parameters: [:])
+        let (document, url) = try parseHTML(data: data, response: response)
+        return try GlossaryTopicScrapeResult(document, url: url)
+    }
+
+    /// Fetches a specific SAclopedia topic by its ID (`dictionary.php?act=3&topicid=N`).
+    public func glossaryTopic(id: String) async throws -> GlossaryTopicScrapeResult {
+        let (data, response) = try await fetch(method: .get, urlString: "dictionary.php", parameters: [
+            "act": "3",
+            "topicid": id,
+        ])
+        let (document, url) = try parseHTML(data: data, response: response)
+        return try GlossaryTopicScrapeResult(document, url: url)
+    }
+
+    /// Fetches the SAclopedia topics beginning with `letter` (`dictionary.php?act=5&l=CODE`,
+    /// where `CODE` is the ASCII value of the uppercased letter, A=65 … Z=90).
+    public func glossaryTopics(letter: Character) async throws -> GlossaryIndexScrapeResult {
+        guard let code = letter.uppercased().first?.asciiValue else {
+            throw Error.requestSerializationError("Invalid SAclopedia letter: \(letter)")
+        }
+        let (data, response) = try await fetch(method: .get, urlString: "dictionary.php", parameters: [
+            "act": "5",
+            "l": String(code),
+        ])
+        let (document, url) = try parseHTML(data: data, response: response)
+        return try GlossaryIndexScrapeResult(document, url: url)
+    }
+
     // MARK: Threads
 
     /// - Parameter tagged: A thread tag to use for filtering forums, or `nil` for no filtering.

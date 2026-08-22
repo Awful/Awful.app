@@ -3,6 +3,7 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
+import AwfulGlossary
 import AwfulSettings
 import AwfulTheming
 import Combine
@@ -25,6 +26,10 @@ final class ForumsTableViewController: CollectionViewController {
     private var unreadAnnouncementCountObserver: ManagedObjectCountObserver!
     private var cellRegistration: UICollectionView.CellRegistration<ForumListCell, ForumListDataSource.Item>!
     private var headerRegistration: UICollectionView.SupplementaryRegistration<ForumListSectionHeaderView>!
+    /// The right-bar overflow (⋯) and Search button views on the standard (non–iOS 26 iPad) path, kept so
+    /// `updateButtonColors()` can retint them on theme changes — mirroring `BookmarksTableViewController`.
+    private var moreButtonView: UIButton?
+    private var searchButtonView: UIButton?
 
     init(managedObjectContext: NSManagedObjectContext) {
         self.managedObjectContext = managedObjectContext
@@ -204,7 +209,15 @@ final class ForumsTableViewController: CollectionViewController {
     }
 
     private func updateEditingState(favoriteCount: Int) {
-        navigationItem.setLeftBarButton(favoriteCount > 0 ? editButtonItem : nil, animated: true)
+        if #available(iOS 26.0, *), UIDevice.current.userInterfaceIdiom == .pad {
+            // Reserve left-side width matching the right-side icon cluster so the centered
+            // title isn't pushed off-center — same balancing spacer as BookmarksTableViewController.
+            let spacer = UIBarButtonItem(customView: UIView(frame: CGRect(x: 0, y: 0, width: 72, height: 44)))
+            let items = favoriteCount > 0 ? [editButtonItem, spacer] : [spacer]
+            navigationItem.setLeftBarButtonItems(items, animated: true)
+        } else {
+            navigationItem.setLeftBarButton(favoriteCount > 0 ? editButtonItem : nil, animated: true)
+        }
 
         if isEditing, favoriteCount == 0 {
             setEditing(false, animated: true)
@@ -262,27 +275,140 @@ final class ForumsTableViewController: CollectionViewController {
             self?.refresh()
         }
 
-        lazy var searchButton: UIBarButtonItem = {
-            let button = UIBarButtonItem(title: "Search", style: .plain, target: self, action: #selector(searchForums))
-            button.isEnabled = canSendPrivateMessages
-            return button
-        }()
+        updateRightBarButtons()
 
-        if canSendPrivateMessages {
-            navigationItem.setRightBarButton(searchButton, animated: true)
-        }
-
+        // Rebuild the right-side buttons when Search availability changes.
         $canSendPrivateMessages
             .receive(on: RunLoop.main)
-            .sink { [weak self] canSend in
-                guard let self else { return }
-                if canSend {
-                    navigationItem.setRightBarButton(searchButton, animated: true)
-                } else {
-                    navigationItem.setRightBarButton(nil, animated: true)
-                }
-            }
+            .sink { [weak self] _ in self?.updateRightBarButtons() }
             .store(in: &cancellables)
+    }
+
+    /// The overflow menu: currently just SAclopedia.
+    private func moreMenu() -> UIMenu {
+        let glossaryAction = UIAction(
+            title: "SAclopedia",
+            image: UIImage(systemName: "book.closed")
+        ) { [weak self] _ in
+            self?.showGlossary()
+        }
+        return UIMenu(title: "", children: [glossaryAction])
+    }
+
+    /// Builds the Search + overflow (⋯) buttons as an icon pair, mirroring
+    /// `BookmarksTableViewController`'s Filter/Search combo. Search uses the `quick-look`
+    /// asset icon and is gated on PM privileges; the overflow menu is for everyone.
+    /// Right-bar items are ordered right-to-left, so ⋯ keeps the rightmost spot with Search to its left.
+    ///
+    /// iOS 26's iPad navigation bar mishandles a menu-bearing bar button placed beside another item —
+    /// the menu won't open and the spacing is off. Match `BookmarksTableViewController`: on iOS 26 iPad
+    /// pack both icons into a single customView stack, driving the ⋯ menu ourselves via
+    /// `showsMenuAsPrimaryAction` and routing the Search icon through
+    /// `makeSidebarImageHostingView` so the glass sidebar doesn't mis-tint it.
+    private func updateRightBarButtons() {
+        let canSearch = canSendPrivateMessages
+
+        if #available(iOS 26.0, *), UIDevice.current.userInterfaceIdiom == .pad {
+            // Button text/image color comes from `navigationBar.tintColor` (see
+            // NavigationController.configureButtonAppearance), so these inherit it. `.normal` tint
+            // adjustment keeps them from dimming, matching BookmarksTableViewController.
+            let moreButton = UIButton(type: .system)
+            moreButton.setImage(UIImage(systemName: "ellipsis.circle"), for: .normal)
+            // Match the Search icon's 20pt hosting size. `ellipsis.circle`'s ring reads a touch
+            // larger, so render it slightly under 20pt so the pair looks evenly sized.
+            moreButton.setPreferredSymbolConfiguration(UIImage.SymbolConfiguration(pointSize: 18), forImageIn: .normal)
+            moreButton.showsMenuAsPrimaryAction = true
+            moreButton.menu = moreMenu()
+            moreButton.accessibilityLabel = "More"
+            moreButton.tintAdjustmentMode = .normal
+
+            var arranged: [UIView] = []
+            if canSearch, let searchImage = UIImage(named: "quick-look") {
+                // The iPad glass sidebar tints plain UIButton images via vibrancy, so route
+                // the Search icon through the SwiftUI `.glassEffect(.identity)` hosting view
+                // to preserve the theme's navigation-bar tint — same as Bookmarks' Search.
+                let searchHosting = NavigationController.makeSidebarImageHostingView(
+                    image: searchImage,
+                    accessibilityLabel: "Search",
+                    target: self,
+                    action: #selector(searchForums)
+                )
+                arranged.append(searchHosting)
+            }
+            arranged.append(moreButton)
+            let stack = UIStackView(arrangedSubviews: arranged)
+            stack.axis = .horizontal
+            stack.spacing = 8
+            stack.alignment = .center
+            navigationItem.setRightBarButtonItems([UIBarButtonItem(customView: stack)], animated: false)
+            // This path tints itself (Search via `makeSidebarImageHostingView`'s `.themed()`
+            // SwiftUI view, ⋯ via its inherited tint), so drop the standard-path references.
+            moreButtonView = nil
+            searchButtonView = nil
+            return
+        }
+
+        // Build both as customView UIButtons sized to their icons, matching
+        // BookmarksTableViewController's Filter/Search pair. A standard
+        // `UIBarButtonItem(image:)` reserves a wide (~44pt) tap area, which
+        // spreads the grouped glass cluster apart; icon-sized customViews pack
+        // the pair tightly together like Bookmarks.
+        let moreButton = UIButton(type: .system)
+        moreButton.setImage(UIImage(systemName: "ellipsis.circle"), for: .normal)
+        moreButton.showsMenuAsPrimaryAction = true
+        moreButton.menu = moreMenu()
+        moreButton.accessibilityLabel = "More"
+        if #available(iOS 26.0, *) {
+            moreButton.tintAdjustmentMode = .normal
+        }
+        moreButtonView = moreButton
+        let moreItem = UIBarButtonItem(customView: moreButton)
+
+        guard canSearch else {
+            searchButtonView = nil
+            navigationItem.setRightBarButtonItems([moreItem], animated: true)
+            updateButtonColors()
+            return
+        }
+
+        let searchButton = UIButton(type: .system)
+        searchButton.setImage(UIImage(named: "quick-look"), for: .normal)
+        searchButton.addTarget(self, action: #selector(searchForums), for: .touchUpInside)
+        searchButton.accessibilityLabel = "Search"
+        if #available(iOS 26.0, *) {
+            searchButton.tintAdjustmentMode = .normal
+        }
+        searchButtonView = searchButton
+        let searchItem = UIBarButtonItem(customView: searchButton)
+        navigationItem.setRightBarButtonItems([moreItem, searchItem], animated: true)
+        updateButtonColors()
+    }
+
+    /// Applies the navigation-bar button tint, mirroring `BookmarksTableViewController.updateButtonColors()`.
+    /// iOS 26's glass capsule doesn't dynamically tint customView buttons — a nilled tint falls back to
+    /// system blue — so set the theme-appropriate color explicitly. (The overflow ⋯ and Search have no
+    /// active/selected state, so there's no alpha dimming to mirror.)
+    private func updateButtonColors() {
+        if #available(iOS 26.0, *) {
+            // Explicit tint color prevents system default blue when NavigationController sets tintColor = nil.
+            let buttonTintColor = theme["mode"] == "dark" ? UIColor.white : UIColor.black
+            moreButtonView?.tintColor = buttonTintColor
+            searchButtonView?.tintColor = buttonTintColor
+        } else {
+            let normalColor = theme[uicolor: "navigationBarTextColor"]
+            moreButtonView?.tintColor = normalColor
+            searchButtonView?.tintColor = normalColor
+        }
+    }
+
+    @objc private func showGlossary() {
+        let glossary = GlossaryHostingController()
+        if traitCollection.userInterfaceIdiom == .pad {
+            glossary.modalPresentationStyle = .pageSheet
+        } else {
+            glossary.modalPresentationStyle = .fullScreen
+        }
+        present(glossary, animated: true)
     }
 
     @objc private func searchForums() {
@@ -298,6 +424,7 @@ final class ForumsTableViewController: CollectionViewController {
     override func themeDidChange() {
         if isViewLoaded {
             rebuildLayout()
+            updateButtonColors()
         }
 
         super.themeDidChange()
