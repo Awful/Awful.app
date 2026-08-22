@@ -1,0 +1,29 @@
+# udid | ios-slug | device-slug | label | themes (all|key) | views (all|key) | rotate (0/90/180/270)
+#
+# themes: all = every theme in themes.txt (15); key = themes-key.txt (2).
+# views:  all = deep-linkable views plus the tap-driven compose/preview;
+#         key = deep-linkable views only.
+#
+# views=all ONLY for the two 402x874pt phones. capture-interactive.sh taps
+# hardcoded nav-bar coordinates calibrated for that screen, so giving it to a
+# Pro Max or an iPad aims those taps at whatever happens to be there — inside
+# a compose screen. The two columns are separate for exactly this reason: an
+# iPad can afford every theme without being able to run that flow.
+#
+# UDIDs, not names: several runtimes each contain an "iPhone 17 Pro".
+# Re-check `rotate` if anyone rotates a simulator — simctl captures the
+# portrait-native framebuffer, so the needed angle follows the current
+# device orientation, not the device model.
+#
+# The three Shot-* devices are replacements for simulators whose framebuffers
+# died (app runs, draws nothing). The originals are left alone.
+E23798C0-5056-4BAA-8BCC-3178BB6A7A26|ios26.5|iphone-17-pro|iOS 26.5 · iPhone 17 Pro|all|all|0
+E8733BA4-90DA-417E-9EF2-B9CA9604AAA6|ios18.5|iphone-16-pro|iOS 18.5 · iPhone 16 Pro|all|all|0
+49B749F9-AF5E-45D0-A156-DE5BC35739CA|ios26.5|iphone-17-pro-max|iOS 26.5 · iPhone 17 Pro Max|all|key|0
+FFD97C8D-31A6-4753-BD3F-75E171ED2911|ios18.5|iphone-16-pro-max|iOS 18.5 · iPhone 16 Pro Max|all|key|0
+CA5087B6-7FCB-40DC-84BC-665195EF6C0D|ios26.5|ipad-pro-11|iOS 26.5 · iPad Pro 11"|all|key|90
+9F57B12D-70CE-4FAF-83B7-4F6075FCC832|ios26.5|ipad-pro-13|iOS 26.5 · iPad Pro 13"|all|key|90
+DE04C5A7-C1D5-4563-BD33-C1427A83638E|ios18.5|ipad-pro-11|iOS 18.5 · iPad Pro 11"|all|key|90
+EE466DF0-548E-436F-A99A-2C2B3E070D3F|ios18.5|ipad-pro-13|iOS 18.5 · iPad Pro 13"|all|key|90
+A038598D-3657-43A3-9F76-9646B49B938D|ios18.5|ipad-mini|iOS 18.5 · iPad mini|all|key|90
+586D0FEA-9C44-4F52-B214-72C7D7F21D5C|ios26.5|ipad-mini|iOS 26.5 · iPad mini|all|key|90

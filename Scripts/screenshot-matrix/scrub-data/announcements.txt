@@ -1,0 +1,7 @@
+# Fake announcement titles (announcements render atop thread lists).
+# Lines starting with # and blank lines are ignored.
+# If every line is removed, announcements are left untouched.
+Forum maintenance this weekend
+Welcome our newest moderators
+Server upgrade complete
+Holiday charity drive

@@ -1,6 +1,12 @@
 # Build script working folder
 /build.noindex/
 
+# Screenshot matrix output — captures, collage sheets, slideshow videos and the
+# generated index. All of it is regenerable from Scripts/screenshot-matrix/,
+# which is tracked. Ignoring the whole directory rather than listing extensions:
+# it holds gigabytes of PNG and MP4, and a rule per type missed the videos.
+/ScreenshotMatrix/
+
 # Bundler local install
 /.bundle/
 /Vendor/bundle/

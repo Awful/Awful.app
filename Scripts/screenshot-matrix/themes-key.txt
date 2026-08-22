@@ -1,0 +1,3 @@
+# Pass B theme subset: the two default themes, light and dark.
+default|default|0
+dark|classic-dark|1
