@@ -326,7 +326,7 @@ final class ImmersiveModeManager: NSObject {
 
         guard isContentScrollableEnoughForImmersive else {
             if isInBottomFadeMode {
-                exitBottomFadeMode()
+                exitBottomFadeMode(barsVisible: true)
             }
             immersiveProgress = 0
             lastScrollOffset = currentOffset
@@ -335,7 +335,7 @@ final class ImmersiveModeManager: NSObject {
 
         if currentOffset < Self.topProximityThreshold {
             if isInBottomFadeMode {
-                exitBottomFadeMode()
+                exitBottomFadeMode(barsVisible: true)
             }
             immersiveProgress = 0
             lastScrollOffset = currentOffset
@@ -343,6 +343,17 @@ final class ImmersiveModeManager: NSObject {
         }
 
         if isInBottomFadeMode {
+            // Scrolling up away from the bottom: the bars are already visible
+            // via the fade, so hand straight off to the slide system in the
+            // visible state instead of fading them out and sliding them back
+            // in. The distance-driven fade-out below is only for leaving the
+            // zone downward (endless scroll growing the content).
+            if scrollDelta < 0 {
+                exitBottomFadeMode(barsVisible: true)
+                lastScrollOffset = currentOffset
+                return
+            }
+
             let fadeOutDistance: CGFloat = 50.0
             let distancePastThreshold = distanceFromBottom - bottomFadeZone
             let fadeProgress = 1.0 - (distancePastThreshold / fadeOutDistance)
@@ -353,7 +364,7 @@ final class ImmersiveModeManager: NSObject {
                 lastScrollOffset = currentOffset
                 return
             } else {
-                exitBottomFadeMode()
+                exitBottomFadeMode(barsVisible: false)
             }
         }
 
@@ -485,7 +496,11 @@ final class ImmersiveModeManager: NSObject {
     }
 
     /// Leaves bottom fade mode and hands visibility back to the slide transforms.
-    private func exitBottomFadeMode() {
+    /// - Parameter barsVisible: Pass `true` when the exit was caused by upward
+    ///   scrolling (bars stay fully visible, `immersiveProgress` = 0); pass
+    ///   `false` when the bars faded out during downward movement
+    ///   (`immersiveProgress` = 1, bars stay hidden).
+    private func exitBottomFadeMode(barsVisible: Bool) {
         guard isInBottomFadeMode else { return }
 
         isInBottomFadeMode = false
@@ -494,7 +509,7 @@ final class ImmersiveModeManager: NSObject {
         // Restore alpha to 1 so the transform (not alpha) drives visibility.
         restoreBarAlphas()
 
-        _immersiveProgress = 1.0
+        _immersiveProgress = barsVisible ? 0.0 : 1.0
         updateBarsForImmersiveProgress()
     }
 
