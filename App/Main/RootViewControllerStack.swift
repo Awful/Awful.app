@@ -121,18 +121,24 @@ final class RootViewControllerStack: NSObject, AwfulSplitViewControllerDelegate 
     }
 	
     private func configureSplitViewControllerDisplayMode() {
+        let svc = splitViewController
+        let sidebarIsVisible = [.oneOverSecondary, .oneBesideSecondary].contains(svc.displayMode)
+        let target: UISplitViewController.DisplayMode
         if hideSidebarInLandscape {
-            switch splitViewController.displayMode {
-            case .primaryOverlay, .allVisible:
-                splitViewController.preferredDisplayMode = .oneOverSecondary
-            case .primaryHidden:
-                splitViewController.preferredDisplayMode = .secondaryOnly
-            default:
-                fatalError("unexpected display mode \(splitViewController.displayMode)")
-            }
+            // Never pinned. If the sidebar is on screen right now (e.g. the user just
+            // toggled this setting from the Settings tab, which lives in the sidebar),
+            // keep it visible as an overlay instead of yanking it closed; it hides on
+            // selection or tap-out as usual.
+            target = sidebarIsVisible ? .oneOverSecondary : .secondaryOnly
+        } else if svc.isViewLoaded, sidebarIsVisible,
+                  svc.view.bounds.width < svc.view.bounds.height {
+            // Toggled off while the overlay is up in portrait: keep the overlay open.
+            target = .oneOverSecondary
         } else {
-            splitViewController.preferredDisplayMode = .automatic
+            target = .automatic
         }
+        guard svc.preferredDisplayMode != target else { return }
+        UIView.animate(withDuration: 0.25) { svc.preferredDisplayMode = target }
     }
 
     func didAppear() {
@@ -146,11 +152,6 @@ final class RootViewControllerStack: NSObject, AwfulSplitViewControllerDelegate 
         if !splitViewController.isCollapsed {
             if isPortrait && splitViewController.displayMode == .oneBesideSecondary {
                 splitViewController.preferredDisplayMode = .secondaryOnly
-            }
-
-            if !isPortrait && splitViewController.displayMode == .secondaryOnly && splitViewController.preferredDisplayMode == .automatic {
-                splitViewController.preferredDisplayMode = .oneBesideSecondary
-                splitViewController.preferredDisplayMode = .automatic
             }
         }
 
@@ -335,6 +336,24 @@ extension RootViewControllerStack {
     }
 
     func splitViewController(
+        _ svc: UISplitViewController,
+        willChangeTo displayMode: UISplitViewController.DisplayMode
+    ) {
+        // When UIKit hides the overlay itself (tap on the dimmed detail view), it can
+        // leave preferredDisplayMode stuck at .oneOverSecondary. Restore the base mode
+        // so a later rotation resolves correctly. Async so we don't mutate
+        // preferredDisplayMode reentrantly mid-transition.
+        guard displayMode == .secondaryOnly, !svc.isCollapsed else { return }
+        DispatchQueue.main.async {
+            guard svc.displayMode == .secondaryOnly else { return }
+            let base = svc.sidebarBaseDisplayMode
+            if svc.preferredDisplayMode != base {
+                svc.preferredDisplayMode = base
+            }
+        }
+    }
+
+    func splitViewController(
         _ splitViewController: UISplitViewController,
         showDetail viewController: UIViewController,
         sender: Any?
@@ -363,6 +382,11 @@ extension RootViewControllerStack {
         with coordinator: UIViewControllerTransitionCoordinator
     ) {
         coordinator.animate(alongsideTransition: nil, completion: { context in
+            // Re-derive the preferred display mode for the new orientation, so e.g. an
+            // overlay summoned in portrait becomes a pinned sidebar in landscape instead
+            // of leaving preferredDisplayMode stuck at .oneOverSecondary.
+            self.configureSplitViewControllerDisplayMode()
+
             // Make sure the "show sidebar" button item is in place after an interface rotation.
             // (We used to misuse the delegate method `targetDisplayModeForAction(in:)` to do this, but that sometimes resulted in an endless recursive call starting on iOS 13.)
             if
@@ -380,10 +404,16 @@ extension RootViewControllerStack {
             return nil
         }
 
-        let realItem = splitViewController.displayModeButtonItem
         // Don't set explicit tintColor — let Liquid Glass adapt the color
         // dynamically based on the content behind the detail nav bar.
-        return UIBarButtonItem(image: UIImage(named: "back"), style: .plain, target: realItem.target, action: realItem.action)
+        return UIBarButtonItem(image: UIImage(named: "back"), primaryAction: UIAction { [weak splitViewController] _ in
+            guard let svc = splitViewController else { return }
+            if svc.displayMode == .oneOverSecondary {
+                svc.hidePrimaryViewController()
+            } else {
+                svc.showPrimaryViewController()
+            }
+        })
     }
 }
 

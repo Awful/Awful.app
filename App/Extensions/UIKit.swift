@@ -135,22 +135,26 @@ extension UIPasteboard {
 }
 
 extension UISplitViewController {
+    /// The preferred display mode when the sidebar overlay is not summoned:
+    /// `.secondaryOnly` when "Hide sidebar in landscape" is on (never pinned),
+    /// otherwise `.automatic` (hidden in portrait, pinned in landscape).
+    var sidebarBaseDisplayMode: DisplayMode {
+        UserDefaults.standard.defaultingValue(for: Settings.hideSidebarInLandscape)
+            ? .secondaryOnly : .automatic
+    }
+
     /// Animates the primary view controller into view if it is not already visible.
     func showPrimaryViewController() {
         // The docs say that displayMode is "ignored" when we're collapsed. I'm not really sure what that means so let's bail early.
         guard !isCollapsed, displayMode == .secondaryOnly else { return }
-        let button = displayModeButtonItem
-        guard let target = button.target as? NSObject else { return }
-        target.perform(button.action, with: nil)
+        UIView.animate(withDuration: 0.25) { self.preferredDisplayMode = .oneOverSecondary }
     }
-    
+
     /// Animates the primary view controller out of view if it is currently visible in an overlay.
     func hidePrimaryViewController() {
         // The docs say that displayMode is "ignored" when we're collapsed. I'm not really sure what that means so let's bail early.
         guard !isCollapsed, displayMode == .oneOverSecondary else { return }
-        let button = displayModeButtonItem
-        guard let target = button.target as? NSObject else { return }
-        target.perform(button.action, with: nil)
+        UIView.animate(withDuration: 0.25) { self.preferredDisplayMode = self.sidebarBaseDisplayMode }
     }
 }
 
