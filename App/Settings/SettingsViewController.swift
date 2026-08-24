@@ -163,7 +163,7 @@ final class SettingsViewController: HostingController<SettingsContainerView> {
     }
 
     func goToAwfulThread() {
-        AppDelegate.instance.open(route: .threadPage(threadID: "3837546", page: .nextUnread, .seen))
+        AppDelegate.instance.open(route: .threadPage(threadID: "4116244", page: .nextUnread, .seen))
     }
 
     override func themeDidChange() {
