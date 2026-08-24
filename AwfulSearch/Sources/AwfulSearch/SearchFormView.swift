@@ -189,9 +189,22 @@ public final class SearchFormViewController: HostingController<AnyView> {
 
     /// `.plain` rather than `.done`: on iOS 26 a `.done` item renders as a filled, tinted capsule,
     /// which doesn't match the plain glass buttons everywhere else in the app.
-    private lazy var searchItem = UIBarButtonItem(
-        title: String(localized: "Search", bundle: .module),
-        style: .plain, target: self, action: #selector(didTapSearch))
+    ///
+    /// Shows the same `quick-look` icon as the Forums list's Search button. That asset lives in the
+    /// app's main bundle rather than this package, so fall back to a "Search" title when it's
+    /// unavailable (e.g. package-only previews).
+    private lazy var searchItem: UIBarButtonItem = {
+        let item: UIBarButtonItem
+        if let icon = UIImage(named: "quick-look") {
+            item = UIBarButtonItem(image: icon, style: .plain, target: self, action: #selector(didTapSearch))
+        } else {
+            item = UIBarButtonItem(
+                title: String(localized: "Search", bundle: .module),
+                style: .plain, target: self, action: #selector(didTapSearch))
+        }
+        item.accessibilityLabel = String(localized: "Search", bundle: .module)
+        return item
+    }()
 
     /// - Parameter restoring: when set, the model goes straight to fetching these results. Pair it
     ///   with ``makeStack(threadID:restoring:handlers:)`` so the results screen is pushed to receive them.
