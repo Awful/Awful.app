@@ -146,10 +146,24 @@ final class ForumListCell: UICollectionViewListCell {
     override func updateConfiguration(using state: UICellConfigurationState) {
         super.updateConfiguration(using: state)
 
+        // UIKit re-applies list-cell default margins on state changes (editing,
+        // selection, layout swaps), which mis-positions the leading delete
+        // accessory and insets contentView. Re-assert the zeroed margins so all
+        // rows align; the Layout struct owns all insets (see init).
+        directionalLayoutMargins = .zero
+        contentView.directionalLayoutMargins = .zero
+
         // Hide the favorite star while editing so the row's delete accessory has room.
         isInEditingState = state.isEditing
         favoriteButton.alpha = state.isEditing ? 0 : 1
         setNeedsLayout()
+    }
+
+    override func layoutMarginsDidChange() {
+        super.layoutMarginsDidChange()
+        if directionalLayoutMargins != .zero {
+            directionalLayoutMargins = .zero
+        }
     }
 
     override func layoutSubviews() {
