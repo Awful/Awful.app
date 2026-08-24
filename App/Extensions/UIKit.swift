@@ -135,26 +135,26 @@ extension UIPasteboard {
 }
 
 extension UISplitViewController {
-    /// The preferred display mode when the sidebar overlay is not summoned:
-    /// `.secondaryOnly` when "Hide sidebar in landscape" is on (never pinned),
-    /// otherwise `.automatic` (hidden in portrait, pinned in landscape).
-    var sidebarBaseDisplayMode: DisplayMode {
-        UserDefaults.standard.defaultingValue(for: Settings.hideSidebarInLandscape)
-            ? .secondaryOnly : .automatic
+    /// The display mode a summoned sidebar should occupy: pinned beside the detail in
+    /// landscape (unless "Hide sidebar in landscape" is on), otherwise an overlay.
+    var sidebarSummonedDisplayMode: DisplayMode {
+        let isLandscape = view.bounds.width > view.bounds.height
+        let hideInLandscape = UserDefaults.standard.defaultingValue(for: Settings.hideSidebarInLandscape)
+        return (isLandscape && !hideInLandscape) ? .oneBesideSecondary : .oneOverSecondary
     }
 
     /// Animates the primary view controller into view if it is not already visible.
     func showPrimaryViewController() {
         // The docs say that displayMode is "ignored" when we're collapsed. I'm not really sure what that means so let's bail early.
         guard !isCollapsed, displayMode == .secondaryOnly else { return }
-        UIView.animate(withDuration: 0.25) { self.preferredDisplayMode = .oneOverSecondary }
+        UIView.animate(withDuration: 0.25) { self.preferredDisplayMode = self.sidebarSummonedDisplayMode }
     }
 
     /// Animates the primary view controller out of view if it is currently visible in an overlay.
     func hidePrimaryViewController() {
         // The docs say that displayMode is "ignored" when we're collapsed. I'm not really sure what that means so let's bail early.
         guard !isCollapsed, displayMode == .oneOverSecondary else { return }
-        UIView.animate(withDuration: 0.25) { self.preferredDisplayMode = self.sidebarBaseDisplayMode }
+        UIView.animate(withDuration: 0.25) { self.preferredDisplayMode = .secondaryOnly }
     }
 }
 

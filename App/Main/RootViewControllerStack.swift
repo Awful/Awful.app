@@ -18,6 +18,15 @@ final class RootViewControllerStack: NSObject, AwfulSplitViewControllerDelegate 
     @FoilDefaultStorage(Settings.hideSidebarInLandscape) private var hideSidebarInLandscape
     let managedObjectContext: NSManagedObjectContext
     private var notifiers: [NSObjectProtocol] = []
+
+    /// True after the user deliberately dismisses the pinned sidebar (setting OFF, landscape),
+    /// so it stays hidden — including across backgrounding — until they summon it again.
+    private var userHidPinnedSidebar = false
+
+    /// True while the split view is mid size transition (rotation, or the portrait/landscape
+    /// snapshot resizes iOS performs on backgrounding), when display-mode changes are
+    /// UIKit's doing rather than the user's.
+    private var isTransitioningSize = false
     
     lazy private(set) var rootViewController: UIViewController = {
         // This was a fun one! If you change the app icon (using `UIApplication.setAlternateIconName(…)`), the alert it presents causes `UISplitViewController` to dismiss its primary view controller. Even on a phone when there is no secondary view controller. The fix? It seems like the alert is presented on the current `rootViewController`, so if that isn't the split view controller then we're all set!
@@ -70,7 +79,11 @@ final class RootViewControllerStack: NSObject, AwfulSplitViewControllerDelegate 
         $hideSidebarInLandscape
             .dropFirst()
             .receive(on: RunLoop.main)
-            .sink { [weak self] _ in self?.configureSplitViewControllerDisplayMode() }
+            .sink { [weak self] _ in
+                // Flipping the setting starts the new mode from its default state.
+                self?.userHidPinnedSidebar = false
+                self?.configureSplitViewControllerDisplayMode()
+            }
             .store(in: &cancellables)
 
         $canSendPrivateMessages
@@ -122,20 +135,27 @@ final class RootViewControllerStack: NSObject, AwfulSplitViewControllerDelegate 
 	
     private func configureSplitViewControllerDisplayMode() {
         let svc = splitViewController
+        guard svc.isViewLoaded else {
+            // Launch: nothing on screen yet. Start hidden when the setting is on; otherwise
+            // let UIKit resolve the orientation-appropriate initial mode (initial .automatic
+            // resolution works; it's only re-resolution after changes that's unreliable).
+            svc.preferredDisplayMode = hideSidebarInLandscape ? .secondaryOnly : .automatic
+            return
+        }
+        guard !svc.isCollapsed else { return }
+        let isLandscape = svc.view.bounds.width > svc.view.bounds.height
         let sidebarIsVisible = [.oneOverSecondary, .oneBesideSecondary].contains(svc.displayMode)
         let target: UISplitViewController.DisplayMode
-        if hideSidebarInLandscape {
-            // Never pinned. If the sidebar is on screen right now (e.g. the user just
-            // toggled this setting from the Settings tab, which lives in the sidebar),
-            // keep it visible as an overlay instead of yanking it closed; it hides on
+        if !hideSidebarInLandscape, isLandscape {
+            // Pinned and always visible — unless the user deliberately dismissed it.
+            target = userHidPinnedSidebar ? .secondaryOnly : .oneBesideSecondary
+        } else if sidebarIsVisible {
+            // Keep a visible sidebar on screen as an overlay (e.g. the user just toggled
+            // the setting from the Settings tab, which lives in the sidebar); it hides on
             // selection or tap-out as usual.
-            target = sidebarIsVisible ? .oneOverSecondary : .secondaryOnly
-        } else if svc.isViewLoaded, sidebarIsVisible,
-                  svc.view.bounds.width < svc.view.bounds.height {
-            // Toggled off while the overlay is up in portrait: keep the overlay open.
             target = .oneOverSecondary
         } else {
-            target = .automatic
+            target = .secondaryOnly
         }
         guard svc.preferredDisplayMode != target else { return }
         UIView.animate(withDuration: 0.25) { svc.preferredDisplayMode = target }
@@ -339,16 +359,37 @@ extension RootViewControllerStack {
         _ svc: UISplitViewController,
         willChangeTo displayMode: UISplitViewController.DisplayMode
     ) {
-        // When UIKit hides the overlay itself (tap on the dimmed detail view), it can
-        // leave preferredDisplayMode stuck at .oneOverSecondary. Restore the base mode
-        // so a later rotation resolves correctly. Async so we don't mutate
-        // preferredDisplayMode reentrantly mid-transition.
-        guard displayMode == .secondaryOnly, !svc.isCollapsed else { return }
+        guard !svc.isCollapsed else { return }
+        switch displayMode {
+        case .secondaryOnly:
+            // Outside a size transition, only the user's sidebar button dismisses a
+            // *pinned* sidebar: remember that choice — including across backgrounding —
+            // until they summon the sidebar again.
+            if svc.displayMode == .oneBesideSecondary, !isTransitioningSize {
+                userHidPinnedSidebar = true
+            }
+        case .oneBesideSecondary, .oneOverSecondary:
+            // The sidebar is coming on screen (our show methods, UIKit's edge swipe, or
+            // the system sidebar button): any remembered manual hide is over.
+            userHidPinnedSidebar = false
+        default:
+            break
+        }
+
+        // When UIKit hides the sidebar itself (tap on the dimmed detail view, or the
+        // system sidebar button), preferredDisplayMode can be left stuck at a visible
+        // mode. Restore it so a later show/rotation actually transitions. Also refresh
+        // the detail nav's sidebar-toggle button, which should exist exactly when the
+        // sidebar isn't pinned. Async so we don't mutate preferredDisplayMode
+        // reentrantly mid-transition.
+        guard displayMode == .secondaryOnly else { return }
         DispatchQueue.main.async {
             guard svc.displayMode == .secondaryOnly else { return }
-            let base = svc.sidebarBaseDisplayMode
-            if svc.preferredDisplayMode != base {
-                svc.preferredDisplayMode = base
+            if svc.preferredDisplayMode != .secondaryOnly {
+                svc.preferredDisplayMode = .secondaryOnly
+            }
+            if let root = self.detailNavigationController?.viewControllers.first {
+                root.navigationItem.leftBarButtonItem = self.backBarButtonItem
             }
         }
     }
@@ -381,7 +422,10 @@ extension RootViewControllerStack {
         viewWillTransitionToSize size: CGSize,
         with coordinator: UIViewControllerTransitionCoordinator
     ) {
+        isTransitioningSize = true
         coordinator.animate(alongsideTransition: nil, completion: { context in
+            self.isTransitioningSize = false
+
             // Re-derive the preferred display mode for the new orientation, so e.g. an
             // overlay summoned in portrait becomes a pinned sidebar in landscape instead
             // of leaving preferredDisplayMode stuck at .oneOverSecondary.
