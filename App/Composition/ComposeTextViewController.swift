@@ -432,7 +432,11 @@ class ComposeTextViewController: ViewController, ModernToolbarActionHandling {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+
+        // This view controller is retained while dismissed with a saved draft, so app-wide theme
+        // changes miss it. Re-theme before the keyboard presents so its appearance is current too.
+        themeDidChange()
+
         focusInitialFirstResponder()
         
         updateSubmitButtonItem()
