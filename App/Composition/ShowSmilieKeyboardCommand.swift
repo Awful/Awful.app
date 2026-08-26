@@ -91,6 +91,10 @@ final class ShowSmilieKeyboardCommand: NSObject {
 
         if let sheet = hostingController.sheetPresentationController {
             sheet.detents = [UISheetPresentationController.Detent.medium(), UISheetPresentationController.Detent.large()]
+            // The medium-detent sheet is too small on iPad; start at full height there
+            if UIDevice.current.userInterfaceIdiom == .pad {
+                sheet.selectedDetentIdentifier = .large
+            }
             sheet.prefersGrabberVisible = true
             sheet.preferredCornerRadius = 20
             sheet.delegate = self

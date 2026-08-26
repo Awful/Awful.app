@@ -11,9 +11,9 @@ struct SmiliePickerView: View {
     @SwiftUI.Environment(\.presentationMode) private var presentationMode: Binding<PresentationMode>
     @SwiftUI.Environment(\.theme) private var theme: Theme
     @SwiftUI.Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    @State private var visibleSections = 3 // Start by showing only first 3 sections
-    @State private var hasLoadedAllSections = false
-    
+    // Uniform pill height (fits two lines of .subheadline), scales with Dynamic Type
+    @ScaledMetric(relativeTo: .subheadline) private var pillHeight: CGFloat = 50
+
     let onSmilieSelected: (Smilie) -> Void
     
     private var columnCount: Int {
@@ -45,12 +45,6 @@ struct SmiliePickerView: View {
                     errorView(message: error)
                 } else {
                     scrollContent
-                        .onAppear {
-                            // Check if we already have all sections loaded from the start
-                            if visibleSections >= viewModel.allSmilies.count {
-                                hasLoadedAllSections = true
-                            }
-                        }
                 }
             }
         }
@@ -124,6 +118,20 @@ struct SmiliePickerView: View {
     }
     
     private var scrollContent: some View {
+        GeometryReader { geometry in
+            ScrollViewReader { proxy in
+                VStack(spacing: 0) {
+                    if viewModel.searchText.isEmpty && !viewModel.allSmilies.isEmpty {
+                        categoryChipRow(proxy: proxy, maxPillWidth: geometry.size.width * 0.5)
+                    }
+
+                    scrollingSections
+                }
+            }
+        }
+    }
+
+    private var scrollingSections: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
                 if !viewModel.searchText.isEmpty {
@@ -137,6 +145,91 @@ struct SmiliePickerView: View {
             }
             .padding(.horizontal)
         }
+    }
+
+    private var categoryTitles: [String] {
+        var titles: [String] = []
+        if !viewModel.recentlyUsedSmilies.isEmpty {
+            titles.append(recentlyUsedSectionTitle)
+        }
+        titles.append(contentsOf: viewModel.allSmilies.map { $0.title })
+        return titles
+    }
+
+    /// Namespaces section anchor ids so they can't collide with the pill row's own
+    /// `ForEach` identities — `ScrollViewProxy.scrollTo` searches every scroll view
+    /// under the reader, and a bare title would match the (already visible) pill.
+    private func sectionAnchorID(_ title: String) -> String {
+        "section-\(title)"
+    }
+
+    private func categoryChipRow(proxy: ScrollViewProxy, maxPillWidth: CGFloat) -> some View {
+        // Alternate titles between the two rows so adjacent categories stay near each other
+        let titles = categoryTitles
+        let topRow = stride(from: 0, to: titles.count, by: 2).map { titles[$0] }
+        let bottomRow = stride(from: 1, to: titles.count, by: 2).map { titles[$0] }
+
+        return ScrollView(.horizontal, showsIndicators: false) {
+            VStack(alignment: .leading, spacing: 8) {
+                HStack(spacing: 8) {
+                    ForEach(topRow, id: \.self) { title in
+                        categoryPill(title, proxy: proxy, maxWidth: maxPillWidth)
+                    }
+                }
+                if !bottomRow.isEmpty {
+                    HStack(spacing: 8) {
+                        ForEach(bottomRow, id: \.self) { title in
+                            categoryPill(title, proxy: proxy, maxWidth: maxPillWidth)
+                        }
+                    }
+                }
+            }
+            .padding(.horizontal)
+        }
+        // Size to the two rows' content height; without this the surrounding layout
+        // can compress the scroller and clip the bottom row
+        .fixedSize(horizontal: false, vertical: true)
+        .padding(.bottom, 8)
+    }
+
+    private func categoryPill(_ title: String, proxy: ScrollViewProxy, maxWidth: CGFloat) -> some View {
+        Button(action: {
+            // Deferring past the button's own transaction keeps scrollTo reliable on iOS 15
+            DispatchQueue.main.async {
+                withAnimation {
+                    proxy.scrollTo(sectionAnchorID(title), anchor: .top)
+                }
+            }
+        }) {
+            Text(title)
+                .font(.subheadline)
+                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                .multilineTextAlignment(.center)
+                .lineLimit(2)
+                .minimumScaleFactor(0.9)
+                .foregroundColor(theme[color: "sheetTextColor"]!)
+                .frame(maxWidth: maxWidth)
+                .padding(.horizontal, 12)
+                .frame(height: pillHeight)
+                .background(
+                    Capsule()
+                        .fill(pillBackgroundColor)
+                        .overlay(
+                            Capsule()
+                                .stroke(pillStrokeColor, lineWidth: 1)
+                        )
+                )
+        }
+    }
+
+    private var pillBackgroundColor: Color {
+        let fallback = theme.isDark ? Color.white.opacity(0.15) : Color.black.opacity(0.08)
+        return theme[color: "listSecondaryTextColor"]?.opacity(theme.isDark ? 0.25 : 0.2) ?? fallback
+    }
+
+    private var pillStrokeColor: Color {
+        let fallback = theme.isDark ? Color.white.opacity(0.3) : Color.black.opacity(0.2)
+        return theme[color: "listSecondaryTextColor"]?.opacity(0.5) ?? fallback
     }
     
     private var searchResultsSection: some View {
@@ -167,10 +260,12 @@ struct SmiliePickerView: View {
         }
     }
     
+    private let recentlyUsedSectionTitle = "Recently Used"
+
     private var recentlyUsedSection: some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack {
-                Text("Recently Used")
+                Text(recentlyUsedSectionTitle)
                     .font(.title3)
                     .fontWeight(.bold)
                     .dynamicTypeSize(...DynamicTypeSize.accessibility2)
@@ -181,53 +276,29 @@ struct SmiliePickerView: View {
             
             smilieGrid(viewModel.recentlyUsedSmilies)
         }
+        .id(sectionAnchorID(recentlyUsedSectionTitle))
     }
     
     private var allSmiliesSection: some View {
         VStack(alignment: .leading, spacing: 20) {
-            let sectionsToShow = Array(viewModel.allSmilies.prefix(visibleSections))
-            
-            ForEach(Array(sectionsToShow.enumerated()), id: \.element.title) { index, section in
+            ForEach(Array(viewModel.allSmilies.enumerated()), id: \.element.title) { index, section in
                 VStack(alignment: .leading, spacing: 10) {
                     if index > 0 {
                         Divider()
                             .background(theme[color: "listSeparatorColor"]!)
                             .padding(.vertical, 10)
                     }
-                    
+
                     Text(section.title)
                         .font(.title3)
                         .fontWeight(.bold)
                         .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                         .foregroundColor(theme[color: "sheetTextColor"]!)
                         .padding(.bottom, 5)
-                    
+
                     smilieGrid(section.smilies)
                 }
-            }
-            
-            // Show loading indicator if there are more sections to load
-            if !hasLoadedAllSections && visibleSections < viewModel.allSmilies.count && !viewModel.allSmilies.isEmpty {
-                HStack {
-                    Spacer()
-                    ProgressView()
-                        .progressViewStyle(CircularProgressViewStyle())
-                        .scaleEffect(0.8)
-                    Spacer()
-                }
-                .padding(.vertical, 20)
-                .onAppear {
-                    // Load more sections when this view appears
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                        withAnimation {
-                            let newVisibleSections = min(visibleSections + 3, viewModel.allSmilies.count)
-                            visibleSections = newVisibleSections
-                            if newVisibleSections >= viewModel.allSmilies.count {
-                                hasLoadedAllSections = true
-                            }
-                        }
-                    }
-                }
+                .id(sectionAnchorID(section.title))
             }
         }
     }
