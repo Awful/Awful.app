@@ -149,7 +149,7 @@ final class PostsPageViewController: ViewController {
         if poll != nil {
             children.append(UIAction(
                 title: "View poll",
-                image: UIImage(systemName: "chart.bar.xaxis"),
+                image: UIImage(named: "poll")!.withRenderingMode(.alwaysTemplate),
                 identifier: .init("viewPoll"),
                 handler: { [unowned self] in viewPoll(action: $0) }
             ))

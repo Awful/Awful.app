@@ -4,6 +4,7 @@
   "groups" : [
     {
       "blur-material" : 0.5,
+      "hidden" : false,
       "layers" : [
         {
           "hidden" : false,
@@ -11,10 +12,15 @@
           "name" : "pupils dog"
         },
         {
+          "fill" : {
+            "solid" : "srgb:1.00000,1.00000,1.00000,0.85072"
+          },
+          "hidden" : false,
           "image-name" : "eyes dog.svg",
           "name" : "eyes dog"
         },
         {
+          "glass" : true,
           "image-name" : "nose dog.svg",
           "name" : "nose dog"
         },
@@ -23,7 +29,7 @@
           "name" : "ears dog"
         }
       ],
-      "lighting" : "combined",
+      "lighting" : "individual",
       "position" : {
         "scale" : 1.143,
         "translation-in-points" : [
@@ -42,11 +48,19 @@
     },
     {
       "blur-material" : 0.5,
+      "hidden" : false,
       "layers" : [
         {
           "hidden" : false,
           "image-name" : "dog features.svg",
-          "name" : "dog features"
+          "name" : "dog features",
+          "position" : {
+            "scale" : 1,
+            "translation-in-points" : [
+              0,
+              0
+            ]
+          }
         }
       ],
       "position" : {
@@ -96,7 +110,7 @@
       "specular" : true,
       "translucency" : {
         "enabled" : true,
-        "value" : 0.7
+        "value" : 0.5499999999999999
       }
     },
     {
@@ -105,7 +119,14 @@
         {
           "hidden" : false,
           "image-name" : "dog skin.svg",
-          "name" : "dog skin"
+          "name" : "dog skin",
+          "position" : {
+            "scale" : 1,
+            "translation-in-points" : [
+              0,
+              0
+            ]
+          }
         }
       ],
       "lighting" : "combined",

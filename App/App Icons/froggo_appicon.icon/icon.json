@@ -8,57 +8,6 @@
   },
   "groups" : [
     {
-      "blur-material" : null,
-      "hidden" : false,
-      "layers" : [
-        {
-          "hidden" : false,
-          "image-name" : "pupils.svg",
-          "name" : "pupils",
-          "position" : {
-            "scale" : 1.03,
-            "translation-in-points" : [
-              0,
-              0
-            ]
-          }
-        },
-        {
-          "blend-mode" : "normal",
-          "glass" : true,
-          "hidden" : false,
-          "image-name" : "eyes.svg",
-          "name" : "eyes",
-          "opacity" : 1,
-          "position" : {
-            "scale" : 1.04,
-            "translation-in-points" : [
-              0,
-              0
-            ]
-          }
-        }
-      ],
-      "lighting" : "combined",
-      "name" : "Eyes",
-      "position" : {
-        "scale" : 1.143,
-        "translation-in-points" : [
-          0,
-          0
-        ]
-      },
-      "shadow" : {
-        "kind" : "layer-color",
-        "opacity" : 0.9
-      },
-      "specular" : true,
-      "translucency" : {
-        "enabled" : true,
-        "value" : 0.10000000000000005
-      }
-    },
-    {
       "blend-mode" : "normal",
       "blur-material" : null,
       "hidden" : false,
@@ -91,6 +40,60 @@
       }
     },
     {
+      "blur-material" : null,
+      "hidden" : false,
+      "layers" : [
+        {
+          "hidden" : false,
+          "image-name" : "pupils.svg",
+          "name" : "pupils",
+          "position" : {
+            "scale" : 1.03,
+            "translation-in-points" : [
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "blend-mode" : "normal",
+          "fill" : {
+            "solid" : "srgb:0.77414,0.83030,0.91634,1.00000"
+          },
+          "glass" : true,
+          "hidden" : false,
+          "image-name" : "eyes.svg",
+          "name" : "eyes",
+          "opacity" : 1,
+          "position" : {
+            "scale" : 1.04,
+            "translation-in-points" : [
+              0,
+              0
+            ]
+          }
+        }
+      ],
+      "lighting" : "individual",
+      "name" : "Eyes",
+      "position" : {
+        "scale" : 1.143,
+        "translation-in-points" : [
+          0,
+          0
+        ]
+      },
+      "shadow" : {
+        "kind" : "layer-color",
+        "opacity" : 0.9
+      },
+      "specular" : true,
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.10000000000000005
+      }
+    },
+    {
       "blend-mode" : "normal",
       "blur-material" : 1,
       "hidden" : false,
@@ -119,7 +122,7 @@
             "scale" : 1,
             "translation-in-points" : [
               0,
-              -144
+              -141
             ]
           }
         }

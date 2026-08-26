@@ -10,6 +10,9 @@
           "name" : "pupils dog"
         },
         {
+          "fill" : {
+            "solid" : "srgb:1.00000,1.00000,1.00000,0.85000"
+          },
           "image-name" : "eyes dog.svg",
           "name" : "eyes dog"
         },
@@ -22,7 +25,7 @@
           "name" : "ears dog"
         }
       ],
-      "lighting" : "combined",
+      "lighting" : "individual",
       "position" : {
         "scale" : 1.1428571429,
         "translation-in-points" : [

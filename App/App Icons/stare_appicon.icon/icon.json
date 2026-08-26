@@ -7,7 +7,10 @@
     {
       "appearance" : "light",
       "value" : {
-        "solid" : "srgb:1.00000,0.90000,0.50000,1.00000"
+        "linear-gradient" : [
+          "srgb:0.34510,0.18824,0.55294,1.00000",
+          "display-p3:1.00000,0.97647,0.35419,1.00000"
+        ]
       }
     }
   ],
@@ -15,8 +18,17 @@
     {
       "layers" : [
         {
+          "blend-mode" : "overlay",
+          "hidden" : false,
           "image-name" : "mou.svg",
-          "name" : "mou"
+          "name" : "mou",
+          "opacity" : 0.5
+        },
+        {
+          "hidden" : false,
+          "image-name" : "mou.svg",
+          "name" : "mou",
+          "opacity" : 1
         }
       ],
       "position" : {
@@ -37,10 +49,10 @@
       }
     },
     {
-      "hidden" : false,
       "layers" : [
         {
-          "glass" : true,
+          "blend-mode" : "overlay",
+          "hidden" : false,
           "image-name" : "pup.svg",
           "name" : "pup",
           "position" : {
@@ -52,9 +64,32 @@
           }
         },
         {
-          "fill" : {
-            "solid" : "srgb:0.90000,0.90000,0.90000,1.00000"
-          },
+          "blend-mode" : "overlay",
+          "hidden" : false,
+          "image-name" : "pup.svg",
+          "name" : "pup",
+          "position" : {
+            "scale" : 1,
+            "translation-in-points" : [
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "hidden" : false,
+          "image-name" : "pup.svg",
+          "name" : "pup",
+          "position" : {
+            "scale" : 1,
+            "translation-in-points" : [
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "hidden" : false,
           "image-name" : "eyezz.svg",
           "name" : "eyezz"
         }
@@ -73,7 +108,7 @@
       "specular" : true,
       "translucency" : {
         "enabled" : true,
-        "value" : 0.7
+        "value" : 0.5
       }
     },
     {
