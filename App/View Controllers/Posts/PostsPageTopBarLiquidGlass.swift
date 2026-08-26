@@ -75,14 +75,16 @@ final class PostsPageTopBarLiquidGlass: UIView, PostsPageTopBarProtocol {
         private let label: UILabel
 
         override init(frame: CGRect) {
-            let glassEffect = UIGlassEffect(style: .clear)
+            // Regular glass (not .clear) so the OS adapts the material and label color
+            // to the content behind it. The capsule shape comes from cornerConfiguration
+            // (glass ignores layer.cornerRadius, FB18629279). Do NOT clip this view or
+            // any ancestor: a clipped glass shadow renders as a grey wash filling the
+            // clipping bounds instead of a soft halo (see TopBarContainer).
+            let glassEffect = UIGlassEffect()
             glassView = UIVisualEffectView(effect: glassEffect)
             glassView.translatesAutoresizingMaskIntoConstraints = false
             glassView.isUserInteractionEnabled = false
-            glassView.layer.cornerRadius = 16
-            glassView.layer.masksToBounds = true
-            glassView.layer.cornerCurve = .continuous
-            glassView.layer.shadowOpacity = 0
+            glassView.cornerConfiguration = .capsule()
 
             label = UILabel()
             label.translatesAutoresizingMaskIntoConstraints = false
@@ -134,9 +136,8 @@ final class PostsPageTopBarLiquidGlass: UIView, PostsPageTopBarProtocol {
     }
     
     func themeDidChange(_ theme: Theme) {
-        for button in [parentForumButton, previousPostsButton, scrollToEndButton] {
-            button.setNeedsUpdateConfiguration()
-        }
+        // Nothing to do: the OS colors the glass buttons adaptively based on the
+        // content behind them, so themes don't apply here.
     }
     
     private func updateButtonsEnabled() {

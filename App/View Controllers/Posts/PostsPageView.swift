@@ -493,6 +493,9 @@ extension PostsPageView {
         override init(frame: CGRect) {
             super.init(frame: frame)
 
+            // On iOS 26 clipping is disabled in `updateTopBarContainerFrameAndScrollViewInsets`
+            // (a clipped Liquid Glass shadow renders as a grey wash filling the clipping
+            // bounds); the bar fades with reveal progress instead of being masked.
             clipsToBounds = true
 
             if #available(iOS 26.0, *) {
@@ -552,6 +555,24 @@ extension PostsPageView {
             topBarContainer.layoutIfNeeded()
             topBarContainer.frame.size.height = topBarContainer.topBar.bounds.height
             result = .init(progress: 1)
+        }
+
+        if #available(iOS 26.0, *) {
+            // Never clip on iOS 26: a clipped Liquid Glass shadow renders as a grey
+            // wash filling the clipping bounds. Instead, fade the bar with the reveal
+            // progress so it doesn't show behind the translucent navigation bar while
+            // sliding in or out.
+            topBarContainer.clipsToBounds = false
+            switch topBarState {
+            case .hidden:
+                topBarContainer.topBar.alpha = 0
+            case .appearing:
+                topBarContainer.topBar.alpha = result.progress
+            case .disappearing:
+                topBarContainer.topBar.alpha = 1 - result.progress
+            case .visible, .alwaysVisible:
+                topBarContainer.topBar.alpha = 1
+            }
         }
 
         updateScrollViewInsets()
