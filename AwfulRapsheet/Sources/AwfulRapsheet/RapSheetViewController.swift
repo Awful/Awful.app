@@ -608,10 +608,10 @@ public final class RapSheetViewController: ViewController {
             return
         }
 
-        // The filled icon shows at a glance that this isn't the site's default unfiltered view.
-        let filterImage = UIImage(systemName: filter == LepersColonyFilter()
-            ? "line.3.horizontal.decrease.circle"
-            : "line.3.horizontal.decrease.circle.fill")
+        let filterConfiguration: UIImage.Configuration? = filter == LepersColonyFilter()
+            ? nil
+            : UIImage.SymbolConfiguration(weight: .bold)
+        let filterImage = UIImage(systemName: "line.3.horizontal.decrease", withConfiguration: filterConfiguration)
         let refreshImage = UIImage(systemName: "arrow.clockwise")
 
         if #available(iOS 26.0, *), UIDevice.current.userInterfaceIdiom == .pad {
@@ -695,7 +695,7 @@ public final class RapSheetViewController: ViewController {
     /// UIButton (rather than a UIBarButtonItem menu) so it behaves on iOS 26 iPads too.
     private func makeMoreButton() -> UIButton {
         let button = UIButton(type: .system)
-        button.setImage(UIImage(systemName: "ellipsis.circle"), for: .normal)
+        button.setImage(UIImage(systemName: "ellipsis"), for: .normal)
         button.accessibilityLabel = "More"
         button.showsMenuAsPrimaryAction = true
         button.menu = UIMenu(children: [
@@ -777,7 +777,6 @@ public final class RapSheetViewController: ViewController {
                 guard let self, newFilter != self.filter else { return }
                 self.filter = newFilter
                 self.pageCache.removeAll()
-                // Reflect the new filter in the nav bar's Filter icon (plain vs. filled).
                 self.updateRightBarButtons()
                 Task { await self.load(1) }
             }

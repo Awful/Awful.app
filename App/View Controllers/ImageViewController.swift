@@ -163,7 +163,7 @@ final class ImageViewController: UIViewController {
             actionButton.configuration = {
                 var config = UIButton.Configuration.plain()
                 config.contentInsets = .init(top: 5, leading: 7, bottom: 7, trailing: 7)
-                config.image = .init(named: "action")
+                config.image = UIImage(named: "share")?.withRenderingMode(.alwaysTemplate)
                 var background = UIBackgroundConfiguration.clear()
                 background.backgroundColor = overlaidBackgroundColor
                 background.cornerRadius = buttonCornerRadius

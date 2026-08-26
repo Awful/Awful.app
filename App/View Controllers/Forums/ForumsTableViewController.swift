@@ -401,10 +401,8 @@ final class ForumsTableViewController: CollectionViewController {
             // NavigationController.configureButtonAppearance), so these inherit it. `.normal` tint
             // adjustment keeps them from dimming, matching BookmarksTableViewController.
             let moreButton = UIButton(type: .system)
-            moreButton.setImage(UIImage(systemName: "ellipsis.circle"), for: .normal)
-            // Match the Search icon's 20pt hosting size. `ellipsis.circle`'s ring reads a touch
-            // larger, so render it slightly under 20pt so the pair looks evenly sized.
-            moreButton.setPreferredSymbolConfiguration(UIImage.SymbolConfiguration(pointSize: 18), forImageIn: .normal)
+            moreButton.setImage(UIImage(systemName: "ellipsis"), for: .normal)
+            moreButton.setPreferredSymbolConfiguration(UIImage.SymbolConfiguration(pointSize: 20), forImageIn: .normal)
             moreButton.showsMenuAsPrimaryAction = true
             moreButton.menu = moreMenu()
             moreButton.accessibilityLabel = "More"
@@ -442,7 +440,7 @@ final class ForumsTableViewController: CollectionViewController {
         // spreads the grouped glass cluster apart; icon-sized customViews pack
         // the pair tightly together like Bookmarks.
         let moreButton = UIButton(type: .system)
-        moreButton.setImage(UIImage(systemName: "ellipsis.circle"), for: .normal)
+        moreButton.setImage(UIImage(systemName: "ellipsis"), for: .normal)
         moreButton.showsMenuAsPrimaryAction = true
         moreButton.menu = moreMenu()
         moreButton.accessibilityLabel = "More"
