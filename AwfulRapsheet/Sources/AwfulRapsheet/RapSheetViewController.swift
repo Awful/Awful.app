@@ -642,16 +642,26 @@ public final class RapSheetViewController: ViewController {
             stack.alignment = .center
             navigationItem.setRightBarButtonItems(doneItems + [UIBarButtonItem(customView: stack)], animated: false)
 
-            if isEndlessScrolling {
-                // Replace the balancing spacer with a real More… button (menu attached to a UIButton via
-                // `showsMenuAsPrimaryAction` — plain UIBarButtonItem menus misbehave on iOS 26 iPad), padded
-                // out to the same 72pt so the centered title stays balanced against the right-side cluster.
-                let moreButton = makeMoreButton()
-                moreButtonView = moreButton
+            if isEndlessScrolling, let moreImage = UIImage(systemName: "ellipsis") {
+                // Replace the balancing spacer with a real More… button, routed through the same themed
+                // hosting view as Filter/Refresh so the glass sidebar's vibrancy doesn't mis-tint it. It's
+                // padded out to the same 72pt so the centered title stays balanced against the right-side
+                // cluster.
+                let moreView = handlers.makeSidebarMenuButton(
+                    moreImage,
+                    "More",
+                    Self.padIconPointSize,
+                    moreMenu()
+                )
                 let container = UIView(frame: CGRect(x: 0, y: 0, width: 72, height: 44))
-                moreButton.frame = CGRect(x: 0, y: 0, width: 44, height: 44)
-                container.addSubview(moreButton)
+                container.addSubview(moreView)
+                NSLayoutConstraint.activate([
+                    moreView.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+                    moreView.centerYAnchor.constraint(equalTo: container.centerYAnchor),
+                ])
                 navigationItem.setLeftBarButtonItems([UIBarButtonItem(customView: container)], animated: false)
+                // Self-tinting like the others on this path, so keep it out of `updateButtonColors()`.
+                moreButtonView = nil
             } else {
                 moreButtonView = nil
                 // Reserve left-side width matching the right-side icon cluster so the centered title isn't
@@ -660,11 +670,10 @@ public final class RapSheetViewController: ViewController {
                 navigationItem.setLeftBarButtonItems([spacer], animated: false)
             }
 
-            // This path tints itself (via `makeSidebarImageHostingView`'s `.themed()` SwiftUI view), so drop
-            // the standard-path references. The More… button still needs the explicit tint.
+            // Every icon on this path tints itself (via `makeSidebarImageHostingView`'s `.themed()`
+            // SwiftUI view), so drop the standard-path references and skip `updateButtonColors()`.
             filterButtonView = nil
             refreshButtonView = nil
-            updateButtonColors()
             return
         }
 
@@ -691,6 +700,16 @@ public final class RapSheetViewController: ViewController {
         updateButtonColors()
     }
 
+    /// The menu behind the "More…" button: the way back to the paging controls, which are
+    /// hidden while endless scroll is on.
+    private func moreMenu() -> UIMenu {
+        UIMenu(children: [
+            UIAction(title: "Exit Endless Scroll") { [weak self] _ in
+                self?.exitEndlessScroll()
+            },
+        ])
+    }
+
     /// The top-left "More…" button shown while endless scrolling. Uses `showsMenuAsPrimaryAction` on a
     /// UIButton (rather than a UIBarButtonItem menu) so it behaves on iOS 26 iPads too.
     private func makeMoreButton() -> UIButton {
@@ -698,11 +717,7 @@ public final class RapSheetViewController: ViewController {
         button.setImage(UIImage(systemName: "ellipsis"), for: .normal)
         button.accessibilityLabel = "More"
         button.showsMenuAsPrimaryAction = true
-        button.menu = UIMenu(children: [
-            UIAction(title: "Exit Endless Scroll") { [weak self] _ in
-                self?.exitEndlessScroll()
-            },
-        ])
+        button.menu = moreMenu()
         if #available(iOS 26.0, *) {
             button.tintAdjustmentMode = .normal
         }

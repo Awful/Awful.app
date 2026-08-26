@@ -806,6 +806,58 @@ final class NavigationController: UINavigationController, Themeable {
         return hosting.view
     }
 
+    /// Builds a menu-bearing sidebar button whose icon gets the same
+    /// `.glassEffect(.identity)` treatment as `makeSidebarImageHostingView`, so the glass
+    /// panel's vibrancy compositing doesn't mis-tint it.
+    ///
+    /// Split into two layers because neither half can do the whole job: SwiftUI's `Menu`
+    /// can't present a `UIMenu`, and a plain UIButton — which is what `showsMenuAsPrimaryAction`
+    /// needs, since UIBarButtonItem menus misbehave on iOS 26 iPad — is exactly what the
+    /// vibrancy mis-tints. So the SwiftUI hosting view draws the icon and a transparent
+    /// UIButton on top carries the menu.
+    @available(iOS 26.0, *)
+    static func makeSidebarMenuButtonView(
+        image: UIImage,
+        accessibilityLabel: String?,
+        pointSize: CGFloat = 20,
+        tapTargetSize: CGFloat = 44,
+        menu: UIMenu
+    ) -> UIView {
+        let iconView = makeSidebarImageHostingView(
+            image: image,
+            accessibilityLabel: nil,
+            pointSize: pointSize,
+            target: nil,
+            action: nil
+        )
+        // Purely decorative here: the SwiftUI Button inside would otherwise swallow the taps
+        // meant for the menu button layered over it.
+        iconView.isUserInteractionEnabled = false
+
+        let button = UIButton(type: .system)
+        button.showsMenuAsPrimaryAction = true
+        button.menu = menu
+        button.accessibilityLabel = accessibilityLabel
+        button.translatesAutoresizingMaskIntoConstraints = false
+
+        // The container is the tap target, so it can be larger than the icon it centers.
+        let container = UIView(frame: CGRect(x: 0, y: 0, width: tapTargetSize, height: tapTargetSize))
+        container.translatesAutoresizingMaskIntoConstraints = false
+        container.addSubview(iconView)
+        container.addSubview(button)
+        NSLayoutConstraint.activate([
+            container.widthAnchor.constraint(equalToConstant: tapTargetSize),
+            container.heightAnchor.constraint(equalToConstant: tapTargetSize),
+            iconView.centerXAnchor.constraint(equalTo: container.centerXAnchor),
+            iconView.centerYAnchor.constraint(equalTo: container.centerYAnchor),
+            button.topAnchor.constraint(equalTo: container.topAnchor),
+            button.bottomAnchor.constraint(equalTo: container.bottomAnchor),
+            button.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+            button.trailingAnchor.constraint(equalTo: container.trailingAnchor),
+        ])
+        return container
+    }
+
     /// Configures button appearance attributes for iOS 26 liquid glass compatibility.
     /// Omits foregroundColor to allow navigationBar.tintColor to control button text color.
     private func configureButtonAppearance(_ appearance: UINavigationBarAppearance, font: UIFont) {

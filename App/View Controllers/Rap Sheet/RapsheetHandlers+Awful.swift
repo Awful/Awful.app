@@ -75,6 +75,16 @@ extension RapsheetHandlers {
                     target: target,
                     action: action
                 )
+            },
+            makeSidebarMenuButton: { image, accessibilityLabel, pointSize, menu in
+                // The rap sheet only asks for these on the iOS 26 iPad path.
+                guard #available(iOS 26.0, *) else { return UIView() }
+                return NavigationController.makeSidebarMenuButtonView(
+                    image: image,
+                    accessibilityLabel: accessibilityLabel,
+                    pointSize: pointSize,
+                    menu: menu
+                )
             }
         )
     }

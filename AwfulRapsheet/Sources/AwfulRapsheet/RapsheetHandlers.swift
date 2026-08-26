@@ -81,6 +81,15 @@ public struct RapsheetHandlers {
         _ action: Selector
     ) -> UIView
 
+    /// Makes a navigation-bar menu button for the iOS 26 iPad glass sidebar. Separate from
+    /// `makeSidebarImageButton` because a menu can't be driven by a target/action pair.
+    public var makeSidebarMenuButton: @MainActor (
+        _ image: UIImage,
+        _ accessibilityLabel: String,
+        _ pointSize: CGFloat,
+        _ menu: UIMenu
+    ) -> UIView
+
     public init(
         makeRenderer: @escaping @MainActor () -> RapsheetRenderer,
         renderTemplate: @escaping (_ context: [String: Any]) -> String,
@@ -96,6 +105,12 @@ public struct RapsheetHandlers {
             _ pointSize: CGFloat,
             _ target: AnyObject,
             _ action: Selector
+        ) -> UIView,
+        makeSidebarMenuButton: @escaping @MainActor (
+            _ image: UIImage,
+            _ accessibilityLabel: String,
+            _ pointSize: CGFloat,
+            _ menu: UIMenu
         ) -> UIView
     ) {
         self.makeRenderer = makeRenderer
@@ -107,5 +122,6 @@ public struct RapsheetHandlers {
         self.openPost = openPost
         self.handleLink = handleLink
         self.makeSidebarImageButton = makeSidebarImageButton
+        self.makeSidebarMenuButton = makeSidebarMenuButton
     }
 }
