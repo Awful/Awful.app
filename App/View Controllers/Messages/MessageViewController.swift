@@ -3,6 +3,7 @@
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
+import AwfulExtensions
 import AwfulRapsheet
 import AwfulSettings
 import AwfulTheming
@@ -517,21 +518,7 @@ extension MessageViewController: UIGestureRecognizerDelegate {
 extension MessageViewController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if #available(iOS 26.0, *) {
-            let topInset = scrollView.adjustedContentInset.top
-            let currentOffset = scrollView.contentOffset.y
-            let topPosition = -topInset
-
-            let transitionDistance: CGFloat = 30.0
-
-            let progress: CGFloat
-            if currentOffset <= topPosition {
-                progress = 0.0
-            } else if currentOffset >= topPosition + transitionDistance {
-                progress = 1.0
-            } else {
-                let distanceFromTop = currentOffset - topPosition
-                progress = distanceFromTop / transitionDistance
-            }
+            let progress = scrollView.navigationBarScrollProgress
 
             if let navController = navigationController as? NavigationController {
                 navController.updateNavigationBarTintForScrollProgress(NSNumber(value: Float(progress)))

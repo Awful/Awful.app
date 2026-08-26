@@ -2,6 +2,7 @@
 //
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import AwfulExtensions
 import AwfulSettings
 import AwfulTheming
 import AwfulTilt
@@ -885,21 +886,7 @@ extension PostsPageView: ScrollViewDelegateExtras {
 
     @available(iOS 26.0, *)
     private func updateNavigationBarForScrollProgress(_ scrollView: UIScrollView) {
-        let topInset = scrollView.adjustedContentInset.top
-        let currentOffset = scrollView.contentOffset.y
-        let topPosition = -topInset
-
-        let transitionDistance: CGFloat = 30.0
-
-        let progress: CGFloat
-        if currentOffset <= topPosition {
-            progress = 0.0
-        } else if currentOffset >= topPosition + transitionDistance {
-            progress = 1.0
-        } else {
-            let distanceFromTop = currentOffset - topPosition
-            progress = distanceFromTop / transitionDistance
-        }
+        let progress = scrollView.navigationBarScrollProgress
 
         guard let viewController = postsPageViewController,
               let navController = viewController.navigationController as? NavigationController else {
