@@ -173,9 +173,11 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         URLCache.shared.removeAllCachedResponses()
         ImagePipeline.shared.cache.removeAll()
 
-        // Clear WKWebView data (cookies, cache, localStorage, etc.)
+        // Clear WKWebView data (cache, localStorage, etc.) — but NOT cookies,
+        // which hold the forums login session.
         let webDataStore = WKWebsiteDataStore.default()
-        let dataTypes = WKWebsiteDataStore.allWebsiteDataTypes()
+        var dataTypes = WKWebsiteDataStore.allWebsiteDataTypes()
+        dataTypes.remove(WKWebsiteDataTypeCookies)
         await webDataStore.removeData(ofTypes: dataTypes, modifiedSince: .distantPast)
 
         // Clear external stylesheet cache
