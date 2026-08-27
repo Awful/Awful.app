@@ -57,6 +57,10 @@ final class AttachmentEditView: AttachmentCardView {
 
         actionSegmentedControl.addTarget(self, action: #selector(actionChanged), for: .valueChanged)
 
+        // Below required priority so the card can collapse to zero height while hidden.
+        let segmentedControlBottomConstraint = actionSegmentedControl.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -AttachmentCardLayout.cardPadding)
+        segmentedControlBottomConstraint.priority = .defaultHigh
+
         NSLayoutConstraint.activate([
             imageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: AttachmentCardLayout.cardPadding),
             imageView.topAnchor.constraint(equalTo: topAnchor, constant: AttachmentCardLayout.cardPadding),
@@ -74,7 +78,7 @@ final class AttachmentEditView: AttachmentCardView {
             actionSegmentedControl.leadingAnchor.constraint(equalTo: leadingAnchor, constant: AttachmentCardLayout.cardPadding),
             actionSegmentedControl.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -AttachmentCardLayout.cardPadding),
             actionSegmentedControl.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: AttachmentCardLayout.imageSpacing),
-            actionSegmentedControl.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -AttachmentCardLayout.cardPadding),
+            segmentedControlBottomConstraint,
         ])
     }
 

@@ -85,8 +85,9 @@ final class CompositionViewController: ViewController, ModernToolbarActionHandli
         attachmentPreviewHeightConstraint = attachmentPreviewView.heightAnchor.constraint(equalToConstant: 0)
         attachmentEditHeightConstraint = attachmentEditView.heightAnchor.constraint(equalToConstant: 0)
 
-        // Default: text view top anchors to preview view bottom (which starts at height 0)
-        textViewTopConstraint = _textView.topAnchor.constraint(equalTo: attachmentPreviewView.bottomAnchor, constant: AttachmentViewLayout.spacing)
+        // Default: no attachment card is visible, so the text view sits flush against the safe
+        // area and its own textContainerInset provides the gap below the nav bar.
+        textViewTopConstraint = _textView.topAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.topAnchor)
 
         NSLayoutConstraint.activate([
             attachmentPreviewView.topAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.topAnchor, constant: 8),
@@ -180,14 +181,16 @@ final class CompositionViewController: ViewController, ModernToolbarActionHandli
         updateAttachmentViewVisibility(
             showPreview: false, previewHeight: 0,
             showEdit: false, editHeight: 0,
-            anchorTextViewTo: attachmentPreviewView.bottomAnchor
+            anchorTextViewTo: containerView.safeAreaLayoutGuide.topAnchor,
+            textViewSpacing: 0
         )
     }
 
     private func updateAttachmentViewVisibility(
         showPreview: Bool, previewHeight: CGFloat,
         showEdit: Bool, editHeight: CGFloat,
-        anchorTextViewTo anchor: NSLayoutYAxisAnchor
+        anchorTextViewTo anchor: NSLayoutYAxisAnchor,
+        textViewSpacing: CGFloat = AttachmentViewLayout.spacing
     ) {
         attachmentPreviewView.isHidden = !showPreview
         attachmentPreviewHeightConstraint.constant = previewHeight
@@ -195,7 +198,7 @@ final class CompositionViewController: ViewController, ModernToolbarActionHandli
         attachmentEditView.isHidden = !showEdit
         attachmentEditHeightConstraint.constant = editHeight
 
-        updateTextViewConstraint(anchoredTo: anchor)
+        updateTextViewConstraint(anchoredTo: anchor, constant: textViewSpacing)
     }
 
     private func updateTextViewConstraint(anchoredTo anchor: NSLayoutYAxisAnchor, constant: CGFloat = AttachmentViewLayout.spacing) {

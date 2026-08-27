@@ -50,10 +50,14 @@ final class AttachmentPreviewView: AttachmentCardView {
 
         removeButton.addTarget(self, action: #selector(didTapRemove), for: .touchUpInside)
 
+        // Below required priority so the card can collapse to zero height while hidden.
+        let imageBottomConstraint = imageView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -AttachmentCardLayout.cardPadding)
+        imageBottomConstraint.priority = .defaultHigh
+
         NSLayoutConstraint.activate([
             imageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: AttachmentCardLayout.cardPadding),
             imageView.topAnchor.constraint(equalTo: topAnchor, constant: AttachmentCardLayout.cardPadding),
-            imageView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -AttachmentCardLayout.cardPadding),
+            imageBottomConstraint,
             imageView.widthAnchor.constraint(equalToConstant: AttachmentCardLayout.imageSize),
             imageView.heightAnchor.constraint(equalToConstant: AttachmentCardLayout.imageSize),
 
