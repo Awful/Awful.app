@@ -47,7 +47,6 @@
       "hidden" : false,
       "layers" : [
         {
-          "glass" : true,
           "hidden" : false,
           "image-name" : "pupils.svg",
           "name" : "pupils",
@@ -61,9 +60,6 @@
         },
         {
           "blend-mode" : "normal",
-          "fill" : {
-            "solid" : "srgb:1.00000,1.00000,1.00000,0.80000"
-          },
           "glass" : true,
           "hidden" : false,
           "image-name" : "eyes.svg",
@@ -78,7 +74,7 @@
           }
         }
       ],
-      "lighting" : "individual",
+      "lighting" : "combined",
       "name" : "Eyes",
       "position" : {
         "scale" : 1.14,
@@ -88,7 +84,7 @@
         ]
       },
       "shadow" : {
-        "kind" : "neutral",
+        "kind" : "layer-color",
         "opacity" : 0.35
       },
       "specular" : true,

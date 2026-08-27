@@ -8,8 +8,8 @@
       "appearance" : "light",
       "value" : {
         "linear-gradient" : [
-          "display-p3:0.21907,0.54535,0.69015,1.00000",
-          "srgb:0.34510,0.18824,0.55294,1.00000"
+          "extended-srgb:0.00000,0.75294,0.90980,1.00000",
+          "extended-srgb:0.00000,0.53333,1.00000,1.00000"
         ],
         "orientation" : {
           "start" : {
@@ -25,6 +25,32 @@
     }
   ],
   "groups" : [
+    {
+      "layers" : [
+        {
+          "glass" : true,
+          "hidden" : false,
+          "image-name" : "shine2.svg",
+          "name" : "shine2",
+          "opacity" : 0.5,
+          "position" : {
+            "scale" : 1,
+            "translation-in-points" : [
+              28,
+              -65
+            ]
+          }
+        }
+      ],
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.5
+      },
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.5
+      }
+    },
     {
       "blend-mode" : "normal",
       "hidden" : false,
@@ -43,19 +69,7 @@
           }
         },
         {
-          "blend-mode" : "plus-darker",
-          "hidden" : true,
-          "image-name" : "cute.svg",
-          "name" : "cute"
-        },
-        {
           "blend-mode" : "multiply",
-          "hidden" : false,
-          "image-name" : "cutexx.svg",
-          "name" : "cutexx"
-        },
-        {
-          "blend-mode" : "normal",
           "hidden" : false,
           "image-name" : "cutexx.svg",
           "name" : "cutexx"
@@ -75,21 +89,9 @@
       "hidden" : false,
       "layers" : [
         {
-          "hidden" : true,
-          "image-name" : "cute bg.svg",
-          "name" : "cute bg",
-          "position" : {
-            "scale" : 1,
-            "translation-in-points" : [
-              0,
-              0
-            ]
-          }
-        },
-        {
           "fill" : {
             "linear-gradient" : [
-              "extended-srgb:0.00000,0.76471,0.81569,1.00000",
+              "extended-srgb:0.00000,0.75294,0.90980,1.00000",
               "extended-srgb:0.00000,0.53333,1.00000,1.00000"
             ],
             "orientation" : {
@@ -104,16 +106,8 @@
             }
           },
           "hidden" : false,
-          "image-name" : "cute bg x.svg",
-          "name" : "cute bg x",
-          "opacity" : 0.35,
-          "position" : {
-            "scale" : 1,
-            "translation-in-points" : [
-              0,
-              0
-            ]
-          }
+          "image-name" : "cute bg z.svg",
+          "name" : "cute bg z"
         }
       ],
       "shadow" : {

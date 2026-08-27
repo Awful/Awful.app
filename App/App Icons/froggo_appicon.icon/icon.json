@@ -57,9 +57,6 @@
         },
         {
           "blend-mode" : "normal",
-          "fill" : {
-            "solid" : "srgb:0.77414,0.83030,0.91634,1.00000"
-          },
           "glass" : true,
           "hidden" : false,
           "image-name" : "eyes.svg",
@@ -74,7 +71,7 @@
           }
         }
       ],
-      "lighting" : "individual",
+      "lighting" : "combined",
       "name" : "Eyes",
       "position" : {
         "scale" : 1.143,
@@ -85,7 +82,7 @@
       },
       "shadow" : {
         "kind" : "layer-color",
-        "opacity" : 0.9
+        "opacity" : 0.35
       },
       "specular" : true,
       "translucency" : {
@@ -115,7 +112,7 @@
             "solid" : "srgb:0.18356,0.40000,0.00440,1.00000"
           },
           "glass" : false,
-          "hidden" : false,
+          "hidden" : true,
           "image-name" : "nose.svg",
           "name" : "nose",
           "position" : {

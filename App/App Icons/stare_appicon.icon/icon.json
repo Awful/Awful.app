@@ -89,6 +89,9 @@
           }
         },
         {
+          "fill" : {
+            "solid" : "srgb:0.85478,0.85478,0.85478,1.00000"
+          },
           "hidden" : false,
           "image-name" : "eyezz.svg",
           "name" : "eyezz"
@@ -103,12 +106,12 @@
       },
       "shadow" : {
         "kind" : "layer-color",
-        "opacity" : 1
+        "opacity" : 0.4
       },
       "specular" : true,
       "translucency" : {
         "enabled" : true,
-        "value" : 0.5
+        "value" : 0.25
       }
     },
     {

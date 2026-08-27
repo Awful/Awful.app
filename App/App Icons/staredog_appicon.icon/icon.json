@@ -4,30 +4,35 @@
   "groups" : [
     {
       "blur-material" : 0.5,
+      "hidden" : false,
       "layers" : [
         {
-          "image-name" : "pupils dog.svg",
-          "name" : "pupils dog"
-        },
-        {
-          "fill" : {
-            "solid" : "srgb:1.00000,1.00000,1.00000,0.85000"
-          },
-          "image-name" : "eyes dog.svg",
-          "name" : "eyes dog"
-        },
-        {
+          "glass" : true,
+          "hidden" : false,
           "image-name" : "nose dog.svg",
           "name" : "nose dog"
         },
         {
+          "image-name" : "eyes dog 2.svg",
+          "name" : "eyes dog 2"
+        },
+        {
+          "hidden" : false,
           "image-name" : "ears dog.svg",
-          "name" : "ears dog"
+          "name" : "ears dog",
+          "position" : {
+            "scale" : 1.01,
+            "translation-in-points" : [
+              0,
+              10
+            ]
+          }
         }
       ],
       "lighting" : "individual",
+      "name" : "Group",
       "position" : {
-        "scale" : 1.1428571429,
+        "scale" : 1.143,
         "translation-in-points" : [
           0,
           0
@@ -35,19 +40,28 @@
       },
       "shadow" : {
         "kind" : "layer-color",
-        "opacity" : 0.25
+        "opacity" : 0.35
       },
       "translucency" : {
         "enabled" : true,
-        "value" : 0.2
+        "value" : 0.1
       }
     },
     {
       "blur-material" : 0.5,
+      "hidden" : false,
       "layers" : [
         {
+          "hidden" : false,
           "image-name" : "dog features.svg",
-          "name" : "dog features"
+          "name" : "dog features",
+          "position" : {
+            "scale" : 1,
+            "translation-in-points" : [
+              0,
+              0
+            ]
+          }
         }
       ],
       "position" : {
@@ -71,10 +85,11 @@
       "hidden" : false,
       "layers" : [
         {
-          "image-name" : "dog skin.svg",
-          "name" : "dog skin",
+          "hidden" : false,
+          "image-name" : "dog skin2.svg",
+          "name" : "dog skin2",
           "position" : {
-            "scale" : 1.1,
+            "scale" : 1.15,
             "translation-in-points" : [
               0,
               0
@@ -84,14 +99,14 @@
       ],
       "lighting" : "combined",
       "position" : {
-        "scale" : 1.15,
+        "scale" : 1,
         "translation-in-points" : [
           0,
           0
         ]
       },
       "shadow" : {
-        "kind" : "neutral",
+        "kind" : "layer-color",
         "opacity" : 0.5
       },
       "translucency" : {
