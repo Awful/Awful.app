@@ -10,6 +10,7 @@ final class LiquidGlassTitleView: UIView {
     private static let lineSpacing: CGFloat = -2
     private static let horizontalPadding: CGFloat = 16
     private static let verticalPadding: CGFloat = 8
+    private static let minVerticalPadding: CGFloat = 3
     private static let phoneWidth: CGFloat = 320
     private static let defaultHeight: CGFloat = 56
 
@@ -17,6 +18,10 @@ final class LiquidGlassTitleView: UIView {
         let effect = UIGlassEffect()
         let view = UIVisualEffectView(effect: effect)
         view.translatesAutoresizingMaskIntoConstraints = false
+        // Capsule shape must come from cornerConfiguration: glass ignores
+        // layer.cornerRadius (FB18629279), and clipping a glass view corrupts
+        // its shadow into a grey wash (see PostsPageTopBarLiquidGlass.GlassButton).
+        view.cornerConfiguration = .capsule()
         return view
     }()
 
@@ -26,23 +31,39 @@ final class LiquidGlassTitleView: UIView {
         label.textAlignment = .center
         label.numberOfLines = 2
         label.adjustsFontForContentSizeCategory = true
-        label.lineBreakMode = .byWordWrapping
+        label.adjustsFontSizeToFitWidth = true
+        label.minimumScaleFactor = 0.8
+        label.baselineAdjustment = .alignCenters
+        label.lineBreakMode = .byTruncatingTail
         return label
     }()
+
+    /// The height the navigation bar most recently offered via `sizeThatFits(_:)`
+    /// (or, failing that, the superview's height observed in `layoutSubviews`).
+    /// The capsule never reports a height beyond this, so it can't overhang the
+    /// bar's content area and get clipped at the top.
+    private var grantedHeight: CGFloat? {
+        didSet {
+            if grantedHeight != oldValue {
+                invalidateIntrinsicContentSize()
+            }
+        }
+    }
 
     var title: String? {
         get { titleLabel.text }
         set {
             titleLabel.text = newValue
+            largeContentTitle = newValue
             updateTitleDisplay()
         }
     }
-    
+
     var textColor: UIColor? {
         get { titleLabel.textColor }
         set { titleLabel.textColor = newValue }
     }
-    
+
     var font: UIFont? {
         get { titleLabel.font }
         set {
@@ -54,7 +75,7 @@ final class LiquidGlassTitleView: UIView {
     func setUseDarkGlass(_ useDark: Bool) {
         visualEffectView.overrideUserInterfaceStyle = useDark ? .dark : .unspecified
     }
-    
+
     private func updateTitleDisplay() {
         guard let text = titleLabel.text, !text.isEmpty else {
             invalidateIntrinsicContentSize()
@@ -64,7 +85,7 @@ final class LiquidGlassTitleView: UIView {
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.alignment = .center
         paragraphStyle.lineSpacing = Self.lineSpacing
-        paragraphStyle.lineBreakMode = .byWordWrapping
+        paragraphStyle.lineBreakMode = .byTruncatingTail
 
         let attributes: [NSAttributedString.Key: Any] = [
             .paragraphStyle: paragraphStyle,
@@ -73,13 +94,14 @@ final class LiquidGlassTitleView: UIView {
 
         titleLabel.attributedText = NSAttributedString(string: text, attributes: attributes)
         invalidateIntrinsicContentSize()
+        superview?.setNeedsLayout()
     }
 
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupViews()
     }
-    
+
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         setupViews()
@@ -88,24 +110,40 @@ final class LiquidGlassTitleView: UIView {
     private func setupViews() {
         addSubview(visualEffectView)
         visualEffectView.contentView.addSubview(titleLabel)
-        
+
+        // Preferred 8pt vertical padding that relaxes (down to 3pt) when the
+        // bar grants less height than the capsule would like.
+        let preferredTopPadding = titleLabel.topAnchor.constraint(
+            equalTo: visualEffectView.contentView.topAnchor, constant: Self.verticalPadding)
+        preferredTopPadding.priority = .defaultHigh
+
         NSLayoutConstraint.activate([
             visualEffectView.topAnchor.constraint(equalTo: topAnchor),
             visualEffectView.leadingAnchor.constraint(equalTo: leadingAnchor),
             visualEffectView.trailingAnchor.constraint(equalTo: trailingAnchor),
             visualEffectView.bottomAnchor.constraint(equalTo: bottomAnchor),
 
-            titleLabel.topAnchor.constraint(equalTo: visualEffectView.contentView.topAnchor, constant: Self.verticalPadding),
+            titleLabel.centerYAnchor.constraint(equalTo: visualEffectView.contentView.centerYAnchor),
+            titleLabel.topAnchor.constraint(greaterThanOrEqualTo: visualEffectView.contentView.topAnchor, constant: Self.minVerticalPadding),
+            preferredTopPadding,
             titleLabel.leadingAnchor.constraint(equalTo: visualEffectView.contentView.leadingAnchor, constant: Self.horizontalPadding),
-            titleLabel.trailingAnchor.constraint(equalTo: visualEffectView.contentView.trailingAnchor, constant: -Self.horizontalPadding),
-            titleLabel.bottomAnchor.constraint(equalTo: visualEffectView.contentView.bottomAnchor, constant: -Self.verticalPadding)
+            titleLabel.trailingAnchor.constraint(equalTo: visualEffectView.contentView.trailingAnchor, constant: -Self.horizontalPadding)
         ])
 
         isAccessibilityElement = false
         titleLabel.isAccessibilityElement = true
         titleLabel.accessibilityTraits = .header
+
+        // At accessibility sizes the title drops to a single truncated line;
+        // long-press then shows the full title in the large content viewer.
+        showsLargeContentViewer = true
+        addInteraction(UILargeContentViewerInteraction())
+
+        registerForTraitChanges([UITraitPreferredContentSizeCategory.self]) { (self: LiquidGlassTitleView, _) in
+            self.updateTitleDisplay()
+        }
     }
-    
+
     private var maxWidth: CGFloat {
         if UIDevice.current.userInterfaceIdiom == .pad {
             if let windowWidth = window?.bounds.width {
@@ -118,10 +156,34 @@ final class LiquidGlassTitleView: UIView {
     private func contentFittingSize() -> CGSize {
         let maxW = maxWidth
         let labelMaxWidth = maxW - Self.horizontalPadding * 2
-        let labelSize = titleLabel.sizeThatFits(CGSize(width: labelMaxWidth, height: .greatestFiniteMagnitude))
+
+        // Prefer two lines, but drop to one when the bar's granted height
+        // can't fit two even at minimum padding.
+        var lines = 2
+        var labelSize = measuredLabelSize(maxWidth: labelMaxWidth, lines: lines)
+        if let granted = grantedHeight,
+           labelSize.height + Self.minVerticalPadding * 2 > granted {
+            lines = 1
+            labelSize = measuredLabelSize(maxWidth: labelMaxWidth, lines: lines)
+        }
+        if titleLabel.numberOfLines != lines {
+            titleLabel.numberOfLines = lines
+        }
+
         let width = min(maxW, labelSize.width + Self.horizontalPadding * 2)
-        let height = max(Self.defaultHeight, labelSize.height + Self.verticalPadding * 2)
+        var height = max(Self.defaultHeight, labelSize.height + Self.verticalPadding * 2)
+        if let granted = grantedHeight {
+            height = min(height, granted)
+        }
         return CGSize(width: width, height: height)
+    }
+
+    private func measuredLabelSize(maxWidth: CGFloat, lines: Int) -> CGSize {
+        let previousLines = titleLabel.numberOfLines
+        titleLabel.numberOfLines = lines
+        let size = titleLabel.sizeThatFits(CGSize(width: maxWidth, height: .greatestFiniteMagnitude))
+        titleLabel.numberOfLines = previousLines
+        return size
     }
 
     override var intrinsicContentSize: CGSize {
@@ -129,15 +191,40 @@ final class LiquidGlassTitleView: UIView {
     }
 
     override func sizeThatFits(_ size: CGSize) -> CGSize {
-        return contentFittingSize()
+        if size.height.isFinite, size.height > 0 {
+            grantedHeight = size.height
+        }
+        var fit = contentFittingSize()
+        if size.width.isFinite, size.width > 0 {
+            fit.width = min(fit.width, size.width)
+        }
+        if size.height.isFinite, size.height > 0 {
+            fit.height = min(fit.height, size.height)
+        }
+        return fit
     }
 
     override func layoutSubviews() {
         super.layoutSubviews()
 
-        let cornerRadius = bounds.height / 2
-        visualEffectView.layer.cornerRadius = cornerRadius
-        visualEffectView.layer.masksToBounds = true
-        visualEffectView.layer.cornerCurve = .continuous
+        // Safety net for sizing paths that never offer a bounded height: the
+        // superview is the bar's content view, whose height is the space
+        // actually available.
+        if let superview,
+           superview.bounds.height > 0,
+           bounds.height > superview.bounds.height,
+           grantedHeight != superview.bounds.height {
+            grantedHeight = superview.bounds.height
+            superview.setNeedsLayout()
+        }
+    }
+
+    override func didMoveToWindow() {
+        super.didMoveToWindow()
+        // maxWidth depends on the window (iPad); re-measure once attached.
+        if window != nil {
+            invalidateIntrinsicContentSize()
+            superview?.setNeedsLayout()
+        }
     }
 }
