@@ -17,10 +17,13 @@ final class ReplyWorkspace: NSObject {
     private var cancellables: Set<AnyCancellable> = []
     @FoilDefaultStorage(Settings.confirmBeforeReplying) private var confirmBeforeReplying
     let draft: NSObject & ReplyDraft
-    @FoilDefaultStorageOptional(Settings.userID) private var loggedInUserID
-
     /// Called when the viewController should be dismissed.
     var completion: (CompletionResult) -> Void = { _ in }
+
+    /// Called after the user swipes the compose sheet away with a non-empty draft (which keeps the
+    /// workspace and its draft alive), so the owner can surface a minimized-draft affordance. An
+    /// empty draft reports `completion(.forgetAboutIt)` instead.
+    var onInteractiveDismiss: (() -> Void)?
 
     enum CompletionResult {
         case forgetAboutIt
@@ -35,15 +38,30 @@ final class ReplyWorkspace: NSObject {
         self.init(draft: draft)
     }
 
-    /// Constructs a workspace for editing a reply, loading any saved edit draft from disk.
+    /// Constructs a workspace for editing a reply. A saved edit draft from disk takes the place of
+    /// the post's current contents only when the two actually differ; check
+    /// `restoredSavedEditDraft` and give the user the choice before presenting, since the draft may
+    /// be stale.
     convenience init(post: Post, bbcode: String) {
-        if let saved = DraftStore.sharedStore().loadDraft("edits/\(post.postID)") as? EditReplyDraft {
+        // The scraped textarea uses \r\n line endings while the text view uses \n, so normalize
+        // before deciding whether the draft differs.
+        func normalized(_ s: String) -> String { s.replacingOccurrences(of: "\r\n", with: "\n") }
+        if let saved = DraftStore.sharedStore().loadDraft("edits/\(post.postID)") as? EditReplyDraft,
+           let savedText = saved.text?.string,
+           !savedText.isEmpty,
+           normalized(savedText) != normalized(bbcode)
+        {
             self.init(draft: saved)
+            restoredSavedEditDraft = true
         } else {
             self.init(draft: EditReplyDraft(post: post))
             bbcodeForNewlyCreatedCompositionViewController = bbcode
         }
     }
+
+    /// `true` when this workspace holds a saved edit draft instead of the post's current
+    /// server-side contents.
+    private(set) var restoredSavedEditDraft = false
 
     private init(draft: NSObject & ReplyDraft) {
         self.draft = draft
@@ -159,28 +177,18 @@ final class ReplyWorkspace: NSObject {
         }
     }
     
+    private var draftMenuTitle: String {
+        "Keep draft for \(draft.thread.title ?? "")?"
+    }
+
     @IBAction private func didTapCancel(_ sender: UIBarButtonItem) {
         if compositionViewController.textView.attributedText.length == 0 {
             forgetDraft()
             return completion(.forgetAboutIt)
         }
 
-        let title: String
-        switch status {
-        case let .editing(post) where post.author?.userID == loggedInUserID:
-            title = NSLocalizedString("compose.draft-menu.editing-own-post.title", comment: "")
-        case let .editing(post):
-            if let username = post.author?.username {
-                title = String(format: NSLocalizedString("compose.draft-menu.editing-other-post.title", comment: ""), username)
-            } else {
-                title = NSLocalizedString("compose.draft-menu.editing-unknown-other-post.title", comment: "")
-            }
-        case .replying:
-            title = NSLocalizedString("compose.draft-menu.replying.title", comment: "")
-        }
-
         let actionSheet = UIAlertController(
-            title: title,
+            title: draftMenuTitle,
             actionSheetActions: [
                 .destructive(title: NSLocalizedString("compose.cancel-menu.delete-draft", comment: "")) {
                     self.forgetDraft()
@@ -279,9 +287,8 @@ final class ReplyWorkspace: NSObject {
         draft.text = compositionViewController.textView.attributedText
     }
 
-    /// Deletes the on-disk draft and cancels any pending auto-save. Used when the user explicitly
-    /// discards the draft via the Cancel action sheet.
-    private func forgetDraft() {
+    /// Deletes the on-disk draft and cancels any pending auto-save.
+    func forgetDraft() {
         autoSaveWorkItem?.cancel()
         autoSaveWorkItem = nil
         DraftStore.sharedStore().deleteDraft(draft)
@@ -319,7 +326,9 @@ final class ReplyWorkspace: NSObject {
     /// Present this view controller to let someone compose a reply.
     var viewController: UIViewController {
         createCompositionViewController()
-        return compositionViewController.enclosingNavigationController
+        let nav = compositionViewController.enclosingNavigationController
+        nav.presentationController?.delegate = self
+        return nav
     }
     
     fileprivate func createCompositionViewController() {
@@ -333,12 +342,46 @@ final class ReplyWorkspace: NSObject {
         }
     }
     
+    /// Called when the posts page that owns this workspace is leaving while a draft sits minimized.
+    /// Prompts (from `presenter`, whatever is on screen now) to keep or delete the draft; an empty
+    /// draft is quietly deleted, and a draft the user never opened this visit is quietly kept.
+    func promptToKeepDraft(from presenter: UIViewController) {
+        guard let compositionViewController else { return }
+
+        if compositionViewController.textView.attributedText.length == 0 {
+            forgetDraft()
+            return
+        }
+
+        // Persist the latest text first so nothing is lost if the app exits before the user picks.
+        flushDraftAutoSave()
+
+        // Capturing self strongly is the point: the posts page that owned this workspace is gone,
+        // so the alert keeps the workspace alive until the user decides.
+        let alert = UIAlertController(
+            title: draftMenuTitle,
+            alertActions: [
+                .destructive(title: NSLocalizedString("compose.cancel-menu.delete-draft", comment: "")) {
+                    self.forgetDraft()
+                },
+                .default(title: NSLocalizedString("compose.cancel-menu.save-draft", comment: "")),
+            ]
+        )
+        presenter.present(alert, animated: true)
+    }
+
     /// Append a quoted post to the reply.
     @MainActor
     func quotePost(_ post: Post) async throws {
         createCompositionViewController()
 
         let bbcode = try await ForumsClient.shared.quoteBBcodeContents(of: post)
+
+        // The composition text view is live while we're fetching; if the quote is no longer wanted
+        // (workspace replaced, reply posted, posts page gone), don't splice it into whatever the
+        // user is typing now.
+        try Task.checkCancellation()
+
         let textView = compositionViewController.textView
         var replacement = bbcode
         let selectedRange = textView.selectedTextRange ?? textView.textRange(from: textView.endOfDocument, to: textView.endOfDocument)!
@@ -360,6 +403,20 @@ final class ReplyWorkspace: NSObject {
         }
 
         textView.replaceSelection(with: replacement)
+    }
+}
+
+extension ReplyWorkspace: UIAdaptivePresentationControllerDelegate {
+    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+        // Swiping the sheet away skips the Cancel flow entirely, so make sure the on-disk draft
+        // matches what was in the text view (or is deleted, if the text view was emptied).
+        flushDraftAutoSave()
+
+        if compositionViewController.textView.attributedText.length > 0 {
+            onInteractiveDismiss?()
+        } else {
+            completion(.forgetAboutIt)
+        }
     }
 }
 

@@ -668,6 +668,7 @@ public final class ForumsClient {
 
         let form = SubmittableForm(formData.form)
         try form.enter(text: subject, for: "subject")
+        try form.clearText(for: "message")
         try form.enter(text: bbcode, for: "message")
 
         let (tagImageName, secondaryTagImageName) = try await backgroundContext.perform {
@@ -1033,6 +1034,7 @@ public final class ForumsClient {
             let form = try Form(htmlForm, url: url)
             let submittable = SubmittableForm(form)
 
+            try submittable.clearText(for: "message")
             try submittable.enter(text: bbcode, for: "message")
 
             let submission = submittable.submit(button: form.submitButton(named: "preview"))
@@ -1294,6 +1296,7 @@ public final class ForumsClient {
 
         let parsedForm = try Form(htmlForm, url: url)
         let form = SubmittableForm(parsedForm)
+        try form.clearText(for: "message")
         try form.enter(text: bbcode, for: "message")
         let submission = form.submit(button: parsedForm.submitButton(named: "submit"))
         let formParams = prepareFormEntries(submission)
@@ -1460,6 +1463,7 @@ public final class ForumsClient {
             let htmlForm = try document.requiredNode(matchingSelector: "form[name = 'vbform']")
             let scrapedForm = try Form(htmlForm, url: url)
             let form = SubmittableForm(scrapedForm)
+            try form.clearText(for: "message")
             try form.enter(text: bbcode, for: "message")
             let submission = form.submit(button: scrapedForm.submitButton(named: "preview"))
             params = prepareFormEntries(submission)
@@ -1543,6 +1547,7 @@ public final class ForumsClient {
             }
         }
 
+        try form.clearText(for: "message")
         try form.enter(text: bbcode, for: "message")
         let submission = form.submit(button: parsedForm.submitButton(named: "submit"))
         let params = prepareFormEntries(submission)
@@ -1724,6 +1729,7 @@ public final class ForumsClient {
         do {
             let parsedForm = try await editForm(for: post)
             let form = SubmittableForm(parsedForm)
+            try form.clearText(for: "message")
             try form.enter(text: bbcode, for: "message")
             let submission = form.submit(button: parsedForm.submitButton(named: "preview"))
             params = prepareFormEntries(submission)

@@ -4,7 +4,12 @@
 
 import UIKit
 
-/// A transient message pinned to the bottom of a host view, above the keyboard, with an optional action. Tap the banner to dismiss it early; it auto-dismisses after a few seconds.
+/// A message pinned to the bottom of a host view, above the keyboard, with an optional action.
+///
+/// Usually transient: tap the banner to dismiss it early; it auto-dismisses after a few seconds.
+/// Pass `duration: nil` for a persistent banner that stays until the caller dismisses it — and if
+/// such a banner has an `onAction` but no `action`, the whole banner becomes the tappable action
+/// (it does not dismiss itself; the caller owns its visibility).
 public final class BannerToastView: UIView {
 
     /// How the banner offers its action, if it has one.
@@ -25,7 +30,7 @@ public final class BannerToastView: UIView {
         theme: Theme,
         message: String,
         action: Action? = nil,
-        duration: TimeInterval = 5,
+        duration: TimeInterval? = 5,
         bottomInset: CGFloat = 0,
         onAction: (() -> Void)? = nil
     ) -> BannerToastView {
@@ -61,17 +66,22 @@ public final class BannerToastView: UIView {
             banner.transform = .identity
         }
 
-        let dismissal = DispatchWorkItem { [weak banner] in
-            banner?.dismiss()
+        if let duration {
+            let dismissal = DispatchWorkItem { [weak banner] in
+                banner?.dismiss()
+            }
+            banner.scheduledDismissal = dismissal
+            DispatchQueue.main.asyncAfter(deadline: .now() + duration, execute: dismissal)
         }
-        banner.scheduledDismissal = dismissal
-        DispatchQueue.main.asyncAfter(deadline: .now() + duration, execute: dismissal)
 
         UIAccessibility.post(notification: .announcement, argument: message)
         return banner
     }
 
     private let onAction: (() -> Void)?
+    /// When the banner has an `onAction` but no styled `action`, a tap anywhere on it triggers the
+    /// action rather than dismissing.
+    private let wholeBannerIsAction: Bool
     private var scheduledDismissal: DispatchWorkItem?
     /// The label carrying the message, kept around so a tap can be mapped back onto `linkRange`.
     private let label = UILabel()
@@ -82,6 +92,7 @@ public final class BannerToastView: UIView {
 
     private init(theme: Theme, message: String, action: Action?, onAction: (() -> Void)?) {
         self.onAction = onAction
+        self.wholeBannerIsAction = action == nil && onAction != nil
         super.init(frame: .zero)
 
         let background: UIColor? = theme["sheetBackgroundColor"] ?? theme["listBackgroundColor"]
@@ -191,6 +202,12 @@ public final class BannerToastView: UIView {
             }]
         }
 
+        if wholeBannerIsAction {
+            isAccessibilityElement = true
+            accessibilityLabel = message
+            accessibilityTraits = .button
+        }
+
         let tap = UITapGestureRecognizer(target: self, action: #selector(didTapBanner))
         tap.delegate = self
         addGestureRecognizer(tap)
@@ -220,6 +237,9 @@ public final class BannerToastView: UIView {
     @objc private func didTapBanner(_ recognizer: UITapGestureRecognizer) {
         if let linkRange, linkFrame(for: linkRange)?.contains(recognizer.location(in: label)) == true {
             didTapAction()
+        } else if wholeBannerIsAction {
+            // The caller owns this banner's visibility, so don't dismiss.
+            onAction?()
         } else {
             dismiss()
         }

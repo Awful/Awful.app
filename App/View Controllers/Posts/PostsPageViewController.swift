@@ -61,7 +61,16 @@ final class PostsPageViewController: ViewController {
     /// time the thread is pushed, so leaving and coming back offers it again.
     private var hasOfferedPollToast = false
     @FoilDefaultStorage(Settings.pullForNext) private var pullForNext
-    private var replyWorkspace: ReplyWorkspace?
+    private var replyWorkspace: ReplyWorkspace? {
+        didSet {
+            replyWorkspace?.onInteractiveDismiss = { [weak self] in
+                self?.setMinimizedDraftBarVisible(true)
+            }
+            if replyWorkspace == nil {
+                setMinimizedDraftBarVisible(false)
+            }
+        }
+    }
     private var scrollToFractionAfterLoading: CGFloat?
     /// When true, the next `loadPage` network completion skips its usual "save current scroll
     /// offset so we land in the same place after re-render" step. Set by `prepareForRestoration`
@@ -281,6 +290,56 @@ final class PostsPageViewController: ViewController {
         cancelNetworkOperation?()
         loadingHoldTask?.cancel()
         appendTask?.cancel()
+        quoteFetchTask?.cancel()
+    }
+
+    /// Fetches quote BBcode and inserts it into the reply workspace's live text view, so it must be
+    /// cancelled whenever the workspace it targets goes away.
+    private var quoteFetchTask: Task<Void, Never>?
+
+    /// Mail-style minimized draft: swiping the compose sheet away leaves this banner at the bottom
+    /// of the thread; tapping it (or any reply/quote/edit action) brings the sheet back.
+    private var minimizedDraftBanner: BannerToastView?
+
+    private var minimizedDraftMessage: String {
+        switch replyWorkspace?.status {
+        case .editing:
+            return "Editing: \(thread.title ?? "")"
+        case .replying, nil:
+            return replyWorkspace?.draft.title ?? ""
+        }
+    }
+
+    private func setMinimizedDraftBarVisible(_ visible: Bool) {
+        guard visible else {
+            minimizedDraftBanner?.dismiss()
+            minimizedDraftBanner = nil
+            return
+        }
+        guard isViewLoaded, replyWorkspace != nil else { return }
+
+        // Hosted in `postsView` rather than `view` so the transient toasts shown in `view` (e.g.
+        // the poll toast) don't replace it — `BannerToastView.show` dismisses any existing banners
+        // in its host view.
+        minimizedDraftBanner?.dismiss(animated: false)
+        minimizedDraftBanner = BannerToastView.show(
+            in: postsView,
+            theme: theme,
+            message: minimizedDraftMessage,
+            duration: nil,
+            bottomInset: pollToastBottomInset,
+            onAction: { [weak self] in self?.showReplyWorkspace() }
+        )
+    }
+
+    /// Presents the reply workspace's compose sheet, dismissing the minimized-draft banner. Safe to
+    /// call while the sheet is already on screen.
+    private func showReplyWorkspace() {
+        guard let workspace = replyWorkspace else { return }
+        setMinimizedDraftBarVisible(false)
+        let viewController = workspace.viewController
+        guard viewController.presentingViewController == nil else { return }
+        present(viewController, animated: true)
     }
 
     var posts: [Post] = []
@@ -653,7 +712,7 @@ final class PostsPageViewController: ViewController {
             replyWorkspace!.completion = replyCompletionBlock
         }
         func presentReply() {
-            present(replyWorkspace!.viewController, animated: true)
+            showReplyWorkspace()
         }
 
         switch replyWorkspace?.status {
@@ -662,7 +721,8 @@ final class PostsPageViewController: ViewController {
                 from: .barButtonItem(sender),
                 options: .init(
                     continueEditing: presentReply,
-                    deleteDraft: {
+                    deleteDraft: { [weak self] in
+                        self?.replyWorkspace?.forgetDraft()
                         makeNewReplyWorkspace()
                         presentReply()
                     })
@@ -673,7 +733,10 @@ final class PostsPageViewController: ViewController {
                 from: .barButtonItem(sender),
                 options: .init(
                     continueEditing: presentReply,
-                    deleteDraft: makeNewReplyWorkspace)
+                    deleteDraft: { [weak self] in
+                        self?.replyWorkspace?.forgetDraft()
+                        makeNewReplyWorkspace()
+                    })
             )
 
         case .replying:
@@ -690,7 +753,7 @@ final class PostsPageViewController: ViewController {
             replyWorkspace = ReplyWorkspace(thread: thread)
             replyWorkspace?.completion = replyCompletionBlock
         }
-        present(replyWorkspace!.viewController, animated: true, completion: nil)
+        showReplyWorkspace()
     }
 
     private var replyCompletionBlock: (_ result: ReplyWorkspace.CompletionResult) -> Void {
@@ -699,17 +762,24 @@ final class PostsPageViewController: ViewController {
 
             switch result {
             case .forgetAboutIt:
+                self.quoteFetchTask?.cancel()
                 self.replyWorkspace = nil
 
             case .posted:
+                self.quoteFetchTask?.cancel()
                 self.replyWorkspace = nil
                 self.loadPage(.nextUnread, updatingCache: true, updatingLastReadPost: true)
 
             case .saveDraft:
-                break
+                self.setMinimizedDraftBarVisible(true)
             }
 
-            self.dismiss(animated: true)
+            // The workspace can complete without its sheet on screen (e.g. an empty draft swiped
+            // away); a bare `dismiss` would then dismiss the posts page itself if it happened to be
+            // presented.
+            if self.presentedViewController != nil {
+                self.dismiss(animated: true)
+            }
         }
     }
 
@@ -1374,15 +1444,22 @@ final class PostsPageViewController: ViewController {
             self.replyWorkspace?.completion = self.replyCompletionBlock
         }
         func quotePost() {
-            Task { @MainActor in
+            guard let workspace = self.replyWorkspace, let post = self.selectedPost else { return }
+
+            // Present the compose sheet before fetching, so the quote is always inserted where the
+            // user can see it.
+            self.showReplyWorkspace()
+
+            self.quoteFetchTask?.cancel()
+            self.quoteFetchTask = Task { @MainActor [weak self] in
                 do {
-                    try await replyWorkspace!.quotePost(self.selectedPost!)
-                    if let vc = self.replyWorkspace?.viewController {
-                        self.present(vc, animated: true)
-                    }
+                    try await workspace.quotePost(post)
+                } catch is CancellationError {
+                    // Quote is no longer wanted; nothing to do.
                 } catch {
+                    guard let self else { return }
                     let alert = UIAlertController(networkError: error)
-                    self.present(alert, animated: true)
+                    (self.presentedViewController ?? self).present(alert, animated: true)
                 }
             }
         }
@@ -1394,6 +1471,7 @@ final class PostsPageViewController: ViewController {
                     options: .init(
                         continueEditing: quotePost,
                         deleteDraft: {
+                            self.replyWorkspace?.forgetDraft()
                             makeNewReplyWorkspace()
                             quotePost()
                         })
@@ -1757,39 +1835,64 @@ final class PostsPageViewController: ViewController {
 
                     let text = try await ForumsClient.shared.findBBcodeContents(of: selectedPost)
                     let capabilities = try? await ForumsClient.shared.findEditAttachmentCapabilities(for: selectedPost)
-                    let replyWorkspace = ReplyWorkspace(post: selectedPost, bbcode: text)
 
-                    // Set attachment info and capabilities before creating the composition view controller
-                    if let editDraft = replyWorkspace.draft as? EditReplyDraft {
-                        editDraft.canAddAttachment = capabilities?.canAddAttachment ?? false
+                    @MainActor func makeConfiguredWorkspace() async -> ReplyWorkspace {
+                        let replyWorkspace = ReplyWorkspace(post: selectedPost, bbcode: text)
 
-                        if let attachmentInfo = capabilities?.existingAttachment {
-                            editDraft.existingAttachmentInfo = attachmentInfo
+                        // Set attachment info and capabilities before creating the composition view controller
+                        if let editDraft = replyWorkspace.draft as? EditReplyDraft {
+                            editDraft.canAddAttachment = capabilities?.canAddAttachment ?? false
 
-                            // Fetch the attachment image
-                            do {
-                                let imageData = try await ForumsClient.shared.fetchAttachmentImageByID(attachmentID: attachmentInfo.id)
-                                if let image = UIImage(data: imageData) {
-                                    editDraft.existingAttachmentImage = image
-                                }
-                            } catch {
-                                logger.error("Failed to fetch attachment image for edit: \(error)")
-                                let alert = UIAlertController(
-                                    title: nil,
-                                    message: LocalizedString("posts-page.error.attachment-preview-failed"),
-                                    preferredStyle: .alert
-                                )
-                                present(alert, animated: true)
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                                    alert.dismiss(animated: true)
+                            if let attachmentInfo = capabilities?.existingAttachment {
+                                editDraft.existingAttachmentInfo = attachmentInfo
+
+                                do {
+                                    let imageData = try await ForumsClient.shared.fetchAttachmentImageByID(attachmentID: attachmentInfo.id)
+                                    if let image = UIImage(data: imageData) {
+                                        editDraft.existingAttachmentImage = image
+                                    }
+                                } catch {
+                                    logger.error("Failed to fetch attachment image for edit: \(error)")
+                                    let alert = UIAlertController(
+                                        title: nil,
+                                        message: LocalizedString("posts-page.error.attachment-preview-failed"),
+                                        preferredStyle: .alert
+                                    )
+                                    present(alert, animated: true)
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                                        alert.dismiss(animated: true)
+                                    }
                                 }
                             }
                         }
+
+                        replyWorkspace.completion = replyCompletionBlock
+                        return replyWorkspace
                     }
 
+                    let replyWorkspace = await makeConfiguredWorkspace()
                     self.replyWorkspace = replyWorkspace
-                    replyWorkspace.completion = replyCompletionBlock
-                    present(replyWorkspace.viewController, animated: true)
+
+                    if replyWorkspace.restoredSavedEditDraft {
+                        // The saved draft differs from the post's current contents; don't silently
+                        // pick one over the other.
+                        self.presentDraftMenu(
+                            from: .view(self.postsView.renderView, sourceRect: self.selectedFrame!),
+                            options: .init(
+                                continueEditing: {
+                                    self.showReplyWorkspace()
+                                },
+                                deleteDraft: {
+                                    replyWorkspace.forgetDraft()
+                                    Task { @MainActor in
+                                        self.replyWorkspace = await makeConfiguredWorkspace()
+                                        self.showReplyWorkspace()
+                                    }
+                                })
+                        )
+                    } else {
+                        showReplyWorkspace()
+                    }
                 } catch {
                     let alert = UIAlertController(title: LocalizedString("posts-page.error.could-not-edit-post"), error: error)
                     present(alert, animated: true)
@@ -1798,10 +1901,18 @@ final class PostsPageViewController: ViewController {
         }
 
         switch self.replyWorkspace?.status {
+        case .editing(let post) where post.postID == selectedPost?.postID:
+            // Already editing this very post (the sheet is probably minimized); just bring it back
+            // instead of asking about the draft.
+            showReplyWorkspace()
+
         case .editing, .replying:
             self.presentDraftMenu(
                 from: .view(self.postsView.renderView, sourceRect: self.selectedFrame!),
-                options: .init(deleteDraft: presentNewReplyWorkspace)
+                options: .init(deleteDraft: { [weak self] in
+                    self?.replyWorkspace?.forgetDraft()
+                    presentNewReplyWorkspace()
+                })
             )
 
         case nil:
@@ -1923,21 +2034,10 @@ final class PostsPageViewController: ViewController {
         from source: DraftMenuSource,
         options: DraftMenuOptions
     ) {
-        let title: String
-        switch replyWorkspace?.status {
-        case let .editing(post) where post.author?.userID == loggedInUserID:
-            title = NSLocalizedString("compose.draft-menu.editing-own-post.title", comment: "")
-        case let .editing(post):
-            if let username = post.author?.username {
-                title = String(format: NSLocalizedString("compose.draft-menu.editing-other-post.title", comment: ""), username)
-            } else {
-                title = NSLocalizedString("compose.draft-menu.editing-unknown-other-post.title", comment: "")
-            }
-        case .replying:
-            title = NSLocalizedString("compose.draft-menu.replying.title", comment: "")
-        case nil:
+        guard replyWorkspace != nil else {
             return assertionFailure("No reason to show draft menu")
         }
+        let title = "Keep draft for \(thread.title ?? "")?"
 
         let actionSheet = UIAlertController(
             title: title,
@@ -2109,7 +2209,13 @@ final class PostsPageViewController: ViewController {
         super.themeDidChange()
 
         postsView.themeDidChange(theme)
-        
+
+        // The banner's colors are baked in when it's created, so build a fresh one for the new
+        // theme.
+        if minimizedDraftBanner != nil {
+            setMinimizedDraftBarVisible(true)
+        }
+
         // Update title appearance for iOS 26+
         if #available(iOS 26.0, *) {
             let glassView = liquidGlassTitleView
@@ -2394,18 +2500,56 @@ final class PostsPageViewController: ViewController {
 
         configureUserActivityIfPossible()
         postsView.tiltScrollManager.viewDidAppear()
+
+        // Surface any saved reply draft for this thread as a minimized draft banner, so drafts are
+        // discoverable instead of silently waiting behind the reply button. Done here rather than
+        // `viewDidLoad` so the banner's toolbar-clearing inset is measured from real layout.
+        if !hasSurfacedSavedDraft {
+            hasSurfacedSavedDraft = true
+            if replyWorkspace == nil,
+               let savedDraft = DraftStore.sharedStore().loadDraft("replies/\(thread.threadID)") as? NewReplyDraft,
+               let savedText = savedDraft.text, savedText.length > 0
+            {
+                replyWorkspace = ReplyWorkspace(thread: thread)
+                replyWorkspace?.completion = replyCompletionBlock
+                setMinimizedDraftBarVisible(true)
+            }
+        }
     }
+
+    private var hasSurfacedSavedDraft = false
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         postsView.immersiveModeManager.exitImmersiveMode()
         postsView.tiltScrollManager.viewWillDisappear()
+
+        // `navigationController` is nil by `viewDidDisappear`, so grab it now for the
+        // leaving-with-a-draft prompt.
+        if isMovingFromParent {
+            departingNavigationController = navigationController
+        }
     }
+
+    private weak var departingNavigationController: UINavigationController?
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
 
         userActivity = nil
+
+        // Leaving the thread with a draft in progress: offer the same save/delete choice as the
+        // compose sheet's Cancel button, from whatever screen we landed on.
+        if isMovingFromParent, let workspace = replyWorkspace {
+            quoteFetchTask?.cancel()
+            replyWorkspace = nil
+            if var presenter = departingNavigationController?.topViewController {
+                while let presented = presenter.presentedViewController {
+                    presenter = presented
+                }
+                workspace.promptToKeepDraft(from: presenter)
+            }
+        }
     }
 
     required init?(coder: NSCoder) {
