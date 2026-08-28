@@ -680,6 +680,8 @@ final class PostsPageViewController: ViewController {
 
         context["tweetTheme"] = theme[string: "postsTweetTheme"] ?? "light"
 
+        prefetchAttachments(inPostsContext: context["posts"] as? [[String: Any]] ?? [])
+
         Task.detached(priority: .userInitiated) { [context] in
             let html: String
             do {
@@ -691,6 +693,34 @@ final class PostsPageViewController: ViewController {
 
             await self.postsView.renderView.eraseDocument()
             await self.postsView.renderView.render(html: html, baseURL: ForumsClient.shared.baseURL)
+        }
+    }
+
+    /// Starts fetching the page's first few attachments concurrently with the template render, so their bytes are cached — or at least in flight — by the time WebKit asks `AttachmentSchemeHandler` for them during page load.
+    private func prefetchAttachments(inPostsContext posts: [[String: Any]]) {
+        guard !posts.isEmpty else { return }
+        Task.detached(priority: .utility) {
+            let maxPrefetches = 10
+            let regex = try! NSRegularExpression(pattern: "data-awful-attachment-id=\"(\\d+)\"")
+            var attachmentIDs: [String] = []
+            var seen: Set<String> = []
+            for post in posts {
+                guard let html = post["htmlContents"] as? String else { continue }
+                regex.enumerateMatches(in: html, range: NSRange(html.startIndex..., in: html)) { match, _, _ in
+                    if let match, let idRange = Range(match.range(at: 1), in: html) {
+                        let id = String(html[idRange])
+                        if seen.insert(id).inserted {
+                            attachmentIDs.append(id)
+                        }
+                    }
+                }
+                if attachmentIDs.count >= maxPrefetches { break }
+            }
+            for id in attachmentIDs.prefix(maxPrefetches) {
+                Task {
+                    _ = try? await AttachmentSchemeHandler.attachment(id: id)
+                }
+            }
         }
     }
 
