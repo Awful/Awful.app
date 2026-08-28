@@ -586,9 +586,9 @@ Awful.applyTimeoutToLoadingImages = function() {
     // Find post content images (excluding smilies, avatars, and lazy-loaded images) - these are the first 10 images
     const loadingImages = document.querySelectorAll(SELECTORS.LOADING_IMAGES);
 
-    // Count only the initially loading images (first 10), excluding attachment.php and data URLs
+    // Count only the initially loading images (first 10), excluding attachments and data URLs
     const initialImages = Array.from(loadingImages).filter(img =>
-        !img.src.includes('attachment.php') && !img.src.startsWith('data:')
+        !img.src.includes('attachment.php') && !img.src.startsWith('awful-attachment:') && !img.src.startsWith('data:')
     );
     const totalImages = initialImages.length;
 
@@ -1244,7 +1244,8 @@ Awful.interestingElementsAtPoint = function(x, y) {
     if (img.classList.contains('posterized')) {
       interesting.spoiledImageURL = img.dataset.originalUrl;
     } else {
-      interesting.spoiledImageURL = img.getAttribute('src');
+      // Attachments are served via the awful-attachment scheme; surface the real https URL instead.
+      interesting.spoiledImageURL = img.dataset.awfulAttachmentUrl || img.getAttribute('src');
     }
     interesting.spoiledImageFrame = Awful.frameOfElement(img);
   }
@@ -1764,31 +1765,6 @@ Awful.embedGfycat = function() {
 }
 
 Awful.embedGfycat();
-
-// Load attachment images asynchronously
-Awful.loadAttachmentImages = function() {
-  var attachmentImages = document.querySelectorAll('img[data-awful-attachment-id]');
-  attachmentImages.forEach(function(img, index) {
-    var attachmentID = img.getAttribute('data-awful-attachment-id');
-    var callbackID = 'attachment-' + attachmentID + '-' + index + '-' + Date.now();
-    img.setAttribute('data-awful-attachment-callback-id', callbackID);
-    window.webkit.messageHandlers.fetchAttachmentImage.postMessage({
-      id: callbackID,
-      attachmentid: attachmentID
-    });
-  });
-};
-
-Awful.didFetchAttachmentImage = function(id, dataURL) {
-  var img = document.querySelector('img[data-awful-attachment-callback-id="' + id + '"]');
-  if (img && dataURL) {
-    img.src = dataURL;
-  }
-};
-
-if (document.querySelectorAll('img[data-awful-attachment-id]').length > 0) {
-  Awful.loadAttachmentImages();
-}
 
 // Set up image loading if DOM is ready (DOMContentLoaded may have already fired)
 // The early user script in RenderView.swift tracks when DOMContentLoaded fires

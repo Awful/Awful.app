@@ -1656,6 +1656,18 @@ public final class ForumsClient {
         return (id: attachmentID, filename: filename)
     }
 
+    /// Fetches attachment bytes plus the server-reported MIME type.
+    public func fetchAttachment(id: String) async throws -> (data: Data, mimeType: String?) {
+        guard let urlSession else { throw Error.missingURLSession }
+
+        guard let attachmentURL = URL(string: "attachment.php?attachmentid=\(id)", relativeTo: baseURL) else {
+            throw Error.invalidBaseURL
+        }
+
+        let (data, response) = try await urlSession.data(for: URLRequest(url: attachmentURL))
+        return (data: data, mimeType: response.mimeType)
+    }
+
     /// Fetches attachment image data directly by attachment ID.
     public func fetchAttachmentImageByID(attachmentID: String) async throws -> Data {
         guard let urlSession else { throw Error.missingURLSession }

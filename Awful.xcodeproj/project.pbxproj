@@ -33,6 +33,7 @@
 		1C16FBB21CB86ACD00C88BD1 /* EmptyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBB11CB86ACD00C88BD1 /* EmptyViewController.swift */; };
 		1C16FBB41CB88CFE00C88BD1 /* NewPrivateMessageFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBB31CB88CFE00C88BD1 /* NewPrivateMessageFieldView.swift */; };
 		1C16FBBA1CB8961F00C88BD1 /* ImageURLProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBB91CB8961F00C88BD1 /* ImageURLProtocol.swift */; };
+		2DA77AC22F8800010015A90D /* AttachmentSchemeHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA77AC12F8800010015A90D /* AttachmentSchemeHandler.swift */; };
 		1C16FBBE1CB94D5100C88BD1 /* ThreadTagPickerLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBBD1CB94D5100C88BD1 /* ThreadTagPickerLayout.swift */; };
 		1C16FBC01CB950BE00C88BD1 /* ThreadTagButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBBF1CB950BE00C88BD1 /* ThreadTagButton.swift */; };
 		1C16FBC21CB9525B00C88BD1 /* NewThreadFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBC11CB9525B00C88BD1 /* NewThreadFieldView.swift */; };
@@ -365,6 +366,7 @@
 		1C16FBB11CB86ACD00C88BD1 /* EmptyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmptyViewController.swift; sourceTree = "<group>"; };
 		1C16FBB31CB88CFE00C88BD1 /* NewPrivateMessageFieldView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewPrivateMessageFieldView.swift; sourceTree = "<group>"; };
 		1C16FBB91CB8961F00C88BD1 /* ImageURLProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageURLProtocol.swift; sourceTree = "<group>"; };
+		2DA77AC12F8800010015A90D /* AttachmentSchemeHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttachmentSchemeHandler.swift; sourceTree = "<group>"; };
 		1C16FBBD1CB94D5100C88BD1 /* ThreadTagPickerLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadTagPickerLayout.swift; sourceTree = "<group>"; };
 		1C16FBBF1CB950BE00C88BD1 /* ThreadTagButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadTagButton.swift; sourceTree = "<group>"; };
 		1C16FBC11CB9525B00C88BD1 /* NewThreadFieldView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewThreadFieldView.swift; sourceTree = "<group>"; };
@@ -766,6 +768,7 @@
 		1C1D2FE6171BA1C200AC6387 /* URLs */ = {
 			isa = PBXGroup;
 			children = (
+				2DA77AC12F8800010015A90D /* AttachmentSchemeHandler.swift */,
 				1C0D7FFB1CF0A7A3003EE2D1 /* AwfulURLRouter.swift */,
 				1C4079691A228DA6004A082F /* CopyURLActivity.swift */,
 				1C16FBB91CB8961F00C88BD1 /* ImageURLProtocol.swift */,
@@ -1735,6 +1738,7 @@
 				1C23C7051A7AB8940089BD5C /* SlopButton.swift in Sources */,
 				1CBE1B1219CAAFA200510187 /* AwfulSplitViewController.swift in Sources */,
 				1C16FBBA1CB8961F00C88BD1 /* ImageURLProtocol.swift in Sources */,
+				2DA77AC22F8800010015A90D /* AttachmentSchemeHandler.swift in Sources */,
 				1C09BFF21A09F86A007C11F5 /* InAppActionCollectionView.swift in Sources */,
 				1C48538E1F93BADF0042531A /* HTMLRenderingHelpers.swift in Sources */,
 				AC10AC10AC10AC10AC500011 /* RapsheetHandlers+Awful.swift in Sources */,

@@ -218,7 +218,6 @@ final class PostsPageViewController: ViewController {
         postsView.renderView.registerMessage(RenderView.BuiltInMessage.DidTapPostActionButton.self)
         postsView.renderView.registerMessage(RenderView.BuiltInMessage.DidTapAuthorHeader.self)
         postsView.renderView.registerMessage(RenderView.BuiltInMessage.FetchOEmbedFragment.self)
-        postsView.renderView.registerMessage(RenderView.BuiltInMessage.FetchAttachmentImage.self)
         postsView.renderView.registerMessage(RenderView.BuiltInMessage.ImageLoadProgress.self)
         postsView.topBar.goToParentForum = { [unowned self] in
             guard let forum = self.thread.forum else { return }
@@ -2032,23 +2031,6 @@ final class PostsPageViewController: ViewController {
         }
     }
 
-    private func fetchAttachmentImage(attachmentID: String, id: String) {
-        Task {
-            do {
-                let imageData = try await ForumsClient.shared.fetchAttachmentImageByID(attachmentID: attachmentID)
-                if let image = UIImage(data: imageData), let pngData = image.pngData() {
-                    let base64 = pngData.base64EncodedString()
-                    let dataURL = "data:image/png;base64,\(base64)"
-                    await MainActor.run {
-                        postsView.renderView.didFetchAttachmentImage(id: id, dataURL: dataURL)
-                    }
-                }
-            } catch {
-                logger.error("Failed to fetch attachment image \(attachmentID): \(error)")
-            }
-        }
-    }
-
     private func presentDraftMenu(
         from source: DraftMenuSource,
         options: DraftMenuOptions
@@ -2664,9 +2646,6 @@ extension PostsPageViewController: RenderViewDelegate {
 
         case let message as RenderView.BuiltInMessage.FetchOEmbedFragment:
             fetchOEmbed(url: message.url, id: message.id)
-
-        case let message as RenderView.BuiltInMessage.FetchAttachmentImage:
-            fetchAttachmentImage(attachmentID: message.attachmentID, id: message.id)
 
         case let message as RenderView.BuiltInMessage.ImageLoadProgress:
             if message.total == 0 {
