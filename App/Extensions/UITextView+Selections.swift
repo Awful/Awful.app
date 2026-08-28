@@ -29,10 +29,16 @@ extension UITextView {
 
         textStorage.beginEditing()
         textStorage.replaceCharacters(in: previouslySelected, with: NSAttributedString(string: text, attributes: attributes))
-        selectedRange = NSRange(location: previouslySelected.location + text.utf16.count, length: 0)
         textStorage.endEditing()
 
+        // Setting the selection mid-batch hands a stale range to the text input controller's
+        // tokenizer and crashes when the text view is first responder (NLStringTokenizer, iOS 26);
+        // it must happen after endEditing() has published the edit. Clamp defensively.
+        let newLocation = min(previouslySelected.location + text.utf16.count, textStorage.length)
+        selectedRange = NSRange(location: newLocation, length: 0)
+
         // Mucking with text storage does not send this notification automatically, but we'd like this notification to be sent.
+        // Posted after the selection is final: CloseBBcodeTagCommand's observer reads selectedRange.
         NotificationCenter.default.post(name: UITextView.textDidChangeNotification, object: self)
     }
 }
