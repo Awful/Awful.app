@@ -151,6 +151,12 @@ final class ForumListDataSource: NSObject {
             }
         }
 
+        // Item identifiers are object IDs, which don't change when a forum's metadata does
+        // (e.g. favoriting), so surviving items must be explicitly reconfigured or their
+        // cells keep stale view models.
+        let existingItems = Set(diffableDataSource.snapshot().itemIdentifiers)
+        snapshot.reconfigureItems(snapshot.itemIdentifiers.filter(existingItems.contains))
+
         diffableDataSource.apply(snapshot, animatingDifferences: animatingDifferences)
     }
 
@@ -338,7 +344,7 @@ final class ForumListDataSource: NSObject {
                     }
                 }(),
                 expansionTintColor: theme["expansionTintColor"]!,
-                favoriteStar: forum.metadata.favorite ? .hidden : .canFavorite,
+                favoriteStar: forum.metadata.favorite ? .isFavorite : .canFavorite,
                 favoriteStarTintColor: theme["favoriteStarTintColor"]!,
                 forumName: NSAttributedString(string: forum.name ?? "", attributes: [
                     .font: UIFont.preferredFontForTextStyle(.body, fontName: theme["listFontName"], weight: .regular),
