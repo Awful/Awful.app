@@ -36,6 +36,9 @@ final class PostsPageViewController: ViewController {
     @FoilDefaultStorage(Settings.endlessScrollPosts) private var endlessScrollPosts
     /// Non-nil while an endless-scroll append of the next page is in flight.
     private var appendTask: Task<Void, Never>?
+    /// True once endless scroll has appended pages, so `posts` spans multiple pages and
+    /// `page`/`hiddenPosts` no longer describe a single page's document.
+    private var endlessScrollDidAppend = false
     private var flagRequest: Task<Void, Error>?
     @FoilDefaultStorage(Settings.fontScale) private var fontScale
     @FoilDefaultStorage(Settings.frogAndGhostEnabled) private var frogAndGhostEnabled
@@ -422,8 +425,12 @@ final class PostsPageViewController: ViewController {
             newPage = .specific(Int(thread.filteredNumberOfPagesForAuthor(author)))
         }
 
-        let reloadingSamePage = page == newPage
+        // Reloading `page` after endless-scroll appends is not a same-document reload: the
+        // completion replaces the accumulated `posts` with one page's worth, so skipping the
+        // reset below would leave `hiddenPosts` pointing past the end of `posts`.
+        let reloadingSamePage = page == newPage && !endlessScrollDidAppend
         page = newPage
+        endlessScrollDidAppend = false
 
         if posts.isEmpty || !reloadingSamePage {
             postsView.endRefreshing()
@@ -527,7 +534,9 @@ final class PostsPageViewController: ViewController {
                 }
 
                 if let pendingHidden = self.hiddenPostsAfterLoading {
-                    self.hiddenPosts = pendingHidden
+                    // A value staged from a saved user activity can exceed this page's post
+                    // count (e.g. captured mid-endless-scroll), so clamp it.
+                    self.hiddenPosts = min(pendingHidden, self.posts.count)
                     self.hiddenPostsAfterLoading = nil
                 } else if self.hiddenPosts == 0, let firstUnreadPost = firstUnreadPost, firstUnreadPost > 0 {
                     let pendingTargetOnPage: Bool
@@ -1117,6 +1126,7 @@ final class PostsPageViewController: ViewController {
 
                 self.posts.append(contentsOf: result.posts)
                 self.page = .specific(nextPage)
+                self.endlessScrollDidAppend = true
 
                 var html = ""
                 for (i, post) in result.posts.enumerated() {
@@ -1194,7 +1204,9 @@ final class PostsPageViewController: ViewController {
     }
 
     private func showHiddenSeenPosts() {
-        let end = hiddenPosts
+        // Defensive: if `posts` was replaced out from under a nonzero `hiddenPosts`, reveal
+        // what's actually there rather than trap.
+        let end = min(hiddenPosts, posts.count)
         hiddenPosts = 0
 
         let html = (0..<end).map(renderedPostAtIndex).joined(separator: "\n")
@@ -1308,6 +1320,10 @@ final class PostsPageViewController: ViewController {
     }
 
     private func didTapUserHeaderWithRect(_ frame: CGRect, forPostAtIndex postIndex: Int) {
+        guard posts.indices.contains(postIndex + hiddenPosts) else {
+            logger.error("post \(postIndex) beyond range (hiding \(self.hiddenPosts) posts)")
+            return
+        }
         if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
@@ -1924,7 +1940,10 @@ final class PostsPageViewController: ViewController {
         _ frame: CGRect,
         forPostAtIndex postIndex: Int
     ) {
-        assert(postIndex + hiddenPosts < posts.count, "post \(postIndex) beyond range (hiding \(hiddenPosts) posts")
+        guard posts.indices.contains(postIndex + hiddenPosts) else {
+            logger.error("post \(postIndex) beyond range (hiding \(self.hiddenPosts) posts)")
+            return
+        }
         if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
