@@ -2,6 +2,7 @@
 //
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import AwfulSettings
 import AwfulTheming
 import FLAnimatedImage
 import os
@@ -17,12 +18,30 @@ final class ImageViewController: UIViewController {
     private var downloadProgress: Progress?
     private var image: DecodedImage?
     private var rootView: RootView { return view as! RootView }
-    
+
+    @FoilDefaultStorage(Settings.imageViewerFullScreen) private var prefersFullScreen
+
+    private static let sheetCornerRadius: CGFloat = 20
+
     init(imageURL: URL) {
         self.imageURL = imageURL
         super.init(nibName: nil, bundle: nil)
-        
+
+        modalPresentationCapturesStatusBarAppearance = true
+        configurePresentation(fullScreen: prefersFullScreen)
+
         downloadProgress = downloadImage(imageURL, completion: didDownloadImage)
+    }
+
+    private func configurePresentation(fullScreen: Bool) {
+        modalPresentationStyle = fullScreen ? .fullScreen : .pageSheet
+        if !fullScreen, let sheet = sheetPresentationController {
+            // Pin the corner radius so the layout's corner clearance is deterministic; there's no public getter for the system radius.
+            sheet.preferredCornerRadius = Self.sheetCornerRadius
+        }
+        if isViewLoaded {
+            rootView.isSheetPresentation = !fullScreen
+        }
     }
     
     required init?(coder: NSCoder) {
@@ -86,7 +105,20 @@ final class ImageViewController: UIViewController {
             popover.sourceRect = sender.bounds
         }
     }
-    
+
+    @objc private func didTapTogglePresentation() {
+        rootView.cancelHideOverlayAfterDelay()
+
+        // A presented view controller's modalPresentationStyle can't change in place, so dismiss and immediately re-present the same instance in the new style. Note this must not go through our dismiss() helper, which would cancel the download.
+        guard let presenter = presentingViewController else { return }
+        prefersFullScreen.toggle()
+        let fullScreen = prefersFullScreen
+        presenter.dismiss(animated: false) { [self] in
+            configurePresentation(fullScreen: fullScreen)
+            presenter.present(self, animated: false)
+        }
+    }
+
     // MARK: View lifecycle
     
     private class RootView: UIView, UIGestureRecognizerDelegate, UIScrollViewDelegate {
@@ -95,8 +127,21 @@ final class ImageViewController: UIViewController {
         let statusBarBackground = UIView()
         let doneButton = SlopButton()
         let actionButton = SlopButton()
-        var overlayViews: [UIView] { return [statusBarBackground, doneButton, actionButton] }
-        var overlayButtons: [UIButton] { return [doneButton, actionButton] }
+        let presentationToggleButton = SlopButton()
+        var overlayViews: [UIView] { return [statusBarBackground, doneButton, actionButton, presentationToggleButton] }
+        var overlayButtons: [UIButton] { return [doneButton, actionButton, presentationToggleButton] }
+
+        /// Whether we're being shown in a sheet (as opposed to full screen), so layout can keep content clear of the sheet's rounded corners.
+        var isSheetPresentation = false {
+            didSet {
+                guard isSheetPresentation != oldValue else { return }
+                updatePresentationToggleIcon()
+                setNeedsLayout()
+            }
+        }
+
+        /// Vertical clearance that keeps content out of the sheet's rounded corners.
+        static let cornerClearance: CGFloat = ImageViewController.sheetCornerRadius + 4
         var overlayHidden = false
         var hideOverlayTimer: Timer?
         let spinner = UIActivityIndicatorView(style: .large)
@@ -175,7 +220,23 @@ final class ImageViewController: UIViewController {
             actionButton.verticalSlop = 20
             actionButton.tintColor = overlaidForegroundColor
             addSubview(actionButton)
-            
+
+            presentationToggleButton.configuration = {
+                var config = UIButton.Configuration.plain()
+                config.contentInsets = .init(top: 5, leading: 7, bottom: 7, trailing: 7)
+                var background = UIBackgroundConfiguration.clear()
+                background.backgroundColor = overlaidBackgroundColor
+                background.cornerRadius = buttonCornerRadius
+                config.background = background
+                config.cornerStyle = .fixed
+                return config
+            }()
+            presentationToggleButton.horizontalSlop = 10
+            presentationToggleButton.verticalSlop = 20
+            presentationToggleButton.tintColor = overlaidForegroundColor
+            addSubview(presentationToggleButton)
+            updatePresentationToggleIcon()
+
             spinner.startAnimating()
             addSubview(spinner)
         }
@@ -183,9 +244,22 @@ final class ImageViewController: UIViewController {
         required init?(coder: NSCoder) {
             fatalError("init(coder:) has not been implemented")
         }
-        
+
         deinit {
             multiplexer.removeDelegate(self)
+        }
+
+        func updatePresentationToggleIcon() {
+            let symbolName = isSheetPresentation
+                ? "arrow.up.left.and.arrow.down.right"    // tap to go full screen
+                : "arrow.down.right.and.arrow.up.left"    // tap to go back to a sheet
+            presentationToggleButton.configuration?.image = UIImage(
+                systemName: symbolName,
+                withConfiguration: UIImage.SymbolConfiguration(textStyle: .body)
+            )
+            presentationToggleButton.accessibilityLabel = isSheetPresentation
+                ? "Enter Full Screen"
+                : "Exit Full Screen"
         }
         
         var image: DecodedImage? {
@@ -216,63 +290,95 @@ final class ImageViewController: UIViewController {
             }
         }
         
-        fileprivate var didConfigureScrollView = false
-        
+        /// The scroll view size we last computed the fit scale for; nil until the first layout with an image.
+        private var configuredSize: CGSize?
+        fileprivate var didConfigureScrollView: Bool { configuredSize != nil }
+
         override func layoutSubviews() {
-            scrollView.frame = bounds
-            
-            if !didConfigureScrollView {
-                let scrollViewSize = scrollView.bounds.size
-                if scrollViewSize.width > 0 && scrollViewSize.height > 0 {
-                    if let imageSize = image?.size {
-                        scrollView.contentSize = imageSize
-                        // FLAnimatedImageView.sizeToFit() sometimes doesn't change the size?
-                        imageView.frame = CGRect(origin: CGPoint.zero, size: imageSize)
-                        
-                        let fitsOnScreenZoomScale = min(scrollViewSize.width / imageSize.width, scrollViewSize.height / imageSize.height, 1)
-                        scrollView.minimumZoomScale = fitsOnScreenZoomScale
-                        scrollView.maximumZoomScale = 25 * fitsOnScreenZoomScale
-                        scrollView.zoomScale = fitsOnScreenZoomScale
-                        
-                        didConfigureScrollView = true
-                    }
-                }
+            if isSheetPresentation {
+                // Keep the image out of the sheet's rounded corners. Vertical clearance alone is enough: the corner curves only intrude within the corner radius of the top and bottom edges, so content that stays clear vertically can't intersect them at any width.
+                var insets = safeAreaInsets
+                insets.top = max(insets.top, Self.cornerClearance)
+                insets.bottom = max(insets.bottom, Self.cornerClearance)
+                scrollView.frame = bounds.inset(by: insets)
+            } else {
+                scrollView.frame = bounds
             }
-            
+
+            let scrollViewSize = scrollView.bounds.size
+            if scrollViewSize.width > 0, scrollViewSize.height > 0,
+               let imageSize = image?.size,
+               configuredSize != scrollViewSize
+            {
+                // Setting the zoom scale below notifies scrollViewDidZoom, which hides the overlay unless it sees an unconfigured scroll view, so stay "unconfigured" until we're done.
+                configuredSize = nil
+
+                // Zooming applies a scale transform to the image view, and setting a frame under a non-identity transform corrupts the bounds, so clear any zoom first. The image re-fits whenever the size changes (rotation, sheet/full-screen switch).
+                scrollView.minimumZoomScale = 1
+                scrollView.maximumZoomScale = 1
+                scrollView.zoomScale = 1
+
+                scrollView.contentSize = imageSize
+                // FLAnimatedImageView.sizeToFit() sometimes doesn't change the size?
+                imageView.frame = CGRect(origin: CGPoint.zero, size: imageSize)
+
+                let fitsOnScreenZoomScale = min(scrollViewSize.width / imageSize.width, scrollViewSize.height / imageSize.height, 1)
+                scrollView.minimumZoomScale = fitsOnScreenZoomScale
+                scrollView.maximumZoomScale = 25 * fitsOnScreenZoomScale
+                scrollView.zoomScale = fitsOnScreenZoomScale
+
+                configuredSize = scrollViewSize
+            }
+
             centerImageInScrollView()
-            
+
             spinner.center = CGPoint(x: bounds.midX, y: bounds.midY)
-            
+
             layoutOverlay()
+        }
+
+        override func safeAreaInsetsDidChange() {
+            super.safeAreaInsetsDidChange()
+            setNeedsLayout()
         }
         
         private func layoutOverlay() {
-            let statusBarHeight: CGFloat = {
-                let frame: CGRect
-                #if targetEnvironment(macCatalyst)
-                frame = .zero
-                #else
-                frame = window?.windowScene?.statusBarManager?.statusBarFrame ?? .zero
-                #endif
+            if isSheetPresentation {
+                // The sheet never underlaps the status bar, so there's nothing for the background strip to do.
+                statusBarBackground.isHidden = true
+                statusBarBackground.frame = .zero
+            } else {
+                statusBarBackground.isHidden = false
+                statusBarBackground.frame = CGRect(x: 0, y: 0, width: bounds.width, height: safeAreaInsets.top)
+            }
 
-                // Status bar frame is in screen coordinates, so may be rotated. (Is this still true? Original comment dates back many years. Also, if our minimum iOS version supports safe areas, let's use that.)
-                return min(frame.width, frame.height)
-            }()
-            let typicalStatusBarHeight: CGFloat = 20
-            let bonusStatusBarHeight = statusBarHeight - typicalStatusBarHeight
-            // The in-call status bar bumps the whole window down past the typical status bar height, so we'll offset the status bar background by the same amount that the window was pushed down.
-            statusBarBackground.frame = CGRect(x: 0, y: -bonusStatusBarHeight, width: bounds.width, height: statusBarHeight)
-            
+            let leadingX = max(10, safeAreaInsets.left + 10)
+            let trailingX = bounds.maxX - max(10, safeAreaInsets.right + 10)
+
             doneButton.sizeToFit()
             let doneButtonSize = doneButton.bounds.size
-            doneButton.frame = CGRect(origin: CGPoint(x: 10, y: statusBarBackground.frame.maxY + 20), size: doneButtonSize)
-            
+            let doneButtonY = isSheetPresentation
+                ? Self.cornerClearance
+                : statusBarBackground.frame.maxY + 20
+            doneButton.frame = CGRect(origin: CGPoint(x: leadingX, y: doneButtonY), size: doneButtonSize)
+
+            let bottomInset = isSheetPresentation
+                ? max(safeAreaInsets.bottom, Self.cornerClearance)
+                : max(20, safeAreaInsets.bottom + 8)
+
             actionButton.sizeToFit()
             let actionButtonSize = actionButton.bounds.size
             actionButton.frame = CGRect(origin: CGPoint(
-                x: bounds.maxX - 10 - actionButtonSize.width,
-                y: bounds.maxY - 20 - actionButtonSize.height),
+                x: trailingX - actionButtonSize.width,
+                y: bounds.maxY - bottomInset - actionButtonSize.height),
                 size: actionButtonSize)
+
+            presentationToggleButton.sizeToFit()
+            let toggleButtonSize = presentationToggleButton.bounds.size
+            presentationToggleButton.frame = CGRect(origin: CGPoint(
+                x: leadingX,
+                y: bounds.maxY - bottomInset - toggleButtonSize.height),
+                size: toggleButtonSize)
         }
         
         func centerImageInScrollView() {
@@ -410,10 +516,13 @@ final class ImageViewController: UIViewController {
     
     override func loadView() {
         view = RootView()
-        
+
+        rootView.isSheetPresentation = modalPresentationStyle != .fullScreen
+
         rootView.doneButton.addTarget(self, action: #selector(didTapDone), for: .touchUpInside)
         rootView.actionButton.addTarget(self, action: #selector(didTapAction), for: .touchUpInside)
-        
+        rootView.presentationToggleButton.addTarget(self, action: #selector(didTapTogglePresentation), for: .touchUpInside)
+
         rootView.panToDismissAction = { [weak self] in self?.dismiss(); return }
     }
     

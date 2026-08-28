@@ -80,6 +80,9 @@ public enum Settings {
     /// Automatically fetch and append the next page of posts when scrolling near the bottom of a thread. Hides the paging controls while enabled.
     public static let endlessScrollPosts = Setting(key: "endless_scroll_posts", default: false)
 
+    /// Present the image viewer full-screen instead of as a sheet.
+    public static let imageViewerFullScreen = Setting(key: "image_viewer_full_screen", default: false)
+
     /// Mode for Imgur image uploads (Off, Anonymous, or with Account)
     public static let imgurUploadMode = Setting(key: "imgur_upload_mode", default: ImgurUploadMode.default)
 
