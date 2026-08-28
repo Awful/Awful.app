@@ -12,6 +12,10 @@ final class PageNumberView: UIView {
     private static let heightModern: CGFloat = 39  // iOS 26+
     private static let heightLegacy: CGFloat = 44  // iOS < 26
 
+    /// Caps Dynamic Type growth so the label can't push the neighboring toolbar
+    /// buttons off-screen; the large content viewer covers accessibility sizes.
+    static let maximumFontPointSize: CGFloat = 22
+
     private static let currentHeight: CGFloat = {
         if #available(iOS 26.0, *) {
             return heightModern
@@ -24,8 +28,9 @@ final class PageNumberView: UIView {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textAlignment = .center
-        label.font = UIFont.preferredFont(forTextStyle: .body)
         label.adjustsFontForContentSizeCategory = true
+        label.adjustsFontSizeToFitWidth = true
+        label.minimumScaleFactor = 0.7
         return label
     }()
 
@@ -76,9 +81,17 @@ final class PageNumberView: UIView {
             heightAnchor.constraint(equalToConstant: Self.currentHeight)
         ])
 
-        pageLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
+        pageLabel.setContentCompressionResistancePriority(.defaultHigh, for: .horizontal)
 
+        showsLargeContentViewer = true
+        addInteraction(UILargeContentViewerInteraction())
+
+        applyFont()
         updateColors()
+    }
+
+    private func applyFont() {
+        pageLabel.font = UIFont.preferredFontForTextStyle(.body, weight: .regular, maximumPointSize: Self.maximumFontPointSize)
     }
 
     @objc private func handleTap() {
@@ -107,6 +120,7 @@ final class PageNumberView: UIView {
         pageLabel.text = "\(currentPageText) / \(totalPagesText)"
         accessibilityLabel = "Page \(currentPageText) of \(totalPagesText)"
         accessibilityHint = "Opens page picker"
+        largeContentTitle = accessibilityLabel
     }
 
     private func updateColors() {
@@ -114,7 +128,7 @@ final class PageNumberView: UIView {
     }
 
     func updateTheme() {
-        pageLabel.font = UIFont.preferredFontForTextStyle(.body, sizeAdjustment: 0, weight: .regular)
+        applyFont()
     }
     
     override var intrinsicContentSize: CGSize {
@@ -131,6 +145,7 @@ final class PageNumberView: UIView {
         super.traitCollectionDidChange(previousTraitCollection)
 
         if traitCollection.preferredContentSizeCategory != previousTraitCollection?.preferredContentSizeCategory {
+            applyFont()
             invalidateIntrinsicContentSize()
         }
     }

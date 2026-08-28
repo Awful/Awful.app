@@ -986,7 +986,7 @@ final class PostsPageViewController: ViewController {
             } else {
                 currentPageItem.title = "\(pageNumber) / \(numberOfPages)"
                 currentPageItem.accessibilityLabel = "Page \(pageNumber) of \(numberOfPages)"
-                currentPageItem.setTitleTextAttributes([.font: UIFont.preferredFontForTextStyle(.body, weight: .regular)], for: .normal)
+                currentPageItem.setTitleTextAttributes([.font: UIFont.preferredFontForTextStyle(.body, weight: .regular, maximumPointSize: PageNumberView.maximumFontPointSize)], for: .normal)
             }
         } else {
             if #available(iOS 26.0, *) {
