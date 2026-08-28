@@ -1023,9 +1023,10 @@ final class NavigationController: UINavigationController, Themeable {
         awfulNavigationBar.compactScrollEdgeAppearance = appearance
 
         if progress < ScrollProgress.atTop {
-            // At the top, the nav bar is opaque with theme background,
-            // so use the theme's text color for button tint.
-            awfulNavigationBar.tintColor = theme[uicolor: "navigationBarTextColor"] ?? .label
+            // At the top the bar is opaque, but liquid glass still renders the
+            // buttons in glass circles — use the mode colour, not the theme's
+            // white (matches configureNavigationBarForLiquidGlass).
+            awfulNavigationBar.tintColor = theme["mode"] == "dark" ? .white : .black
         } else if progress > ScrollProgress.fullyScrolled {
             awfulNavigationBar.tintColor = nil
         }
@@ -1261,10 +1262,18 @@ extension NavigationController: UINavigationControllerDelegate {
                    tabBarController != nil {
                     replaceSidebarBarButtonItems(for: viewController)
                 } else {
-                    viewController.navigationItem.leftBarButtonItem?.tintColor = textColor
-                    viewController.navigationItem.rightBarButtonItem?.tintColor = textColor
-                    viewController.navigationItem.leftBarButtonItems?.forEach { $0.tintColor = textColor }
-                    viewController.navigationItem.rightBarButtonItems?.forEach { $0.tintColor = textColor }
+                    let buttonTintColor: UIColor
+                    if #available(iOS 26.0, *) {
+                        // Liquid glass renders bar buttons in glass circles; ignore the
+                        // theme's white and match LiquidGlassTitleView / back button.
+                        buttonTintColor = vcTheme["mode"] == "dark" ? .white : .black
+                    } else {
+                        buttonTintColor = textColor
+                    }
+                    viewController.navigationItem.leftBarButtonItem?.tintColor = buttonTintColor
+                    viewController.navigationItem.rightBarButtonItem?.tintColor = buttonTintColor
+                    viewController.navigationItem.leftBarButtonItems?.forEach { $0.tintColor = buttonTintColor }
+                    viewController.navigationItem.rightBarButtonItems?.forEach { $0.tintColor = buttonTintColor }
                 }
 
                 if viewControllers.count > 1 {
