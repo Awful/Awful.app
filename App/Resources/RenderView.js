@@ -581,8 +581,6 @@ Awful.imageLoadTracker = {
  * Monitors initial image loading and tracks progress for the loading view.
  */
 Awful.applyTimeoutToLoadingImages = function() {
-    const enableGhost = Awful.renderGhostTweets || false;
-
     // Find post content images (excluding smilies, avatars, and lazy-loaded images) - these are the first 10 images
     const loadingImages = document.querySelectorAll(SELECTORS.LOADING_IMAGES);
 
@@ -601,93 +599,141 @@ Awful.applyTimeoutToLoadingImages = function() {
     Awful.imageTimeoutCheckers = [];
 
     initialImages.forEach((img, index) => {
-        const imageID = `img-init-${index}`;
-        const imageURL = img.src;
+        Awful.monitorImageLoad(img, `img-init-${index}`, () => Awful.imageLoadTracker.incrementLoaded());
+    });
+};
 
-        // img.complete is true for both successfully loaded AND failed images
-        // We discriminate using naturalHeight: >0 means success, ===0 means failure
+/**
+ * Watches one image until it loads, fails, or times out, replacing it with a
+ * dead-image badge on failure (when ghosts are enabled). Calls onSettled exactly once.
+ */
+Awful.monitorImageLoad = function(img, imageID, onSettled) {
+    const enableGhost = Awful.renderGhostTweets || false;
+    const imageURL = img.src;
+
+    // img.complete is true for both successfully loaded AND failed images
+    // We discriminate using naturalHeight: >0 means success, ===0 means failure
+    if (img.complete && img.naturalHeight !== 0) {
+        onSettled();
+        return;
+    }
+
+    // Track if we've already handled this image to prevent double-counting
+    let handled = false;
+
+    const handleSuccess = () => {
+        if (handled) {
+            console.warn(`[Image Load] Duplicate success event for ${imageID} (already handled)`);
+            return;
+        }
+        handled = true;
+        onSettled();
+    };
+
+    const handleFailure = () => {
+        if (handled) {
+            console.warn(`[Image Load] Duplicate failure event for ${imageID} (already handled)`);
+            return;
+        }
+        handled = true;
+
+        if (enableGhost && img.parentNode) {
+            const div = document.createElement('div');
+            div.classList.add('dead-embed-container');
+            div.innerHTML = Awful.deadImageBadgeHTML(imageURL, imageID);
+            img.parentNode.replaceChild(div, img);
+
+            // Use helper function to set up Lottie player (fixes code duplication)
+            Awful.setupGhostLottiePlayer(div);
+        }
+
+        onSettled();
+    };
+
+    // Set up timeout checker using config constants
+    let checkCount = 0;
+    const maxChecks = IMAGE_LOAD_TIMEOUT_CONFIG.maxImageChecks;
+    const checkInterval = IMAGE_LOAD_TIMEOUT_CONFIG.connectionTimeout;
+
+    const timeoutChecker = setInterval(() => {
+        checkCount++;
+
+        // If image loaded successfully
+        // Note: img.complete is true for both success and failure
+        // naturalHeight > 0 indicates successful load
         if (img.complete && img.naturalHeight !== 0) {
-            Awful.imageLoadTracker.incrementLoaded();
+            clearInterval(timeoutChecker);
+            handleSuccess();
             return;
         }
 
-        // Track if we've already handled this image to prevent double-counting
-        let handled = false;
-
-        const handleSuccess = () => {
-            if (handled) {
-                console.warn(`[Image Load] Duplicate success event for ${imageID} (already handled)`);
-                return;
-            }
-            handled = true;
-            Awful.imageLoadTracker.incrementLoaded();
-        };
-
-        const handleFailure = () => {
-            if (handled) {
-                console.warn(`[Image Load] Duplicate failure event for ${imageID} (already handled)`);
-                return;
-            }
-            handled = true;
-
-            if (enableGhost && img.parentNode) {
-                const div = document.createElement('div');
-                div.classList.add('dead-embed-container');
-                div.innerHTML = Awful.deadImageBadgeHTML(imageURL, imageID);
-                img.parentNode.replaceChild(div, img);
-
-                // Use helper function to set up Lottie player (fixes code duplication)
-                Awful.setupGhostLottiePlayer(div);
-            }
-
-            Awful.imageLoadTracker.incrementLoaded();
-        };
-
-        // Set up timeout checker using config constants
-        let checkCount = 0;
-        const maxChecks = IMAGE_LOAD_TIMEOUT_CONFIG.maxImageChecks;
-        const checkInterval = IMAGE_LOAD_TIMEOUT_CONFIG.connectionTimeout;
-
-        const timeoutChecker = setInterval(() => {
-            checkCount++;
-
-            // If image loaded successfully
-            // Note: img.complete is true for both success and failure
-            // naturalHeight > 0 indicates successful load
-            if (img.complete && img.naturalHeight !== 0) {
-                clearInterval(timeoutChecker);
-                handleSuccess();
-                return;
-            }
-
-            // If image failed to load (error state)
-            // img.complete true + naturalHeight === 0 indicates load failure
-            if (img.complete && img.naturalHeight === 0) {
-                clearInterval(timeoutChecker);
-                handleFailure();
-                return;
-            }
-
-            // If we've checked enough times and it's still not loaded, timeout
-            if (checkCount >= maxChecks) {
-                clearInterval(timeoutChecker);
-                handleFailure();
-            }
-        }, checkInterval);
-
-        // Store timer for potential cleanup
-        Awful.imageTimeoutCheckers.push(timeoutChecker);
-
-        // Also listen for load/error events to handle immediately
-        img.addEventListener('load', () => {
-            clearInterval(timeoutChecker);
-            handleSuccess();
-        }, { once: true });
-
-        img.addEventListener('error', () => {
+        // If image failed to load (error state)
+        // img.complete true + naturalHeight === 0 indicates load failure
+        if (img.complete && img.naturalHeight === 0) {
             clearInterval(timeoutChecker);
             handleFailure();
-        }, { once: true });
+            return;
+        }
+
+        // If we've checked enough times and it's still not loaded, timeout
+        if (checkCount >= maxChecks) {
+            clearInterval(timeoutChecker);
+            handleFailure();
+        }
+    }, checkInterval);
+
+    // Store timer for potential cleanup
+    if (!Awful.imageTimeoutCheckers) {
+        Awful.imageTimeoutCheckers = [];
+    }
+    Awful.imageTimeoutCheckers.push(timeoutChecker);
+
+    // Also listen for load/error events to handle immediately
+    img.addEventListener('load', () => {
+        clearInterval(timeoutChecker);
+        handleSuccess();
+    }, { once: true });
+
+    img.addEventListener('error', () => {
+        clearInterval(timeoutChecker);
+        handleFailure();
+    }, { once: true });
+};
+
+/**
+ * Endless-scroll-scoped counterpart to applyTimeoutToLoadingImages and
+ * setupLazyImageErrorHandling: watches images inside the given elements only,
+ * without resetting the initial-load progress tracker or tearing down the
+ * timers and listeners of images that are already being watched.
+ */
+Awful.monitorAppendedContentImages = function(elements) {
+    const enableGhost = Awful.renderGhostTweets || false;
+    Awful.appendedImageCount = Awful.appendedImageCount || 0;
+
+    elements.forEach(function(el) {
+        if (!el.querySelectorAll) { return; }
+
+        el.querySelectorAll(SELECTORS.LOADING_IMAGES).forEach(function(img) {
+            if (img.src.includes('attachment.php') || img.src.startsWith('awful-attachment:') || img.src.startsWith('data:')) { return; }
+            Awful.appendedImageCount++;
+            // Appended pages arrive long after the loading view is gone, so skip the progress tracker.
+            Awful.monitorImageLoad(img, `img-append-${Awful.appendedImageCount}`, function() {});
+        });
+
+        el.querySelectorAll('section.postbody img[loading="lazy"]').forEach(function(img) {
+            Awful.appendedImageCount++;
+            const imageID = `lazy-append-${Awful.appendedImageCount}`;
+            img.addEventListener('error', function() {
+                Awful.handleImageLoadError(
+                    new Error("Lazy image load failed"),
+                    img.src,
+                    img,
+                    imageID,
+                    enableGhost,
+                    false // trackProgress = false, lazy images don't count toward progress
+                );
+            }, { once: true });
+        });
     });
 };
 
@@ -1439,19 +1485,43 @@ Awful.appendPosts = function(postsHTML, containerID, endHTML) {
     if (el) { el.remove(); }
   });
 
+  var lastExisting = container.lastElementChild;
   container.insertAdjacentHTML('beforeend', postsHTML);
 
   if (endHTML) {
     document.body.insertAdjacentHTML('beforeend', endHTML);
   }
 
-  if (window.twttr) {
+  // Scope the follow-up work to the newly inserted elements. Re-running the
+  // global setup here tears down and re-observes every post in the thread (and
+  // re-arms every image timer) on each append — O(posts) work, growing with the
+  // thread, and it lands right while the user is scrolling toward the bottom.
+  var newElements = [];
+  for (var el = lastExisting ? lastExisting.nextElementSibling : container.firstElementChild; el; el = el.nextElementSibling) {
+    newElements.push(el);
+  }
+
+  if (Awful.tweetLazyLoadObserver || Awful.ghostLottieObserver) {
+    newElements.forEach(function(node) {
+      var posts = (node.matches && node.matches(SELECTORS.POST_ELEMENTS))
+        ? [node]
+        : Array.from(node.querySelectorAll ? node.querySelectorAll(SELECTORS.POST_ELEMENTS) : []);
+      posts.forEach(function(post) {
+        if (Awful.tweetLazyLoadObserver) { Awful.tweetLazyLoadObserver.observe(post); }
+        if (Awful.ghostLottieObserver) { Awful.ghostLottieObserver.observe(post); }
+      });
+    });
+    Awful.monitorAppendedContentImages(newElements);
+  } else if (window.twttr) {
+    // Appending before the initial tweet setup ran; fall back to the full setup.
     window.twttr.ready(function() {
       Awful.embedTweets();
     });
+    Awful.applyTimeoutToLoadingImages();
+  } else {
+    Awful.monitorAppendedContentImages(newElements);
   }
 
-  Awful.applyTimeoutToLoadingImages();
   Awful.setupRetryHandler();
 };
 
