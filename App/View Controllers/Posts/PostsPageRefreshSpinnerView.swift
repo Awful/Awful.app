@@ -99,10 +99,9 @@ final class PostsPageRefreshSpinnerView: UIView, PostsPageRefreshControlContent 
                 }
 
             case .armed(let triggeredFraction):
-                let targetAlpha = min(1.0, triggeredFraction * 2)
-                UIView.animate(withDuration: 0.1) {
-                    self.alpha = targetAlpha
-                }
+                // Set directly: this fires every scroll frame while dragging, and
+                // starting a new animation per frame just adds lag and CA churn.
+                alpha = min(1.0, triggeredFraction * 2)
 
             case .triggered, .refreshing:
                 UIView.animate(withDuration: 0.2) {

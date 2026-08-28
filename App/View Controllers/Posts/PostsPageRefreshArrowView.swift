@@ -62,6 +62,10 @@ final class PostsPageRefreshArrowView: UIView, PostsPageRefreshControlContent {
             arrow.isHidden = true
             spinner.startAnimating()
 
+        case (.armed, .armed):
+            // Reassigned every scroll frame while dragging; the arrow is already
+            // in the waiting position, so avoid respawning the spring animation.
+            break
         case (_, .armed):
             arrow.isHidden = false
             rotateArrow(Angles.waiting, animated: true)

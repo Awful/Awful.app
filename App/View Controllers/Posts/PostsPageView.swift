@@ -190,9 +190,14 @@ final class PostsPageView: UIView {
             }
         }
         didSet {
-            let oldDescription = "\(oldValue)"
-            let newDescription = "\(refreshControlState)"
-            logger.debug("refresh control transitioned from \(oldDescription) to \(newDescription)")
+            switch (oldValue, refreshControlState) {
+            case (.armed, .armed):
+                // Reassigned every scroll frame while dragging with an updated
+                // triggeredFraction; logging each one is pure per-frame overhead.
+                break
+            default:
+                logger.debug("refresh control transitioned from \(String(describing: oldValue)) to \(String(describing: self.refreshControlState))")
+            }
 
             refreshControl?.state = refreshControlState
 
@@ -391,7 +396,11 @@ final class PostsPageView: UIView {
         if case .refreshing = refreshControlState {
             contentInset.bottom += refreshControlContainer.bounds.height
         }
-        scrollView.contentInset = contentInset
+        // Only write when changed: this runs on every scroll frame during top bar
+        // transitions, and redundant inset writes make UIScrollView churn mid-scroll.
+        if scrollView.contentInset != contentInset {
+            scrollView.contentInset = contentInset
+        }
 
         let indicatorBottomInset = calculateBottomInset()
 
@@ -399,7 +408,10 @@ final class PostsPageView: UIView {
         // I'm not sure if this is a bug or if I'm misunderstanding something, but as of iOS 12 it seems that the indicator insets have already taken the layout margins into consideration? That's my guess based on observing their positioning when the indicator insets are set to zero.
         indicatorInsets.top -= layoutMargins.top
         indicatorInsets.bottom -= layoutMargins.bottom
-        scrollView.scrollIndicatorInsets = indicatorInsets
+        if scrollView.verticalScrollIndicatorInsets != indicatorInsets
+            || scrollView.horizontalScrollIndicatorInsets != indicatorInsets {
+            scrollView.scrollIndicatorInsets = indicatorInsets
+        }
     }
 
     private func calculateBottomInset() -> CGFloat {
