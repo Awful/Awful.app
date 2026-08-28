@@ -143,6 +143,59 @@ final class SearchPageViewModel: ObservableObject {
         }
     }
     
+    /// Renders a search result's `.blurb` as attributed text, marking the forums' `<em>`
+    /// search-hit highlights as strongly emphasized so the view can restyle them. Walking the
+    /// nodes (rather than round-tripping through `innerHTML`) keeps post text verbatim: entities
+    /// decode, and nothing in the post is mistaken for markup. Whitespace collapses to single
+    /// spaces, as a browser would render it.
+    private static func scrapeBlurb(_ blurbNode: HTMLNode?) -> AttributedString {
+        guard let blurbNode else { return AttributedString() }
+        var blurb = AttributedString()
+        func walk(_ node: HTMLNode, emphasized: Bool) {
+            guard let element = node as? HTMLElement else {
+                // Collapse each whitespace run to one space, dropping it entirely at the start
+                // of the blurb or after an earlier run that already ended in whitespace.
+                var collapsed = ""
+                var lastWasWhitespace = blurb.characters.last?.isWhitespace ?? true
+                for character in node.textContent {
+                    if character.isWhitespace {
+                        if !lastWasWhitespace {
+                            collapsed.append(" ")
+                            lastWasWhitespace = true
+                        }
+                    } else {
+                        collapsed.append(character)
+                        lastWasWhitespace = false
+                    }
+                }
+                guard !collapsed.isEmpty else { return }
+                var text = AttributedString(collapsed)
+                if emphasized {
+                    text.inlinePresentationIntent = .stronglyEmphasized
+                }
+                blurb += text
+                return
+            }
+            let tagName = element.tagName.lowercased()
+            if tagName == "br" {
+                while blurb.characters.last == " " {
+                    blurb.characters.removeLast()
+                }
+                blurb += AttributedString("\n")
+                return
+            }
+            let emphasized = emphasized || tagName == "em"
+            for child in element.children.compactMap({ $0 as? HTMLNode }) {
+                walk(child, emphasized: emphasized)
+            }
+        }
+        walk(blurbNode, emphasized: false)
+        while let last = blurb.characters.last, last.isWhitespace {
+            blurb.characters.removeLast()
+        }
+        return blurb
+    }
+
     /// - Note: the parsed document is deliberately a parameter rather than a stored property. It's by
     ///   far the heaviest thing here and nothing renders it, so it should not outlive the scrape.
     func scrapeForumResultsPage(_ resultHtmlDoc: HTMLDocument, requestedPage: Int? = nil) async {
@@ -150,16 +203,10 @@ final class SearchPageViewModel: ObservableObject {
         
         searchResults = resultHtmlDoc.nodes(matchingParsedSelector: .cached(".search_result")).map { searchResult in
             let blurbNode: HTMLNode? = searchResult.firstNode(matchingParsedSelector: .cached(".blurb"))
-            let blurb: String
-            if let element = blurbNode as? HTMLElement {
-                blurb = element.innerHTML
-            } else {
-                blurb = blurbNode?.textContent ?? ""
-            }
             return SearchResult(
                 threadTitle: searchResult.firstNode(matchingParsedSelector: .cached(".threadtitle"))?.textContent ?? "",
                 resultNumber: searchResult.firstNode(matchingParsedSelector: .cached(".result_number"))?.textContent ?? "",
-                blurb: blurb,
+                blurb: Self.scrapeBlurb(blurbNode),
                 postID: searchResult.firstNode(matchingParsedSelector: .cached(".threadtitle"))?["href"]
                     .flatMap { URLComponents(string: $0) }?
                     .queryItems?
@@ -442,7 +489,7 @@ struct SearchResult: Identifiable, Equatable {
     var id: String { postID }
     let threadTitle: String
     let resultNumber: String
-    let blurb: String
+    let blurb: AttributedString
     let postID: String
     let postedDateTime: String
 }

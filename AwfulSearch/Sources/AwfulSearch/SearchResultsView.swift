@@ -216,26 +216,14 @@ struct SearchResultCard: View {
     }
     
     private var resultBlurb: some View {
-        let blurbWithMarkdown = result.blurb
-            .replacingOccurrences(of: "<em>", with: "**", options: .caseInsensitive)
-            .replacingOccurrences(of: "</em>", with: "**", options: .caseInsensitive)
-            .trimmingCharacters(in: .whitespacesAndNewlines)
-        
-        let text: Text
-        if var attributedString = try? AttributedString(markdown: blurbWithMarkdown) {
-            attributedString.foregroundColor = theme[color: "listTextColor"]
-            for run in attributedString.runs where run.inlinePresentationIntent == .stronglyEmphasized {
-                if let tintColor = theme[color: "tintColor"] {
-                    attributedString[run.range].foregroundColor = tintColor
-                }
+        var blurb = result.blurb
+        blurb.foregroundColor = theme[color: "listTextColor"]
+        if let tintColor = theme[color: "tintColor"] {
+            for run in blurb.runs where run.inlinePresentationIntent == .stronglyEmphasized {
+                blurb[run.range].foregroundColor = tintColor
             }
-            text = Text(attributedString)
-        } else {
-            text = Text(blurbWithMarkdown)
-                .foregroundColor(theme[color: "listTextColor"])
         }
-        
-        return text
+        return Text(blurb)
             .font(.body)
             .fixedSize(horizontal: false, vertical: true)
     }
@@ -246,13 +234,23 @@ struct SearchResultCard: View {
 struct SearchResultCard_Previews: PreviewProvider {
     static let testTheme = Theme.theme(named: "brightLight") ?? Theme.defaultTheme()
 
+    static func previewBlurb(_ before: String, highlighting hit: String, _ after: String) -> AttributedString {
+        var hit = AttributedString(hit)
+        hit.inlinePresentationIntent = .stronglyEmphasized
+        return AttributedString(before) + hit + AttributedString(after)
+    }
+
     static var previews: some View {
         Group {
             VStack(spacing: 16) {
                 SearchResultCard(result: SearchResult(
                     threadTitle: "Thread title blah blah blah Thread title blah blah blah",
                     resultNumber: "1.",
-                    blurb: "This is a test blurb that shows how the card handles multiple lines of text in a more natural way",
+                    blurb: previewBlurb(
+                        "This is a test blurb that shows how the card handles multiple lines of ",
+                        highlighting: "text",
+                        " in a more natural way"
+                    ),
                     postID: "123",
                     postedDateTime: "by Someone in ForumA at Jul 1, 2023 8:04 PM"
                 ))
@@ -260,7 +258,7 @@ struct SearchResultCard_Previews: PreviewProvider {
                 SearchResultCard(result: SearchResult(
                     threadTitle: "Short title",
                     resultNumber: "2.",
-                    blurb: "Short blurb",
+                    blurb: AttributedString("Short blurb"),
                     postID: "456",
                     postedDateTime: "by Someone in ForumB at Jul 2, 2023 9:04 PM"
                 ))
