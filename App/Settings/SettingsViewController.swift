@@ -31,6 +31,7 @@ final class SettingsViewController: HostingController<SettingsContainerView> {
 
         super.init(rootView: SettingsContainerView(
             appIconDataSource: makeAppIconDataSource(),
+            authenticateImgurAccount: { box.contents.authenticateImgurAccount() },
             cacheSizeText: cacheSizeText,
             currentUser: currentUser,
             emptyCache: { box.contents.emptyCache() },
@@ -71,6 +72,7 @@ final class SettingsViewController: HostingController<SettingsContainerView> {
         }
         rootView = SettingsContainerView(
             appIconDataSource: rootView.appIconDataSource,
+            authenticateImgurAccount: rootView.authenticateImgurAccount,
             cacheSizeText: rootView.cacheSizeText,
             currentUser: newUser,
             emptyCache: rootView.emptyCache,
@@ -162,6 +164,32 @@ final class SettingsViewController: HostingController<SettingsContainerView> {
         present(alert, animated: true)
     }
 
+    /// Offers the Imgur OAuth login as soon as the user switches uploads to "Imgur Account", so
+    /// they don't first hit the login prompt mid-composition. Cancelling leaves the setting alone;
+    /// the composer prompts again at image upload time.
+    func authenticateImgurAccount() {
+        guard ImgurAuthManager.shared.needsAuthentication || ImgurAuthManager.shared.checkTokenExpiry() else { return }
+        ImgurAuthManager.shared.authenticate(from: self) { success in
+            DispatchQueue.main.async {
+                let alert: UIAlertController
+                if success {
+                    alert = UIAlertController(
+                        title: "Logged In to Imgur",
+                        message: "Images you post will now upload to your Imgur account.",
+                        alertActions: [.ok()]
+                    )
+                } else {
+                    alert = UIAlertController(
+                        title: "Imgur Login Incomplete",
+                        message: "You can keep using this setting. You'll be asked to log in when you upload an image.",
+                        alertActions: [.ok()]
+                    )
+                }
+                self.present(alert, animated: true)
+            }
+        }
+    }
+
     func goToAwfulThread() {
         AppDelegate.instance.open(route: .threadPage(threadID: "4116244", page: .nextUnread, .seen))
     }
@@ -219,6 +247,7 @@ private let appIcons: [AppIconDataSource.AppIcon] = [
 /// Wrapper for observing the current `User`.
 struct SettingsContainerView: View {
     let appIconDataSource: AppIconDataSource
+    let authenticateImgurAccount: () -> Void
     let cacheSizeText: CurrentValueSubject<String, Never>
     @ObservedObject var currentUser: User
     let emptyCache: () -> Void
@@ -251,6 +280,7 @@ struct SettingsContainerView: View {
     private var core: some View {
         SettingsView(
             appIconDataSource: appIconDataSource,
+            authenticateImgurAccount: authenticateImgurAccount,
             avatarURL: currentUser.avatarURL,
             cacheSizeText: displayedCacheSize,
             canOpenURL: UIApplication.shared.canOpenURL(_:),

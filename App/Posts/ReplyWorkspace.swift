@@ -240,6 +240,33 @@ final class ReplyWorkspace: NSObject {
 
             if let error = error {
                 if (error as? CocoaError)?.code != .userCancelled {
+                    if case ImageUploadError.authenticationRequired = error {
+                        let alert = UIAlertController(
+                            title: error.localizedDescription,
+                            message: (error as? LocalizedError)?.failureReason ?? "You need to log in to Imgur to upload images with your account.",
+                            preferredStyle: .alert
+                        )
+                        alert.addAction(UIAlertAction(title: "Log In", style: .default) { _ in
+                            ImgurAuthManager.shared.authenticate(from: self.viewController) { success in
+                                DispatchQueue.main.async {
+                                    if success {
+                                        self.didTapPost(sender)
+                                    } else {
+                                        let failureAlert = UIAlertController(
+                                            title: "Authentication Failed",
+                                            message: "Could not log in to Imgur. You can try again or switch to anonymous uploads in settings.",
+                                            alertActions: [.ok()]
+                                        )
+                                        self.viewController.present(failureAlert, animated: true)
+                                    }
+                                }
+                            }
+                        })
+                        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+                        self.viewController.present(alert, animated: true)
+                        return
+                    }
+
                     let alert: UIAlertController
                     switch error {
                     case let error as LocalizedError where error.failureReason != nil:

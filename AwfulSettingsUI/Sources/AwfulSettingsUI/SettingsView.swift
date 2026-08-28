@@ -46,6 +46,7 @@ public struct SettingsView: View {
     @AppStorage("imgur_upload_mode") private var imgurUploadMode: String = "Off"
 
     @ObservedObject var appIconDataSource: AppIconDataSource
+    let authenticateImgurAccount: () -> Void
     let avatarURL: URL?
     let buildInfo = BuildInfo()
     let cacheSizeText: String
@@ -88,6 +89,7 @@ public struct SettingsView: View {
 
     public init(
         appIconDataSource: AppIconDataSource,
+        authenticateImgurAccount: @escaping () -> Void,
         avatarURL: URL?,
         cacheSizeText: String,
         canOpenURL: @escaping (URL) -> Bool,
@@ -101,6 +103,7 @@ public struct SettingsView: View {
         resetSettings: @escaping () -> Void
     ) {
         self.appIconDataSource = appIconDataSource
+        self.authenticateImgurAccount = authenticateImgurAccount
         self.avatarURL = avatarURL
         self.cacheSizeText = cacheSizeText
         self.canOpenURL = canOpenURL
@@ -191,7 +194,9 @@ public struct SettingsView: View {
                     Text("Anonymous").tag("Anonymous")
                 }
                 .onChange(of: imgurUploadMode) { newValue in
-                    if newValue != "Imgur Account" {
+                    if newValue == "Imgur Account" {
+                        authenticateImgurAccount()
+                    } else {
                         clearImgurCredentials()
                     }
                 }
@@ -422,6 +427,7 @@ private struct SectionModifier: ViewModifier {
     NavigationView {
         SettingsView(
             appIconDataSource: .preview,
+            authenticateImgurAccount: { print("authenticating with Imgur") },
             avatarURL: nil,
             cacheSizeText: "42.3 MB",
             canOpenURL: { _ in true },

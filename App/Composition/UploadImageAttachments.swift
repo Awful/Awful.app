@@ -61,23 +61,7 @@ private func friendlierError(_ error: Error) -> Error {
  */
 func uploadImages(attachedTo richText: NSAttributedString, completion: @escaping (_ plainText: String?, _ error: Error?) -> Void) -> Progress {
     let progress = Progress(totalUnitCount: 1)
-    
-    // Check if we need authentication before proceeding
-    if ImgurAuthManager.shared.needsAuthentication {
-        DispatchQueue.main.async {
-            completion(nil, ImageUploadError.authenticationRequired)
-        }
-        return progress
-    }
-    
-    // Check if token needs refresh
-    if ImgurAuthManager.shared.currentUploadMode == "Imgur Account" && ImgurAuthManager.shared.checkTokenExpiry() {
-        DispatchQueue.main.async {
-            completion(nil, ImageUploadError.authenticationRequired)
-        }
-        return progress
-    }
-    
+
     let localCopy = richText.copy() as! NSAttributedString
     DispatchQueue.global(qos: DispatchQoS.QoSClass.default).async {
         let tags = localCopy.imageTags
@@ -85,6 +69,14 @@ func uploadImages(attachedTo richText: NSAttributedString, completion: @escaping
             progress.completedUnitCount += 1
             return DispatchQueue.main.async {
                 completion(localCopy.string, nil)
+            }
+        }
+
+        // Authentication only matters when there are images to upload.
+        if ImgurAuthManager.shared.needsAuthentication
+            || (ImgurAuthManager.shared.currentUploadMode == "Imgur Account" && ImgurAuthManager.shared.checkTokenExpiry()) {
+            return DispatchQueue.main.async {
+                completion(nil, ImageUploadError.authenticationRequired)
             }
         }
 
