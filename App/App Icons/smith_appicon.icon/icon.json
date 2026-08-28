@@ -4,15 +4,63 @@
   "groups" : [
     {
       "blend-mode" : "normal",
+      "blur-material" : null,
+      "layers" : [
+        {
+          "hidden" : false,
+          "image-name" : "eyes 2.svg",
+          "name" : "eyes 2",
+          "opacity" : 0,
+          "position" : {
+            "scale" : 1.04,
+            "translation-in-points" : [
+              0,
+              0
+            ]
+          }
+        }
+      ],
+      "opacity" : 1,
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.5
+      },
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0
+      }
+    },
+    {
+      "blend-mode" : "normal",
+      "blur-material" : null,
       "hidden" : false,
       "layers" : [
         {
           "blend-mode" : "normal",
-          "fill" : "automatic",
+          "fill" : {
+            "solid" : "extended-gray:0.00000,1.00000"
+          },
           "glass" : true,
-          "image-name" : "smith.svg",
-          "name" : "smith",
-          "opacity" : 1,
+          "hidden" : false,
+          "image-name" : "is.svg",
+          "name" : "is",
+          "opacity" : 0.8,
+          "position" : {
+            "scale" : 1.04,
+            "translation-in-points" : [
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "blend-mode" : "normal",
+          "fill" : {
+            "solid" : "extended-gray:0.00000,1.00000"
+          },
+          "glass" : true,
+          "image-name" : "lips.svg",
+          "name" : "lips",
           "position" : {
             "scale" : 1.04,
             "translation-in-points" : [
@@ -22,14 +70,16 @@
           }
         }
       ],
+      "lighting" : "individual",
       "opacity" : 0.8,
       "shadow" : {
         "kind" : "layer-color",
-        "opacity" : 0.14
+        "opacity" : 0.15
       },
+      "specular" : true,
       "translucency" : {
         "enabled" : true,
-        "value" : 0.5
+        "value" : 0.3
       }
     },
     {
@@ -39,12 +89,28 @@
         {
           "blend-mode" : "screen",
           "fill" : {
-            "solid" : "srgb:1.00000,1.00000,1.00000,1.00000"
+            "solid" : "gray:0.84883,1.00000"
           },
           "glass" : false,
           "hidden" : false,
-          "image-name" : "smith.svg",
-          "name" : "smith",
+          "image-name" : "is.svg",
+          "name" : "is",
+          "position" : {
+            "scale" : 1.04,
+            "translation-in-points" : [
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "blend-mode" : "screen",
+          "fill" : {
+            "solid" : "gray:0.84883,1.00000"
+          },
+          "glass" : false,
+          "image-name" : "lips.svg",
+          "name" : "lips",
           "position" : {
             "scale" : 1.04,
             "translation-in-points" : [
@@ -54,6 +120,7 @@
           }
         }
       ],
+      "lighting" : "combined",
       "opacity" : 0.8,
       "shadow" : {
         "kind" : "layer-color",
@@ -66,18 +133,33 @@
       }
     },
     {
-      "blur-material" : 0.5,
       "hidden" : false,
       "layers" : [
         {
           "blend-mode" : "screen",
           "fill" : {
-            "solid" : "srgb:1.00000,1.00000,1.00000,1.00000"
+            "solid" : "gray:0.84883,1.00000"
           },
           "glass" : false,
           "hidden" : false,
-          "image-name" : "smith.svg",
-          "name" : "smith",
+          "image-name" : "is.svg",
+          "name" : "is",
+          "position" : {
+            "scale" : 1.04,
+            "translation-in-points" : [
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "blend-mode" : "screen",
+          "fill" : {
+            "solid" : "gray:0.84883,1.00000"
+          },
+          "glass" : false,
+          "image-name" : "lips.svg",
+          "name" : "lips",
           "position" : {
             "scale" : 1.04,
             "translation-in-points" : [
@@ -87,38 +169,10 @@
           }
         }
       ],
-      "opacity" : 0.8,
       "shadow" : {
-        "kind" : "layer-color",
-        "opacity" : 0
+        "kind" : "neutral",
+        "opacity" : 0.5
       },
-      "specular" : true,
-      "translucency" : {
-        "enabled" : true,
-        "value" : 0
-      }
-    },
-    {
-      "blur-material" : null,
-      "layers" : [
-        {
-          "hidden" : true,
-          "image-name" : "Smith Skin.svg",
-          "name" : "Smith Skin",
-          "position" : {
-            "scale" : 1.5,
-            "translation-in-points" : [
-              0,
-              0
-            ]
-          }
-        }
-      ],
-      "shadow" : {
-        "kind" : "layer-color",
-        "opacity" : 0
-      },
-      "specular" : false,
       "translucency" : {
         "enabled" : true,
         "value" : 0.5

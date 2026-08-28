@@ -28,6 +28,9 @@
     {
       "layers" : [
         {
+          "fill" : {
+            "solid" : "gray:0.85116,1.00000"
+          },
           "glass" : true,
           "hidden" : false,
           "image-name" : "shine2.svg",
@@ -56,6 +59,9 @@
       "hidden" : false,
       "layers" : [
         {
+          "fill" : {
+            "solid" : "gray:0.85411,1.00000"
+          },
           "glass" : true,
           "hidden" : false,
           "image-name" : "shine2.svg",

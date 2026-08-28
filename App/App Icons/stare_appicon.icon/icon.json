@@ -8,8 +8,8 @@
       "appearance" : "light",
       "value" : {
         "linear-gradient" : [
-          "srgb:0.34510,0.18824,0.55294,1.00000",
-          "display-p3:1.00000,0.97647,0.35419,1.00000"
+          "extended-srgb:1.00000,0.21961,0.23529,1.00000",
+          "extended-srgb:1.00000,0.80000,0.00000,1.00000"
         ]
       }
     }
@@ -22,7 +22,7 @@
           "hidden" : false,
           "image-name" : "mou.svg",
           "name" : "mou",
-          "opacity" : 0.5
+          "opacity" : 1
         },
         {
           "hidden" : false,
@@ -31,6 +31,7 @@
           "opacity" : 1
         }
       ],
+      "opacity" : 1,
       "position" : {
         "scale" : 1,
         "translation-in-points" : [
@@ -40,7 +41,7 @@
       },
       "shadow" : {
         "kind" : "layer-color",
-        "opacity" : 0.5
+        "opacity" : 0.25
       },
       "specular" : false,
       "translucency" : {
@@ -55,19 +56,7 @@
           "hidden" : false,
           "image-name" : "pup.svg",
           "name" : "pup",
-          "position" : {
-            "scale" : 1,
-            "translation-in-points" : [
-              0,
-              0
-            ]
-          }
-        },
-        {
-          "blend-mode" : "overlay",
-          "hidden" : false,
-          "image-name" : "pup.svg",
-          "name" : "pup",
+          "opacity" : 1,
           "position" : {
             "scale" : 1,
             "translation-in-points" : [
@@ -80,6 +69,7 @@
           "hidden" : false,
           "image-name" : "pup.svg",
           "name" : "pup",
+          "opacity" : 1,
           "position" : {
             "scale" : 1,
             "translation-in-points" : [
@@ -89,14 +79,17 @@
           }
         },
         {
+          "blend-mode" : "normal",
           "fill" : {
-            "solid" : "srgb:0.85478,0.85478,0.85478,1.00000"
+            "solid" : "srgb:0.75000,0.75000,0.75000,1.00000"
           },
           "hidden" : false,
           "image-name" : "eyezz.svg",
-          "name" : "eyezz"
+          "name" : "eyezz",
+          "opacity" : 0.95
         }
       ],
+      "opacity" : 1,
       "position" : {
         "scale" : 1.17,
         "translation-in-points" : [
@@ -118,9 +111,11 @@
       "layers" : [
         {
           "image-name" : "bgggg.svg",
-          "name" : "bgggg"
+          "name" : "bgggg",
+          "opacity" : 1
         }
       ],
+      "opacity" : 0.8,
       "shadow" : {
         "kind" : "layer-color",
         "opacity" : 0.5
