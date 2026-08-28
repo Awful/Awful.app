@@ -1,12 +1,48 @@
 {
   "color-space-for-untagged-svg-colors" : "display-p3",
-  "fill" : {
-    "solid" : "srgb:0.50000,0.70000,1.00000,1.00000"
-  },
+  "fill" : "system-light",
   "groups" : [
     {
+      "blend-mode" : "normal",
+      "hidden" : false,
       "layers" : [
         {
+          "blend-mode" : "normal",
+          "fill" : "automatic",
+          "glass" : true,
+          "image-name" : "smith.svg",
+          "name" : "smith",
+          "opacity" : 1,
+          "position" : {
+            "scale" : 1.04,
+            "translation-in-points" : [
+              0,
+              0
+            ]
+          }
+        }
+      ],
+      "opacity" : 0.8,
+      "shadow" : {
+        "kind" : "layer-color",
+        "opacity" : 0.14
+      },
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.5
+      }
+    },
+    {
+      "blur-material" : 0.5,
+      "hidden" : false,
+      "layers" : [
+        {
+          "blend-mode" : "screen",
+          "fill" : {
+            "solid" : "srgb:1.00000,1.00000,1.00000,1.00000"
+          },
+          "glass" : false,
+          "hidden" : false,
           "image-name" : "smith.svg",
           "name" : "smith",
           "position" : {
@@ -18,9 +54,43 @@
           }
         }
       ],
+      "opacity" : 0.8,
       "shadow" : {
         "kind" : "layer-color",
-        "opacity" : 0.24999999999999997
+        "opacity" : 0
+      },
+      "specular" : true,
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0
+      }
+    },
+    {
+      "blur-material" : 0.5,
+      "hidden" : false,
+      "layers" : [
+        {
+          "blend-mode" : "screen",
+          "fill" : {
+            "solid" : "srgb:1.00000,1.00000,1.00000,1.00000"
+          },
+          "glass" : false,
+          "hidden" : false,
+          "image-name" : "smith.svg",
+          "name" : "smith",
+          "position" : {
+            "scale" : 1.04,
+            "translation-in-points" : [
+              0,
+              0
+            ]
+          }
+        }
+      ],
+      "opacity" : 0.8,
+      "shadow" : {
+        "kind" : "layer-color",
+        "opacity" : 0
       },
       "specular" : true,
       "translucency" : {
@@ -32,7 +102,7 @@
       "blur-material" : null,
       "layers" : [
         {
-          "hidden" : false,
+          "hidden" : true,
           "image-name" : "Smith Skin.svg",
           "name" : "Smith Skin",
           "position" : {
