@@ -26,79 +26,13 @@
   ],
   "groups" : [
     {
-      "layers" : [
-        {
-          "fill" : {
-            "solid" : "gray:0.85116,1.00000"
-          },
-          "glass" : true,
-          "hidden" : false,
-          "image-name" : "shine2.svg",
-          "name" : "shine2",
-          "opacity" : 0.5,
-          "position" : {
-            "scale" : 1,
-            "translation-in-points" : [
-              28,
-              -65
-            ]
-          }
-        }
-      ],
-      "shadow" : {
-        "kind" : "neutral",
-        "opacity" : 0.5
-      },
-      "translucency" : {
-        "enabled" : true,
-        "value" : 0.5
-      }
-    },
-    {
-      "blend-mode" : "normal",
-      "hidden" : false,
-      "layers" : [
-        {
-          "fill" : {
-            "solid" : "gray:0.85411,1.00000"
-          },
-          "glass" : true,
-          "hidden" : false,
-          "image-name" : "shine2.svg",
-          "name" : "shine2",
-          "position" : {
-            "scale" : 1,
-            "translation-in-points" : [
-              28,
-              -65
-            ]
-          }
-        },
-        {
-          "blend-mode" : "multiply",
-          "hidden" : false,
-          "image-name" : "cutexx.svg",
-          "name" : "cutexx"
-        }
-      ],
-      "opacity" : 1,
-      "shadow" : {
-        "kind" : "layer-color",
-        "opacity" : 0.1
-      },
-      "translucency" : {
-        "enabled" : true,
-        "value" : 0.5
-      }
-    },
-    {
       "hidden" : false,
       "layers" : [
         {
           "fill" : {
             "linear-gradient" : [
-              "extended-srgb:0.00000,0.75294,0.90980,1.00000",
-              "extended-srgb:0.00000,0.53333,1.00000,1.00000"
+              "srgb:0.00000,0.75294,1.00000,1.00000",
+              "srgb:0.00000,0.37647,1.00000,1.00000"
             ],
             "orientation" : {
               "start" : {
@@ -116,6 +50,13 @@
           "name" : "cute bg z"
         }
       ],
+      "position" : {
+        "scale" : 1.04,
+        "translation-in-points" : [
+          0,
+          0
+        ]
+      },
       "shadow" : {
         "kind" : "layer-color",
         "opacity" : 0.5
@@ -128,12 +69,19 @@
     {
       "layers" : [
         {
-          "blend-mode" : "multiply",
+          "blend-mode" : "normal",
           "hidden" : false,
-          "image-name" : "cute.svg",
-          "name" : "cute"
+          "image-name" : "cutex.svg",
+          "name" : "cutex"
         }
       ],
+      "position" : {
+        "scale" : 1.04,
+        "translation-in-points" : [
+          0,
+          0
+        ]
+      },
       "shadow" : {
         "kind" : "neutral",
         "opacity" : 0.5
