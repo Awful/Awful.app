@@ -529,6 +529,12 @@ extension MessageViewController: UIScrollViewDelegate {
     }
 }
 
+extension MessageViewController: NavigationBarScrollProgressProviding {
+    func resyncNavigationBarScrollProgress() {
+        scrollViewDidScroll(renderView.scrollView)
+    }
+}
+
 extension MessageViewController: RestorableLocation {}
 
 private struct RenderModel: StencilContextConvertible {

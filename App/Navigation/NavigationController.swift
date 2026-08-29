@@ -870,6 +870,12 @@ final class NavigationController: UINavigationController, Themeable {
         appearance.backButtonAppearance.highlighted.titleTextAttributes = buttonAttributes
     }
 
+    /// Forces the next scroll-progress update to re-apply the appearance, even if the reported progress hasn't changed.
+    @available(iOS 26.0, *)
+    func invalidateScrollProgressCache() {
+        lastAppliedScrollProgress = -1
+    }
+
     @objc func updateNavigationBarTintForScrollProgress(_ progress: NSNumber) {
         guard #available(iOS 26.0, *) else { return }
 
@@ -1288,8 +1294,20 @@ extension NavigationController: UINavigationControllerDelegate {
 
         if #available(iOS 26.0, *) {
             isScrolledFromTop = false
+            invalidateScrollProgressCache()
+
+            if animated {
+                // A cancelled interactive pop calls neither -...didShowViewController: nor scrollViewDidScroll,
+                // so nothing would restore the transparent bar on a still-scrolled page. The coordinator's
+                // completion does run on cancellation, after the rewind settles.
+                navigationController.transitionCoordinator?.animate(alongsideTransition: nil) { [weak self] context in
+                    guard context.isCancelled, let self else { return }
+                    self.invalidateScrollProgressCache()
+                    (self.topViewController as? NavigationBarScrollProgressProviding)?.resyncNavigationBarScrollProgress()
+                }
+            }
         }
-        
+
         if let unpopHandler = unpopHandler , animated {
             unpopHandler.navigationControllerDidBeginAnimating()
             
@@ -1345,4 +1363,10 @@ extension NavigationController: UINavigationControllerDelegate {
         
         return realDelegate?.navigationController?(navigationController, animationControllerFor: operation, from: fromVC, to: toVC)
     }
+}
+
+/// A view controller that can re-derive the navigation bar's opaque/clear state from its current
+/// scroll position when no scroll event will arrive to do so (e.g. after a cancelled interactive pop).
+@MainActor protocol NavigationBarScrollProgressProviding: UIViewController {
+    func resyncNavigationBarScrollProgress()
 }

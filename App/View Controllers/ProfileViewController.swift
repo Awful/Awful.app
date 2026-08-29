@@ -310,6 +310,12 @@ extension ProfileViewController: UIScrollViewDelegate {
     }
 }
 
+extension ProfileViewController: NavigationBarScrollProgressProviding {
+    func resyncNavigationBarScrollProgress() {
+        scrollViewDidScroll(renderView.scrollView)
+    }
+}
+
 extension ProfileViewController: RenderViewDelegate {
     func didFinishRenderingHTML(in view: RenderView) {
         // nop

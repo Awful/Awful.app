@@ -896,6 +896,14 @@ extension PostsPageView: ScrollViewDelegateExtras {
         }
     }
 
+    /// Re-derives the nav bar's opaque/clear state (and title color) from the current scroll offset.
+    /// Narrower than re-invoking `scrollViewDidScroll`, which would also run the top bar state machine
+    /// and endless scroll with an unchanged offset.
+    @available(iOS 26.0, *)
+    func syncNavigationBarScrollProgress() {
+        updateNavigationBarForScrollProgress(renderView.scrollView)
+    }
+
     @available(iOS 26.0, *)
     private func updateNavigationBarForScrollProgress(_ scrollView: UIScrollView) {
         let progress = scrollView.navigationBarScrollProgress

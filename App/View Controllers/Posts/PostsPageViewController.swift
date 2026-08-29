@@ -2783,3 +2783,10 @@ extension PostsPageViewController {
         return keyCommands
     }
 }
+
+extension PostsPageViewController: NavigationBarScrollProgressProviding {
+    func resyncNavigationBarScrollProgress() {
+        guard #available(iOS 26.0, *) else { return }
+        postsView.syncNavigationBarScrollProgress()
+    }
+}
