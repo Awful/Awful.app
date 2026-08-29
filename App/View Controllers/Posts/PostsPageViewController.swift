@@ -1582,6 +1582,7 @@ final class PostsPageViewController: ViewController {
                let existing = nav.viewControllers.last(where: { $0 is SearchResultsViewController })
             {
                 nav.popToViewController(existing, animated: true)
+                splitViewController?.showPrimaryViewController()
                 return
             }
             guard let record = LastSearchStore.record else { return }
@@ -1592,6 +1593,7 @@ final class PostsPageViewController: ViewController {
     private func showSearch(_ screens: [UIViewController]) {
         guard let nav = searchHostNavigationController else { return }
         SearchFormViewController.push(screens, onto: nav)
+        splitViewController?.showPrimaryViewController()
     }
 
     /// The navigation stack the search screens should live in.
