@@ -369,7 +369,12 @@ final class PostsPageViewController: ViewController {
                 glassView.textColor = theme["mode"] == "dark" ? .white : .black
                 glassView.font = fontForPostTitle(from: theme, idiom: UIDevice.current.userInterfaceIdiom)
 
-                navigationItem.titleView = glassView
+                // Re-assigning the same titleView instance is not a no-op:
+                // UIKit tears it down and rehosts it, which mid-transition
+                // lands it in a clipping transition container.
+                if navigationItem.titleView !== glassView {
+                    navigationItem.titleView = glassView
+                }
 
                 configureNavigationBarForLiquidGlass()
             } else {
@@ -2518,7 +2523,12 @@ final class PostsPageViewController: ViewController {
         navController.updateNavigationBarTintForScrollProgress(NSNumber(value: 0.0))
 
         navigationBar.setNeedsLayout()
-        navigationBar.layoutIfNeeded()
+        // Forcing synchronous bar layout during a push/pop makes UIKit
+        // relayout the title inside its clipping transition container;
+        // defer to the normal layout pass while a transition is running.
+        if transitionCoordinator == nil {
+            navigationBar.layoutIfNeeded()
+        }
 
         if let previousVC = navigationController?.viewControllers.dropLast().last {
             previousVC.navigationItem.backBarButtonItem?.tintColor = navTextColor

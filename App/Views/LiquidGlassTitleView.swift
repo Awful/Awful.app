@@ -13,6 +13,9 @@ final class LiquidGlassTitleView: UIView {
     private static let minVerticalPadding: CGFloat = 3
     private static let phoneWidth: CGFloat = 320
     private static let defaultHeight: CGFloat = 56
+    private static let maxAncestorUnclipDepth = 8
+    // Mid-transition the bar sits deeper: transition hosts add ~3 levels.
+    private static let maxBarSearchDepth = 16
 
     private var visualEffectView: UIVisualEffectView = {
         let effect = UIGlassEffect()
@@ -40,8 +43,9 @@ final class LiquidGlassTitleView: UIView {
 
     /// The height the navigation bar most recently offered via `sizeThatFits(_:)`
     /// (or, failing that, the superview's height observed in `layoutSubviews`).
-    /// The capsule never reports a height beyond this, so it can't overhang the
-    /// bar's content area and get clipped at the top.
+    /// The capsule never reports a height beyond this. Overhanging the bar's
+    /// content area is fine — see `unclipAncestors()` for how the overhang
+    /// survives transitions unclipped.
     private var grantedHeight: CGFloat? {
         didSet {
             if grantedHeight != oldValue {
@@ -53,6 +57,7 @@ final class LiquidGlassTitleView: UIView {
     var title: String? {
         get { titleLabel.text }
         set {
+            guard newValue != titleLabel.text else { return }
             titleLabel.text = newValue
             largeContentTitle = newValue
             updateTitleDisplay()
@@ -204,6 +209,67 @@ final class LiquidGlassTitleView: UIView {
         return fit
     }
 
+    /// The capsule deliberately overhangs the bar's content area, so any
+    /// clipping between it and the screen shears its top off at the bar's
+    /// top edge (and corrupts the glass shadow into a grey wash — see the
+    /// cornerConfiguration comment above). Two distinct places clip:
+    ///
+    /// 1. Transient containers UIKit hosts the live view in (seen on
+    ///    interactive pops) — handled by walking our own superview chain.
+    /// 2. The animated push/pop, where what's on screen is not the live view
+    ///    at all: the bar renders a `_UIPortalView` COPY of its content
+    ///    inside a clipped sibling container (`ViewControllerMatchingView`),
+    ///    unreachable from our ancestor chain — handled by sweeping the
+    ///    bar's subtree and un-clipping just the portal's ancestors, which
+    ///    leaves the bar buttons' own (legitimate) clipping untouched.
+    ///
+    /// All of these are transient, so clipping is never restored.
+    private func unclipAncestors() {
+        var ancestor = superview
+        var depth = 0
+        var bar: UINavigationBar?
+        while let view = ancestor, depth < Self.maxBarSearchDepth {
+            if let navigationBar = view as? UINavigationBar {
+                bar = navigationBar
+                break
+            }
+            if depth < Self.maxAncestorUnclipDepth {
+                if view.clipsToBounds { view.clipsToBounds = false }
+                if view.layer.masksToBounds { view.layer.masksToBounds = false }
+            }
+            ancestor = view.superview
+            depth += 1
+        }
+        if let bar {
+            unclipPortalAncestors(in: bar)
+        }
+    }
+
+    @discardableResult
+    private func unclipPortalAncestors(in view: UIView) -> Bool {
+        var containsPortal = NSStringFromClass(type(of: view)).contains("PortalView")
+        for subview in view.subviews {
+            if unclipPortalAncestors(in: subview) {
+                containsPortal = true
+            }
+        }
+        if containsPortal {
+            if view.clipsToBounds { view.clipsToBounds = false }
+            if view.layer.masksToBounds { view.layer.masksToBounds = false }
+        }
+        return containsPortal
+    }
+
+    override func didMoveToSuperview() {
+        super.didMoveToSuperview()
+        guard superview != nil else { return }
+        unclipAncestors()
+        // Transition containers (and the portal copy) can be assembled just
+        // after we're reparented, which doesn't re-fire didMoveToSuperview;
+        // re-walk next pass.
+        DispatchQueue.main.async { [weak self] in self?.unclipAncestors() }
+    }
+
     override func layoutSubviews() {
         super.layoutSubviews()
 
@@ -217,6 +283,10 @@ final class LiquidGlassTitleView: UIView {
             grantedHeight = superview.bounds.height
             superview.setNeedsLayout()
         }
+
+        // UIKit can re-enable clipping mid-transition (interactive pops
+        // relayout the bar per frame), so reassert every layout pass.
+        unclipAncestors()
     }
 
     override func didMoveToWindow() {
@@ -225,6 +295,7 @@ final class LiquidGlassTitleView: UIView {
         if window != nil {
             invalidateIntrinsicContentSize()
             superview?.setNeedsLayout()
+            unclipAncestors()
         }
     }
 }
