@@ -12,6 +12,7 @@ final class LiquidGlassTitleView: UIView {
     private static let verticalPadding: CGFloat = 8
     private static let minVerticalPadding: CGFloat = 3
     private static let phoneWidth: CGFloat = 320
+    private static let minWidthFraction: CGFloat = 0.5
     private static let defaultHeight: CGFloat = 56
     private static let maxAncestorUnclipDepth = 8
     // Mid-transition the bar sits deeper: transition hosts add ~3 levels.
@@ -175,7 +176,7 @@ final class LiquidGlassTitleView: UIView {
             titleLabel.numberOfLines = lines
         }
 
-        let width = min(maxW, labelSize.width + Self.horizontalPadding * 2)
+        let width = min(maxW, max(maxW * Self.minWidthFraction, labelSize.width + Self.horizontalPadding * 2))
         var height = max(Self.defaultHeight, labelSize.height + Self.verticalPadding * 2)
         if let granted = grantedHeight {
             height = min(height, granted)
