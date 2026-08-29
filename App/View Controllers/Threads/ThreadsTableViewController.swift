@@ -214,6 +214,7 @@ final class ThreadsTableViewController: CollectionViewController, ComposeTextVie
             .sink { [weak self] _ in
                 guard let self else { return }
                 refreshArchivesBanner()
+                updateComposeBarButtonItem()
                 if visible {
                     refresh()
                 }
@@ -280,7 +281,8 @@ final class ThreadsTableViewController: CollectionViewController, ComposeTextVie
         }()
 
     private func updateComposeBarButtonItem() {
-        composeBarButtonItem.isEnabled = forum.canPost && forum.lastRefresh != nil
+        let isArchivesMode = ForumsClient.shared.currentArchivesTimeframe != nil
+        composeBarButtonItem.isEnabled = forum.canPost && forum.lastRefresh != nil && !isArchivesMode
     }
 
     @objc func didTapCompose() {

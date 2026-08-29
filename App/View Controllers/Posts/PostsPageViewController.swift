@@ -729,6 +729,11 @@ final class PostsPageViewController: ViewController {
         }
     }
 
+    /// Posting is impossible while browsing the archives, so threads behave as if closed.
+    private var isArchivesMode: Bool {
+        ForumsClient.shared.currentArchivesTimeframe != nil
+    }
+
     private lazy var composeItem: UIBarButtonItem = {
         let item = UIBarButtonItem(image: UIImage(named: "compose"), style: .plain, target: self, action: #selector(compose))
         item.accessibilityLabel = NSLocalizedString("compose.accessibility-label", comment: "")
@@ -1050,7 +1055,7 @@ final class PostsPageViewController: ViewController {
             }
         }()
 
-        composeItem.isEnabled = !thread.closed
+        composeItem.isEnabled = !thread.closed && !isArchivesMode
 
         updateToolbarItems()
     }
@@ -1998,7 +2003,7 @@ final class PostsPageViewController: ViewController {
             }
 
             // Quote
-            if !thread.closed {
+            if !thread.closed && !isArchivesMode {
                 postActions.append(.init(
                     title: "Quote",
                     image: UIImage(named: "quote-post")!.withRenderingMode(.alwaysTemplate),
@@ -2008,7 +2013,7 @@ final class PostsPageViewController: ViewController {
             }
 
             // Copy post
-            if thread.closed {
+            if thread.closed || isArchivesMode {
                 postActions.append(.init(
                     title: "Copy",
                     image: UIImage(named: "quote-post")!.withRenderingMode(.alwaysTemplate),
@@ -2427,6 +2432,13 @@ final class PostsPageViewController: ViewController {
             .sink { [weak self] _ in self?.updateUserInterface() }
             .store(in: &cancellables)
 
+        // Entering or leaving the archives changes whether replying is possible, so refresh the
+        // compose button without waiting for a page load.
+        NotificationCenter.default.publisher(for: ForumsClient.archivesTimeframeDidChange)
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in self?.updateUserInterface() }
+            .store(in: &cancellables)
+
         $showAvatars
             .dropFirst()
             .receive(on: RunLoop.main)
@@ -2764,7 +2776,9 @@ extension PostsPageViewController {
             keyCommands.append(UIKeyCommand(action: #selector(loadNextPage), input: "]", modifierFlags: .command, discoverabilityTitle: "Next Page"))
         }
 
-        keyCommands.append(UIKeyCommand(action: #selector(newReply), input: "N", modifierFlags: .command, discoverabilityTitle: "New Reply"))
+        if !thread.closed && !isArchivesMode {
+            keyCommands.append(UIKeyCommand(action: #selector(newReply), input: "N", modifierFlags: .command, discoverabilityTitle: "New Reply"))
+        }
 
         return keyCommands
     }
