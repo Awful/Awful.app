@@ -151,6 +151,7 @@ class ComposeTextViewController: ViewController, ModernToolbarActionHandling {
         textDidChangeObserver = NotificationCenter.default.addObserver(forName: UITextView.textDidChangeNotification, object: textView, queue: OperationQueue.main, using: { [weak self] (note: Notification) in
             self?.updateSubmitButtonItem()
             self?.bodyTextDidChange()
+            self?.textView.scrollCaretToVisible()
         })
     }
     private func endObservingTextChangeNotification() {
@@ -197,11 +198,8 @@ class ComposeTextViewController: ViewController, ModernToolbarActionHandling {
         UIView.animate(withDuration: duration, delay: 0, options: options, animations: { 
             self.textView.contentInset.bottom = overlap.height
             self.textView.verticalScrollIndicatorInsets.bottom = overlap.height
-        }, completion: { isFinished in
-            if let endPosition = self.textView.selectedTextRange?.end {
-                let caretRect = self.textView.caretRect(for: endPosition)
-                self.textView.scrollRectToVisible(caretRect, animated: true)
-            }
+        }, completion: { _ in
+            self.textView.scrollCaretToVisible(animated: true)
         })
     }
     

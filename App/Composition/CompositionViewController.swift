@@ -116,7 +116,14 @@ final class CompositionViewController: ViewController, ModernToolbarActionHandli
     fileprivate var keyboardAvoider: ScrollViewKeyboardAvoider?
     fileprivate var toolbarContainer: CompositionToolbarContainer?
     fileprivate var menuTree: CompositionMenuTree?
+    private var textDidChangeObserver: NSObjectProtocol?
     private weak var currentDraft: (NSObject & ReplyDraft)?
+
+    deinit {
+        if let token = textDidChangeObserver {
+            NotificationCenter.default.removeObserver(token)
+        }
+    }
 
     /// Called when attachment processing starts or finishes. `true` means processing is in progress.
     var onAttachmentProcessingChanged: ((Bool) -> Void)?
@@ -233,6 +240,21 @@ final class CompositionViewController: ViewController, ModernToolbarActionHandli
         super.viewDidLoad()
 
         keyboardAvoider = ScrollViewKeyboardAvoider(textView)
+        // Re-scroll once the insets settle, in case text was inserted while the keyboard was
+        // still animating up (e.g. pasting an image right after the picker dismisses).
+        keyboardAvoider?.onInsetsChanged = { [weak self] in
+            self?.textView.scrollCaretToVisible()
+        }
+
+        // Follow the caret as text changes (typing and programmatic inserts like pasted images)
+        // so it stays visible above the input accessory toolbars. UIKit's built-in follow is
+        // unreliable here, especially after inserting a tall image attachment.
+        textDidChangeObserver = NotificationCenter.default.addObserver(
+            forName: UITextView.textDidChangeNotification, object: textView, queue: .main
+        ) { [weak self] _ in
+            self?.textView.scrollCaretToVisible()
+        }
+
         menuTree = CompositionMenuTree(textView: textView)
         menuTree?.onAttachmentChanged = { [weak self] in
             self?.onAttachmentProcessingChanged?(false)
