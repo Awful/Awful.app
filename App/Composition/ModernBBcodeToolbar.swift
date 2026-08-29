@@ -14,6 +14,8 @@ enum ModernToolbarAction {
     case video
     /// Only offered when composing a new thread; a poll attaches to the thread, not to a post.
     case poll
+    /// Only offered when replying to the app's feedback thread; appends device/app diagnostics.
+    case specs
 }
 
 /// Modern toolbar with quick access to BBcode formatting options
@@ -43,21 +45,37 @@ final class ModernBBcodeToolbar: UIView {
     var showsPollButton = false {
         didSet {
             guard showsPollButton != oldValue else { return }
-            if showsPollButton {
-                stackView.addArrangedSubview(pollButton)
-                // A self-referential constraint survives removal from the superview, so make it
-                // once rather than stacking a duplicate every time the button comes back.
-                pollButtonHeightConstraint.isActive = true
-            } else {
-                stackView.removeArrangedSubview(pollButton)
-                pollButton.removeFromSuperview()
-            }
-            updateKeyboardAppearance()
-            updateButtonFonts()
+            setButton(pollButton, visible: showsPollButton, heightConstraint: pollButtonHeightConstraint)
         }
     }
 
     private lazy var pollButtonHeightConstraint = pollButton.heightAnchor.constraint(equalToConstant: Self.buttonHeight)
+
+    /// Adds a Specs button to the toolbar. Only the reply composer for the app's feedback thread
+    /// sets this: the button appends device/app diagnostics that help reproduce bug reports.
+    var showsSpecsButton = false {
+        didSet {
+            guard showsSpecsButton != oldValue else { return }
+            setButton(specsButton, visible: showsSpecsButton, heightConstraint: specsButtonHeightConstraint)
+        }
+    }
+
+    private lazy var specsButtonHeightConstraint = specsButton.heightAnchor.constraint(equalToConstant: Self.buttonHeight)
+
+    /// Adds or removes a conditionally-shown button. The height constraint is self-referential so
+    /// it survives removal from the superview; activate the one made at init rather than stacking
+    /// a duplicate every time the button comes back.
+    private func setButton(_ button: UIButton, visible: Bool, heightConstraint: NSLayoutConstraint) {
+        if visible {
+            stackView.addArrangedSubview(button)
+            heightConstraint.isActive = true
+        } else {
+            stackView.removeArrangedSubview(button)
+            button.removeFromSuperview()
+        }
+        updateKeyboardAppearance()
+        updateButtonFonts()
+    }
 
     /// Marks the Poll button to show the thread already has a poll attached.
     var pollIsAttached = false {
@@ -80,6 +98,7 @@ final class ModernBBcodeToolbar: UIView {
     private var allButtons: [UIButton] {
         var buttons = [urlButton, imageButton, formatButton, videoButton]
         if showsPollButton { buttons.append(pollButton) }
+        if showsSpecsButton { buttons.append(specsButton) }
         return buttons
     }
 
@@ -95,6 +114,13 @@ final class ModernBBcodeToolbar: UIView {
         let button = createToolbarButton(title: "Poll")
         button.addTarget(self, action: #selector(didTapPoll), for: .primaryActionTriggered)
         button.accessibilityLabel = "Add a poll"
+        return button
+    }()
+
+    private lazy var specsButton: UIButton = {
+        let button = createToolbarButton(title: "Specs")
+        button.addTarget(self, action: #selector(didTapSpecs), for: .primaryActionTriggered)
+        button.accessibilityLabel = "Append device and app info"
         return button
     }()
 
@@ -203,6 +229,11 @@ final class ModernBBcodeToolbar: UIView {
         onAction?(.poll)
     }
 
+    @objc private func didTapSpecs() {
+        triggerHaptic()
+        onAction?(.specs)
+    }
+
     private func triggerHaptic() {
         if enableHaptics {
             UIImpactFeedbackGenerator(style: .light).impactOccurred()
@@ -269,7 +300,7 @@ private final class GlassToolbarButton: UIButton {
         titleLabelView.text = title
         titleLabelView.textAlignment = .center
         titleLabelView.isUserInteractionEnabled = false
-        // A fifth button (Poll) makes each one narrower; shrink rather than truncate "[video]".
+        // A fifth button (Poll or Specs) makes each one narrower; shrink rather than truncate "[video]".
         titleLabelView.adjustsFontSizeToFitWidth = true
         titleLabelView.minimumScaleFactor = 0.75
 
@@ -341,7 +372,7 @@ private final class BlurToolbarButton: UIButton {
         titleLabelView.text = title
         titleLabelView.textAlignment = .center
         titleLabelView.isUserInteractionEnabled = false
-        // A fifth button (Poll) makes each one narrower; shrink rather than truncate "[video]".
+        // A fifth button (Poll or Specs) makes each one narrower; shrink rather than truncate "[video]".
         titleLabelView.adjustsFontSizeToFitWidth = true
         titleLabelView.minimumScaleFactor = 0.75
 

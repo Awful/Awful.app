@@ -39,6 +39,12 @@ final class CompositionToolbarContainer: UIInputView {
         set { modernToolbar.pollIsAttached = newValue }
     }
 
+    /// Adds a Specs button to the modern toolbar. Only the feedback-thread reply composer sets this.
+    var showsSpecsButton: Bool {
+        get { modernToolbar.showsSpecsButton }
+        set { modernToolbar.showsSpecsButton = newValue }
+    }
+
     private let modernToolbar: ModernBBcodeToolbar
     private let existingToolbar: CompositionInputAccessoryView
 

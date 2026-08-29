@@ -24,4 +24,13 @@ enum Environment {
     static var isInstalledViaTestFlight: Bool {
         return !isSimulator && Bundle.main.containsSandboxReceipt
     }
+
+    /// The thread ID of the app's feedback thread ("Awful's Thread"), where the reply composer
+    /// offers a Specs button.
+    static let feedbackThreadID: String = {
+        guard let threadID = Bundle.main.object(forInfoDictionaryKey: "AwfulFeedbackThreadID") as? String else {
+            fatalError("missing feedback thread ID; add AwfulFeedbackThreadID to Info.plist")
+        }
+        return threadID
+    }()
 }

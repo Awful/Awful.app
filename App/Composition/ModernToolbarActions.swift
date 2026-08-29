@@ -35,9 +35,10 @@ extension ModernToolbarActionHandling {
             BBcodeTagHelper(textView: toolbarTextView).applyFormat(option)
         case .video:
             showVideoPrompt()
-        case .poll:
-            // Only the new thread composer offers a poll button, and it intercepts the action
-            // before handing anything else over to us.
+        case .poll, .specs:
+            // Only one composer offers each of these buttons (poll: new thread; specs: reply in
+            // the feedback thread), and it intercepts the action before handing anything else
+            // over to us.
             break
         }
     }

@@ -108,7 +108,11 @@ final class CompositionViewController: ViewController, ModernToolbarActionHandli
 
         toolbarContainer = CompositionToolbarContainer(textView: _textView)
         toolbarContainer?.onToolbarAction = { [weak self] action in
-            self?.handleModernToolbarAction(action)
+            if case .specs = action {
+                self?.appendSpecs()
+            } else {
+                self?.handleModernToolbarAction(action)
+            }
         }
         _textView.inputAccessoryView = toolbarContainer
     }
@@ -131,7 +135,30 @@ final class CompositionViewController: ViewController, ModernToolbarActionHandli
     func setDraft(_ draft: NSObject & ReplyDraft) {
         menuTree?.draft = draft
         currentDraft = draft
+        toolbarContainer?.showsSpecsButton = draft.thread.threadID == Environment.feedbackThreadID
         updateAttachmentPreview()
+    }
+
+    /// Appends device/app diagnostics to the end of the post, for bug reports in the feedback thread.
+    private func appendSpecs() {
+        let existing = textView.textStorage.string
+        let separator: String
+        if existing.isEmpty || existing.hasSuffix("\n\n") {
+            separator = ""
+        } else if existing.hasSuffix("\n") {
+            separator = "\n"
+        } else {
+            separator = "\n\n"
+        }
+
+        let report = SpecsReport(
+            systemInterfaceStyle: view.window?.traitCollection.userInterfaceStyle
+                ?? traitCollection.userInterfaceStyle
+        )
+        // replaceSelection(with:) posts textDidChangeNotification, which enables the Post button,
+        // schedules the draft autosave, and scrolls the caret (now after the specs) into view.
+        textView.selectedRange = NSRange(location: textView.textStorage.length, length: 0)
+        textView.replaceSelection(with: separator + report.text)
     }
 
     func showResizingPlaceholder() {

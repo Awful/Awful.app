@@ -50,6 +50,7 @@
 		AC10AC10AC10AC10AC500001 /* AwfulRapsheet in Frameworks */ = {isa = PBXBuildFile; productRef = AC10AC10AC10AC10AC500003 /* AwfulRapsheet */; };
 		AC10AC10AC10AC10AC500011 /* RapsheetHandlers+Awful.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC10AC10AC10AC10AC500012 /* RapsheetHandlers+Awful.swift */; };
 		DDDDDDDD000000000000000A /* ModernToolbarActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDDDDDDD0000000000000009 /* ModernToolbarActions.swift */; };
+		DDDDDDDD000000000000000C /* SpecsReport.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDDDDDDD000000000000000B /* SpecsReport.swift */; };
 		DDDDDDDD0000000000000002 /* LepersColony.html.stencil in Resources */ = {isa = PBXBuildFile; fileRef = DDDDDDDD0000000000000001 /* LepersColony.html.stencil */; };
 		1C16FC0C1CC41A7800C88BD1 /* ThreadTagLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FC0B1CC41A7800C88BD1 /* ThreadTagLoader.swift */; };
 		1C16FC0E1CC477B200C88BD1 /* ThreadTagPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FC0D1CC477B200C88BD1 /* ThreadTagPickerViewController.swift */; };
@@ -385,6 +386,7 @@
 		AC10AC10AC10AC10AC500002 /* AwfulRapsheet */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AwfulRapsheet; sourceTree = "<group>"; };
 		AC10AC10AC10AC10AC500012 /* RapsheetHandlers+Awful.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RapsheetHandlers+Awful.swift"; sourceTree = "<group>"; };
 		DDDDDDDD0000000000000009 /* ModernToolbarActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModernToolbarActions.swift; sourceTree = "<group>"; };
+		DDDDDDDD000000000000000B /* SpecsReport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpecsReport.swift; sourceTree = "<group>"; };
 		DDDDDDDD0000000000000001 /* LepersColony.html.stencil */ = {isa = PBXFileReference; explicitFileType = text.html; fileEncoding = 4; path = LepersColony.html.stencil; sourceTree = "<group>"; };
 		1C16FC0B1CC41A7800C88BD1 /* ThreadTagLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadTagLoader.swift; sourceTree = "<group>"; };
 		1C16FC0D1CC477B200C88BD1 /* ThreadTagPickerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadTagPickerViewController.swift; sourceTree = "<group>"; };
@@ -1223,6 +1225,7 @@
 				2DDCCE9C2F77A73E0011BCA2 /* BBcodeTagHelper.swift */,
 				F7066513D77148949920CFF8 /* URLCleaningTextView.swift */,
 				DDDDDDDD0000000000000009 /* ModernToolbarActions.swift */,
+				DDDDDDDD000000000000000B /* SpecsReport.swift */,
 				2DDCCE9D2F77A73E0011BCA2 /* CompositionToolbarContainer.swift */,
 				2DDCCE9E2F77A73E0011BCA2 /* ModernBBcodeToolbar.swift */,
 				2D571B462EC83DD00026826C /* AttachmentCardView.swift */,
@@ -1751,6 +1754,7 @@
 				1C48538E1F93BADF0042531A /* HTMLRenderingHelpers.swift in Sources */,
 				AC10AC10AC10AC10AC500011 /* RapsheetHandlers+Awful.swift in Sources */,
 				DDDDDDDD000000000000000A /* ModernToolbarActions.swift in Sources */,
+				DDDDDDDD000000000000000C /* SpecsReport.swift in Sources */,
 				2DA10C022F1A2B3C00DE01AA /* PostLocator.swift in Sources */,
 				1CE55A7A1A1072D900E474A6 /* ForumsTableViewController.swift in Sources */,
 				1C42A2271FD47AEB00F67BA1 /* Forum+Presentation.swift in Sources */,
