@@ -1,6 +1,12 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "" : {
+
+    },
+    "(%lld)" : {
+
+    },
     "%lld days" : {
 
     },
@@ -84,7 +90,9 @@
     "Vote" : {
 
     },
-    "What are you asking?" : {}
+    "What are you asking?" : {
+
+    }
   },
   "version" : "1.0"
 }

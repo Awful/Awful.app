@@ -5,12 +5,14 @@
 
 import AwfulExtensions
 import AwfulTheming
+import Combine
 import SwiftUI
 import UIKit
 
-/// A page of search results, with pagination along the bottom.
+/// A page of search results.
 ///
-/// Chrome lives on ``SearchResultsViewController``; see ``SearchFormView`` for why.
+/// Chrome — including the paging toolbar — lives on ``SearchResultsViewController``; see
+/// ``SearchFormView`` for why.
 struct SearchResultsView: View {
     @ObservedObject var model: SearchPageViewModel
     @SwiftUI.Environment(\.theme) var theme
@@ -21,7 +23,7 @@ struct SearchResultsView: View {
     private let topID = "top"
 
     var body: some View {
-        VStack(spacing: 0) {
+        Group {
             if model.isRestoring {
                 restoringView
             } else {
@@ -106,8 +108,6 @@ struct SearchResultsView: View {
                     }
                 }
             }
-
-            paginationBar
         }
         .background((theme[color: "backgroundColor"] ?? Color(.systemBackground)).ignoresSafeArea(.all))
         .applyFontDesign(if: theme.roundedFonts)
@@ -125,57 +125,6 @@ struct SearchResultsView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
-    /// The app's `NavigationController` doesn't manage a bottom toolbar — `PostsPageView` and
-    /// `RapSheetViewController` each carry their own — and a nav toolbar would compete with the tab
-    /// bar for the same space, so the pagination controls live in the content instead.
-    @SwiftUI.Environment(\.displayScale) private var displayScale
-
-    private var paginationBar: some View {
-        paginationControls
-            .padding(.horizontal)
-            .padding(.vertical, 10)
-            .background(
-                theme[color: "tabBarBackgroundColor"]
-                    .overlay(alignment: .top) {
-                        theme[color: "bottomBarTopBorderColor"]?
-                            .frame(height: 1 / displayScale)
-                    }
-            )
-    }
-
-    private var paginationControls: some View {
-        HStack {
-            Button(action: {
-                Task {
-                    await model.goToPage(page: model.currentPage - 1)
-                }
-            }) {
-                Image(systemName: "arrow.left")
-                    .foregroundColor(model.currentPage <= 1 ? theme[color: "placeholderTextColor"] : theme[color: "tintColor"])
-            }
-            .disabled(model.currentPage <= 1)
-            
-            Spacer()
-            
-            Text("\(model.currentPage) of \(model.totalPages)", bundle: .module)
-                .font(.headline)
-                .foregroundColor(theme[color: "listTextColor"])
-                .frame(minWidth: 80)
-                .lineLimit(1)
-            
-            Spacer()
-            
-            Button(action: {
-                Task {
-                    await model.goToPage(page: model.currentPage + 1)
-                }
-            }) {
-                Image(systemName: "arrow.right")
-                    .foregroundColor(model.currentPage >= model.totalPages ? theme[color: "placeholderTextColor"] : theme[color: "tintColor"])
-            }
-            .disabled(model.currentPage >= model.totalPages)
-        }
-    }
 }
 
 // MARK: - SearchResult Card
@@ -275,9 +224,59 @@ struct SearchResultCard_Previews: PreviewProvider {
 
 /// Hosts ``SearchResultsView`` as a real screen in the app's navigation stack, so the posts page a
 /// result opens can be backed out of straight into these results.
+///
+/// Also owns the paging toolbar, mirroring `RapSheetViewController`: a bottom `UIToolbar` whose
+/// items are liquid-glass pills on iOS 26 (clear bar background) and an opaque themed bar earlier.
+/// The app's `NavigationController` doesn't manage a bottom toolbar — `PostsPageView` and
+/// `RapSheetViewController` each carry their own — so this screen does too.
 public final class SearchResultsViewController: HostingController<AnyView> {
 
     private let model: SearchPageViewModel
+    private var cancellables: Set<AnyCancellable> = []
+
+    // Mirrors of the model's published paging state. `@Published` emits on `willSet`, so reading
+    // `model.currentPage` inside a sink returns the old value — always use the emitted values.
+    private var currentPage = 1
+    private var totalPages = 1
+    private var isRestoring = false
+    /// Guards against re-entrant page loads while one is in flight (the model has no published
+    /// loading flag), mirroring `RapSheetViewController`'s `isLoading` gating.
+    private var isNavigating = false
+
+    private lazy var toolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: 320, height: 44))
+    private var toolbarBottomConstraint: NSLayoutConstraint?
+
+    /// Keeps the paging controls from sitting flush against the bottom edge (same as `RapSheetViewController`).
+    private static let toolbarBottomPadding: CGFloat = 2
+
+    // MARK: Toolbar items
+
+    private lazy var backItem: UIBarButtonItem = {
+        let item = UIBarButtonItem(primaryAction: UIAction(image: UIImage(named: "arrowleft")) { [weak self] _ in
+            guard let self, self.currentPage > 1 else { return }
+            self.go(to: self.currentPage - 1)
+        })
+        item.accessibilityLabel = "Previous page"
+        return item
+    }()
+
+    private lazy var currentPageItem: UIBarButtonItem = {
+        let item = UIBarButtonItem(primaryAction: UIAction { [weak self] action in
+            self?.showPagePicker(from: action.sender as? UIBarButtonItem)
+        })
+        item.possibleTitles = ["8888 / 8888"]
+        item.accessibilityHint = "Opens page picker"
+        return item
+    }()
+
+    private lazy var forwardItem: UIBarButtonItem = {
+        let item = UIBarButtonItem(primaryAction: UIAction(image: UIImage(named: "arrowright")) { [weak self] _ in
+            guard let self, self.currentPage < self.totalPages else { return }
+            self.go(to: self.currentPage + 1)
+        })
+        item.accessibilityLabel = "Next page"
+        return item
+    }()
 
     init(model: SearchPageViewModel) {
         self.model = model
@@ -293,6 +292,137 @@ public final class SearchResultsViewController: HostingController<AnyView> {
 
     @MainActor public required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    // MARK: View lifecycle
+
+    public override func viewDidLoad() {
+        super.viewDidLoad()
+
+        toolbar.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(toolbar)
+        // Pinned to the view's bottom, not the safe area: the toolbar's reserved space is fed back
+        // into the safe area via `additionalSafeAreaInsets`, and pinning to the safe area guide
+        // would make that a feedback loop. `updateToolbarInsets()` positions it above the device's
+        // own bottom inset instead.
+        let bottom = toolbar.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        toolbarBottomConstraint = bottom
+        NSLayoutConstraint.activate([
+            toolbar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            toolbar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            bottom,
+        ])
+        toolbar.items = [.flexibleSpace(), backItem, currentPageItem, forwardItem, .flexibleSpace()]
+
+        // No `.receive(on:)` needed — the model is main-actor.
+        Publishers.CombineLatest3(model.$currentPage, model.$totalPages, model.$isRestoring)
+            .sink { [weak self] page, total, restoring in
+                guard let self else { return }
+                self.currentPage = page
+                self.totalPages = total
+                self.isRestoring = restoring
+                self.updateToolbar()
+            }
+            .store(in: &cancellables)
+
+        // Re-apply the theme now that the toolbar is in the hierarchy.
+        themeDidChange()
+    }
+
+    public override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        updateToolbarInsets()
+    }
+
+    public override func viewSafeAreaInsetsDidChange() {
+        super.viewSafeAreaInsetsDidChange()
+        updateToolbarInsets()
+    }
+
+    public override func themeDidChange() {
+        super.themeDidChange()
+        guard isViewLoaded else { return }
+        toolbar.tintColor = theme["toolbarTextColor"]
+        configureToolbarAppearance()
+    }
+
+    /// A clear glass bar on iOS 26 (only the liquid-glass item pills show), opaque before. A `barTintColor`
+    /// (which we deliberately don't set) would force an opaque grey bar even on iOS 26. Same idiom as
+    /// `RapSheetViewController`.
+    private func configureToolbarAppearance() {
+        let appearance = UIToolbarAppearance()
+        if #available(iOS 26.0, *), toolbar.isTranslucent {
+            appearance.configureWithTransparentBackground()
+            appearance.backgroundColor = .clear
+            appearance.backgroundImage = nil
+        } else {
+            // Force opaque pre-26 so scrolled content doesn't bleed through the toolbar.
+            toolbar.isTranslucent = false
+            appearance.configureWithOpaqueBackground()
+            appearance.backgroundColor = theme["backgroundColor"]
+        }
+        appearance.shadowImage = nil
+        appearance.shadowColor = nil
+        toolbar.standardAppearance = appearance
+        toolbar.compactAppearance = appearance
+        toolbar.scrollEdgeAppearance = appearance
+        toolbar.compactScrollEdgeAppearance = appearance
+    }
+
+    // MARK: Paging
+
+    private func go(to page: Int) {
+        guard !isNavigating else { return }
+        isNavigating = true
+        updateToolbar()
+        Task {
+            await model.goToPage(page: page)
+            isNavigating = false
+            updateToolbar()
+        }
+    }
+
+    private func updateToolbar() {
+        guard isViewLoaded else { return }
+        // The restore path shows a full-screen spinner; a stale "1 / 1" bar over it helps no one.
+        toolbar.isHidden = isRestoring
+        let current = max(currentPage, 1)
+        let total = max(totalPages, current)
+        currentPageItem.title = "\(current) / \(total)"
+        currentPageItem.accessibilityLabel = "Page \(current) of \(total)"
+        currentPageItem.isEnabled = total > 1 && !isNavigating
+        backItem.isEnabled = current > 1 && !isNavigating
+        forwardItem.isEnabled = current < total && !isNavigating
+        updateToolbarInsets()
+    }
+
+    /// Floats the toolbar above the device's own bottom inset and reserves matching safe-area space
+    /// so the hosted `ScrollView` insets its content clear of the bar while still drawing behind it.
+    private func updateToolbarInsets() {
+        guard isViewLoaded else { return }
+        let toolbarHeight = toolbar.frame.height > 0 ? toolbar.frame.height : 44
+        let reserved = toolbar.isHidden ? 0 : toolbarHeight + Self.toolbarBottomPadding
+        // Subtract our own contribution to get the device's base inset; otherwise the toolbar would
+        // climb its own reserved space.
+        let baseBottomInset = view.safeAreaInsets.bottom - additionalSafeAreaInsets.bottom
+        toolbarBottomConstraint?.constant = -(baseBottomInset + Self.toolbarBottomPadding)
+        if additionalSafeAreaInsets.bottom != reserved {
+            additionalSafeAreaInsets.bottom = reserved
+        }
+    }
+
+    private func showPagePicker(from item: UIBarButtonItem?) {
+        guard totalPages > 1, !isNavigating else { return }
+        let picker = PagePickerViewController(
+            pageCount: totalPages,
+            currentPage: max(currentPage, 1),
+            onSelect: { [weak self] selected in
+                guard let self, selected != self.currentPage else { return }
+                self.go(to: selected)
+            }
+        )
+        picker.popoverPresentationController?.barButtonItem = item
+        present(picker, animated: true)
     }
 
     private func open(_ result: SearchResult) {

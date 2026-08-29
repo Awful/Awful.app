@@ -28,9 +28,6 @@
         }
       }
     },
-    "Add" : {
-
-    },
     "Add a poll" : {
 
     },
@@ -51,9 +48,6 @@
           }
         }
       }
-    },
-    "Any" : {
-
     },
     "Author Profile" : {
 
@@ -372,6 +366,7 @@
     },
     "compose.draft-menu.editing-other-post.title" : {
       "comment" : "Title of compose draft menu when editing another user's post. Parameters: 1. post author's username.",
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -383,6 +378,7 @@
     },
     "compose.draft-menu.editing-own-post.title" : {
       "comment" : "Title of compose draft menu when editing your own post.",
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -394,6 +390,7 @@
     },
     "compose.draft-menu.editing-unknown-other-post.title" : {
       "comment" : "Title of compose draft menu when editing an unnamed other user's post.",
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -416,6 +413,7 @@
     },
     "compose.draft-menu.replying.title" : {
       "comment" : "Title of compose draft menu when replying to the thread.",
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -894,9 +892,6 @@
 
     },
     "Mark Unread" : {
-
-    },
-    "Month" : {
 
     },
     "No smilies found" : {
@@ -1597,10 +1592,10 @@
     "Search" : {
 
     },
-    "Search smilies…" : {
+    "Search Results" : {
 
     },
-    "Select Forums" : {
+    "Search smilies…" : {
 
     },
     "session-expiry-imminent.message" : {
@@ -1776,9 +1771,6 @@
         }
       }
     },
-    "Toggle All" : {
-
-    },
     "Try a different search term" : {
 
     },
@@ -1789,9 +1781,6 @@
 
     },
     "Vote" : {
-
-    },
-    "Year" : {
 
     },
     "Your thread is up, but the poll couldn't be added: %@" : {
