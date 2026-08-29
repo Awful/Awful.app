@@ -83,7 +83,7 @@
     "Clear Cache" : {
 
     },
-    "Clearing the cache removes downloaded images, web data, and cached forums, threads, and posts. Resetting settings restores all preferences to their defaults." : {
+    "Clearing the cache removes downloaded images, web data, and cached forums, threads, and posts." : {
 
     },
     "Dark Mode" : {
@@ -194,10 +194,10 @@
     "Remove Tracking from Links" : {
 
     },
-    "Remove Tracking from Links strips tracking parameters (like utm_ and fbclid) from links pasted into the composer. A Use Original button appears after each cleaned paste." : {
+    "Reset All Settings" : {
 
     },
-    "Reset All Settings" : {
+    "Resetting settings restores all preferences to their defaults." : {
 
     },
     "Restore Last Thread on Launch" : {
@@ -227,6 +227,9 @@
     "Sort Unread Threads First" : {
 
     },
+    "Strips tracking parameters (like utm_ and fbclid) from links pasted into the composer. A Use Original button appears after each cleaned paste." : {
+
+    },
     "Tabs" : {
 
     },
@@ -240,9 +243,6 @@
 
     },
     "Unread Announcements Badge" : {
-
-    },
-    "Upgrades detected on your Something Awful account." : {
 
     },
     "What to open when tapping an external link. Long-press any link for more options." : {

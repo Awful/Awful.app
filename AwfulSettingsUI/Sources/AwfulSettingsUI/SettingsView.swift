@@ -120,9 +120,6 @@ public struct SettingsView: View {
     public var body: some View {
         Form {
             Section {
-                accountFeatureRow("Platinum", enabled: hasPlatinum)
-                accountFeatureRow("Archives", enabled: hasArchives)
-                accountFeatureRow("No Ads", enabled: hasNoAds)
                 Button("Log Out", bundle: .module) { logOut() }
             } header: {
                 VStack(alignment: .leading) {
@@ -142,20 +139,26 @@ public struct SettingsView: View {
                     Text(currentUsername)
                 }
                 .header()
-            } footer: {
-                Text("Upgrades detected on your Something Awful account.", bundle: .module)
-                    .footer()
             }
             .section()
 
             Section {
-                Button("Go to Awful’s Thread", bundle: .module) { goToAwfulThread() }
+                accountFeatureRow("Platinum", enabled: hasPlatinum)
+                accountFeatureRow("Archives", enabled: hasArchives)
+                accountFeatureRow("No Ads", enabled: hasNoAds)
+            }
+            .section()
+
+            Section {
+                Button { goToAwfulThread() } label: {
+                    captionedLabel(
+                        "Go to Awful’s Thread",
+                        caption: "Post feedback, bug reports, and feature suggestions. Do not contact anyone who works for Something Awful about this app."
+                    )
+                }
             } header: {
                 Text(buildInfo.localizedDescription)
                     .header()
-            } footer: {
-                Text("Post feedback, bug reports, and feature suggestions. Do not contact anyone who works for Something Awful about this app.", bundle: .module)
-                    .footer()
             }
             .section()
 
@@ -174,24 +177,36 @@ public struct SettingsView: View {
                 if isPad {
                     Toggle("Enable Custom Title Post Layout", bundle: .module, isOn: $customTitlePostLayout)
                 }
-                Toggle("Hide Post Metadata from Screen Reader", bundle: .module, isOn: $hidePostMetadataForReader)
+                Toggle(isOn: $hidePostMetadataForReader) {
+                    captionedLabel(
+                        "Hide Post Metadata from Screen Reader",
+                        caption: "Skips usernames, post dates, and join dates when iOS reads posts aloud (Speak Screen and VoiceOver)."
+                    )
+                }
             } header: {
                 Text("Posts", bundle: .module)
                     .header()
-            } footer: {
-                Text("Skips usernames, post dates, and join dates when iOS reads posts aloud (Speak Screen and VoiceOver).", bundle: .module)
-                    .footer()
             }
             .section()
 
             Section {
                 Toggle("[timg] Large Images", bundle: .module, isOn: $timgLargeImages)
                 Toggle("New Smilie Picker", bundle: .module, isOn: $useNewSmiliePicker)
-                Toggle("Remove Tracking from Links", bundle: .module, isOn: $removeTrackingFromLinks)
-                Picker("Imgur Uploads", bundle: .module, selection: $imgurUploadMode) {
+                Toggle(isOn: $removeTrackingFromLinks) {
+                    captionedLabel(
+                        "Remove Tracking from Links",
+                        caption: "Strips tracking parameters (like utm_ and fbclid) from links pasted into the composer. A Use Original button appears after each cleaned paste."
+                    )
+                }
+                Picker(selection: $imgurUploadMode) {
                     Text("Off").tag("Off")
                     Text("Imgur Account").tag("Imgur Account")
                     Text("Anonymous").tag("Anonymous")
+                } label: {
+                    captionedLabel(
+                        "Imgur Uploads",
+                        caption: "\"Anonymous\" submits images to Imgur without a user account. Imgur may delete these uploads without warning. Using an Imgur account is recommended."
+                    )
                 }
                 .onChange(of: imgurUploadMode) { newValue in
                     if newValue == "Imgur Account" {
@@ -203,12 +218,6 @@ public struct SettingsView: View {
             } header: {
                 Text("Posting", bundle: .module)
                     .header()
-            } footer: {
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Remove Tracking from Links strips tracking parameters (like utm_ and fbclid) from links pasted into the composer. A Use Original button appears after each cleaned paste.", bundle: .module)
-                    Text("\"Anonymous\" submits images to Imgur without a user account. Imgur may delete these uploads without warning. Using an Imgur account is recommended.", bundle: .module)
-                }
-                .footer()
             }
             .section()
 
@@ -234,10 +243,15 @@ public struct SettingsView: View {
             }
 
             Section {
-                Picker("Default Browser", bundle: .module, selection: $defaultBrowser) {
+                Picker(selection: $defaultBrowser) {
                     ForEach(DefaultBrowser.allCases, id: \.rawValue) { browser in
                         Text(browser.rawValue).tag(browser)
                     }
+                } label: {
+                    captionedLabel(
+                        "Default Browser",
+                        caption: "What to open when tapping an external link. Long-press any link for more options."
+                    )
                 }
                 if canOpenURL(URL(string: "youtube://")!) {
                     Toggle("Open YouTube in YouTube", bundle: .module, isOn: $openLinksInYouTube)
@@ -248,9 +262,6 @@ public struct SettingsView: View {
             } header: {
                 Text("Links", bundle: .module)
                     .header()
-            } footer: {
-                Text("What to open when tapping an external link. Long-press any link for more options.", bundle: .module)
-                    .footer()
             }
             .section()
 
@@ -270,29 +281,35 @@ public struct SettingsView: View {
                 }
                 Toggle("Dark Mode", bundle: .module, isOn: $darkModeManuallyEnabled)
                     .disabled(darkModeAutomatic)
-                Toggle("Automatic Dark Mode", bundle: .module, isOn: $darkModeAutomatic)
+                Toggle(isOn: $darkModeAutomatic) {
+                    captionedLabel(
+                        "Automatic Dark Mode",
+                        caption: "Awful can automatically switch between light and dark themes alongside iOS."
+                    )
+                }
             } header: {
                 Text("Themes", bundle: .module)
                     .header()
-            } footer: {
-                Text("Awful can automatically switch between light and dark themes alongside iOS.", bundle: .module)
-                    .footer()
             }
             .section()
 
             Section {
-                Toggle("Restore Last Thread on Launch", bundle: .module, isOn: $restoreLastThreadOnLaunch)
-            } footer: {
-                Text("When on, Awful reopens the thread you were last reading when you relaunch. When off, Awful returns to the tab you were last using.", bundle: .module)
-                    .footer()
+                Toggle(isOn: $restoreLastThreadOnLaunch) {
+                    captionedLabel(
+                        "Restore Last Thread on Launch",
+                        caption: "When on, Awful reopens the thread you were last reading when you relaunch. When off, Awful returns to the tab you were last using."
+                    )
+                }
             }
             .section()
 
             Section {
-                Toggle("Handoff", bundle: .module, isOn: $handoffEnabled)
-            } footer: {
-                Text("Handoff allows you to continue reading threads on nearby devices.", bundle: .module)
-                    .footer()
+                Toggle(isOn: $handoffEnabled) {
+                    captionedLabel(
+                        "Handoff",
+                        caption: "Handoff allows you to continue reading threads on nearby devices."
+                    )
+                }
             }
             .section()
 
@@ -302,10 +319,12 @@ public struct SettingsView: View {
             .section()
 
             Section {
-                Toggle("Check Clipboard for URL", bundle: .module, isOn: $checkClipboardForURLOnBecomeActive)
-            } footer: {
-                Text("Checking the clipboard for a forums URL when you open the app allows you to jump straight to a copied URL in Awful.", bundle: .module)
-                    .footer()
+                Toggle(isOn: $checkClipboardForURLOnBecomeActive) {
+                    captionedLabel(
+                        "Check Clipboard for URL",
+                        caption: "Checking the clipboard for a forums URL when you open the app allows you to jump straight to a copied URL in Awful."
+                    )
+                }
             }
             .section()
 
@@ -341,20 +360,27 @@ public struct SettingsView: View {
 
             Section {
                 Button { emptyCache() } label: {
-                    HStack {
-                        Text("Clear Cache", bundle: .module)
-                        Spacer()
-                        Text(cacheSizeText)
+                    VStack(alignment: .leading, spacing: 2) {
+                        HStack {
+                            Text("Clear Cache", bundle: .module)
+                            Spacer()
+                            Text(cacheSizeText)
+                                .foregroundStyle(theme[color: "listSecondaryText"]!)
+                        }
+                        Text("Clearing the cache removes downloaded images, web data, and cached forums, threads, and posts.", bundle: .module)
+                            .font(.footnote)
                             .foregroundStyle(theme[color: "listSecondaryText"]!)
                     }
                 }
-                Button("Reset All Settings", bundle: .module) { resetSettings() }
+                Button { resetSettings() } label: {
+                    captionedLabel(
+                        "Reset All Settings",
+                        caption: "Resetting settings restores all preferences to their defaults."
+                    )
+                }
             } header: {
                 Text("Data Management", bundle: .module)
                     .header()
-            } footer: {
-                Text("Clearing the cache removes downloaded images, web data, and cached forums, threads, and posts. Resetting settings restores all preferences to their defaults.", bundle: .module)
-                    .footer()
             }
             .section()
 
@@ -381,6 +407,16 @@ public struct SettingsView: View {
         NotificationCenter.default.post(name: Notification.Name("ClearImgurCredentials"), object: nil)
     }
 
+    /// A row label with explanatory caption text beneath the title, in place of a section footer.
+    private func captionedLabel(_ title: LocalizedStringKey, caption: LocalizedStringKey) -> some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text(title, bundle: .module)
+            Text(caption, bundle: .module)
+                .font(.footnote)
+                .foregroundStyle(theme[color: "listSecondaryText"]!)
+        }
+    }
+
     /// A read-only status row for a Something Awful account upgrade, styled after the "Clear Cache"
     /// label + trailing-value idiom.
     private func accountFeatureRow(_ name: LocalizedStringKey, enabled: Bool) -> some View {
@@ -398,9 +434,6 @@ public struct SettingsView: View {
 private extension View {
     func header() -> some View {
         modifier(HeaderFooterModifier(weight: .semibold))
-    }
-    func footer() -> some View {
-        modifier(HeaderFooterModifier(weight: .regular))
     }
     func section() -> some View {
         modifier(SectionModifier())
