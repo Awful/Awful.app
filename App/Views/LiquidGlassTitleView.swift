@@ -218,11 +218,13 @@ final class LiquidGlassTitleView: UIView {
     /// 1. Transient containers UIKit hosts the live view in (seen on
     ///    interactive pops) — handled by walking our own superview chain.
     /// 2. The animated push/pop, where what's on screen is not the live view
-    ///    at all: the bar renders a `_UIPortalView` COPY of its content
-    ///    inside a clipped sibling container (`ViewControllerMatchingView`),
-    ///    unreachable from our ancestor chain — handled by sweeping the
-    ///    bar's subtree and un-clipping just the portal's ancestors, which
-    ///    leaves the bar buttons' own (legitimate) clipping untouched.
+    ///    at all: the bar stages EACH nav item's content in its own clipped
+    ///    container holding `_UIPortalView` copies, unreachable from our
+    ///    ancestor chain. Crucially, only containers whose portal mirrors
+    ///    *this* view may be un-clipped: the reveal of the other item's
+    ///    buttons is partly clip-driven, so un-clipping its staging
+    ///    container makes those buttons pop in at full visibility from the
+    ///    first transition frame instead of animating in.
     ///
     /// All of these are transient, so clipping is never restored.
     private func unclipAncestors() {
@@ -235,8 +237,7 @@ final class LiquidGlassTitleView: UIView {
                 break
             }
             if depth < Self.maxAncestorUnclipDepth {
-                if view.clipsToBounds { view.clipsToBounds = false }
-                if view.layer.masksToBounds { view.layer.masksToBounds = false }
+                unclip(view)
             }
             ancestor = view.superview
             depth += 1
@@ -246,19 +247,71 @@ final class LiquidGlassTitleView: UIView {
         }
     }
 
-    @discardableResult
-    private func unclipPortalAncestors(in view: UIView) -> Bool {
-        var containsPortal = NSStringFromClass(type(of: view)).contains("PortalView")
+    private func unclip(_ view: UIView) {
+        if view.clipsToBounds { view.clipsToBounds = false }
+        if view.layer.masksToBounds { view.layer.masksToBounds = false }
+    }
+
+    private enum PortalMatch {
+        /// The portal mirrors this title view (or a view containing it).
+        case mirrorsUs
+        /// The portal mirrors other content (e.g. the other nav item's
+        /// buttons) — its clipped staging container must be left alone.
+        case other
+        /// `sourceView` couldn't be read on this OS version.
+        case unreadable
+    }
+
+    /// `sourceView` is private on `_UIPortalView`, but the name collides with
+    /// public API (`UIPopoverPresentationController.sourceView`), so a guarded
+    /// KVC read is safe to ship and degrades to `.unreadable` if renamed.
+    private func portalMatch(_ view: UIView) -> PortalMatch? {
+        guard NSStringFromClass(type(of: view)).contains("PortalView") else { return nil }
+        guard view.responds(to: NSSelectorFromString("sourceView")) else { return .unreadable }
+        guard let source = view.value(forKey: "sourceView") as? UIView else { return .other }
+        if source === self || isDescendant(of: source) || source.isDescendant(of: self) {
+            return .mirrorsUs
+        }
+        return .other
+    }
+
+    private func collectPortals(in view: UIView, mirroring: inout [UIView], unreadable: inout [UIView]) {
+        switch portalMatch(view) {
+        case .mirrorsUs: mirroring.append(view)
+        case .unreadable: unreadable.append(view)
+        case .other, nil: break
+        }
         for subview in view.subviews {
-            if unclipPortalAncestors(in: subview) {
-                containsPortal = true
+            collectPortals(in: subview, mirroring: &mirroring, unreadable: &unreadable)
+        }
+    }
+
+    private func unclipPortalAncestors(in bar: UINavigationBar) {
+        var mirroring: [UIView] = []
+        var unreadable: [UIView] = []
+        collectPortals(in: bar, mirroring: &mirroring, unreadable: &unreadable)
+
+        var portalsToUnclip = mirroring
+        if portalsToUnclip.isEmpty, !unreadable.isEmpty, let window {
+            // sourceView unreadable (OS change): fall back to geometry — a
+            // portal overlapping the capsule's window frame is the title
+            // copy. This degrades toward the capsule clipping, never toward
+            // the other item's buttons popping in.
+            let ourFrame = convert(bounds, to: window)
+            portalsToUnclip = unreadable.filter { portal in
+                guard portal.window === window else { return false }
+                return portal.convert(portal.bounds, to: window).intersects(ourFrame)
             }
         }
-        if containsPortal {
-            if view.clipsToBounds { view.clipsToBounds = false }
-            if view.layer.masksToBounds { view.layer.masksToBounds = false }
+
+        for portal in portalsToUnclip {
+            var ancestor: UIView? = portal
+            while let view = ancestor {
+                unclip(view)
+                if view === bar { break }
+                ancestor = view.superview
+            }
         }
-        return containsPortal
     }
 
     override func didMoveToSuperview() {
