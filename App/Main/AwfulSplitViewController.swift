@@ -2,6 +2,7 @@
 //
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import AwfulExtensions
 import UIKit
 
 /// Forwards status bar style questions to its first view controller; tells delegate when split view controller will transition to a new size.
@@ -49,6 +50,14 @@ extension AwfulSplitViewController: UIGestureRecognizerDelegate {
         guard gestureRecognizer === revealSidebarPan else { return true }
         // Only when there's a hidden sidebar to reveal.
         guard !isCollapsed, displayMode == .secondaryOnly else { return false }
+        // Don't hijack a text-selection drag in a posts/message web view.
+        let location = revealSidebarPan.location(in: view)
+        if let hit = view.hitTest(location, with: nil),
+           let renderView = hit.responderChain.first(where: { $0 is RenderView }) as? RenderView,
+           renderView.hasTextSelection
+        {
+            return false
+        }
         // Only for horizontal-dominant rightward motion.
         let translation = revealSidebarPan.translation(in: view)
         return translation.x > 0 && abs(translation.x) > abs(translation.y)

@@ -1814,6 +1814,19 @@ Awful.embedGfycat = function() {
 
 Awful.embedGfycat();
 
+// Tell the native side whenever text selection starts or ends, so it can avoid stealing selection-drag gestures (e.g. the iPad swipe-to-reveal-sidebar pan).
+(function() {
+  var hadSelection = false;
+  document.addEventListener('selectionchange', function() {
+    var selection = document.getSelection();
+    var hasSelection = !!selection && selection.type === 'Range';
+    if (hasSelection !== hadSelection) {
+      hadSelection = hasSelection;
+      window.webkit.messageHandlers.textSelectionChanged.postMessage({ hasSelection });
+    }
+  });
+})();
+
 // Set up image loading if DOM is ready (DOMContentLoaded may have already fired)
 // The early user script in RenderView.swift tracks when DOMContentLoaded fires
 if (Awful.domContentLoadedFired) {

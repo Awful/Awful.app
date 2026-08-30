@@ -27,6 +27,11 @@ final class RenderView: UIView {
 
     private var registeredMessages: [String: RenderViewMessage.Type] = [:]
 
+    /// Whether the rendered document currently has a text selection. Kept up to date via a `selectionchange` listener in `RenderView.js`, so ancestor views can avoid stealing selection-drag gestures.
+    private(set) var hasTextSelection = false
+
+    private static let textSelectionChangedMessageName = "textSelectionChanged"
+
     /// Whether lottie-player.js may be injected. Views that never show the frog/ghost animations (e.g. the Leper's Colony) pass `false` to skip the ~400 KB script.
     private let includesLottiePlayer: Bool
 
@@ -99,6 +104,8 @@ final class RenderView: UIView {
         webView.frame = CGRect(origin: .zero, size: bounds.size)
         webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         addSubview(webView)
+
+        webView.configuration.userContentController.add(ScriptMessageHandlerWeakTrampoline(self), name: Self.textSelectionChangedMessageName)
     }
 
     /*
@@ -124,6 +131,7 @@ final class RenderView: UIView {
         for registeredName in registeredMessages.keys {
             webView.configuration.userContentController.removeScriptMessageHandler(forName: registeredName)
         }
+        webView.configuration.userContentController.removeScriptMessageHandler(forName: Self.textSelectionChangedMessageName)
     }
 
     /**
@@ -131,6 +139,7 @@ final class RenderView: UIView {
      */
     func render(html: String, baseURL: URL?) {
         logger.debug("rendering \(html.count) characters of HTML with baseURL = \(baseURL?.absoluteString ?? "(null)")")
+        hasTextSelection = false
         webView.loadHTMLString(html, baseURL: baseURL)
     }
 
@@ -224,6 +233,11 @@ extension RenderView: WKScriptMessageHandler {
     }
 
     func userContentController(_ userContentController: WKUserContentController, didReceive rawMessage: WKScriptMessage) {
+        if rawMessage.name == Self.textSelectionChangedMessageName {
+            hasTextSelection = (rawMessage.body as? [String: Any])?["hasSelection"] as? Bool ?? false
+            return
+        }
+
         // Skip logging high-frequency progress updates to reduce console noise
         if rawMessage.name != "imageLoadProgress" {
             logger.debug("received message from JavaScript: \(rawMessage.name)")
