@@ -355,6 +355,22 @@ Each of these fails silently or looks like an app bug:
    verifies it, which fixes both — no sidebar tapping is needed, because
    landscape reveals the sidebar on its own.
 
+## Related: iPad alignment UI test
+
+Nav-bar title/button *alignment* on iPad (both orientations) is measured by an
+XCUITest, not by this toolkit — `App/UITests/SidebarAlignmentTests.swift`,
+run via the `UITests` test plan:
+
+```bash
+xcodebuild test -project Awful.xcodeproj -scheme Awful -testPlan UITests \
+  -destination 'platform=iOS Simulator,id=<udid>'
+```
+
+It needs the same manual login this matrix does, prints a measurement table to
+the log, and attaches per-screen screenshots to the xcresult. It is not in the
+default test plan, so `⌘U` and CI stay unit-test-only. This matrix remains the
+tool for themes and device coverage.
+
 ## Known limits — likely places to want changes
 
 * **Login cannot be scripted.** A fresh simulator must be logged in by hand;

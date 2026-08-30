@@ -1,0 +1,29 @@
+{
+  "configurations" : [
+    {
+      "id" : "8D4C2A1E-5B7F-4E3A-9C6D-1F2E3A4B5C6D",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false,
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:Awful.xcodeproj",
+      "identifier" : "1D6058900D05DD3D006BFB54",
+      "name" : "Awful"
+    }
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:Awful.xcodeproj",
+        "identifier" : "76CEF69CD36774AAE6267666",
+        "name" : "AwfulUITests"
+      }
+    }
+  ],
+  "version" : 1
+}

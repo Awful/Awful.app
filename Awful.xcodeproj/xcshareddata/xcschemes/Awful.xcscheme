@@ -60,6 +60,9 @@
             reference = "container:Config/Awful.xctestplan"
             default = "YES">
          </TestPlanReference>
+         <TestPlanReference
+            reference = "container:Config/UITests.xctestplan">
+         </TestPlanReference>
       </TestPlans>
       <Testables>
          <TestableReference
