@@ -96,6 +96,65 @@ final class SceneRestorationFallbackTests: XCTestCase {
         }
     }
 
+    func testSavedAtTimestampRoundTrips() {
+        let savedAt = Date(timeIntervalSinceReferenceDate: 700_000_000)
+        let activity = NSUserActivity(activityType: restorationActivityType)
+        activity.addUserInfoEntries(from: [
+            restorationPrimaryRouteKey: "https://forums.somethingawful.com/bookmarkthreads.php",
+            restorationSavedAtKey: savedAt,
+        ])
+
+        saveFallbackRestorationActivity(activity)
+        guard let restored = loadFallbackRestorationActivity() else {
+            return XCTFail("loadFallbackRestorationActivity returned nil after a save")
+        }
+
+        XCTAssertEqual(restored.userInfo?[restorationSavedAtKey] as? Date, savedAt)
+    }
+
+    func testFreshestActivityPrefersNewestTimestamp() {
+        let stale = makeActivity(route: "a", savedAt: Date(timeIntervalSinceNow: -86_400))
+        let fresh = makeActivity(route: "b", savedAt: Date())
+
+        XCTAssertTrue(freshestRestorationActivity(among: [stale, fresh]) === fresh)
+        XCTAssertTrue(freshestRestorationActivity(among: [fresh, stale]) === fresh)
+    }
+
+    func testFreshestActivityStampedBeatsUnstamped() {
+        // Even an old stamp beats an unstamped payload: unstamped means UIKit has been
+        // serving it since before the timestamp existed, so it's at least as old.
+        let unstamped = makeActivity(route: "a", savedAt: nil)
+        let stamped = makeActivity(route: "b", savedAt: Date(timeIntervalSinceNow: -86_400))
+
+        XCTAssertTrue(freshestRestorationActivity(among: [unstamped, stamped]) === stamped)
+        XCTAssertTrue(freshestRestorationActivity(among: [stamped, unstamped]) === stamped)
+    }
+
+    func testFreshestActivityTieKeepsEarlierCandidate() {
+        // All-unstamped ties preserve the legacy source priority (the caller's ordering).
+        let first = makeActivity(route: "a", savedAt: nil)
+        let second = makeActivity(route: "b", savedAt: nil)
+
+        XCTAssertTrue(freshestRestorationActivity(among: [first, second]) === first)
+    }
+
+    func testFreshestActivitySkipsNilCandidates() {
+        let only = makeActivity(route: "a", savedAt: nil)
+
+        XCTAssertTrue(freshestRestorationActivity(among: [nil, only, nil]) === only)
+        XCTAssertNil(freshestRestorationActivity(among: [nil, nil]))
+    }
+
+    private func makeActivity(route: String, savedAt: Date?) -> NSUserActivity {
+        let activity = NSUserActivity(activityType: restorationActivityType)
+        var userInfo: [AnyHashable: Any] = [restorationPrimaryRouteKey: route]
+        if let savedAt {
+            userInfo[restorationSavedAtKey] = savedAt
+        }
+        activity.addUserInfoEntries(from: userInfo)
+        return activity
+    }
+
     func testEmptyActivityClearsFallback() {
         let seed = NSUserActivity(activityType: restorationActivityType)
         seed.addUserInfoEntries(from: [restorationPrimaryRouteKey: "x"])

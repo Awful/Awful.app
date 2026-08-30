@@ -118,18 +118,33 @@ final class RootViewControllerStack: NSObject, AwfulSplitViewControllerDelegate 
     }
 
     private func updateMessagesTabPresence() {
-        let roots = tabBarController.mutableArrayValue(forKey: "viewControllers")
-        let messagesTabIndex = roots.indexOfObject(passingTest: { root, _, _ in
-            (root as? UINavigationController)?.viewControllers.first is MessageListViewController
-        })
+        guard var roots = tabBarController.viewControllers else { return }
+        let selected = tabBarController.selectedViewController
+        let messagesTabIndex = roots.firstIndex {
+            ($0 as? UINavigationController)?.viewControllers.first is MessageListViewController
+        }
 
         if canSendPrivateMessages {
-            if messagesTabIndex == NSNotFound {
-                let messages = MessageListViewController(managedObjectContext: managedObjectContext)
-                roots.insert(messages.enclosingNavigationController, at: 2)
-            }
-        } else if messagesTabIndex != NSNotFound {
-            roots.removeObject(at: messagesTabIndex)
+            guard messagesTabIndex == nil else { return }
+            let messages = MessageListViewController(managedObjectContext: managedObjectContext)
+            roots.insert(messages.enclosingNavigationController, at: 2)
+        } else if let messagesTabIndex {
+            roots.remove(at: messagesTabIndex)
+        } else {
+            return
+        }
+
+        // Restore the selection by object after mutating: `UITabBarController` keeps the
+        // numeric `selectedIndex` across `setViewControllers(_:)`, and the Messages tab
+        // lives mid-array, so an index-preserved selection would silently move the user
+        // one tab over (onto Lepers, when Messages itself was selected and removed).
+        tabBarController.setViewControllers(roots, animated: false)
+        if let selected, roots.contains(selected) {
+            tabBarController.selectedViewController = selected
+        } else if selected != nil {
+            // The selected Messages tab was removed; land on Forums rather than whatever
+            // inherited its index.
+            tabBarController.selectedIndex = 0
         }
     }
 	

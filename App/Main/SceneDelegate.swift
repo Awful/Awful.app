@@ -56,6 +56,13 @@ let restorationAnchorPostIDKey = "AwfulRestorationAnchorPostID"
 /// (Double, positive = scrolled into the post). Combined with `restorationAnchorPostIDKey`.
 let restorationAnchorDeltaKey = "AwfulRestorationAnchorDelta"
 
+/// `NSUserActivity.userInfo` key carrying the `Date` the payload was captured. Cold launch
+/// replays the freshest of the UIKit-persisted activities and the `UserDefaults` fallback:
+/// UIKit only refreshes its copies when it actually calls `stateRestorationActivity(for:)`,
+/// so after a force-quit/crash/jetsam its copy can be pinned at a much older session and
+/// must lose to the fallback snapshotted on every background transition.
+let restorationSavedAtKey = "AwfulRestorationSavedAt"
+
 /// `UserDefaults` key for a fallback copy of the scene's most recent restoration activity.
 ///
 /// iOS only calls `stateRestorationActivity(for:)` when the scene is actually disconnected
@@ -115,15 +122,32 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         window.makeKeyAndVisible()
 
+        let connectionRestorationActivity = connectionOptions.userActivities
+            .first { $0.activityType == restorationActivityType }
+        let sessionRestorationActivity = session.stateRestorationActivity
+        let fallbackRestorationActivity = loadFallbackRestorationActivity()
         if let urlContext = connectionOptions.urlContexts.first,
            let route = try? AwfulRoute(urlContext.url) {
             pendingLaunchRoute = route
-        } else if let restorationActivity = connectionOptions.userActivities
-                    .first(where: { $0.activityType == restorationActivityType })
-                    ?? session.stateRestorationActivity
-                    ?? loadFallbackRestorationActivity()
-        {
+        } else if let restorationActivity = freshestRestorationActivity(among: [
+            connectionRestorationActivity,
+            sessionRestorationActivity,
+            fallbackRestorationActivity,
+        ]) {
             // Saved restoration must beat any Handoff activity: iOS surfaces the scene's last-set per-VC `window.userActivity` via `userActivities.first` on cold launch even hours after the user navigated away, so the Handoff branch below would otherwise route to a stale message/thread/threadlist instead of saved state.
+            //
+            // Among the saved copies, the freshest wins rather than the UIKit-persisted ones:
+            // UIKit only re-captures its copies when it gets to call
+            // `stateRestorationActivity(for:)`, so after any non-graceful termination
+            // (force-quit, crash, jetsam) they can be pinned at a location from a much older
+            // session — replaying one of those over the per-background fallback is what sent
+            // habitual force-quitters to a long-ago Leper's Colony/Messages visit on every launch.
+            let source = restorationActivity === connectionRestorationActivity ? "connectionOptions"
+                : restorationActivity === sessionRestorationActivity ? "session"
+                : "fallback"
+            let savedAt = restorationActivity.userInfo?[restorationSavedAtKey] as? Date
+            let age = savedAt.map { "saved \(Int(-$0.timeIntervalSinceNow))s ago" } ?? "unstamped"
+            logger.debug("choosing \(source) restoration activity (\(age))")
             pendingRestorationActivity = restorationActivity
         } else if let userActivity = connectionOptions.userActivities.first,
                   let route = userActivity.route {
@@ -222,7 +246,9 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 // the correct context: on iPad `showPostsViewController` pushes into the
                 // detail nav regardless, but the sidebar's visible tab needs to match;
                 // on iPhone the detail route pushes onto the selected tab's nav, so the
-                // tab must already be correct before we open the detail route.
+                // tab must already be correct before we open the detail route. (One detail
+                // route — .message — switches tabs itself; its case below re-asserts the
+                // saved tab afterwards.)
                 if let tabRoute = savedTabRoute, tabRoute.httpURL != route.httpURL {
                     AppDelegate.instance.open(route: tabRoute)
                 }
@@ -258,6 +284,17 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                         route: route,
                         pendingMessageRestoration: savedFraction.map { PendingMessageRestoration(scrollFraction: $0) }
                     )
+                    // The .message route selects the Messages tab as a side effect (the
+                    // router has to find the inbox), so it's the one detail route that can
+                    // clobber the tab selected above: a PM parked in the expanded split's
+                    // detail pane (iPad, or a Plus/Max iPhone in landscape) would hijack
+                    // the sidebar on every relaunch. Re-assert the saved tab; tab routes
+                    // only select, never pop, so the just-restored message and mid-stack
+                    // are untouched. (Collapsed iPhone: the saved tab here is necessarily
+                    // .messagesList, making this a no-op.)
+                    if let tabRoute = savedTabRoute {
+                        AppDelegate.instance.open(route: tabRoute)
+                    }
                 default:
                     AppDelegate.instance.open(route: route)
                 }
@@ -316,7 +353,10 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         activity.isEligibleForHandoff = handoffEnabled
         activity.isEligibleForSearch = false
         activity.isEligibleForPrediction = false
-        activity.addUserInfoEntries(from: [restorationPrimaryRouteKey: route.httpURL.absoluteString])
+        activity.addUserInfoEntries(from: [
+            restorationPrimaryRouteKey: route.httpURL.absoluteString,
+            restorationSavedAtKey: Date(),
+        ])
         if let tabRoute = stack.currentSidebarTabRoute {
             activity.addUserInfoEntries(from: [restorationSidebarTabKey: tabRoute.httpURL.absoluteString])
         }
@@ -379,6 +419,27 @@ func loadFallbackRestorationActivity() -> NSUserActivity? {
 
 func clearFallbackRestorationActivity() {
     UserDefaults.standard.removeObject(forKey: restorationFallbackDefaultsKey)
+}
+
+/// Picks the candidate with the newest `restorationSavedAtKey`. Unstamped activities
+/// (payloads captured before the timestamp existed) sort oldest, and ties keep the
+/// earliest-listed candidate, so callers list sources in legacy priority order.
+func freshestRestorationActivity(among candidates: [NSUserActivity?]) -> NSUserActivity? {
+    func savedAt(_ activity: NSUserActivity) -> Date {
+        activity.userInfo?[restorationSavedAtKey] as? Date ?? .distantPast
+    }
+    var freshest: NSUserActivity?
+    for candidate in candidates {
+        guard let candidate else { continue }
+        if let current = freshest {
+            if savedAt(candidate) > savedAt(current) {
+                freshest = candidate
+            }
+        } else {
+            freshest = candidate
+        }
+    }
+    return freshest
 }
 
 /// Decodes an `AwfulRoute` from a saved scene-restoration activity. Prefers the dedicated

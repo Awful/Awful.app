@@ -149,6 +149,9 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
             cookieJar.deleteCookie(cookie)
         }
         UserDefaults.standard.removeSessionObjects()
+        // The scene-restoration fallback captured a location in the session we're ending;
+        // clearing it keeps the next login from launching into this one's last screen.
+        clearFallbackRestorationActivity()
         // A search query ID belongs to the session that made it, so it's dead weight now.
         LastSearchStore.clear()
         Task { await emptyCache() }
