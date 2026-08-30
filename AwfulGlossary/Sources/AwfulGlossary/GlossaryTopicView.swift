@@ -55,7 +55,7 @@ struct GlossaryTopicView: View {
         .background(theme[color: "backgroundColor"]!)
         .backport.fontDesign(theme.roundedFonts ? .rounded : nil)
         .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
+        .toolbarHidingSharedBackgroundWhenGlassDisabled {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: glossaryExit) { Text("Exit", bundle: .module) }
                     .liquidGlassBarButtonColor(theme[color: "navigationBarTextColor"])

@@ -296,7 +296,7 @@ open class CollectionViewController: UICollectionViewController, Themeable {
 
     open override func scrollViewDidScroll(_ scrollView: UIScrollView) {
         // Update navigation bar tint for iOS 26+ dynamic colors
-        if #available(iOS 26.0, *) {
+        if #available(iOS 26.0, *), LiquidGlass.isEnabled {
             // Skip programmatic offset changes (e.g. pull-to-refresh) that can
             // briefly appear "fully scrolled" and flip the nav bar to transparent.
             guard scrollView.isDragging || scrollView.isDecelerating else {
@@ -498,7 +498,7 @@ extension HostedCollectionViewController: UICollectionViewDelegate {
     open func scrollViewDidScroll(_ scrollView: UIScrollView) {
         // Update navigation bar tint for iOS 26+ dynamic colors. Same logic as
         // CollectionViewController.
-        if #available(iOS 26.0, *) {
+        if #available(iOS 26.0, *), LiquidGlass.isEnabled {
             guard scrollView.isDragging || scrollView.isDecelerating else { return }
 
             let topInset = scrollView.adjustedContentInset.top

@@ -388,7 +388,7 @@ final class ForumsTableViewController: CollectionViewController {
     private func updateRightBarButtons() {
         let canSearch = canSendPrivateMessages
 
-        if #available(iOS 26.0, *), UIDevice.current.userInterfaceIdiom == .pad {
+        if #available(iOS 26.0, *), LiquidGlass.isEnabled, UIDevice.current.userInterfaceIdiom == .pad {
             // Button text/image color comes from `navigationBar.tintColor` (see
             // NavigationController.configureButtonAppearance), so these inherit it. `.normal` tint
             // adjustment keeps them from dimming, matching BookmarksTableViewController.
@@ -436,7 +436,7 @@ final class ForumsTableViewController: CollectionViewController {
         moreButton.showsMenuAsPrimaryAction = true
         moreButton.menu = moreMenu()
         moreButton.accessibilityLabel = "More"
-        if #available(iOS 26.0, *) {
+        if #available(iOS 26.0, *), LiquidGlass.isEnabled {
             moreButton.tintAdjustmentMode = .normal
         }
         moreButtonView = moreButton
@@ -453,7 +453,7 @@ final class ForumsTableViewController: CollectionViewController {
         searchButton.setImage(UIImage(named: "quick-look"), for: .normal)
         searchButton.addTarget(self, action: #selector(searchForums), for: .touchUpInside)
         searchButton.accessibilityLabel = "Search"
-        if #available(iOS 26.0, *) {
+        if #available(iOS 26.0, *), LiquidGlass.isEnabled {
             searchButton.tintAdjustmentMode = .normal
         }
         searchButtonView = searchButton
@@ -467,7 +467,7 @@ final class ForumsTableViewController: CollectionViewController {
     /// system blue — so set the theme-appropriate color explicitly. (The overflow ⋯ and Search have no
     /// active/selected state, so there's no alpha dimming to mirror.)
     private func updateButtonColors() {
-        if #available(iOS 26.0, *) {
+        if #available(iOS 26.0, *), LiquidGlass.isEnabled {
             // Explicit tint color prevents system default blue when NavigationController sets tintColor = nil.
             let buttonTintColor = theme["mode"] == "dark" ? UIColor.white : UIColor.black
             moreButtonView?.tintColor = buttonTintColor

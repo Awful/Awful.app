@@ -313,6 +313,13 @@ public final class SearchResultsViewController: HostingController<AnyView> {
             bottom,
         ])
         toolbar.items = [.flexibleSpace(), backItem, currentPageItem, forwardItem, .flexibleSpace()]
+        if #available(iOS 26.0, *) {
+            // Only the real buttons: touching the flexible spaces makes them join the shared
+            // glass background, merging every platter into one full-width pill.
+            for item in [backItem, currentPageItem, forwardItem] {
+                item.hidesSharedBackground = !LiquidGlass.isEnabled
+            }
+        }
 
         // No `.receive(on:)` needed — the model is main-actor.
         Publishers.CombineLatest3(model.$currentPage, model.$totalPages, model.$isRestoring)
@@ -351,12 +358,12 @@ public final class SearchResultsViewController: HostingController<AnyView> {
     /// `RapSheetViewController`.
     private func configureToolbarAppearance() {
         let appearance = UIToolbarAppearance()
-        if #available(iOS 26.0, *), toolbar.isTranslucent {
+        if #available(iOS 26.0, *), LiquidGlass.isEnabled, toolbar.isTranslucent {
             appearance.configureWithTransparentBackground()
             appearance.backgroundColor = .clear
             appearance.backgroundImage = nil
         } else {
-            // Force opaque pre-26 so scrolled content doesn't bleed through the toolbar.
+            // Force opaque pre-26 (and when Liquid Glass is disabled) so scrolled content doesn't bleed through the toolbar.
             toolbar.isTranslucent = false
             appearance.configureWithOpaqueBackground()
             appearance.backgroundColor = theme["backgroundColor"]
@@ -367,6 +374,15 @@ public final class SearchResultsViewController: HostingController<AnyView> {
         toolbar.compactAppearance = appearance
         toolbar.scrollEdgeAppearance = appearance
         toolbar.compactScrollEdgeAppearance = appearance
+
+        if #available(iOS 26.0, *) {
+            // iOS 26 toolbars ignore the opaque appearance (items get glass platters over a
+            // transparent bar), so paint the legacy background ourselves when glass is disabled.
+            toolbar.setLegacyOpaqueBackground(color: LiquidGlass.isEnabled ? nil : theme["backgroundColor"])
+        }
+
+        toolbar.setNeedsLayout()
+        toolbar.layoutIfNeeded()
     }
 
     // MARK: Paging

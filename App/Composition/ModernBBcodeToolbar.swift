@@ -188,7 +188,7 @@ final class ModernBBcodeToolbar: UIView {
     // MARK: - Button Factory
 
     private func createToolbarButton(title: String) -> UIButton {
-        if #available(iOS 26.0, *) {
+        if #available(iOS 26.0, *), LiquidGlass.isEnabled {
             return GlassToolbarButton(title: title)
         } else {
             return BlurToolbarButton(title: title)
@@ -250,8 +250,8 @@ final class ModernBBcodeToolbar: UIView {
     // MARK: - Appearance
 
     private func updateKeyboardAppearance() {
-        // Only needed for pre-iOS 26 blur buttons
-        if #available(iOS 26.0, *) {
+        // Only needed for the blur buttons (pre-iOS 26, or Liquid Glass disabled)
+        if #available(iOS 26.0, *), LiquidGlass.isEnabled {
             return
         }
 

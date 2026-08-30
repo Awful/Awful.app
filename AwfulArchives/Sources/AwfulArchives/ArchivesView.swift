@@ -33,7 +33,7 @@ struct ArchivesView: View {
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
+            .toolbarHidingSharedBackgroundWhenGlassDisabled {
                 ToolbarItem(placement: .principal) {
                     Text("Archives", bundle: .module)
                         .font(.headline)

@@ -103,7 +103,7 @@ private class FilterMenuViewController: UIViewController {
         view.addSubview(contentContainerView)
 
         // Use glass effect for iOS 26+ when accessibility allows, otherwise solid background
-        if #available(iOS 26.0, *), !UIAccessibility.isReduceTransparencyEnabled {
+        if #available(iOS 26.0, *), LiquidGlass.isEnabled, !UIAccessibility.isReduceTransparencyEnabled {
             let glassEffect = UIGlassEffect()
             let effectView = UIVisualEffectView(effect: glassEffect)
             effectView.translatesAutoresizingMaskIntoConstraints = false
@@ -636,6 +636,7 @@ final class BookmarksTableViewController: HostedCollectionViewController {
         setupSearchButton()
 
         if #available(iOS 26.0, *),
+           LiquidGlass.isEnabled,
            UIDevice.current.userInterfaceIdiom == .pad,
            let filterHosting = filterButton.customView,
            let searchHosting = searchButton.customView {
@@ -706,6 +707,7 @@ final class BookmarksTableViewController: HostedCollectionViewController {
         let label = LocalizedString("bookmarks.filter.button.accessibility-label")
 
         if #available(iOS 26.0, *),
+           LiquidGlass.isEnabled,
            UIDevice.current.userInterfaceIdiom == .pad,
            let image = UIImage(systemName: "line.3.horizontal.decrease") {
             // iPad sidebar on iOS 26 renders bar buttons inside a glass panel,
@@ -725,7 +727,7 @@ final class BookmarksTableViewController: HostedCollectionViewController {
             button.accessibilityLabel = label
             button.addTarget(self, action: #selector(filterButtonTapped), for: .touchUpInside)
 
-            if #available(iOS 26.0, *) {
+            if #available(iOS 26.0, *), LiquidGlass.isEnabled {
                 button.tintAdjustmentMode = .normal
             }
 
@@ -738,6 +740,7 @@ final class BookmarksTableViewController: HostedCollectionViewController {
         let label = LocalizedString("bookmarks.search.button.accessibility-label")
 
         if #available(iOS 26.0, *),
+           LiquidGlass.isEnabled,
            UIDevice.current.userInterfaceIdiom == .pad,
            let image = UIImage(named: "quick-look") {
             let hosting = NavigationController.makeSidebarImageHostingView(
@@ -753,7 +756,7 @@ final class BookmarksTableViewController: HostedCollectionViewController {
             button.accessibilityLabel = label
             button.addTarget(self, action: #selector(searchButtonTapped), for: .touchUpInside)
 
-            if #available(iOS 26.0, *) {
+            if #available(iOS 26.0, *), LiquidGlass.isEnabled {
                 button.tintAdjustmentMode = .normal
             }
 
@@ -875,7 +878,7 @@ final class BookmarksTableViewController: HostedCollectionViewController {
 
         let isFilterMenuOpen = filterPopoverController != nil
 
-        if #available(iOS 26.0, *) {
+        if #available(iOS 26.0, *), LiquidGlass.isEnabled {
             // Explicit tint color prevents system default blue when NavigationController sets tintColor = nil
             let buttonTintColor = theme["mode"] == "dark" ? UIColor.white : UIColor.black
 
@@ -1097,7 +1100,7 @@ final class BookmarksTableViewController: HostedCollectionViewController {
 
         loadMoreFooter?.themeDidChange()
 
-        if #unavailable(iOS 26.0) {
+        if !LiquidGlass.isEnabled {
             editButtonItem.tintColor = theme[uicolor: "navigationBarTextColor"]
         }
         updateButtonColors()

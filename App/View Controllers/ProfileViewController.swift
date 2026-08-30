@@ -53,7 +53,7 @@ final class ProfileViewController: ViewController {
     
     private func updateTitle() {
         title = user.username ?? LocalizedString("profile.default-title")
-        if #available(iOS 26.0, *) {
+        if #available(iOS 26.0, *), LiquidGlass.isEnabled {
             liquidGlassTitleView.title = title
         }
     }
@@ -83,7 +83,7 @@ final class ProfileViewController: ViewController {
         renderView.scrollView.contentInsetAdjustmentBehavior = .never
         renderView.scrollView.delegate = self
 
-        if #available(iOS 26.0, *) {
+        if #available(iOS 26.0, *), LiquidGlass.isEnabled {
             configureNavigationBarForLiquidGlass()
             configureLiquidGlassTitleView()
         }
@@ -94,7 +94,7 @@ final class ProfileViewController: ViewController {
         
         renderProfile()
 
-        if #available(iOS 26.0, *) {
+        if #available(iOS 26.0, *), LiquidGlass.isEnabled {
             if renderView.scrollView.contentOffset.y <= -renderView.scrollView.adjustedContentInset.top {
                 liquidGlassTitleView.textColor = theme["navigationBarTextColor"]
             }
@@ -104,7 +104,7 @@ final class ProfileViewController: ViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        if #available(iOS 26.0, *) {
+        if #available(iOS 26.0, *), LiquidGlass.isEnabled {
             if let navController = navigationController as? NavigationController {
                 navController.updateNavigationBarTintForScrollProgress(NSNumber(value: 0.0))
             }
@@ -284,7 +284,7 @@ private struct ShowHomepageActions: RenderViewMessage {
 
 extension ProfileViewController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if #available(iOS 26.0, *) {
+        if #available(iOS 26.0, *), LiquidGlass.isEnabled {
             let topInset = scrollView.adjustedContentInset.top
             let currentOffset = scrollView.contentOffset.y
             let topPosition = -topInset

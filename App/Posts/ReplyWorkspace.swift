@@ -128,10 +128,8 @@ final class ReplyWorkspace: NSObject {
 
             let navigationItem = compositionViewController.navigationItem
             let cancelButton = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(ReplyWorkspace.didTapCancel(_:)))
-            // Only set explicit tint color for iOS < 26
-            if #available(iOS 26.0, *) {
-                // Let iOS 26+ handle the color automatically
-            } else {
+            // Liquid Glass handles the color automatically; otherwise tint explicitly.
+            if !LiquidGlass.isEnabled {
                 cancelButton.tintColor = compositionViewController.theme["navigationBarTextColor"]
             }
             navigationItem.leftBarButtonItem = cancelButton
@@ -218,10 +216,8 @@ final class ReplyWorkspace: NSObject {
             preview = PostPreviewViewController(thread: draft.thread, BBcode: draft.text ?? .init())
         }
         let postButton = UIBarButtonItem(title: draft.submitButtonTitle, style: .plain, target: self, action: #selector(ReplyWorkspace.didTapPost(_:)))
-        // Only set explicit tint color for iOS < 26
-        if #available(iOS 26.0, *) {
-            // Let iOS 26+ handle the color automatically
-        } else {
+        // Liquid Glass handles the color automatically; otherwise tint explicitly.
+        if !LiquidGlass.isEnabled {
             postButton.tintColor = compositionViewController.theme["navigationBarTextColor"]
         }
         preview.navigationItem.rightBarButtonItem = postButton

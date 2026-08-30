@@ -363,7 +363,7 @@ final class PostsPageViewController: ViewController {
 
     override var title: String? {
         didSet {
-            if #available(iOS 26.0, *) {
+            if #available(iOS 26.0, *), LiquidGlass.isEnabled {
                 let glassView = liquidGlassTitleView
                 glassView.title = title
                 glassView.textColor = theme["mode"] == "dark" ? .white : .black
@@ -511,7 +511,7 @@ final class PostsPageViewController: ViewController {
                 switch newPage {
                 case .last where self.posts.isEmpty,
                      .nextUnread where self.posts.isEmpty:
-                    if #available(iOS 26.0, *) {
+                    if LiquidGlass.isEnabled {
                         self.pageNumberView.currentPage = 0
                         self.pageNumberView.totalPages = self.numberOfPages > 0 ? self.numberOfPages : 0
                     } else {
@@ -593,7 +593,7 @@ final class PostsPageViewController: ViewController {
                 switch newPage {
                 case .last where self.posts.isEmpty,
                      .nextUnread where self.posts.isEmpty:
-                    if #available(iOS 26.0, *) {
+                    if LiquidGlass.isEnabled {
                         self.pageNumberView.currentPage = 0
                         self.pageNumberView.totalPages = self.numberOfPages > 0 ? self.numberOfPages : 0
                     } else {
@@ -737,9 +737,8 @@ final class PostsPageViewController: ViewController {
     private lazy var composeItem: UIBarButtonItem = {
         let item = UIBarButtonItem(image: UIImage(named: "compose"), style: .plain, target: self, action: #selector(compose))
         item.accessibilityLabel = NSLocalizedString("compose.accessibility-label", comment: "")
-        // Only set explicit tint color for iOS < 26
-        if #available(iOS 26.0, *) {
-        } else {
+        // Only set explicit tint color when the system isn't drawing glass buttons
+        if !LiquidGlass.isEnabled {
             item.tintColor = theme["navigationBarTextColor"]
         }
         return item
@@ -847,7 +846,7 @@ final class PostsPageViewController: ViewController {
             }
         ))
         item.accessibilityLabel = "Settings"
-        if #unavailable(iOS 26.0) {
+        if !LiquidGlass.isEnabled {
             item.tintColor = theme["toolbarTextColor"]
         }
         return item
@@ -865,7 +864,7 @@ final class PostsPageViewController: ViewController {
             }
         ))
         item.accessibilityLabel = "Previous page"
-        if #unavailable(iOS 26.0) {
+        if !LiquidGlass.isEnabled {
             item.tintColor = theme["toolbarTextColor"]
         }
         return item
@@ -890,24 +889,58 @@ final class PostsPageViewController: ViewController {
             }
         })
 
-        if #available(iOS 26.0, *) {
-            let containerView = UIView()
-            containerView.addSubview(pageNumberView)
-            pageNumberView.translatesAutoresizingMaskIntoConstraints = false
-            NSLayoutConstraint.activate([
-                pageNumberView.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
-                pageNumberView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
-                containerView.widthAnchor.constraint(equalTo: pageNumberView.widthAnchor, constant: 2),
-                containerView.heightAnchor.constraint(equalTo: pageNumberView.heightAnchor, constant: 2)
-            ])
-            item.customView = containerView
-        } else {
-            item.possibleTitles = ["2345 / 2345"]
-        }
-
         item.accessibilityHint = "Opens page picker"
         return item
     }()
+
+    /// Keeps `currentPageItem`'s representation in sync with the Reduce Liquid Glass setting:
+    /// the glass `PageNumberView` pill when glass is on, a plain text title otherwise. Safe to
+    /// call repeatedly; only rebuilds when the representation actually changes.
+    private func syncCurrentPageItemStyle() {
+        if LiquidGlass.isEnabled {
+            if currentPageItem.customView == nil {
+                let containerView = UIView()
+                containerView.addSubview(pageNumberView)
+                pageNumberView.translatesAutoresizingMaskIntoConstraints = false
+                NSLayoutConstraint.activate([
+                    pageNumberView.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
+                    pageNumberView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
+                    containerView.widthAnchor.constraint(equalTo: pageNumberView.widthAnchor, constant: 2),
+                    containerView.heightAnchor.constraint(equalTo: pageNumberView.heightAnchor, constant: 2)
+                ])
+                currentPageItem.customView = containerView
+                currentPageItem.title = nil
+            }
+        } else {
+            if currentPageItem.customView != nil {
+                pageNumberView.removeFromSuperview()
+                currentPageItem.customView = nil
+            }
+            currentPageItem.possibleTitles = ["2345 / 2345"]
+        }
+    }
+
+    /// Pushes the current page state into whichever representation `currentPageItem` is using.
+    private func updateCurrentPageItemDisplay() {
+        if case .specific(let pageNumber)? = page, numberOfPages > 0 {
+            if LiquidGlass.isEnabled {
+                pageNumberView.currentPage = pageNumber
+                pageNumberView.totalPages = numberOfPages
+            } else {
+                currentPageItem.title = "\(pageNumber) / \(numberOfPages)"
+                currentPageItem.setTitleTextAttributes([.font: UIFont.preferredFontForTextStyle(.body, weight: .regular, maximumPointSize: PageNumberView.maximumFontPointSize)], for: .normal)
+            }
+            currentPageItem.accessibilityLabel = "Page \(pageNumber) of \(numberOfPages)"
+        } else {
+            if LiquidGlass.isEnabled {
+                pageNumberView.currentPage = 0
+                pageNumberView.totalPages = 0
+            } else {
+                currentPageItem.title = ""
+            }
+            currentPageItem.accessibilityLabel = nil
+        }
+    }
 
     private lazy var forwardItem: UIBarButtonItem = {
         let item = UIBarButtonItem(primaryAction: UIAction(
@@ -921,7 +954,7 @@ final class PostsPageViewController: ViewController {
             }
         ))
         item.accessibilityLabel = "Next page"
-        if #unavailable(iOS 26.0) {
+        if !LiquidGlass.isEnabled {
             item.tintColor = theme["toolbarTextColor"]
         }
         return item
@@ -949,7 +982,7 @@ final class PostsPageViewController: ViewController {
             }
         ))
         item.accessibilityLabel = "Thread actions"
-        if #unavailable(iOS 26.0) {
+        if !LiquidGlass.isEnabled {
             item.tintColor = theme["toolbarTextColor"]
         }
         return item
@@ -1026,25 +1059,7 @@ final class PostsPageViewController: ViewController {
             }
         }()
 
-        if case .specific(let pageNumber)? = page, numberOfPages > 0 {
-            if #available(iOS 26.0, *) {
-                pageNumberView.currentPage = pageNumber
-                pageNumberView.totalPages = numberOfPages
-                currentPageItem.accessibilityLabel = "Page \(pageNumber) of \(numberOfPages)"
-            } else {
-                currentPageItem.title = "\(pageNumber) / \(numberOfPages)"
-                currentPageItem.accessibilityLabel = "Page \(pageNumber) of \(numberOfPages)"
-                currentPageItem.setTitleTextAttributes([.font: UIFont.preferredFontForTextStyle(.body, weight: .regular, maximumPointSize: PageNumberView.maximumFontPointSize)], for: .normal)
-            }
-        } else {
-            if #available(iOS 26.0, *) {
-                pageNumberView.currentPage = 0
-                pageNumberView.totalPages = 0
-            } else {
-                currentPageItem.title = ""
-            }
-            currentPageItem.accessibilityLabel = nil
-        }
+        updateCurrentPageItemDisplay()
 
         forwardItem.isEnabled = {
             switch page {
@@ -1061,10 +1076,26 @@ final class PostsPageViewController: ViewController {
     }
     
     private func updateToolbarItems() {
+        syncCurrentPageItemStyle()
+        updateCurrentPageItemDisplay()
+
+        let actions = actionsItem()
+        let buttonItems: [UIBarButtonItem]
         if endlessScrollPosts {
-            postsView.toolbarItems = [settingsItem, .flexibleSpace(), actionsItem()]
+            buttonItems = [settingsItem, actions]
+            postsView.toolbarItems = [settingsItem, .flexibleSpace(), actions]
         } else {
-            postsView.toolbarItems = [settingsItem, .flexibleSpace(), backItem, currentPageItem, forwardItem, .flexibleSpace(), actionsItem()]
+            buttonItems = [settingsItem, backItem, currentPageItem, forwardItem, actions]
+            postsView.toolbarItems = [settingsItem, .flexibleSpace(), backItem, currentPageItem, forwardItem, .flexibleSpace(), actions]
+        }
+
+        if #available(iOS 26.0, *) {
+            // Only the real buttons: touching the flexible spaces makes them join the shared
+            // glass background, which merges every platter into one full-width pill.
+            let hide = !LiquidGlass.isEnabled
+            for item in buttonItems {
+                item.hidesSharedBackground = hide
+            }
         }
     }
 
@@ -2260,7 +2291,7 @@ final class PostsPageViewController: ViewController {
         }
 
         // Update title appearance for iOS 26+
-        if #available(iOS 26.0, *) {
+        if #available(iOS 26.0, *), LiquidGlass.isEnabled {
             let glassView = liquidGlassTitleView
             // Set both text color and font from theme
             glassView.textColor = theme["mode"] == "dark" ? .white : .black
@@ -2269,8 +2300,12 @@ final class PostsPageViewController: ViewController {
             // Update navigation bar configuration based on new theme
             configureNavigationBarForLiquidGlass()
         } else {
-            // Apply theme to regular title label for iOS < 26
-            navigationItem.titleLabel.textColor = theme["navigationBarTextColor"]
+            // Tear down an installed LiquidGlassTitleView when the setting flips while this
+            // screen is up, then apply theme to the regular title label.
+            if navigationItem.titleView != nil {
+                navigationItem.titleView = nil
+            }
+            navigationItem.titleLabel.text = title
             navigationItem.titleLabel.font = fontForPostTitle(from: theme, idiom: UIDevice.current.userInterfaceIdiom)
 
             if UIDevice.current.userInterfaceIdiom == .phone {
@@ -2279,10 +2314,9 @@ final class PostsPageViewController: ViewController {
 
             navigationItem.titleLabel.textColor = Theme.defaultTheme()[uicolor: "navigationBarTextColor"] ?? .label
         }
-        
-        // Update navigation bar button colors (only for iOS < 26)
-        if #available(iOS 26.0, *) {
-        } else {
+
+        // Update navigation bar button colors (only when the system isn't drawing glass buttons)
+        if !LiquidGlass.isEnabled {
             composeItem.tintColor = theme["navigationBarTextColor"]
             // Ensure the navigation bar itself uses the correct tint color for the back button
             navigationController?.navigationBar.tintColor = theme["navigationBarTextColor"]
@@ -2299,7 +2333,7 @@ final class PostsPageViewController: ViewController {
         }
 
         let appearance = UIToolbarAppearance()
-        if #available(iOS 26.0, *), postsView.toolbar.isTranslucent {
+        if #available(iOS 26.0, *), LiquidGlass.isEnabled, postsView.toolbar.isTranslucent {
             appearance.configureWithDefaultBackground()
         } else {
             // Force opaque on iOS <26. Otherwise the toolbar renders
@@ -2315,9 +2349,18 @@ final class PostsPageViewController: ViewController {
         postsView.toolbar.compactAppearance = appearance
         postsView.toolbar.scrollEdgeAppearance = appearance
         postsView.toolbar.compactScrollEdgeAppearance = appearance
+        postsView.toolbar.setNeedsLayout()
+        postsView.toolbar.layoutIfNeeded()
 
         if #available(iOS 26.0, *) {
-        } else {
+            // iOS 26 toolbars ignore the opaque appearance (items get glass platters over a
+            // transparent bar), so paint the legacy background ourselves when glass is disabled.
+            postsView.toolbar.setLegacyOpaqueBackground(
+                color: LiquidGlass.isEnabled ? nil : Theme.defaultTheme()["backgroundColor"]
+            )
+        }
+
+        if !LiquidGlass.isEnabled {
             backItem.tintColor = theme["toolbarTextColor"]
             forwardItem.tintColor = theme["toolbarTextColor"]
             settingsItem.tintColor = theme["toolbarTextColor"]
@@ -2788,7 +2831,7 @@ extension PostsPageViewController {
 
 extension PostsPageViewController: NavigationBarScrollProgressProviding {
     func resyncNavigationBarScrollProgress() {
-        guard #available(iOS 26.0, *) else { return }
+        guard #available(iOS 26.0, *), LiquidGlass.isEnabled else { return }
         postsView.syncNavigationBarScrollProgress()
     }
 }

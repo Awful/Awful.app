@@ -53,6 +53,22 @@ final class RootTabBarController: UITabBarController, UITabBarControllerDelegate
         themeDidChange()
     }
 
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        // The backplate is frame-based, so refresh it once the tab bar has its real
+        // post-layout bounds (first layout, rotation, size changes).
+        if #available(iOS 26.0, *) {
+            updateTabBarBackplate()
+        }
+    }
+
+    /// Paints the classic full-width bar behind the iOS 26 glass pill when Liquid Glass
+    /// is disabled — the pill shape itself can't be removed via `UITabBarAppearance`.
+    @available(iOS 26.0, *)
+    private func updateTabBarBackplate() {
+        tabBar.setLegacyOpaqueBackground(color: LiquidGlass.isEnabled ? nil : theme["tabBarBackgroundColor"])
+    }
+
     // called whenever a tab button is tapped
      func tabBarController(
         _ tabBarController: UITabBarController,
@@ -66,7 +82,7 @@ final class RootTabBarController: UITabBarController, UITabBarControllerDelegate
     func themeDidChange() {
         let barAppearance = UITabBarAppearance()
 
-        if #available(iOS 26.0, *) {
+        if #available(iOS 26.0, *), LiquidGlass.isEnabled {
             // Set on self (not tabBar) so the trait propagates to the
             // glass tab bar — this is what makes the Settings SwiftUI tab
             // work (its HostingController propagates colorScheme).
@@ -80,11 +96,19 @@ final class RootTabBarController: UITabBarController, UITabBarControllerDelegate
 
             tabBar.isTranslucent = true
             tabBar.barTintColor = nil
+            tabBar.unselectedItemTintColor = nil
             tabBar.topBorderColor = nil
 
             // Force glass to re-render after trait change (needed on macOS)
             tabBar.standardAppearance = barAppearance
         } else {
+            // Set on self, like the glass branch: the glass item platter is not a
+            // descendant of tabBar, so only the controller's trait reaches it — and the
+            // trait flip is what makes the system rebuild the bar's rendering on a theme
+            // switch. (The SwiftUI Settings tab sets its own colorScheme via
+            // ThemeViewModifier, so this doesn't fight it.)
+            overrideUserInterfaceStyle = theme[string: "mode"] == "light" ? .light : .dark
+
             barAppearance.configureWithOpaqueBackground()
             barAppearance.backgroundColor = theme[uicolor: "tabBarBackgroundColor"]
             barAppearance.shadowColor = theme[uicolor: "bottomBarTopBorderColor"]
@@ -92,9 +116,18 @@ final class RootTabBarController: UITabBarController, UITabBarControllerDelegate
             tabBar.isTranslucent = false
             tabBar.barTintColor = theme["tabBarBackgroundColor"]
             tabBar.tintColor = theme["tintColor"]
+            // iOS 26 glass items ignore UITabBarItemAppearance icon colors and render from
+            // tint + trait, so theme the unselected tint directly. The selection capsule
+            // can't be removed or recolored (the system ignores selectionIndicator overrides
+            // while Liquid Glass is active).
+            tabBar.unselectedItemTintColor = theme["tabBarIconNormalColor"]
             tabBar.topBorderColor = theme["bottomBarTopBorderColor"]
         }
-        
+
+        if #available(iOS 26.0, *) {
+            updateTabBarBackplate()
+        }
+
         let itemAppearance = UITabBarItemAppearance()
         itemAppearance.selected.iconColor = Theme.defaultTheme()["tabBarIconSelectedColor"]!
         itemAppearance.normal.iconColor = Theme.defaultTheme()["tabBarIconNormalColor"]!
@@ -105,6 +138,8 @@ final class RootTabBarController: UITabBarController, UITabBarControllerDelegate
 
         tabBar.standardAppearance = barAppearance
         tabBar.scrollEdgeAppearance = barAppearance
+        tabBar.setNeedsLayout()
+        tabBar.layoutIfNeeded()
     }
 }
 

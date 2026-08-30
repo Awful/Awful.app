@@ -39,7 +39,7 @@ struct LepersFilterView: View {
                 form
             }
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
+            .toolbarHidingSharedBackgroundWhenGlassDisabled {
                 ToolbarItem(placement: .principal) {
                     Text("Display Options", bundle: .module)
                         .font(.headline)

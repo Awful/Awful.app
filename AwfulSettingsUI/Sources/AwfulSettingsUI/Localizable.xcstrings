@@ -191,6 +191,9 @@
     "Pull for Next Page" : {
 
     },
+    "Reduce Liquid Glass" : {
+
+    },
     "Remove Tracking from Links" : {
 
     },
@@ -243,6 +246,9 @@
 
     },
     "Unread Announcements Badge" : {
+
+    },
+    "Use the classic opaque bars instead of the iOS 26 glass look. The system back button keeps its glass style, and some open screens update the next time you open them." : {
 
     },
     "What to open when tapping an external link. Long-press any link for more options." : {

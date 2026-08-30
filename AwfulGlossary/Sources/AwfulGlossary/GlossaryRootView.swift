@@ -75,7 +75,7 @@ public struct GlossaryRootView: View {
             .backport.fontDesign(theme.roundedFonts ? .rounded : nil)
             .navigationTitle(Text("SAclopedia", bundle: .module))
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
+            .toolbarHidingSharedBackgroundWhenGlassDisabled {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button(action: onExit) { Text("Exit", bundle: .module) }
                         .liquidGlassBarButtonColor(theme[color: "navigationBarTextColor"])

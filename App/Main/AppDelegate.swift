@@ -27,6 +27,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     private var dataStore: DataStore!
     @FoilDefaultStorage(Settings.defaultDarkThemeName) private var defaultDarkTheme
     @FoilDefaultStorage(Settings.defaultLightThemeName) private var defaultLightTheme
+    @FoilDefaultStorage(Settings.disableLiquidGlass) private var disableLiquidGlass
     private var inboxRefresher: PrivateMessageInboxRefresher?
     var managedObjectContext: NSManagedObjectContext { return dataStore.mainManagedObjectContext }
     @FoilDefaultStorage(Settings.showAvatars) private var showAvatars
@@ -116,6 +117,13 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
                 .dropFirst()
                 .filter { [weak self] _ in self?.darkMode == false }
             Publishers.Merge(darkDefaultChange, lightDefaultChange)
+                .receive(on: RunLoop.main)
+                .sink { [weak self] _ in self?.showSnapshotDuringThemeDidChange() }
+                .store(in: &cancellables)
+
+            $disableLiquidGlass
+                .dropFirst()
+                .removeDuplicates()
                 .receive(on: RunLoop.main)
                 .sink { [weak self] _ in self?.showSnapshotDuringThemeDidChange() }
                 .store(in: &cancellables)

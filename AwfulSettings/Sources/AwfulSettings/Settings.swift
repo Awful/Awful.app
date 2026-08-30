@@ -59,6 +59,9 @@ public enum Settings {
         default: SystemCapabilities.oled ? .brightLight : .default
     )
 
+    /// Render the pre-iOS-26 opaque themed bars instead of iOS 26's Liquid Glass chrome. iOS 26+ only.
+    public static let disableLiquidGlass = Setting(key: "disable_liquid_glass", default: false)
+
     /// Turn each Bluesky post link in a Forms post into an embedded Bluesky post.
     public static let embedBlueskyPosts = Setting(key: "embed_bluesky_posts", default: true)
 

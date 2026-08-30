@@ -3,6 +3,7 @@
 //  Copyright © 2025 Awful Contributors. All rights reserved.
 //
 
+import AwfulSettings
 import SwiftUI
 import UIKit
 
@@ -34,7 +35,7 @@ public struct NavigationConfigurator: UIViewControllerRepresentable {
                 // Use the app's custom back image from assets instead of the system chevron.
                 if let backImage = UIImage(named: "back") {
                     let indicator: UIImage
-                    if #available(iOS 26.0, *) {
+                    if #available(iOS 26.0, *), LiquidGlass.isEnabled {
                         // Template so the Liquid Glass bar tints it black/white dynamically
                         // (tintColor is cleared below), matching the app's main navigation bar.
                         indicator = backImage.withRenderingMode(.alwaysTemplate)
@@ -46,7 +47,7 @@ public struct NavigationConfigurator: UIViewControllerRepresentable {
 
                 // Ensure text-based bar button items adopt theme font (rounded if enabled)
                 let buttonFont = UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .regular)
-                if #available(iOS 26.0, *) {
+                if #available(iOS 26.0, *), LiquidGlass.isEnabled {
                     // Liquid Glass: omit the button color and clear tintColor so the OS renders the
                     // bar buttons black/white against the glass for legibility, like the main Forums
                     // bar. A forced theme color (e.g. a white navigationBarTextColor) is hard to read
@@ -100,29 +101,87 @@ public struct NavigationConfigurator: UIViewControllerRepresentable {
     }
 }
 
-extension View {
-    /// Colors a navigation-bar toolbar button with `color` on iOS < 26. On iOS 26+ it applies no
-    /// color, letting the Liquid Glass bar render the button black/white dynamically for legibility,
-    /// matching the app's main Forums bar. Pair with `liquidGlassNavigationTint` so SwiftUI doesn't
-    /// stamp a per-item tint that would override the bar's cleared `tintColor` (see NavigationConfigurator).
-    @ViewBuilder
-    public func liquidGlassBarButtonColor(_ color: Color?) -> some View {
-        if #available(iOS 26.0, *) {
-            self
+/// Applies `foregroundColor(_:)` unless Liquid Glass is in effect (iOS 26+ and not disabled by the
+/// user), in which case the bar renders the button black/white dynamically. `@AppStorage` keeps the
+/// choice live: toggling "Reduce Liquid Glass" re-evaluates without relaunching.
+private struct LiquidGlassBarButtonColorModifier: ViewModifier {
+    let color: Color?
+    @AppStorage(Settings.disableLiquidGlass) private var disableLiquidGlass
+
+    func body(content: Content) -> some View {
+        if #available(iOS 26.0, *), !disableLiquidGlass {
+            content
         } else {
-            foregroundColor(color)
+            content.foregroundColor(color)
         }
     }
+}
 
-    /// Tints the navigation stack with `color` on iOS < 26. On iOS 26+ the tint is omitted so the
-    /// Liquid Glass bar's buttons follow the bar's cleared `tintColor` and render black/white
-    /// dynamically. Content sets its own colors, so dropping the ambient tint here is safe.
-    @ViewBuilder
-    public func liquidGlassNavigationTint(_ color: Color?) -> some View {
-        if #available(iOS 26.0, *) {
-            self
+/// Applies `tint(_:)` unless Liquid Glass is in effect (iOS 26+ and not disabled by the user).
+/// `@AppStorage` keeps the choice live, matching `LiquidGlassBarButtonColorModifier`.
+private struct LiquidGlassNavigationTintModifier: ViewModifier {
+    let color: Color?
+    @AppStorage(Settings.disableLiquidGlass) private var disableLiquidGlass
+
+    func body(content: Content) -> some View {
+        if #available(iOS 26.0, *), !disableLiquidGlass {
+            content
         } else {
-            tint(color)
+            content.tint(color)
         }
+    }
+}
+
+extension View {
+    /// Colors a navigation-bar toolbar button with `color` on iOS < 26 and when the user has
+    /// disabled Liquid Glass. When glass is in effect it applies no color, letting the Liquid Glass
+    /// bar render the button black/white dynamically for legibility, matching the app's main Forums
+    /// bar. Pair with `liquidGlassNavigationTint` so SwiftUI doesn't stamp a per-item tint that
+    /// would override the bar's cleared `tintColor` (see NavigationConfigurator).
+    public func liquidGlassBarButtonColor(_ color: Color?) -> some View {
+        modifier(LiquidGlassBarButtonColorModifier(color: color))
+    }
+
+    /// Tints the navigation stack with `color` on iOS < 26 and when the user has disabled Liquid
+    /// Glass. When glass is in effect the tint is omitted so the Liquid Glass bar's buttons follow
+    /// the bar's cleared `tintColor` and render black/white dynamically. Content sets its own
+    /// colors, so dropping the ambient tint there is safe.
+    public func liquidGlassNavigationTint(_ color: Color?) -> some View {
+        modifier(LiquidGlassNavigationTintModifier(color: color))
+    }
+}
+
+/// Applies `toolbarContent` as the modified view's toolbar, hiding the glass capsule behind each
+/// item when the user has disabled Liquid Glass. `@AppStorage` keeps the choice live.
+///
+/// This has to wrap the whole `toolbar(content:)` call rather than being a per-item
+/// `ToolbarContent` extension: runtime-conditional `ToolbarContent` (`buildEither` /
+/// `buildLimitedAvailability`) requires iOS 16, and these packages deploy to iOS 15. `ViewBuilder`
+/// conditionals are iOS 15-safe, so the availability fork lives at the view level and the toolbar
+/// closure stays a single unconditional expression. `sharedBackgroundVisibility(_:)` distributes
+/// over the composed toolbar content, hitting every item.
+private struct GlassAwareToolbarModifier<ToolbarItems: ToolbarContent>: ViewModifier {
+    let toolbarContent: () -> ToolbarItems
+    @AppStorage(Settings.disableLiquidGlass) private var disableLiquidGlass
+
+    func body(content: Content) -> some View {
+        if #available(iOS 26.0, *) {
+            content.toolbar {
+                toolbarContent()
+                    .sharedBackgroundVisibility(disableLiquidGlass ? .hidden : .automatic)
+            }
+        } else {
+            content.toolbar(content: toolbarContent)
+        }
+    }
+}
+
+public extension View {
+    /// Like `toolbar(content:)`, but hides the glass capsule behind each toolbar item when the
+    /// user has disabled Liquid Glass. No-op pre-iOS 26 and when glass is enabled.
+    func toolbarHidingSharedBackgroundWhenGlassDisabled<Content: ToolbarContent>(
+        @ToolbarContentBuilder content: @escaping () -> Content
+    ) -> some View {
+        modifier(GlassAwareToolbarModifier(toolbarContent: content))
     }
 }

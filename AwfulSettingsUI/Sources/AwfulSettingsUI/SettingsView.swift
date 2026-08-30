@@ -16,6 +16,7 @@ public struct SettingsView: View {
     @AppStorage(Settings.autoDarkTheme) private var darkModeAutomatic
     @AppStorage(Settings.darkMode) private var darkModeManuallyEnabled
     @AppStorage(Settings.defaultBrowser) private var defaultBrowser
+    @AppStorage(Settings.disableLiquidGlass) private var disableLiquidGlass
     @AppStorage(Settings.jumpToPostEndOnDoubleTap) private var doubleTapPostToJump
     @AppStorage(Settings.embedBlueskyPosts) private var embedBlueskyPosts
     @AppStorage(Settings.embedTweets) private var embedTweets
@@ -286,6 +287,14 @@ public struct SettingsView: View {
                         "Automatic Dark Mode",
                         caption: "Awful can automatically switch between light and dark themes alongside iOS."
                     )
+                }
+                if #available(iOS 26.0, *) {
+                    Toggle(isOn: $disableLiquidGlass) {
+                        captionedLabel(
+                            "Reduce Liquid Glass",
+                            caption: "Use the classic opaque bars instead of the iOS 26 glass look. The system back button keeps its glass style, and some open screens update the next time you open them."
+                        )
+                    }
                 }
             } header: {
                 Text("Themes", bundle: .module)

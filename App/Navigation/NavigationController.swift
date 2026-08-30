@@ -434,7 +434,7 @@ final class NavigationController: UINavigationController, Themeable {
 
     override var preferredStatusBarStyle: UIStatusBarStyle {
         // For iOS 26+: use dynamic when scrolled
-        if #available(iOS 26.0, *), isScrolledFromTop {
+        if #available(iOS 26.0, *), LiquidGlass.isEnabled, isScrolledFromTop {
             return .default  // Let system handle it dynamically when scrolled
         }
 
@@ -518,6 +518,7 @@ final class NavigationController: UINavigationController, Themeable {
         // Set forcedTintColor early for iPad sidebar so the first
         // layoutSubviews pass uses the correct color.
         if #available(iOS 26.0, *),
+           LiquidGlass.isEnabled,
            UIDevice.current.userInterfaceIdiom == .pad,
            tabBarController != nil {
             awfulNavigationBar.forcedTintColor = theme[uicolor: "navigationBarTextColor"] ?? .white
@@ -529,7 +530,7 @@ final class NavigationController: UINavigationController, Themeable {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        if #available(iOS 26.0, *) {
+        if #available(iOS 26.0, *), LiquidGlass.isEnabled {
             applySidebarAppearanceIfNeeded(with: theme)
         }
     }
@@ -537,7 +538,7 @@ final class NavigationController: UINavigationController, Themeable {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        if #available(iOS 26.0, *) {
+        if #available(iOS 26.0, *), LiquidGlass.isEnabled {
             applySidebarAppearanceIfNeeded(with: theme)
         }
     }
@@ -549,7 +550,14 @@ final class NavigationController: UINavigationController, Themeable {
         updateNavigationBarAppearance(with: theme)
 
         if #available(iOS 26.0, *) {
-            applySidebarAppearanceIfNeeded(with: theme)
+            if LiquidGlass.isEnabled {
+                applySidebarAppearanceIfNeeded(with: theme)
+            } else {
+                awfulNavigationBar.forcedTintColor = nil
+            }
+            if let topVC = topViewController {
+                updateSharedBackgroundVisibility(for: topVC)
+            }
         }
     }
 
@@ -664,6 +672,20 @@ final class NavigationController: UINavigationController, Themeable {
                     title: "", style: .plain, target: nil, action: nil
                 )
             }
+        }
+    }
+
+    /// When the user has disabled Liquid Glass, hides the shared glass background behind every
+    /// bar button item (the system back button doesn't expose this and stays glass). Assignment
+    /// rather than set-once so re-enabling glass recovers.
+    @available(iOS 26.0, *)
+    private func updateSharedBackgroundVisibility(for viewController: UIViewController) {
+        let hide = !LiquidGlass.isEnabled
+        let items = (viewController.navigationItem.leftBarButtonItems ?? [])
+            + (viewController.navigationItem.rightBarButtonItems ?? [])
+            + (viewController.toolbarItems ?? [])
+        for item in items where !item.isSpacer {
+            item.hidesSharedBackground = hide
         }
     }
 
@@ -991,7 +1013,7 @@ final class NavigationController: UINavigationController, Themeable {
     }
 
     @objc func updateNavigationBarTintForScrollProgress(_ progress: NSNumber) {
-        guard #available(iOS 26.0, *) else { return }
+        guard #available(iOS 26.0, *), LiquidGlass.isEnabled else { return }
 
         // On iPad/macOS, only the detail column does the glass scroll transition.
         // The sidebar (primary) keeps its opaque themed nav bar.
@@ -1046,7 +1068,7 @@ final class NavigationController: UINavigationController, Themeable {
     }
 
     @objc func updateNavigationBarTintForScrollPosition(_ isAtTop: NSNumber) {
-        guard #available(iOS 26.0, *) else { return }
+        guard #available(iOS 26.0, *), LiquidGlass.isEnabled else { return }
         // Scroll-based appearance handled in updateNavigationBarTintForScrollProgress,
         // which already guards against iPad split view.
         let progress = isAtTop.boolValue ? 0.0 : 1.0
@@ -1177,13 +1199,16 @@ final class NavigationController: UINavigationController, Themeable {
     private func updateNavigationBarAppearance(with theme: Theme, for viewController: UIViewController? = nil) {
         awfulNavigationBar.barTintColor = theme["navigationBarTintColor"]
 
-        if #available(iOS 26.0, *) {
+        // Repair the init-time value when the Reduce Liquid Glass setting changes while running.
+        awfulNavigationBar.isTranslucent = LiquidGlass.isEnabled
+
+        if #available(iOS 26.0, *), LiquidGlass.isEnabled {
             awfulNavigationBar.bottomBorderColor = .clear
         } else {
             awfulNavigationBar.bottomBorderColor = theme["topBarBottomBorderColor"]
         }
 
-        if #available(iOS 26.0, *) {
+        if #available(iOS 26.0, *), LiquidGlass.isEnabled {
             awfulNavigationBar.layer.shadowOpacity = 0
             awfulNavigationBar.layer.shadowColor = UIColor.clear.cgColor
         } else {
@@ -1199,6 +1224,7 @@ final class NavigationController: UINavigationController, Themeable {
 
         if #available(iOS 15.0, *) {
             if #available(iOS 26.0, *),
+               LiquidGlass.isEnabled,
                !(UIDevice.current.userInterfaceIdiom == .pad && tabBarController != nil) {
                 // iPhone and iPad detail column: iOS 26 glass-capable appearance.
                 // Sidebar nav controllers skip this — they use the opaque path
@@ -1336,11 +1362,15 @@ extension NavigationController: UINavigationControllerDelegate {
         // Apply sidebar glass bypass (titleView, button replacement) for
         // pushed VCs too, not just on tab switches.
         if #available(iOS 26.0, *) {
-            applySidebarAppearanceIfNeeded(with: vcTheme)
+            if LiquidGlass.isEnabled {
+                applySidebarAppearanceIfNeeded(with: vcTheme)
+            }
+            updateSharedBackgroundVisibility(for: viewController)
         }
 
         if awfulNavigationBar.backIndicatorImage == nil {
             if #available(iOS 26.0, *),
+               LiquidGlass.isEnabled,
                UIDevice.current.userInterfaceIdiom == .pad,
                tabBarController != nil,
                let textColor = vcTheme[uicolor: "navigationBarTextColor"] {
@@ -1364,26 +1394,27 @@ extension NavigationController: UINavigationControllerDelegate {
             // tintColor — we must set it explicitly. Pre-iOS 26 also
             // needs manual tinting.
             let needsManualButtonTint: Bool = {
-                if #available(iOS 26.0, *) {
+                if #available(iOS 26.0, *), LiquidGlass.isEnabled {
                     if let splitVC = tabBarController?.splitViewController ?? splitViewController,
                        !splitVC.isCollapsed {
                         return true // iPad with expanded split view
                     }
                     return false // iPhone — glass handles tint
                 }
-                return true // pre-iOS 26
+                return true // pre-iOS 26 or Liquid Glass disabled
             }()
 
             if needsManualButtonTint {
                 // On iPad sidebar with iOS 26, replace text-based items with
                 // custom-view equivalents to bypass glass vibrancy.
                 if #available(iOS 26.0, *),
+                   LiquidGlass.isEnabled,
                    UIDevice.current.userInterfaceIdiom == .pad,
                    tabBarController != nil {
                     replaceSidebarBarButtonItems(for: viewController)
                 } else {
                     let buttonTintColor: UIColor
-                    if #available(iOS 26.0, *) {
+                    if #available(iOS 26.0, *), LiquidGlass.isEnabled {
                         // Liquid glass renders bar buttons in glass circles; ignore the
                         // theme's white and match LiquidGlassTitleView / back button.
                         buttonTintColor = vcTheme["mode"] == "dark" ? .white : .black
@@ -1406,7 +1437,7 @@ extension NavigationController: UINavigationControllerDelegate {
         awfulNavigationBar.setNeedsLayout()
         awfulNavigationBar.layoutIfNeeded()
 
-        if #available(iOS 26.0, *) {
+        if #available(iOS 26.0, *), LiquidGlass.isEnabled {
             isScrolledFromTop = false
             invalidateScrollProgressCache()
 

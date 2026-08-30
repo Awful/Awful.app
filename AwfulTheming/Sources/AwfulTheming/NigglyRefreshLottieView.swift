@@ -41,7 +41,7 @@ final class NigglyRefreshLottieView: UIView, Themeable {
         animationView.animationSpeed = 1
         animationView.translatesAutoresizingMaskIntoConstraints = false
 
-        if #available(iOS 26.0, *) {
+        if #available(iOS 26.0, *), LiquidGlass.isEnabled {
             animationView.alpha = 0
         }
 
@@ -97,7 +97,7 @@ extension NigglyRefreshLottieView {
                 view.animationView.play()
                 view.animationView.pause()
 
-                if #available(iOS 26.0, *) {
+                if #available(iOS 26.0, *), LiquidGlass.isEnabled {
                     UIView.animate(withDuration: 0.2) { [weak view] in
                         view?.animationView.alpha = 0
                     }
@@ -105,10 +105,14 @@ extension NigglyRefreshLottieView {
 
             case .releasing(let progress):
                 if progress > 0 {
-                    if #available(iOS 26.0, *) {
+                    if #available(iOS 26.0, *), LiquidGlass.isEnabled {
                         UIView.animate(withDuration: 0.1) { [weak view] in
                             view?.animationView.alpha = 1
                         }
+                    } else {
+                        // Glass off (or pre-26): always visible. Also recovers from a stale
+                        // faded-out alpha if the user disables Liquid Glass mid-session.
+                        view.animationView.alpha = 1
                     }
 
                     if progress < 1 {
@@ -118,7 +122,7 @@ extension NigglyRefreshLottieView {
                     }
                 } else {
                     view.animationView.pause()
-                    if #available(iOS 26.0, *) {
+                    if #available(iOS 26.0, *), LiquidGlass.isEnabled {
                         view.animationView.alpha = 0
                     }
                 }
@@ -126,16 +130,18 @@ extension NigglyRefreshLottieView {
             case .loading:
                 view.animationView.play()
 
-                if #available(iOS 26.0, *) {
+                if #available(iOS 26.0, *), LiquidGlass.isEnabled {
                     UIView.animate(withDuration: 0.2) { [weak view] in
                         view?.animationView.alpha = 1
                     }
+                } else {
+                    view.animationView.alpha = 1
                 }
 
             case .finished:
                 view.animationView.stop()
 
-                if #available(iOS 26.0, *) {
+                if #available(iOS 26.0, *), LiquidGlass.isEnabled {
                     UIView.animate(withDuration: 0.3, delay: 0.2, options: []) { [weak view] in
                         view?.animationView.alpha = 0
                     }

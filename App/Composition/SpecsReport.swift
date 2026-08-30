@@ -155,6 +155,7 @@ extension SpecsReport {
         .init(Settings.defaultBrowser),
         .init(Settings.defaultDarkThemeName),
         .init(Settings.defaultLightThemeName),
+        .init(Settings.disableLiquidGlass),
         .init(Settings.embedBlueskyPosts),
         .init(Settings.embedTweets),
         .init(Settings.embedVideos),

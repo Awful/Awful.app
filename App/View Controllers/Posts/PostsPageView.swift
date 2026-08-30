@@ -42,7 +42,7 @@ final class PostsPageView: UIView {
     /// On iOS 26 the glass material and layout read differently, so the
     /// sidebar-alignment nudge looks correct there.
     var effectiveBottomInset: CGFloat {
-        guard #available(iOS 26.0, *) else {
+        guard #available(iOS 26.0, *), LiquidGlass.isEnabled else {
             return layoutMargins.bottom
         }
         return traitCollection.userInterfaceIdiom == .pad
@@ -309,8 +309,6 @@ final class PostsPageView: UIView {
 
         NotificationCenter.default.addObserver(self, selector: #selector(voiceOverStatusDidChange), name: UIAccessibility.voiceOverStatusDidChangeNotification, object: nil)
 
-        toolbar.overrideUserInterfaceStyle = Theme.defaultTheme()["mode"] == "light" ? .light : .dark
-
         addSubview(renderView)
         if #available(iOS 26.0, *) {
             addSubview(immersiveModeManager.safeAreaGradientView)
@@ -454,7 +452,11 @@ final class PostsPageView: UIView {
         renderView.scrollView.indicatorStyle = theme.scrollIndicatorStyle
         renderView.setThemeStylesheet(theme["postsViewCSS"] ?? "")
 
-        if #available(iOS 26.0, *) {
+        // The trait flip is what makes the system rebuild the toolbar's rendering when
+        // the theme switches while this screen is up.
+        toolbar.overrideUserInterfaceStyle = Theme.defaultTheme()["mode"] == "light" ? .light : .dark
+
+        if #available(iOS 26.0, *), LiquidGlass.isEnabled {
             toolbar.isTranslucent = Theme.defaultTheme()[bool: "tabBarIsTranslucent"] ?? false
         } else {
             toolbar.tintColor = Theme.defaultTheme()["toolbarTextColor"]!
@@ -464,7 +466,7 @@ final class PostsPageView: UIView {
 
         topBar.themeDidChange(Theme.defaultTheme())
 
-        if #available(iOS 26.0, *) {
+        if #available(iOS 26.0, *), LiquidGlass.isEnabled {
             immersiveModeManager.safeAreaGradientView.themeDidChange()
         }
     }
@@ -487,8 +489,10 @@ extension PostsPageView {
         private var isTopBarRemoved = false
         
         fileprivate lazy var topBar: UIView = {
+                // The choice is fixed per posts-page instance: a live setting change applies to
+                // the next thread opened, not this one.
                 let topBar: UIView & PostsPageTopBarProtocol
-                if #available(iOS 26.0, *) {
+                if #available(iOS 26.0, *), LiquidGlass.isEnabled {
                     topBar = PostsPageTopBarLiquidGlass()
                 } else {
                     topBar = PostsPageTopBar()
@@ -511,7 +515,7 @@ extension PostsPageView {
             // bounds); the bar fades with reveal progress instead of being masked.
             clipsToBounds = true
 
-            if #available(iOS 26.0, *) {
+            if #available(iOS 26.0, *), LiquidGlass.isEnabled {
                 backgroundColor = .clear
             }
 
@@ -570,7 +574,7 @@ extension PostsPageView {
             result = .init(progress: 1)
         }
 
-        if #available(iOS 26.0, *) {
+        if #available(iOS 26.0, *), LiquidGlass.isEnabled {
             // Never clip on iOS 26: a clipped Liquid Glass shadow renders as a grey
             // wash filling the clipping bounds. Instead, fade the bar with the reveal
             // progress so it doesn't show behind the translucent navigation bar while
@@ -586,6 +590,11 @@ extension PostsPageView {
             case .visible, .alwaysVisible:
                 topBarContainer.topBar.alpha = 1
             }
+        } else {
+            // Restores the masked reveal (and full opacity) if the glass path above had been
+            // fading the bar before the setting flipped.
+            topBarContainer.clipsToBounds = true
+            topBarContainer.topBar.alpha = 1
         }
 
         updateScrollViewInsets()
@@ -885,7 +894,7 @@ extension PostsPageView: ScrollViewDelegateExtras {
             }
         }
 
-        if #available(iOS 26.0, *) {
+        if #available(iOS 26.0, *), LiquidGlass.isEnabled {
             updateNavigationBarForScrollProgress(scrollView)
         }
 

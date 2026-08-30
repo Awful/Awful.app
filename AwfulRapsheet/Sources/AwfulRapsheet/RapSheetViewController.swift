@@ -194,6 +194,14 @@ public final class RapSheetViewController: ViewController {
         scrollViewDelegateMux?.addDelegate(self)
 
         toolbar.items = makeToolbarItems()
+        if #available(iOS 26.0, *) {
+            // Without their shared glass platters, the items sit flat on the painted legacy
+            // background. Skip fixed/flexible spaces: touching them makes them join the shared
+            // background, merging every platter into one full-width pill.
+            for item in toolbar.items ?? [] where !item.isSpacer {
+                item.hidesSharedBackground = !LiquidGlass.isEnabled
+            }
+        }
         updateToolbar()
         updateRightBarButtons()
 
@@ -276,12 +284,12 @@ public final class RapSheetViewController: ViewController {
     /// transparent-background idiom as `NavigationController`'s iOS 26 nav bar.
     private func configureToolbarAppearance() {
         let appearance = UIToolbarAppearance()
-        if #available(iOS 26.0, *), toolbar.isTranslucent {
+        if #available(iOS 26.0, *), LiquidGlass.isEnabled, toolbar.isTranslucent {
             appearance.configureWithTransparentBackground()
             appearance.backgroundColor = .clear
             appearance.backgroundImage = nil
         } else {
-            // Force opaque pre-26 so scrolled content doesn't bleed through the toolbar.
+            // Force opaque pre-26 (and when Liquid Glass is disabled) so scrolled content doesn't bleed through the toolbar.
             toolbar.isTranslucent = false
             appearance.configureWithOpaqueBackground()
             appearance.backgroundColor = theme["backgroundColor"]
@@ -292,6 +300,15 @@ public final class RapSheetViewController: ViewController {
         toolbar.compactAppearance = appearance
         toolbar.scrollEdgeAppearance = appearance
         toolbar.compactScrollEdgeAppearance = appearance
+
+        if #available(iOS 26.0, *) {
+            // iOS 26 toolbars ignore the opaque appearance (items get glass platters over a
+            // transparent bar), so paint the legacy background ourselves when glass is disabled.
+            toolbar.setLegacyOpaqueBackground(color: LiquidGlass.isEnabled ? nil : theme["backgroundColor"])
+        }
+
+        toolbar.setNeedsLayout()
+        toolbar.layoutIfNeeded()
     }
 
     // MARK: - Loading
@@ -339,7 +356,7 @@ public final class RapSheetViewController: ViewController {
             renderPunishments()
             // The document replacement returns to the top without any drag events, so reset the
             // iOS 26 bar to its opaque at-top state.
-            if #available(iOS 26.0, *) {
+            if #available(iOS 26.0, *), LiquidGlass.isEnabled {
                 updateNavigationBarTint(progress: 0)
             }
             if isLepersColony {
@@ -614,7 +631,7 @@ public final class RapSheetViewController: ViewController {
         let filterImage = UIImage(systemName: "line.3.horizontal.decrease", withConfiguration: filterConfiguration)
         let refreshImage = UIImage(systemName: "arrow.clockwise")
 
-        if #available(iOS 26.0, *), UIDevice.current.userInterfaceIdiom == .pad {
+        if #available(iOS 26.0, *), LiquidGlass.isEnabled, UIDevice.current.userInterfaceIdiom == .pad {
             // The iPad glass sidebar tints plain UIButton images via vibrancy, so route both icons through
             // the SwiftUI `.glassEffect(.identity)` hosting view to preserve the theme's tint.
             var arranged: [UIView] = []
@@ -729,7 +746,7 @@ public final class RapSheetViewController: ViewController {
     /// system blue — so set the theme-appropriate color explicitly.
     private func updateButtonColors() {
         let tintColor: UIColor?
-        if #available(iOS 26.0, *) {
+        if #available(iOS 26.0, *), LiquidGlass.isEnabled {
             // An explicit tint prevents the system default blue when `NavigationController` sets tintColor = nil.
             tintColor = theme["mode"] == "dark" ? UIColor.white : UIColor.black
         } else {
@@ -815,7 +832,7 @@ extension RapSheetViewController: UIScrollViewDelegate {
         // Update navigation bar tint for iOS 26+ dynamic colors. Same logic as
         // CollectionViewController. The dragging/decelerating guard skips programmatic
         // scrolls (pull-to-refresh's inset dance would otherwise read as "fully scrolled").
-        if #available(iOS 26.0, *), scrollView.isDragging || scrollView.isDecelerating {
+        if #available(iOS 26.0, *), LiquidGlass.isEnabled, scrollView.isDragging || scrollView.isDecelerating {
             let topPosition = -scrollView.adjustedContentInset.top
             let transitionDistance: CGFloat = 30.0
             let progress = max(0, min(1, (scrollView.contentOffset.y - topPosition) / transitionDistance))

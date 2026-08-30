@@ -2,6 +2,7 @@
 //
 //  Copyright 2025 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import AwfulTheming
 import Combine
 import Foundation
 import UIKit
@@ -212,7 +213,7 @@ final class ImmersiveModeManager: NSObject {
     }
 
     func updateGradientLayout(in containerView: UIView) {
-        guard #available(iOS 26.0, *) else { return }
+        guard #available(iOS 26.0, *), LiquidGlass.isEnabled else { return }
 
         let gradientHeight: CGFloat = containerView.window?.safeAreaInsets.top ?? containerView.safeAreaInsets.top
         safeAreaGradientView.frame = CGRect(
@@ -404,7 +405,11 @@ final class ImmersiveModeManager: NSObject {
             return
         }
 
-        safeAreaGradientView.alpha = immersiveProgress
+        if #available(iOS 26.0, *), LiquidGlass.isEnabled {
+            safeAreaGradientView.alpha = immersiveProgress
+        } else {
+            safeAreaGradientView.alpha = 0.0
+        }
 
         let navBarTransform = calculateNavigationBarTransform()
         if let navBar = findNavigationBar() {

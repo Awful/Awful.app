@@ -102,9 +102,10 @@ public final class BannerToastView: UIView {
 
         // Glass brings its own material, edge and shadow, so the drawn-on background is for the
         // fallback path only. Reduce Transparency turns the material into a flat fill that loses
-        // the pill's edge entirely, so it drops back too.
+        // the pill's edge entirely, so it drops back too — as does the user's "Disable Liquid
+        // Glass" setting.
         let usesGlass: Bool
-        if #available(iOS 26.0, *), !UIAccessibility.isReduceTransparencyEnabled {
+        if #available(iOS 26.0, *), LiquidGlass.isEnabled, !UIAccessibility.isReduceTransparencyEnabled {
             usesGlass = true
         } else {
             usesGlass = false

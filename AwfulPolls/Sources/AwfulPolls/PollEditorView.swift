@@ -48,7 +48,7 @@ struct PollEditorView: View {
                 form
             }
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
+            .toolbarHidingSharedBackgroundWhenGlassDisabled {
                 ToolbarItem(placement: .principal) {
                     Text("Poll", bundle: .module)
                         .font(.headline)
