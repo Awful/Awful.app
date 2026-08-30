@@ -12,10 +12,6 @@ if (!window.Awful) {
 
 // MARK: - Configuration Constants
 
-/// Number of post images to load immediately before lazy loading kicks in
-/// IMPORTANT: This value must match immediatelyLoadedImageCount constant in HTMLRenderingHelpers.swift
-const IMMEDIATELY_LOADED_IMAGE_COUNT = 10;
-
 /// How far ahead (in pixels) to start loading lazy content before it enters viewport
 const LAZY_LOAD_LOOKAHEAD_DISTANCE = '600px';
 
@@ -28,16 +24,14 @@ const SELECTORS = {
 
 /// Timeout configuration for image loading
 const IMAGE_LOAD_TIMEOUT_CONFIG = {
-    /// Maximum number of checks for initial image loading timeout detection
-    /// 3 checks × 1000ms = 3 seconds max wait for images to start loading
+    /// Number of checks (maxImageChecks × connectionTimeout = the window) before a
+    /// still-downloading image stops holding up the loading view's progress
     maxImageChecks: 3,
 
     /// Milliseconds to wait before resetting retry button text after failed retry
-    /// 3000ms gives user time to read the error message before it resets
     retryResetDelay: 3000,
 
     /// Milliseconds between timeout checks for image loading
-    /// 1000ms = 1 second interval for checking if images have started loading
     connectionTimeout: 1000
 };
 
@@ -116,33 +110,62 @@ Awful.escapeHTML = function(str) {
 };
 
 /**
- * Helper for consistent error handling when images fail to load.
- * Replaces failed images with dead image badges and optionally updates progress tracker.
+ * Replaces a failed image with a dead image badge. A failed image must never
+ * render as nothing: the ghost setting only controls the Lottie animation, not
+ * whether the badge (title, filename, retry link) appears. Reads
+ * `Awful.renderGhostTweets` at failure time so early-attached listeners honor
+ * the real setting.
  *
- * @param {Error} error - The error that occurred
- * @param {string} url - The URL that failed to load
  * @param {HTMLImageElement} img - The image element that failed
+ * @param {string} url - The URL that failed to load
  * @param {string} imageID - Unique ID for this image
- * @param {boolean} enableGhost - Whether to show dead image badge
- * @param {boolean} trackProgress - Whether to increment the progress tracker (default: true)
  */
-Awful.handleImageLoadError = function(error, url, img, imageID, enableGhost, trackProgress = true) {
-    console.error(`Image load failed: ${error.message} - ${url}`);
+Awful.replaceWithDeadImageBadge = function(img, url, imageID) {
+    if (!img.parentNode) { return; }
 
-    if (enableGhost && img.parentNode) {
-        const div = document.createElement('div');
-        div.classList.add('dead-embed-container');
-        div.innerHTML = Awful.deadImageBadgeHTML(url, imageID);
-        img.parentNode.replaceChild(div, img);
+    const enableGhost = Awful.renderGhostTweets == true;
+    const div = document.createElement('div');
+    div.classList.add('dead-embed-container');
+    if (!enableGhost) {
+        div.classList.add('no-ghost');
+    }
+    div.innerHTML = Awful.deadImageBadgeHTML(url, imageID, enableGhost);
+    img.parentNode.replaceChild(div, img);
 
-        // Use helper function to set up Lottie player (fixes code duplication)
+    if (enableGhost) {
         Awful.setupGhostLottiePlayer(div);
     }
+};
 
-    // Only increment progress for initially loaded images, not lazy-loaded ones
-    if (trackProgress) {
-        Awful.imageLoadTracker.incrementLoaded();
+/**
+ * Logs a failed image load and replaces the image with a dead image badge.
+ * Lazy images don't count toward the loading view's progress tracker.
+ *
+ * @param {HTMLImageElement} img - The image element that failed
+ * @param {string} imageID - Unique ID for this image
+ */
+Awful.handleImageLoadError = function(img, imageID) {
+    console.error(`Image load failed: ${img.src}`);
+    Awful.replaceWithDeadImageBadge(img, img.src, imageID);
+};
+
+/**
+ * Watches one lazy image (`loading="lazy"`) for failure. Only an error listener
+ * is attached, so native lazy loading is left alone — but an image that already
+ * failed before we got here won't fire error again, so that's checked directly.
+ *
+ * @param {HTMLImageElement} img - The lazy image to watch
+ * @param {string} imageID - Unique ID for this image
+ */
+Awful.watchLazyImage = function(img, imageID) {
+    if (img.complete && img.naturalHeight === 0) {
+        Awful.handleImageLoadError(img, imageID);
+        return;
     }
+
+    img.addEventListener('error', function() {
+        Awful.handleImageLoadError(img, imageID);
+    }, { once: true });
 };
 
 /**
@@ -577,20 +600,18 @@ Awful.imageLoadTracker = {
 };
 
 /**
- * Apply timeout detection to images that are loading normally (first 10).
- * Monitors initial image loading and tracks progress for the loading view.
+ * Watches the eagerly-loading post content images (smilies, avatars, and lazy
+ * images excluded) and tracks their progress for the loading view.
  */
 Awful.applyTimeoutToLoadingImages = function() {
-    // Find post content images (excluding smilies, avatars, and lazy-loaded images) - these are the first 10 images
     const loadingImages = document.querySelectorAll(SELECTORS.LOADING_IMAGES);
 
-    // Count only the initially loading images (first 10), excluding attachments and data URLs
+    // Attachments and data URLs load through other means, so they don't count toward progress.
     const initialImages = Array.from(loadingImages).filter(img =>
         !img.src.includes('attachment.php') && !img.src.startsWith('awful-attachment:') && !img.src.startsWith('data:')
     );
-    const totalImages = initialImages.length;
 
-    Awful.imageLoadTracker.initialize(totalImages);
+    Awful.imageLoadTracker.initialize(initialImages.length);
 
     // Clear all existing timers before resetting array to prevent orphaned intervals
     if (Awful.imageTimeoutCheckers) {
@@ -604,11 +625,13 @@ Awful.applyTimeoutToLoadingImages = function() {
 };
 
 /**
- * Watches one image until it loads, fails, or times out, replacing it with a
- * dead-image badge on failure (when ghosts are enabled). Calls onSettled exactly once.
+ * Watches one image until it loads or fails, replacing it with a dead-image
+ * badge on genuine failure only. Calls onSettled exactly once: on load, on
+ * failure, or after the timeout window — but the timeout never destroys a
+ * still-downloading image; it only settles the progress tracker and leaves the
+ * image to finish (or fail) on its own.
  */
 Awful.monitorImageLoad = function(img, imageID, onSettled) {
-    const enableGhost = Awful.renderGhostTweets || false;
     const imageURL = img.src;
 
     // img.complete is true for both successfully loaded AND failed images
@@ -618,39 +641,24 @@ Awful.monitorImageLoad = function(img, imageID, onSettled) {
         return;
     }
 
-    // Track if we've already handled this image to prevent double-counting
-    let handled = false;
+    // Track settlement (progress) separately from failure (badge): a timeout
+    // settles progress but must not stop a later genuine failure from badging.
+    let settled = false;
+    let failed = false;
 
-    const handleSuccess = () => {
-        if (handled) {
-            console.warn(`[Image Load] Duplicate success event for ${imageID} (already handled)`);
-            return;
-        }
-        handled = true;
+    const settle = () => {
+        if (settled) { return; }
+        settled = true;
         onSettled();
     };
 
     const handleFailure = () => {
-        if (handled) {
-            console.warn(`[Image Load] Duplicate failure event for ${imageID} (already handled)`);
-            return;
-        }
-        handled = true;
-
-        if (enableGhost && img.parentNode) {
-            const div = document.createElement('div');
-            div.classList.add('dead-embed-container');
-            div.innerHTML = Awful.deadImageBadgeHTML(imageURL, imageID);
-            img.parentNode.replaceChild(div, img);
-
-            // Use helper function to set up Lottie player (fixes code duplication)
-            Awful.setupGhostLottiePlayer(div);
-        }
-
-        onSettled();
+        if (failed) { return; }
+        failed = true;
+        Awful.replaceWithDeadImageBadge(img, imageURL, imageID);
+        settle();
     };
 
-    // Set up timeout checker using config constants
     let checkCount = 0;
     const maxChecks = IMAGE_LOAD_TIMEOUT_CONFIG.maxImageChecks;
     const checkInterval = IMAGE_LOAD_TIMEOUT_CONFIG.connectionTimeout;
@@ -658,40 +666,36 @@ Awful.monitorImageLoad = function(img, imageID, onSettled) {
     const timeoutChecker = setInterval(() => {
         checkCount++;
 
-        // If image loaded successfully
-        // Note: img.complete is true for both success and failure
-        // naturalHeight > 0 indicates successful load
         if (img.complete && img.naturalHeight !== 0) {
             clearInterval(timeoutChecker);
-            handleSuccess();
+            settle();
             return;
         }
 
-        // If image failed to load (error state)
-        // img.complete true + naturalHeight === 0 indicates load failure
         if (img.complete && img.naturalHeight === 0) {
             clearInterval(timeoutChecker);
             handleFailure();
             return;
         }
 
-        // If we've checked enough times and it's still not loaded, timeout
+        // Still downloading after the timeout window: settle the progress
+        // tracker so the loading view isn't held up, but keep the image and its
+        // load/error listeners — slow is not dead.
         if (checkCount >= maxChecks) {
             clearInterval(timeoutChecker);
-            handleFailure();
+            settle();
         }
     }, checkInterval);
 
-    // Store timer for potential cleanup
     if (!Awful.imageTimeoutCheckers) {
         Awful.imageTimeoutCheckers = [];
     }
     Awful.imageTimeoutCheckers.push(timeoutChecker);
 
-    // Also listen for load/error events to handle immediately
+    // The interval only polls; load/error events settle immediately.
     img.addEventListener('load', () => {
         clearInterval(timeoutChecker);
-        handleSuccess();
+        settle();
     }, { once: true });
 
     img.addEventListener('error', () => {
@@ -707,7 +711,6 @@ Awful.monitorImageLoad = function(img, imageID, onSettled) {
  * timers and listeners of images that are already being watched.
  */
 Awful.monitorAppendedContentImages = function(elements) {
-    const enableGhost = Awful.renderGhostTweets || false;
     Awful.appendedImageCount = Awful.appendedImageCount || 0;
 
     elements.forEach(function(el) {
@@ -722,17 +725,7 @@ Awful.monitorAppendedContentImages = function(elements) {
 
         el.querySelectorAll('section.postbody img[loading="lazy"]').forEach(function(img) {
             Awful.appendedImageCount++;
-            const imageID = `lazy-append-${Awful.appendedImageCount}`;
-            img.addEventListener('error', function() {
-                Awful.handleImageLoadError(
-                    new Error("Lazy image load failed"),
-                    img.src,
-                    img,
-                    imageID,
-                    enableGhost,
-                    false // trackProgress = false, lazy images don't count toward progress
-                );
-            }, { once: true });
+            Awful.watchLazyImage(img, `lazy-append-${Awful.appendedImageCount}`);
         });
     });
 };
@@ -879,31 +872,14 @@ Awful.cleanupRetryHandler = function() {
 };
 
 /**
- * Sets up error handling for lazy-loaded images (those with loading="lazy" attribute).
- * Attaches error event listeners that display dead image badges when browser attempts
- * to load the image and it fails (404, broken, etc.). Only triggers after browser
- * attempts load - doesn't interfere with native lazy loading.
+ * Sets up error handling for lazy-loaded images (those with loading="lazy" attribute),
+ * displaying a dead image badge when a load attempt fails.
  */
 Awful.setupLazyImageErrorHandling = function() {
-    const enableGhost = Awful.renderGhostTweets || false;
     const lazyImages = document.querySelectorAll('section.postbody img[loading="lazy"]');
 
     lazyImages.forEach((img, index) => {
-        const imageID = `lazy-error-${index}`;
-
-        // Only attach error listener - don't interfere with lazy loading
-        img.addEventListener('error', function() {
-            // Browser attempted to load this image and it failed
-            const imageURL = img.src;
-            Awful.handleImageLoadError(
-                new Error("Lazy image load failed"),
-                imageURL,
-                img,
-                imageID,
-                enableGhost,
-                false // trackProgress = false, lazy images don't count toward progress
-            );
-        }, { once: true });
+        Awful.watchLazyImage(img, `lazy-error-${index}`);
     });
 };
 
@@ -1572,12 +1548,12 @@ Awful.deadTweetBadgeHTML = function(url, tweetID){
     return html;
 };
 
-// Dead Image Badge (similar to dead tweet)
-Awful.deadImageBadgeHTML = function(url, imageID) {
-    // Sanitize URL to prevent XSS attacks
+// Dead Image Badge (similar to dead tweet). The ghost animation is optional
+// (Frog & Ghost setting); the badge itself always renders so a failed image is
+// never invisible.
+Awful.deadImageBadgeHTML = function(url, imageID, includeGhost) {
     const safeURL = Awful.sanitizeURL(url);
 
-    // Extract filename from URL and escape it
     let filename = 'unknown';
     try {
         const urlParts = url.split('/').pop().split('?')[0];
@@ -1588,15 +1564,17 @@ Awful.deadImageBadgeHTML = function(url, imageID) {
         console.error('Error parsing image URL:', e);
     }
 
-    // Escape imageID for use in HTML attributes
     const safeImageID = Awful.escapeHTML(imageID);
 
-    var html =
+    const ghostHTML = includeGhost ?
     `<div class="ghost-lottie">
             <lottie-player id="image-ghost-${safeImageID}" class="image-ghost-${safeImageID}" background="transparent" speed="1" loop autoplay>
             </lottie-player>
      </div>
-    <span class="dead-embed-title">DEAD IMAGE</span>
+    ` : '';
+
+    var html =
+    `${ghostHTML}<span class="dead-embed-title">DEAD IMAGE</span>
     <a class="dead-embed-link" href="${safeURL}">${filename}</a>
     <a class="dead-embed-retry" data-retry-image="${safeURL}" href="#">Retry</a>
     `;

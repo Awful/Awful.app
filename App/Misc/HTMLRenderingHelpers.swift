@@ -11,11 +11,7 @@ extension HTMLDocument {
     // MARK: - Constants
 
     /// Number of post images to load immediately before deferring to lazy loading.
-    /// IMPORTANT: This value must match IMMEDIATELY_LOADED_IMAGE_COUNT constant in RenderView.js
     private static let immediatelyLoadedImageCount = 10
-
-    /// 1x1 transparent GIF used as placeholder for lazy-loaded images
-    private static let transparentPixelPlaceholder = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
 
     // MARK: - HTML Processing Methods
 
@@ -193,8 +189,10 @@ extension HTMLDocument {
 
             // Fix relative non-attachment URLs to be absolute
             if !src.hasPrefix("http") {
-                if let baseURL = ForumsClient.shared.baseURL {
-                    img["src"] = baseURL.absoluteString + src
+                if let baseURL = ForumsClient.shared.baseURL,
+                   let absoluteURL = URL(string: src, relativeTo: baseURL)
+                {
+                    img["src"] = absoluteURL.absoluteString
                 }
             }
 
@@ -204,40 +202,27 @@ extension HTMLDocument {
             if isSmilie {
                 img.toggleClass("awful-smile")
             } else {
-                // Check if this is an avatar (has class="avatar")
                 let isAvatar = img["class"]?.contains("avatar") ?? false
 
-                // Skip attachment.php files (require auth, handled elsewhere)
-                let isAttachment = url.lastPathComponent == "attachment.php"
-
-                // Apply URL fixes first to get the final URL
-                var finalURL = src
+                // Start from the src attribute, which the relative-URL fix above may have rewritten.
+                var finalURL = img["src"] ?? src
                 if let postimageURL = fixPostimageURL(url) {
                     finalURL = postimageURL.absoluteString
                 } else if let waffleURL = randomwaffleURLForWaffleimagesURL(url) {
                     finalURL = waffleURL.absoluteString
                 }
 
-                // Check if this is a data: URI (inline data that shouldn't be lazy-loaded)
                 let isDataURI = finalURL.starts(with: "data:")
 
-                // Determine whether to load immediately or defer based on image type and count
-                if !isAvatar && !isAttachment && !isDataURI {
-                    // This is a post content image (not avatar, not smilie, not attachment)
+                // Post content images beyond the first few defer to the browser's lazy
+                // loading; avatars and data URIs always load immediately.
+                if !isAvatar && !isDataURI {
                     postContentImageCount += 1
-
                     if postContentImageCount > Self.immediatelyLoadedImageCount {
-                        // Defer loading for images beyond the immediately loaded count (browser handles lazy loading)
                         img["loading"] = "lazy"
-                        img["src"] = finalURL
-                    } else {
-                        // Load immediately
-                        img["src"] = finalURL
                     }
-                } else {
-                    // Avatars, attachments, and data URIs always load immediately
-                    img["src"] = finalURL
                 }
+                img["src"] = finalURL
             }
 
             if shouldLinkifyNonSmilies, !isSmilie {

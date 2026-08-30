@@ -7,6 +7,12 @@
         max-width: -webkit-fit-content;
         border-radius: 1em;
         background: @backgroundColor;
+
+        // Ghost animation disabled: nothing occupies grid column 1, so pad the
+        // text so it doesn't hug the rounded edge.
+        &.no-ghost {
+            padding: 0.75em 0 0.75em 1em;
+        }
     }
 
     .ghost-lottie {

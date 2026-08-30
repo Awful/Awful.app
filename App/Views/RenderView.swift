@@ -50,6 +50,7 @@ final class RenderView: UIView {
             let script = """
             if (!window.Awful) { window.Awful = {}; }
             window.Awful.domContentLoadedFired = false;
+            window.Awful.renderGhostTweets = \(frogAndGhostEnabled);
             document.addEventListener('DOMContentLoaded', function() {
                 window.Awful.domContentLoadedFired = true;
             });
@@ -382,38 +383,6 @@ extension RenderView {
                 self.mentionError(error, explanation: "could not evaluate embedTweets")
             }
         }
-    }
-
-    // MARK: - Private Helpers
-
-    /// Helper to evaluate Awful JavaScript functions with consistent error handling.
-    private func evalAwfulFunction(_ functionName: String) {
-        Task {
-            do {
-                try await webView.eval("if (window.Awful) { Awful.\(functionName)(); }")
-            } catch {
-                self.mentionError(error, explanation: "could not evaluate \(functionName)")
-            }
-        }
-    }
-
-    // MARK: - Image Loading Methods
-
-    /// Applies timeout detection to images that are loading immediately (first 10 images).
-    ///
-    /// Monitors download progress and replaces stalled images with dead image badges.
-    /// This function should be called after the page has loaded to set up monitoring
-    /// for the initial batch of images.
-    func applyTimeoutToLoadingImages() {
-        evalAwfulFunction("applyTimeoutToLoadingImages")
-    }
-
-    /// Sets up click handler for retry links on failed images.
-    ///
-    /// Allows users to retry loading images that timed out or failed to load.
-    /// The retry mechanism uses the same timeout detection as initial image loading.
-    func setupRetryHandler() {
-        evalAwfulFunction("setupRetryHandler")
     }
 
     /// iOS 15 and transparent webviews = dark "missing" scroll thumbs, regardless of settings applied

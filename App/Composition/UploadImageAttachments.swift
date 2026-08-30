@@ -16,6 +16,7 @@ enum ImageUploadError: Error, LocalizedError {
     case authenticationRequired
     case authenticationFailed
     case unsupportedImageFormat
+    case emptyImageTag
 
     var errorDescription: String? {
         switch self {
@@ -27,9 +28,11 @@ enum ImageUploadError: Error, LocalizedError {
             return "Imgur Authentication Failed"
         case .unsupportedImageFormat:
             return "Unsupported Image Format"
+        case .emptyImageTag:
+            return "Empty Image Tag"
         }
     }
-    
+
     var failureReason: String? {
         switch self {
         case .missingIdentifiedAsset:
@@ -40,8 +43,15 @@ enum ImageUploadError: Error, LocalizedError {
             return "Could not log in to Imgur. Please try again or switch to anonymous uploads in settings."
         case .unsupportedImageFormat:
             return "Imgur wouldn't accept this image. Attaching a screenshot of it instead usually works."
+        case .emptyImageTag:
+            return "This post has an [img] tag with nothing inside, which would show up as a missing image. Put an image URL inside the tag, or remove it, then try again."
         }
     }
+}
+
+/// Whether `plainText` contains an image tag with no URL inside, e.g. `[img][/img]` or `[timg]  [/timg]`.
+func containsEmptyImageTag(_ plainText: String) -> Bool {
+    plainText.range(of: #"\[(t?img)\]\s*\[/\1\]"#, options: [.regularExpression, .caseInsensitive]) != nil
 }
 
 /// Turns an Imgur rejection we recognize into something the reader can act on. The original error is logged either way.
@@ -64,6 +74,15 @@ func uploadImages(attachedTo richText: NSAttributedString, completion: @escaping
 
     let localCopy = richText.copy() as! NSAttributedString
     DispatchQueue.global(qos: DispatchQoS.QoSClass.default).async {
+        // An empty [img][/img] posts as a missing image nobody can see (attachment
+        // replacement below only ever inserts tags with URLs, so checking the
+        // original text covers every path). Refuse to submit it.
+        if containsEmptyImageTag(localCopy.string) {
+            return DispatchQueue.main.async {
+                completion(nil, ImageUploadError.emptyImageTag)
+            }
+        }
+
         let tags = localCopy.imageTags
         guard !tags.isEmpty else {
             progress.completedUnitCount += 1
