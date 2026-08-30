@@ -26,6 +26,10 @@ final class SearchPageViewModel: ObservableObject {
     private var searchQueryID: String?
     let threadID: String?
 
+    /// True when this search was kicked off directly (no form), so the results screen can label
+    /// its initial spinner accordingly.
+    private(set) var isImmediateSearch = false
+
     /// What the app does on the search screens' behalf; see ``SearchHandlers``.
     let handlers: SearchHandlers
 
@@ -63,6 +67,30 @@ final class SearchPageViewModel: ObservableObject {
             } else {
                 await self?.loadInitialData()
             }
+        }
+    }
+
+    /// Runs `query` forum-wide straight away, with no search form in front. The forum list is never
+    /// fetched, so no `forums[]` parameters are sent and the forums search everywhere — which is the
+    /// point for callers like "Their posts everywhere".
+    init(immediateQuery query: String, handlers: SearchHandlers) {
+        self.handlers = handlers
+        self.threadID = nil
+        self.isImmediateSearch = true
+        searchState.query = query
+
+        // Borrow the restore spinner so the results screen doesn't open on a blank page.
+        isRestoring = true
+
+        Task { [weak self] in
+            guard let self else { return }
+            await self.performSearch()
+            // Failures normally land on the form's message line; there's no form here, so surface
+            // them where this screen can show them.
+            if !self.searchState.message.isEmpty {
+                self.searchState.resultsMessage = self.searchState.message
+            }
+            self.isRestoring = false
         }
     }
     

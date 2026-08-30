@@ -113,14 +113,21 @@ struct SearchResultsView: View {
         .applyFontDesign(if: theme.roundedFonts)
     }
 
-    /// Shown while a restored search's results are being fetched again.
+    /// Shown while a restored search's results are being fetched again, or while an immediate
+    /// search (one that skipped the form) is running its first query.
     private var restoringView: some View {
         VStack(spacing: 16) {
             ProgressView()
                 .tint(theme[color: "listSecondaryTextColor"])
-            Text("Loading your last search…", bundle: .module)
-                .font(.subheadline)
-                .foregroundColor(theme[color: "listSecondaryTextColor"])
+            Group {
+                if model.isImmediateSearch {
+                    Text("Searching…", bundle: .module)
+                } else {
+                    Text("Loading your last search…", bundle: .module)
+                }
+            }
+            .font(.subheadline)
+            .foregroundColor(theme[color: "listSecondaryTextColor"])
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
@@ -277,6 +284,18 @@ public final class SearchResultsViewController: HostingController<AnyView> {
         item.accessibilityLabel = "Next page"
         return item
     }()
+
+    /// A results screen that runs `query` forum-wide immediately, skipping the search form
+    /// entirely. Push it on its own — there's no form underneath, so backing out returns to
+    /// wherever the search came from.
+    public static func immediateSearch(query: String, handlers: SearchHandlers) -> SearchResultsViewController {
+        let resultsVC = SearchResultsViewController(
+            model: SearchPageViewModel(immediateQuery: query, handlers: handlers))
+        // Normally inherited from the form underneath; there isn't one here, and the tab bar
+        // would otherwise sit on top of the paging toolbar.
+        resultsVC.hidesBottomBarWhenPushed = true
+        return resultsVC
+    }
 
     init(model: SearchPageViewModel) {
         self.model = model

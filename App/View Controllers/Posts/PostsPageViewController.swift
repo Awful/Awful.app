@@ -1416,12 +1416,19 @@ final class PostsPageViewController: ViewController {
             // Their posts
             if author == nil {
                 let theirPosts = UIAction.Identifier("theirPosts")
-                let theirPostsAction = UIAction(title: "Their posts",
+                let theirPostsAction = UIAction(title: "Their posts ITT",
                                                 image: UIImage(named: "single-users-posts")!.withRenderingMode(.alwaysTemplate),
                                                 identifier: theirPosts,
                                                 handler: theirPosts(action:))
                 userActions.append(theirPostsAction)
             }
+            // Their posts everywhere
+            let theirPostsEverywhere = UIAction.Identifier("theirPostsEverywhere")
+            let theirPostsEverywhereAction = UIAction(title: "All their posts",
+                                                      image: UIImage(systemName: "text.magnifyingglass"),
+                                                      identifier: theirPostsEverywhere,
+                                                      handler: theirPostsEverywhere(action:))
+            userActions.append(theirPostsEverywhereAction)
             // Private Message
             if canSendPrivateMessages &&
                 user.canReceivePrivateMessages &&
@@ -1843,6 +1850,20 @@ final class PostsPageViewController: ViewController {
             let postsVC = PostsPageViewController(thread: self.thread, author: self.selectedUser!)
             postsVC.loadPage(.first, updatingCache: true, updatingLastReadPost: true)
             self.navigationController?.pushViewController(postsVC, animated: true)
+        }
+    }
+
+    private func theirPostsEverywhere(action: UIAction) {
+        if enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
+
+        self.dismiss(animated: false) { [self] in
+            guard let username = selectedUser?.username, !username.isEmpty else { return }
+            showSearch([SearchResultsViewController.immediateSearch(
+                query: "username:\"\(username)\"",
+                handlers: .awful
+            )])
         }
     }
 
