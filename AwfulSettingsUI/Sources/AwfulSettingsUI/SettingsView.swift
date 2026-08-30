@@ -292,7 +292,7 @@ public struct SettingsView: View {
                     Toggle(isOn: $disableLiquidGlass) {
                         captionedLabel(
                             "Reduce Liquid Glass",
-                            caption: "Use the classic opaque bars instead of the iOS 26 glass look. The system back button keeps its glass style, and some open screens update the next time you open them."
+                            caption: "It can't be disabled completely, but we can revert our custom components to the original flat style and apply whatever settings available wherever possible to get rid of most of it. The back button and tab selector cannot be de-glassed. If turning this setting on, quit and relaunch the app for the best experience."
                         )
                     }
                 }
