@@ -89,6 +89,24 @@ final class SidebarTitleView: UIView {
     /// default for tab roots, which usually have balanced bar items.
     private var fillsAvailableWidth: Bool
 
+    /// The hosting view's edge constraints, kept so `layoutSubviews()` can
+    /// shift the content in wide mode: the bar clamps this view to the span
+    /// between its item clusters, and when those clusters are unequal that
+    /// span — and anything centered within it — sits off the bar's center.
+    private var hostingLeadingConstraint: NSLayoutConstraint?
+    private var hostingTrailingConstraint: NSLayoutConstraint?
+
+    // Mid-transition the bar sits deeper: transition hosts add ~3 levels
+    // (same rationale as LiquidGlassTitleView.maxBarSearchDepth).
+    private static let maxBarSearchDepth = 16
+    private static let correctionEpsilon: CGFloat = 0.5
+    private static let maxCorrectionDelta: CGFloat = 50
+    /// Below this bar width (iPad mini portrait sidebar ≈ 256pt; the Pros
+    /// are 350pt) a bar-centered title can't clear the trailing cluster, so
+    /// the title gap-centers between the clusters instead: the correction
+    /// stands down and the fill-mode Spacers do the centering.
+    static let narrowBarWidthThreshold: CGFloat = 300
+
     init(title: String, color: UIColor, roundedFont: Bool, fillsAvailableWidth: Bool = false) {
         self.currentTitle = title
         self.currentColor = color
@@ -150,11 +168,23 @@ final class SidebarTitleView: UIView {
         let hosting = UIHostingController(rootView: AnyView(content))
         hosting.view.backgroundColor = .clear
         hosting.view.translatesAutoresizingMaskIntoConstraints = false
+        // Don't let the bar's safe area leak into the SwiftUI content: a
+        // wide-mode title view that the bar centers across the full width
+        // (Settings — no leading items) otherwise gets its HStack inset on
+        // one side and renders the text off-center inside a perfectly
+        // centered container.
+        hosting.safeAreaRegions = []
         addSubview(hosting.view)
 
+        // Re-created (not reused) so every mode/title/color change starts
+        // from constants of 0, clearing any stale centering correction.
+        let leading = hosting.view.leadingAnchor.constraint(equalTo: leadingAnchor)
+        let trailing = hosting.view.trailingAnchor.constraint(equalTo: trailingAnchor)
+        hostingLeadingConstraint = leading
+        hostingTrailingConstraint = trailing
         NSLayoutConstraint.activate([
-            hosting.view.leadingAnchor.constraint(equalTo: leadingAnchor),
-            hosting.view.trailingAnchor.constraint(equalTo: trailingAnchor),
+            leading,
+            trailing,
             hosting.view.topAnchor.constraint(equalTo: topAnchor),
             hosting.view.bottomAnchor.constraint(equalTo: bottomAnchor),
         ])
@@ -185,6 +215,79 @@ final class SidebarTitleView: UIView {
         hostingController?.view.sizeToFit()
         let size = hostingController?.view.intrinsicContentSize ?? .zero
         frame.size = size
+    }
+
+    /// In wide mode, re-center the content on the navigation bar. The bar
+    /// clamps this view to the span between its leading and trailing item
+    /// clusters, and when those clusters are unequal (a lone back button
+    /// against compose + the system sidebar toggle, whose presence varies
+    /// with display mode) that span's center — where the Spacers put the
+    /// text — sits off the bar's center. The cluster widths change at
+    /// runtime, so measure and compensate at layout time.
+    ///
+    /// Updating the constants here is loop-safe: this view's own frame is
+    /// imposed by the bar's frame-based layout, and in wide mode
+    /// `intrinsicContentSize` is a constant, so the edit dirties only this
+    /// view — one extra pass recomputes an identical delta, lands inside
+    /// the epsilon, and stops.
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        guard fillsAvailableWidth,
+              bounds.width > 0,
+              window != nil,
+              let leading = hostingLeadingConstraint,
+              let trailing = hostingTrailingConstraint
+        else { return }
+
+        var ancestor = superview
+        var depth = 0
+        var bar: UINavigationBar?
+        while let view = ancestor, depth < Self.maxBarSearchDepth {
+            if let navigationBar = view as? UINavigationBar {
+                bar = navigationBar
+                break
+            }
+            ancestor = view.superview
+            depth += 1
+        }
+        // No bar reachable (mid-transition/detached): keep the current
+        // correction — resetting would visibly jump, and the next pass in a
+        // settled hierarchy recomputes it anyway.
+        guard let bar else { return }
+
+        // Narrow bar: gap-center. There is no room to put the title on the
+        // bar's center without colliding with the trailing cluster, so let
+        // the content center in the span the bar granted and clear any
+        // correction left over from a wider layout.
+        if bar.bounds.width < Self.narrowBarWidthThreshold {
+            if abs(leading.constant) > Self.correctionEpsilon || abs(trailing.constant) > Self.correctionEpsilon {
+                leading.constant = 0
+                trailing.constant = 0
+            }
+            return
+        }
+
+        var delta = convert(CGPoint(x: bar.bounds.midX, y: 0), from: bar).x - bounds.midX
+        // A huge delta means the bar has this view staged at a transitional
+        // offset; skip rather than swing the content around mid-animation.
+        guard abs(delta) <= Self.maxCorrectionDelta else { return }
+
+        // The constants attach to leading/trailing anchors, which flip sides
+        // in right-to-left layout; delta is in x-coordinates.
+        if effectiveUserInterfaceLayoutDirection == .rightToLeft {
+            delta = -delta
+        }
+
+        // Shifting one edge in by 2*delta moves the content's center by
+        // delta, and shrinks long titles to the symmetric span so they
+        // truncate centered instead of filling the lopsided one.
+        let newLeading = max(0, 2 * delta)
+        let newTrailing = min(0, 2 * delta)
+        if abs(newLeading - leading.constant) > Self.correctionEpsilon
+            || abs(newTrailing - trailing.constant) > Self.correctionEpsilon {
+            leading.constant = newLeading
+            trailing.constant = newTrailing
+        }
     }
 }
 
@@ -514,18 +617,27 @@ final class NavigationController: UINavigationController, Themeable {
             replaceSidebarBarButtonItems(for: topVC)
 
             // Custom titleView using SwiftUI Text with .glassEffect(.identity)
-            // to bypass the glass panel's vibrancy compositing. Pushed VCs
-            // (i.e. anything not the root of this nav stack) get a custom
-            // back button via `replaceSidebarBarButtonItems`, which leaves
-            // the leading bar items lighter than the trailing items —
-            // UINavigationBar's centering math then drifts the title view
-            // off-center. Switching the title view to wide-mode lets it
-            // claim the full available width and visually center the text
-            // via SwiftUI Spacers, regardless of bar-item asymmetry. Tab
-            // roots (Forums, Messages, Bookmarks) keep the natural-width
-            // mode where the bar absolutely-centers a snug title view.
+            // to bypass the glass panel's vibrancy compositing. Wide mode —
+            // where the title view claims the full available width and
+            // SidebarTitleView re-centers its content on the bar in
+            // layoutSubviews — is used for pushed VCs (their injected back
+            // button makes the bars asymmetric) and on narrow bars (iPad
+            // mini portrait), which leading-anchor a natural-width title
+            // view instead of centering it; there the fill content's
+            // Spacers gap-center the title between the clusters, with the
+            // bar-centering correction standing down. Tab roots on regular
+            // bars keep the natural-width mode where the bar
+            // absolutely-centers a snug title view.
+            //
+            // Width comes from our own view — the split view sizes the
+            // column before the first appearance pass, while the bar lays
+            // out a beat later, and a wrong first verdict renders one frame
+            // in the wrong mode. Zero (not yet laid out) means "not
+            // narrow"; a later pass corrects it.
             let roundedFont = theme.roundedFonts
-            let fillsAvailableWidth = viewControllers.first !== topVC
+            let columnWidth = view.bounds.width > 0 ? view.bounds.width : awfulNavigationBar.bounds.width
+            let isNarrowBar = columnWidth > 0 && columnWidth < SidebarTitleView.narrowBarWidthThreshold
+            let fillsAvailableWidth = viewControllers.first !== topVC || isNarrowBar
             if let existing = topVC.navigationItem.titleView as? SidebarTitleView {
                 existing.update(
                     title: topVC.title ?? "",
@@ -634,12 +746,6 @@ final class NavigationController: UINavigationController, Themeable {
         // it the same tight leading position. Interactive pop-swipe is
         // preserved by the existing UIGestureRecognizerDelegate.
         //
-        // A small empty bar item is appended alongside the back button so the
-        // leading side has two bar items — UINavigationBar's title-centering
-        // math only kicks in with multiple leading items; with a single item,
-        // the title view is left leading-anchored. Same spacer pattern that
-        // Bookmarks uses on its own leftBarButtonItems.
-        //
         // Skip SwiftUI hosting controllers (e.g. anything pushed via a SwiftUI
         // `NavigationLink` from the Settings tab — theme picker, app icon
         // picker, etc.). SwiftUI manages its own back button on these and
@@ -659,16 +765,24 @@ final class NavigationController: UINavigationController, Themeable {
                 target: self,
                 action: #selector(popOnSidebarBackTap)
             )
-            // Two leftBarButtonItems (back + customView spacer) — multiple
-            // bar items engage UINavigationBar's title centering math
-            // (single items leave the title view leading-anchored). The
-            // title view is now told to claim full available width via
-            // its intrinsicContentSize override, so the spacer width here
-            // only influences positioning — pick a value that visually
-            // balances the trailing-side items (compose + sidebar toggle).
+            // A lone leading item is fine even though the trailing cluster
+            // is wider: SidebarTitleView re-centers its content on the bar
+            // in layoutSubviews, whatever the item clusters weigh.
             let backButton = UIBarButtonItem(customView: backHosting)
-            let spacer = UIBarButtonItem(customView: UIView(frame: CGRect(x: 0, y: 0, width: 24, height: 44)))
-            viewController.navigationItem.leftBarButtonItems = [backButton, spacer]
+            viewController.navigationItem.leftBarButtonItems = [backButton]
+        }
+
+        // A tab root with no leading items at all (Settings) gets its title
+        // staged by the bar in a container squeezed between the leading edge
+        // and the trailing cluster — rendered off-center even though the
+        // title view's own frame reports centered, so the layout-time
+        // correction can't see it. Any leading item, even a 1pt invisible
+        // one, makes the bar lay the title out symmetrically. Tab roots
+        // only: pushed SwiftUI screens must keep their leading slot empty
+        // or their SwiftUI back button disappears.
+        if !hasExistingLeft, viewControllers.first === viewController {
+            let hairline = UIBarButtonItem(customView: UIView(frame: CGRect(x: 0, y: 0, width: 1, height: 44)))
+            viewController.navigationItem.leftBarButtonItems = [hairline]
         }
     }
 

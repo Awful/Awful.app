@@ -643,31 +643,20 @@ public final class RapSheetViewController: ViewController {
             navigationItem.setRightBarButtonItems(doneItems + [UIBarButtonItem(customView: stack)], animated: false)
 
             if isEndlessScrolling, let moreImage = UIImage(systemName: "ellipsis") {
-                // Replace the balancing spacer with a real More… button, routed through the same themed
-                // hosting view as Filter/Refresh so the glass sidebar's vibrancy doesn't mis-tint it. It's
-                // padded out to the same 72pt so the centered title stays balanced against the right-side
-                // cluster.
+                // Routed through the same themed hosting view as Filter/Refresh so the glass sidebar's
+                // vibrancy doesn't mis-tint it.
                 let moreView = handlers.makeSidebarMenuButton(
                     moreImage,
                     "More",
                     Self.padIconPointSize,
                     moreMenu()
                 )
-                let container = UIView(frame: CGRect(x: 0, y: 0, width: 72, height: 44))
-                container.addSubview(moreView)
-                NSLayoutConstraint.activate([
-                    moreView.leadingAnchor.constraint(equalTo: container.leadingAnchor),
-                    moreView.centerYAnchor.constraint(equalTo: container.centerYAnchor),
-                ])
-                navigationItem.setLeftBarButtonItems([UIBarButtonItem(customView: container)], animated: false)
+                navigationItem.setLeftBarButtonItems([UIBarButtonItem(customView: moreView)], animated: false)
                 // Self-tinting like the others on this path, so keep it out of `updateButtonColors()`.
                 moreButtonView = nil
             } else {
                 moreButtonView = nil
-                // Reserve left-side width matching the right-side icon cluster so the centered title isn't
-                // pushed off-center — same balancing spacer as `ForumsTableViewController`.
-                let spacer = UIBarButtonItem(customView: UIView(frame: CGRect(x: 0, y: 0, width: 72, height: 44)))
-                navigationItem.setLeftBarButtonItems([spacer], animated: false)
+                navigationItem.setLeftBarButtonItems([], animated: false)
             }
 
             // Every icon on this path tints itself (via `makeSidebarImageHostingView`'s `.themed()`

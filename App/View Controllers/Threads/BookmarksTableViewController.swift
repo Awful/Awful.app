@@ -648,11 +648,7 @@ final class BookmarksTableViewController: HostedCollectionViewController {
             stack.spacing = 4
             stack.alignment = .center
             navigationItem.rightBarButtonItems = [UIBarButtonItem(customView: stack)]
-
-            // Balance the right side so the title lands near the nav-bar
-            // center.
-            let spacer = UIBarButtonItem(customView: UIView(frame: CGRect(x: 0, y: 0, width: 72, height: 44)))
-            navigationItem.leftBarButtonItems = [editButtonItem, spacer]
+            navigationItem.leftBarButtonItems = [editButtonItem]
         } else {
             navigationItem.leftBarButtonItem = editButtonItem
             navigationItem.rightBarButtonItems = [filterButton, searchButton]

@@ -274,15 +274,7 @@ final class ForumsTableViewController: CollectionViewController {
     }
 
     private func updateEditingState(favoriteCount: Int) {
-        if #available(iOS 26.0, *), UIDevice.current.userInterfaceIdiom == .pad {
-            // Reserve left-side width matching the right-side icon cluster so the centered
-            // title isn't pushed off-center — same balancing spacer as BookmarksTableViewController.
-            let spacer = UIBarButtonItem(customView: UIView(frame: CGRect(x: 0, y: 0, width: 72, height: 44)))
-            let items = favoriteCount > 0 ? [editButtonItem, spacer] : [spacer]
-            navigationItem.setLeftBarButtonItems(items, animated: true)
-        } else {
-            navigationItem.setLeftBarButton(favoriteCount > 0 ? editButtonItem : nil, animated: true)
-        }
+        navigationItem.setLeftBarButton(favoriteCount > 0 ? editButtonItem : nil, animated: true)
 
         if isEditing, favoriteCount == 0 {
             setEditing(false, animated: true)

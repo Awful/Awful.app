@@ -147,9 +147,10 @@ environment sets the default. An unknown name lists what is available.
 | `full` | all 10 | 456 | ~2h |
 | `quick` | iPhone 17 Pro + iPad Pro 11" (26.5) | ~24 | a few minutes |
 
-The two iPad minis were added after the rest and **are not logged in**. Login
-cannot be scripted, so until someone signs in on each by hand they skip loudly
-and `full` yields 432 images, not 456.
+The two iPad minis were added after the rest and have since been logged in
+by hand (both confirmed 2026-08-30), so `full` should yield all 456 images.
+Login still cannot be scripted: if a device skips as logged-out, someone has
+to sign in on it manually.
 
 The cost is almost entirely pass A — 15 themes × 12 views per device — so
 `quick` puts both of its devices on pass B. Flip a `B` to an `A` in
@@ -359,11 +360,13 @@ Each of these fails silently or looks like an app bug:
 
 Nav-bar title/button *alignment* on iPad (both orientations) is measured by an
 XCUITest, not by this toolkit — `App/UITests/SidebarAlignmentTests.swift`,
-run via the `UITests` test plan:
+run via the `UITests` test plan. The comfortable way to run it is the wrapper,
+which handles multiple devices, exports the annotated screenshots and
+measurement reports to `ScreenshotMatrix/alignment/`, and stacks per-screen
+cross-device comparison sheets:
 
 ```bash
-xcodebuild test -project Awful.xcodeproj -scheme Awful -testPlan UITests \
-  -destination 'platform=iOS Simulator,id=<udid>'
+./Scripts/run-alignment-test.sh <udid> [<udid> ...]   # or no args: booted sims
 ```
 
 It needs the same manual login this matrix does, prints a measurement table to
