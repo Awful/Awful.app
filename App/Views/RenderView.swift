@@ -100,6 +100,25 @@ final class RenderView: UIView {
         webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         addSubview(webView)
     }
+
+    /*
+     On iPad, the split view's pinned sidebar reaches the full-bleed web view as a big left
+     safe-area inset. WebKit forwards safe-area insets into cross-origin iframes, and
+     YouTube's embed player offsets its video and controls by env(safe-area-inset-left)
+     (intended for notched iPhones in fullscreen), which shoved playback sideways out of
+     the player whenever the sidebar was visible. Insetting the web view itself keeps
+     env(safe-area-inset-left/right) at zero for the page and every iframe. iPhones keep
+     the full-bleed web view so posts still draw edge-to-edge behind the notch.
+     */
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        var webViewFrame = bounds
+        if UIDevice.current.userInterfaceIdiom != .phone {
+            webViewFrame.origin.x += safeAreaInsets.left
+            webViewFrame.size.width -= safeAreaInsets.left + safeAreaInsets.right
+        }
+        webView.frame = webViewFrame
+    }
     
     deinit {
         for registeredName in registeredMessages.keys {
