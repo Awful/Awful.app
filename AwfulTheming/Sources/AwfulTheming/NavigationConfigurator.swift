@@ -60,6 +60,9 @@ public struct NavigationConfigurator: UIViewControllerRepresentable {
                     navAppearance.backButtonAppearance.normal.titleTextAttributes = fontOnly
                     navAppearance.backButtonAppearance.highlighted.titleTextAttributes = fontOnly
                     navigationController.navigationBar.tintColor = nil
+                    // Liquid Glass resolves its platters' light/dark from the bar's
+                    // trait, not from appearance colors.
+                    navigationController.navigationBar.overrideUserInterfaceStyle = theme.userInterfaceStyle
                 } else {
                     let buttonAttrs: [NSAttributedString.Key: Any] = [
                         .foregroundColor: textColor,
@@ -72,6 +75,7 @@ public struct NavigationConfigurator: UIViewControllerRepresentable {
                     navAppearance.backButtonAppearance.normal.titleTextAttributes = buttonAttrs
                     navAppearance.backButtonAppearance.highlighted.titleTextAttributes = buttonAttrs
                     navigationController.navigationBar.tintColor = textColor
+                    navigationController.navigationBar.overrideUserInterfaceStyle = .unspecified
                 }
                 
                 navigationController.navigationBar.standardAppearance = navAppearance

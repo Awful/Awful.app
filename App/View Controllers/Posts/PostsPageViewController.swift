@@ -2533,7 +2533,13 @@ final class PostsPageViewController: ViewController {
         // Hide the custom bottom border from NavigationBar for liquid glass effect
         if let awfulNavigationBar = navigationBar as? NavigationBar {
             awfulNavigationBar.bottomBorderColor = .clear
+            // Keep the glass platters' trait in lockstep with the forum theme when this
+            // method restyles the bar outside NavigationController's willShow path.
+            awfulNavigationBar.overrideUserInterfaceStyle = theme.userInterfaceStyle
         }
+        // Trait inheritance covers the capsule while it's in the bar, but transition
+        // portal copies are staged outside the bar's trait environment.
+        liquidGlassTitleView.setUseDarkGlass(theme.userInterfaceStyle == .dark)
 
         // Start with opaque background - NavigationController will handle the transition to clear on scroll
         let appearance = UINavigationBarAppearance()

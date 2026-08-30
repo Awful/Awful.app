@@ -1229,6 +1229,11 @@ final class NavigationController: UINavigationController, Themeable {
                 // iPhone and iPad detail column: iOS 26 glass-capable appearance.
                 // Sidebar nav controllers skip this — they use the opaque path
                 // below so willShow/tab switches never reset tintColor to nil.
+
+                // Liquid Glass resolves its platters' light/dark (title capsule, round
+                // bar-button glass) from the bar's trait, not from appearance colors.
+                awfulNavigationBar.overrideUserInterfaceStyle = theme.userInterfaceStyle
+
                 let initialAppearance = UINavigationBarAppearance()
                 initialAppearance.configureWithOpaqueBackground()
                 initialAppearance.backgroundColor = theme["navigationBarTintColor"]
@@ -1259,6 +1264,10 @@ final class NavigationController: UINavigationController, Themeable {
                 awfulNavigationBar.layoutIfNeeded()
 
             } else {
+                // Undo the glass branch's trait override (matters when Reduce Liquid
+                // Glass is toggled while running).
+                awfulNavigationBar.overrideUserInterfaceStyle = .unspecified
+
                 let appearance = UINavigationBarAppearance()
                 appearance.configureWithOpaqueBackground()
                 appearance.backgroundColor = theme["navigationBarTintColor"]

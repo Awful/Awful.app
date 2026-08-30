@@ -108,6 +108,13 @@ extension Theme {
         keyboardAppearance == .dark
     }
 
+    /// The theme's light/dark as a trait style, per its `mode` key. Liquid Glass resolves
+    /// its platters' light/dark from the trait collection rather than from appearance
+    /// colors, so glass bars force this via `overrideUserInterfaceStyle`.
+    public var userInterfaceStyle: UIUserInterfaceStyle {
+        self[string: "mode"] == "light" ? .light : .dark
+    }
+
     /// The desired scroll indicator style for scrollbars. Must be specified by the theme or one of its ancestors.
     public var scrollIndicatorStyle: UIScrollView.IndicatorStyle {
         guard let style = dictionary["scrollIndicatorStyle"] as? String ?? parent?["scrollIndicatorStyle"] else { return .default }
