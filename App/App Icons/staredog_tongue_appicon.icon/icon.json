@@ -3,6 +3,7 @@
   "fill" : "system-light",
   "groups" : [
     {
+      "blend-mode" : "normal",
       "blur-material" : 0.5,
       "hidden" : false,
       "layers" : [

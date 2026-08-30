@@ -47,18 +47,6 @@
       "hidden" : false,
       "layers" : [
         {
-          "hidden" : false,
-          "image-name" : "pupils.svg",
-          "name" : "pupils",
-          "position" : {
-            "scale" : 1.03,
-            "translation-in-points" : [
-              0,
-              0
-            ]
-          }
-        },
-        {
           "blend-mode" : "normal",
           "glass" : true,
           "hidden" : false,
@@ -76,6 +64,7 @@
       ],
       "lighting" : "combined",
       "name" : "Eyes",
+      "opacity" : 0.95,
       "position" : {
         "scale" : 1.14,
         "translation-in-points" : [
@@ -108,22 +97,6 @@
               3
             ]
           }
-        },
-        {
-          "fill" : {
-            "solid" : "display-p3:0.32349,0.19507,0.53223,1.00000"
-          },
-          "glass" : false,
-          "hidden" : false,
-          "image-name" : "nose.svg",
-          "name" : "nose",
-          "position" : {
-            "scale" : 1,
-            "translation-in-points" : [
-              0,
-              -141
-            ]
-          }
         }
       ],
       "position" : {
@@ -141,6 +114,35 @@
       "translucency" : {
         "enabled" : true,
         "value" : 0.4
+      }
+    },
+    {
+      "layers" : [
+        {
+          "fill" : {
+            "solid" : "display-p3:0.32568,0.19775,0.53320,1.00000"
+          },
+          "glass" : false,
+          "hidden" : false,
+          "image-name" : "nose.svg",
+          "name" : "nose",
+          "position" : {
+            "scale" : 1,
+            "translation-in-points" : [
+              0,
+              -141
+            ]
+          }
+        }
+      ],
+      "shadow" : {
+        "kind" : "none",
+        "opacity" : 0.5
+      },
+      "specular" : false,
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.5
       }
     }
   ],

@@ -8,7 +8,7 @@
       "appearance" : "light",
       "value" : {
         "linear-gradient" : [
-          "extended-srgb:0.00000,0.75294,0.90980,1.00000",
+          "srgb:0.00000,0.83333,1.00000,1.00000",
           "extended-srgb:0.00000,0.53333,1.00000,1.00000"
         ],
         "orientation" : {
@@ -31,7 +31,7 @@
         {
           "fill" : {
             "linear-gradient" : [
-              "srgb:0.00000,0.75294,1.00000,1.00000",
+              "srgb:0.15264,0.79065,1.00000,1.00000",
               "srgb:0.00000,0.37647,1.00000,1.00000"
             ],
             "orientation" : {
@@ -46,15 +46,15 @@
             }
           },
           "hidden" : false,
-          "image-name" : "cute bg z.svg",
-          "name" : "cute bg z"
+          "image-name" : "cute bg v.svg",
+          "name" : "cute bg v"
         }
       ],
       "position" : {
-        "scale" : 1.04,
+        "scale" : 1.15,
         "translation-in-points" : [
           0,
-          0
+          12
         ]
       },
       "shadow" : {
@@ -71,19 +71,26 @@
         {
           "blend-mode" : "normal",
           "hidden" : false,
-          "image-name" : "cutex.svg",
-          "name" : "cutex"
+          "image-name" : "cute2.svg",
+          "name" : "cute2",
+          "position" : {
+            "scale" : 1,
+            "translation-in-points" : [
+              0,
+              0
+            ]
+          }
         }
       ],
       "position" : {
-        "scale" : 1.04,
+        "scale" : 1.15,
         "translation-in-points" : [
           0,
-          0
+          12
         ]
       },
       "shadow" : {
-        "kind" : "neutral",
+        "kind" : "none",
         "opacity" : 0.5
       },
       "translucency" : {
