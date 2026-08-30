@@ -33,8 +33,20 @@ final class ReplyWorkspace: NSObject {
 
     /// Constructs a workspace for a new reply to a thread, loading any saved draft from disk.
     convenience init(thread: AwfulThread) {
-        let draft = (DraftStore.sharedStore().loadDraft("replies/\(thread.threadID)") as? NewReplyDraft)
-            ?? NewReplyDraft(thread: thread)
+        let saved = DraftStore.sharedStore().loadDraft("replies/\(thread.threadID)") as? NewReplyDraft
+        let draft: NewReplyDraft
+        if let saved, saved.thread.threadID == thread.threadID {
+            draft = saved
+        } else if let saved {
+            // An archive under this thread's path decoded a different thread; the path is the
+            // trustworthy signal, so keep the text but bind it to the tapped thread. The next
+            // auto-save overwrites the bad archive at the same path.
+            logger.error("saved reply draft at replies/\(thread.threadID) decoded thread \(saved.thread.threadID); re-binding to the tapped thread")
+            draft = NewReplyDraft(thread: thread, text: saved.text)
+            draft.forumAttachment = saved.forumAttachment
+        } else {
+            draft = NewReplyDraft(thread: thread)
+        }
         self.init(draft: draft)
     }
 
@@ -47,6 +59,7 @@ final class ReplyWorkspace: NSObject {
         // before deciding whether the draft differs.
         func normalized(_ s: String) -> String { s.replacingOccurrences(of: "\r\n", with: "\n") }
         if let saved = DraftStore.sharedStore().loadDraft("edits/\(post.postID)") as? EditReplyDraft,
+           saved.post.postID == post.postID,
            let savedText = saved.text?.string,
            !savedText.isEmpty,
            normalized(savedText) != normalized(bbcode)
@@ -122,7 +135,7 @@ final class ReplyWorkspace: NSObject {
             }
 
             textViewNotificationToken = NotificationCenter.default.addObserver(forName: UITextView.textDidChangeNotification, object: compositionViewController.textView, queue: OperationQueue.main) { [unowned self] note in
-                self.rightButtonItem.isEnabled = textView.hasText
+                self.rightButtonItem.isEnabled = textView.hasText && !self.isSubmitting
                 self.scheduleDraftAutoSave()
             }
 
@@ -149,7 +162,7 @@ final class ReplyWorkspace: NSObject {
             }
 
             compositionViewController.onAttachmentProcessingChanged = { [weak self] isProcessing in
-                self?.rightButtonItem.isEnabled = !isProcessing
+                self?.rightButtonItem.isEnabled = !isProcessing && !(self?.isSubmitting ?? false)
             }
 
             DispatchQueue.main.async { [weak self] in
@@ -225,16 +238,23 @@ final class ReplyWorkspace: NSObject {
     }
     
     @objc fileprivate func didTapPost(_ sender: UIBarButtonItem) {
+        guard !isSubmitting else { return }
+        isSubmitting = true
+        sender.isEnabled = false
+        rightButtonItem.isEnabled = false
         saveTextToDraft()
-        
+
         let progressView = MRProgressOverlayView.showOverlayAdded(to: viewController.view.window, animated: true)
         progressView?.tintColor = viewController.view.tintColor
         progressView?.titleLabelText = draft.progressViewTitle
-        
+
         let submitProgress = draft.submit { [unowned self] error in
             progressView?.dismiss(true)
+            self.isSubmitting = false
 
             if let error = error {
+                sender.isEnabled = true
+                self.rightButtonItem.isEnabled = self.compositionViewController.textView.hasText
                 if (error as? CocoaError)?.code != .userCancelled {
                     if case ImageUploadError.authenticationRequired = error {
                         let alert = UIAlertController(
@@ -283,7 +303,7 @@ final class ReplyWorkspace: NSObject {
             }
         }
         self.submitProgress = submitProgress
-        
+
         progressView?.stopBlock = { _ in
             submitProgress.cancel() }
 
@@ -305,6 +325,10 @@ final class ReplyWorkspace: NSObject {
         })
     }
     fileprivate var submitProgress: Progress?
+
+    /// Guards against re-entrant submission (e.g. a second tap before the progress overlay
+    /// appears, or a tap from the preview screen's own Post button).
+    fileprivate var isSubmitting = false
     
     fileprivate func saveTextToDraft() {
         draft.text = compositionViewController.textView.attributedText
@@ -471,7 +495,7 @@ final class NewReplyDraft: NSObject, ReplyDraft {
     }
 
     convenience init?(coder: NSCoder) {
-        let threadKey = coder.decodeObject(forKey: Keys.threadKey) as! ThreadKey
+        guard let threadKey = coder.decodeObject(forKey: Keys.threadKey) as? ThreadKey else { return nil }
         let thread = AwfulThread.objectForKey(objectKey: threadKey, in: AppDelegate.instance.managedObjectContext)
         let text = coder.decodeObject(forKey: Keys.text) as? NSAttributedString
         self.init(thread: thread, text: text)
@@ -554,7 +578,7 @@ final class EditReplyDraft: NSObject, ReplyDraft {
     }
 
     convenience init?(coder: NSCoder) {
-        let postKey = coder.decodeObject(forKey: Keys.postKey) as! PostKey
+        guard let postKey = coder.decodeObject(forKey: Keys.postKey) as? PostKey else { return nil }
         let post = Post.objectForKey(objectKey: postKey, in: AppDelegate.instance.managedObjectContext)
         let text = coder.decodeObject(forKey: Keys.text) as? NSAttributedString
         self.init(post: post, text: text)
