@@ -181,19 +181,17 @@ final class ThreadListDataSource: NSObject {
         self.collectionView = collectionView
         super.init()
 
-        // Cell registration is owned by the data source so it captures `self`
-        // (this data source). If the VC owned the registration and captured
-        // its own `dataSource` property, then during a filter change the new
-        // data source's initial snapshot apply would resolve the registration
-        // closure against the OLD data source (which still has more rows),
-        // crashing on index-out-of-bounds.
-        let cellRegistration = UICollectionView.CellRegistration<ThreadListCell, NSManagedObjectID> { [weak self] cell, indexPath, _ in
-            guard let self else { return }
-            cell.viewModel = self.viewModelFor(threadAt: indexPath)
+        // The registration is owned by the data source so its closure captures this
+        // data source. If the VC owned it and captured its own `dataSource` property,
+        // a filter change would resolve the closure against the old data source.
+        let cellRegistration = UICollectionView.CellRegistration<ThreadListCell, NSManagedObjectID> { [weak self] cell, indexPath, objectID in
+            guard let self, let thread = self.thread(with: objectID) else { return }
+            cell.viewModel = self.viewModelFor(thread: thread, at: indexPath)
             cell.accessories = [
                 .delete(displayed: .whenEditing, actionHandler: { [weak self] in
-                    guard let self else { return }
-                    let thread = self.thread(at: indexPath)
+                    // Diffable moves reuse the cell without reconfiguring it, so the
+                    // index path would go stale; the object ID does not.
+                    guard let self, let thread = self.thread(with: objectID) else { return }
                     self.deletionDelegate?.didDeleteThread(thread, in: self)
                 }),
             ]
@@ -231,19 +229,21 @@ final class ThreadListDataSource: NSObject {
     }
 
     func indexPath(of thread: AwfulThread) -> IndexPath? {
-        return resultsController.indexPath(forObject: thread)
+        return diffableDataSource.indexPath(for: thread.objectID)
     }
 
-    func thread(at indexPath: IndexPath) -> AwfulThread {
-        return resultsController.object(at: indexPath)
+    /// Resolved through the diffable snapshot, not the results controller: the two
+    /// disagree while an animated snapshot apply is in flight.
+    func thread(at indexPath: IndexPath) -> AwfulThread? {
+        guard let objectID = diffableDataSource.itemIdentifier(for: indexPath) else { return nil }
+        return thread(with: objectID)
     }
 
-    func numberOfThreads(in section: Int) -> Int {
-        return resultsController.sections?.first?.numberOfObjects ?? 0
+    private func thread(with objectID: NSManagedObjectID) -> AwfulThread? {
+        return (try? resultsController.managedObjectContext.existingObject(with: objectID)) as? AwfulThread
     }
 
-    func viewModelFor(threadAt indexPath: IndexPath) -> ThreadListCell.ViewModel {
-        let thread = resultsController.object(at: indexPath)
+    func viewModelFor(thread: AwfulThread, at indexPath: IndexPath) -> ThreadListCell.ViewModel {
         let theme = delegate?.themeForItem(at: indexPath, in: self) ?? .defaultTheme()
         let tweaks = thread.forum.flatMap { ForumTweaks(ForumID($0.forumID)) }
 

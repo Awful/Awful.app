@@ -546,8 +546,7 @@ extension MessageListViewController {
         // In edit mode the tap is a selection toggle, not a navigation action.
         if collectionView.isEditing { return }
 
-        guard let dataSource else { return }
-        let message = dataSource.message(at: indexPath)
+        guard let message = dataSource?.message(at: indexPath) else { return }
         showMessage(message)
     }
 }

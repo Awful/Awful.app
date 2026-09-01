@@ -687,8 +687,10 @@ final class BookmarksTableViewController: HostedCollectionViewController {
 
         config.trailingSwipeActionsConfigurationProvider = { [weak self] indexPath in
             guard let self, self.collectionView.isEditing else { return nil }
+            // Capture the thread, not the index path, so a reorder can't retarget the action.
+            guard let thread = self.dataSource?.thread(at: indexPath) else { return nil }
             let delete = UIContextualAction(style: .destructive, title: LocalizedString("table-view.action.delete")) { [weak self] _, _, completion in
-                guard let self, let thread = self.dataSource?.thread(at: indexPath) else {
+                guard let self else {
                     completion(false); return
                 }
                 self.setThread(thread, isBookmarked: false)
@@ -1214,7 +1216,7 @@ final class BookmarksTableViewController: HostedCollectionViewController {
 // MARK: UICollectionViewDelegate
 extension BookmarksTableViewController {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let thread = dataSource!.thread(at: indexPath)
+        guard let thread = dataSource?.thread(at: indexPath) else { return }
         let postsViewController = PostsPageViewController(thread: thread)
         // SA: For an unread thread, the Forums will interpret "next unread page" to mean "last page", which is not very helpful.
         let targetPage = thread.beenSeen ? ThreadPage.nextUnread : .first
@@ -1224,10 +1226,8 @@ extension BookmarksTableViewController {
     }
 
     func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
-        let configuration = UIContextMenuConfiguration.makeFromThreadList(
-            for: dataSource!.thread(at: indexPath),
-            presenter: self
-        )
+        guard let thread = dataSource?.thread(at: indexPath) else { return nil }
+        let configuration = UIContextMenuConfiguration.makeFromThreadList(for: thread, presenter: self)
         if #available(iOS 16.0, *) {
             configuration.preferredMenuElementOrder = .fixed
         }

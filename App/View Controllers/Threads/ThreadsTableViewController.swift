@@ -473,7 +473,7 @@ extension ThreadsTableViewController {
         if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
-        let thread = dataSource!.thread(at: indexPath)
+        guard let thread = dataSource?.thread(at: indexPath) else { return }
         let postsViewController = PostsPageViewController(thread: thread)
         // SA: For an unread thread, the Forums will interpret "next unread page" to mean "last page", which is not very helpful.
         let targetPage = thread.beenSeen ? ThreadPage.nextUnread : .first
@@ -487,9 +487,7 @@ extension ThreadsTableViewController {
         contextMenuConfigurationForItemAt indexPath: IndexPath,
         point: CGPoint
     ) -> UIContextMenuConfiguration? {
-        return .makeFromThreadList(
-            for: dataSource!.thread(at: indexPath),
-               presenter: self
-        )
+        guard let thread = dataSource?.thread(at: indexPath) else { return nil }
+        return .makeFromThreadList(for: thread, presenter: self)
     }
 }

@@ -35,9 +35,9 @@ final class MessageListDataSource: NSObject {
         self.collectionView = collectionView
         super.init()
 
-        let cellRegistration = UICollectionView.CellRegistration<MessageListCell, NSManagedObjectID> { [weak self] cell, indexPath, _ in
-            guard let self else { return }
-            cell.viewModel = self.viewModelForMessage(at: indexPath)
+        let cellRegistration = UICollectionView.CellRegistration<MessageListCell, NSManagedObjectID> { [weak self] cell, _, objectID in
+            guard let self, let message = self.message(with: objectID) else { return }
+            cell.viewModel = self.viewModelFor(message: message)
             cell.accessories = [.multiselect(displayed: .whenEditing)]
         }
 
@@ -72,12 +72,19 @@ final class MessageListDataSource: NSObject {
         diffableDataSource.apply(snapshot, animatingDifferences: animatingDifferences)
     }
 
-    func message(at indexPath: IndexPath) -> PrivateMessage {
-        return resultsController.object(at: indexPath)
+    /// Resolved through the diffable snapshot, not the results controller: the two
+    /// disagree while an animated snapshot apply is in flight.
+    func message(at indexPath: IndexPath) -> PrivateMessage? {
+        guard let objectID = diffableDataSource.itemIdentifier(for: indexPath) else { return nil }
+        return message(with: objectID)
+    }
+
+    private func message(with objectID: NSManagedObjectID) -> PrivateMessage? {
+        return (try? resultsController.managedObjectContext.existingObject(with: objectID)) as? PrivateMessage
     }
 
     func indexPath(for message: PrivateMessage) -> IndexPath? {
-        return resultsController.indexPath(forObject: message)
+        return diffableDataSource.indexPath(for: message.objectID)
     }
 }
 
@@ -89,8 +96,7 @@ extension MessageListDataSource: NSFetchedResultsControllerDelegate {
 }
 
 extension MessageListDataSource {
-    private func viewModelForMessage(at indexPath: IndexPath) -> MessageListCell.ViewModel {
-        let message = self.message(at: indexPath)
+    private func viewModelFor(message: PrivateMessage) -> MessageListCell.ViewModel {
         let theme = Theme.defaultTheme()
 
         let displayName = message.isSent
