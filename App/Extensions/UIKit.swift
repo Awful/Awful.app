@@ -101,8 +101,23 @@ extension UINavigationItem {
         if label.superview == nil {
             titleView = nil
         }
-        titleView = label
+        // Re-assigning the same instance re-hosts it, and this getter runs on every scroll
+        // event on iOS 26.
+        if titleView !== label {
+            titleView = label
+        }
         return label
+    }
+
+    /// Keeps `titleLabel` readable as the iOS 26 Liquid Glass bar goes from the opaque theme
+    /// background (at the top) to transparent (once scrolled), matching the bar buttons.
+    /// Thresholds rather than exact 0/1 avoid flicker from tiny offset adjustments.
+    func updateTitleLabelTextColor(forScrollProgress progress: CGFloat, theme: Theme) {
+        if progress < 0.01 {
+            titleLabel.textColor = theme[uicolor: "navigationBarTextColor"] ?? .label
+        } else if progress > 0.99 {
+            titleLabel.textColor = theme["mode"] == "dark" ? .white : .black
+        }
     }
 }
 

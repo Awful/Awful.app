@@ -40,18 +40,6 @@ final class MessageViewController: ViewController {
         return renderView
     }()
 
-    private var _liquidGlassTitleView: UIView?
-
-    @available(iOS 26.0, *)
-    private var liquidGlassTitleView: LiquidGlassTitleView {
-        if _liquidGlassTitleView == nil {
-            let titleView = LiquidGlassTitleView()
-            titleView.title = privateMessage.subject
-            _liquidGlassTitleView = titleView
-        }
-        return _liquidGlassTitleView as! LiquidGlassTitleView
-    }
-    
     private lazy var replyButtonItem: UIBarButtonItem = {
         return UIBarButtonItem(image: UIImage(named: "reply"), style: .plain, target: self, action: #selector(didTapReplyButtonItem))
     }()
@@ -68,11 +56,7 @@ final class MessageViewController: ViewController {
     
     override var title: String? {
         didSet {
-            if #available(iOS 26.0, *), LiquidGlass.isEnabled {
-                liquidGlassTitleView.title = title
-            } else {
-                navigationItem.titleLabel.text = title
-            }
+            navigationItem.titleLabel.text = title
         }
     }
     
@@ -236,7 +220,6 @@ final class MessageViewController: ViewController {
 
         if #available(iOS 26.0, *), LiquidGlass.isEnabled {
             configureNavigationBarForLiquidGlass()
-            configureLiquidGlassTitleView()
         }
         
         renderView.registerMessage(RenderView.BuiltInMessage.DidTapAuthorHeader.self)
@@ -329,9 +312,10 @@ final class MessageViewController: ViewController {
         loadingView?.tintColor = theme["backgroundColor"]
 
         if #available(iOS 26.0, *), LiquidGlass.isEnabled {
-            if renderView.scrollView.contentOffset.y <= -renderView.scrollView.adjustedContentInset.top {
-                liquidGlassTitleView.textColor = theme["navigationBarTextColor"]
-            }
+            navigationItem.updateTitleLabelTextColor(
+                forScrollProgress: renderView.scrollView.navigationBarScrollProgress,
+                theme: theme
+            )
         }
     }
     
@@ -422,29 +406,6 @@ final class MessageViewController: ViewController {
         navigationBar.setNeedsLayout()
     }
 
-    @available(iOS 26.0, *)
-    private func configureLiquidGlassTitleView() {
-        liquidGlassTitleView.textColor = theme["navigationBarTextColor"]
-
-        switch UIDevice.current.userInterfaceIdiom {
-        case .pad:
-            liquidGlassTitleView.font = UIFont.preferredFontForTextStyle(.callout, fontName: nil, sizeAdjustment: 0, weight: .semibold)
-        default:
-            liquidGlassTitleView.font = UIFont.preferredFontForTextStyle(.callout, fontName: nil, sizeAdjustment: 0, weight: .semibold)
-        }
-
-        navigationItem.titleView = liquidGlassTitleView
-    }
-
-    @available(iOS 26.0, *)
-    private func updateTitleViewTextColorForScrollProgress(_ progress: CGFloat) {
-        if progress < 0.01 {
-            liquidGlassTitleView.textColor = theme["navigationBarTextColor"]
-        } else if progress > 0.99 {
-            liquidGlassTitleView.textColor = nil
-        }
-    }
-    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -524,7 +485,7 @@ extension MessageViewController: UIScrollViewDelegate {
                 navController.updateNavigationBarTintForScrollProgress(NSNumber(value: Float(progress)))
             }
 
-            updateTitleViewTextColorForScrollProgress(progress)
+            navigationItem.updateTitleLabelTextColor(forScrollProgress: progress, theme: theme)
         }
     }
 }

@@ -96,8 +96,7 @@ final class SidebarTitleView: UIView {
     private var hostingLeadingConstraint: NSLayoutConstraint?
     private var hostingTrailingConstraint: NSLayoutConstraint?
 
-    // Mid-transition the bar sits deeper: transition hosts add ~3 levels
-    // (same rationale as LiquidGlassTitleView.maxBarSearchDepth).
+    // Mid-transition the bar sits deeper: transition hosts add ~3 levels.
     private static let maxBarSearchDepth = 16
     private static let correctionEpsilon: CGFloat = 0.5
     private static let maxCorrectionDelta: CGFloat = 50
@@ -1425,7 +1424,7 @@ extension NavigationController: UINavigationControllerDelegate {
                     let buttonTintColor: UIColor
                     if #available(iOS 26.0, *), LiquidGlass.isEnabled {
                         // Liquid glass renders bar buttons in glass circles; ignore the
-                        // theme's white and match LiquidGlassTitleView / back button.
+                        // theme's white and match the title label / back button.
                         buttonTintColor = vcTheme["mode"] == "dark" ? .white : .black
                     } else {
                         buttonTintColor = textColor

@@ -26,18 +26,6 @@ final class ProfileViewController: ViewController {
         return renderView
     }()
 
-    private var _liquidGlassTitleView: UIView?
-
-    @available(iOS 26.0, *)
-    private var liquidGlassTitleView: LiquidGlassTitleView {
-        if _liquidGlassTitleView == nil {
-            let titleView = LiquidGlassTitleView()
-            titleView.title = user.username
-            _liquidGlassTitleView = titleView
-        }
-        return _liquidGlassTitleView as! LiquidGlassTitleView
-    }
-
     private var user: User {
         didSet { updateTitle() }
     }
@@ -53,9 +41,6 @@ final class ProfileViewController: ViewController {
     
     private func updateTitle() {
         title = user.username ?? LocalizedString("profile.default-title")
-        if #available(iOS 26.0, *), LiquidGlass.isEnabled {
-            liquidGlassTitleView.title = title
-        }
     }
     
     private func sendPrivateMessage() {
@@ -85,7 +70,6 @@ final class ProfileViewController: ViewController {
 
         if #available(iOS 26.0, *), LiquidGlass.isEnabled {
             configureNavigationBarForLiquidGlass()
-            configureLiquidGlassTitleView()
         }
     }
     
@@ -93,12 +77,6 @@ final class ProfileViewController: ViewController {
         super.themeDidChange()
         
         renderProfile()
-
-        if #available(iOS 26.0, *), LiquidGlass.isEnabled {
-            if renderView.scrollView.contentOffset.y <= -renderView.scrollView.adjustedContentInset.top {
-                liquidGlassTitleView.textColor = theme["navigationBarTextColor"]
-            }
-        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -203,29 +181,6 @@ final class ProfileViewController: ViewController {
         navigationBar.setNeedsLayout()
     }
 
-    @available(iOS 26.0, *)
-    private func configureLiquidGlassTitleView() {
-        liquidGlassTitleView.textColor = theme["navigationBarTextColor"]
-
-        switch UIDevice.current.userInterfaceIdiom {
-        case .pad:
-            liquidGlassTitleView.font = UIFont.preferredFontForTextStyle(.callout, fontName: nil, sizeAdjustment: 0, weight: .semibold)
-        default:
-            liquidGlassTitleView.font = UIFont.preferredFontForTextStyle(.callout, fontName: nil, sizeAdjustment: 0, weight: .semibold)
-        }
-
-        navigationItem.titleView = liquidGlassTitleView
-    }
-
-    @available(iOS 26.0, *)
-    private func updateTitleViewTextColorForScrollProgress(_ progress: CGFloat) {
-        if progress < 0.01 {
-            liquidGlassTitleView.textColor = theme["navigationBarTextColor"]
-        } else if progress > 0.99 {
-            liquidGlassTitleView.textColor = nil
-        }
-    }
-    
     private func renderProfile() {
         let html: String = {
             guard let profile = user.profile else { return "" }
@@ -304,8 +259,6 @@ extension ProfileViewController: UIScrollViewDelegate {
             if let navController = navigationController as? NavigationController {
                 navController.updateNavigationBarTintForScrollProgress(NSNumber(value: Float(progress)))
             }
-
-            updateTitleViewTextColorForScrollProgress(progress)
         }
     }
 }

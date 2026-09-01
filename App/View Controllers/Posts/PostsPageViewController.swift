@@ -3,6 +3,7 @@
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 @preconcurrency import AwfulCore
+import AwfulExtensions
 import AwfulModelTypes
 import AwfulPolls
 import AwfulRapsheet
@@ -105,30 +106,6 @@ final class PostsPageViewController: ViewController {
     @FoilDefaultStorage(Settings.loadImages) private var showImages
     let thread: AwfulThread
     private var webViewDidLoadOnce = false
-
-    // this is to overcome not being allowed to mark stored properties as potentially unavailable using @available
-    private var _liquidGlassTitleView: UIView?
-
-    @available(iOS 26.0, *)
-    private var liquidGlassTitleView: LiquidGlassTitleView {
-        if let existingView = _liquidGlassTitleView as? LiquidGlassTitleView {
-            return existingView
-        }
-        let newView = LiquidGlassTitleView()
-        _liquidGlassTitleView = newView
-        return newView
-    }
-
-    @available(iOS 26.0, *)
-    func updateTitleViewTextColorForScrollProgress(_ progress: CGFloat) {
-        // Use thresholds (0.01, 0.99) instead of exact 0.0/1.0 to avoid color flickering
-        // during small scroll position adjustments and floating point precision issues
-        if progress < 0.01 {
-            liquidGlassTitleView.textColor = theme["mode"] == "dark" ? .white : .black
-        } else if progress > 0.99 {
-            liquidGlassTitleView.textColor = nil
-        }
-    }
 
     func threadActionsMenu() -> UIMenu {
         var children: [UIMenuElement] = [
@@ -363,22 +340,12 @@ final class PostsPageViewController: ViewController {
 
     override var title: String? {
         didSet {
-            if #available(iOS 26.0, *), LiquidGlass.isEnabled {
-                let glassView = liquidGlassTitleView
-                glassView.title = title
-                glassView.textColor = theme["mode"] == "dark" ? .white : .black
-                glassView.font = fontForPostTitle(from: theme, idiom: UIDevice.current.userInterfaceIdiom)
-
-                // Re-assigning the same titleView instance is not a no-op:
-                // UIKit tears it down and rehosts it, which mid-transition
-                // lands it in a clipping transition container.
-                if navigationItem.titleView !== glassView {
-                    navigationItem.titleView = glassView
-                }
-
-                configureNavigationBarForLiquidGlass()
+            // While a push/pop animates, only touch the text: `navigationItem.titleLabel` can
+            // re-host the label, and swapping the title view mid-transition makes UIKit rebuild
+            // the incoming item's bar content under the animating back button.
+            if transitionCoordinator != nil, let label = navigationItem.titleView as? UILabel {
+                label.text = title
             } else {
-                navigationItem.titleView = nil
                 navigationItem.titleLabel.text = title
             }
         }
@@ -2311,28 +2278,20 @@ final class PostsPageViewController: ViewController {
             setMinimizedDraftBarVisible(true)
         }
 
-        // Update title appearance for iOS 26+
-        if #available(iOS 26.0, *), LiquidGlass.isEnabled {
-            let glassView = liquidGlassTitleView
-            // Set both text color and font from theme
-            glassView.textColor = theme["mode"] == "dark" ? .white : .black
-            glassView.font = fontForPostTitle(from: theme, idiom: UIDevice.current.userInterfaceIdiom)
+        navigationItem.titleLabel.text = title
+        navigationItem.titleLabel.font = fontForPostTitle(from: theme, idiom: UIDevice.current.userInterfaceIdiom)
 
-            // Update navigation bar configuration based on new theme
+        if UIDevice.current.userInterfaceIdiom == .phone {
+            navigationItem.titleLabel.numberOfLines = 2
+        }
+
+        if #available(iOS 26.0, *), LiquidGlass.isEnabled {
+            navigationItem.updateTitleLabelTextColor(
+                forScrollProgress: postsView.renderView.scrollView.navigationBarScrollProgress,
+                theme: theme
+            )
             configureNavigationBarForLiquidGlass()
         } else {
-            // Tear down an installed LiquidGlassTitleView when the setting flips while this
-            // screen is up, then apply theme to the regular title label.
-            if navigationItem.titleView != nil {
-                navigationItem.titleView = nil
-            }
-            navigationItem.titleLabel.text = title
-            navigationItem.titleLabel.font = fontForPostTitle(from: theme, idiom: UIDevice.current.userInterfaceIdiom)
-
-            if UIDevice.current.userInterfaceIdiom == .phone {
-                navigationItem.titleLabel.numberOfLines = 2
-            }
-
             navigationItem.titleLabel.textColor = Theme.defaultTheme()[uicolor: "navigationBarTextColor"] ?? .label
         }
 
@@ -2558,10 +2517,6 @@ final class PostsPageViewController: ViewController {
             // method restyles the bar outside NavigationController's willShow path.
             awfulNavigationBar.overrideUserInterfaceStyle = theme.userInterfaceStyle
         }
-        // Trait inheritance covers the capsule while it's in the bar, but transition
-        // portal copies are staged outside the bar's trait environment.
-        liquidGlassTitleView.setUseDarkGlass(theme.userInterfaceStyle == .dark)
-
         // Start with opaque background - NavigationController will handle the transition to clear on scroll
         let appearance = UINavigationBarAppearance()
         appearance.configureWithOpaqueBackground()
@@ -2607,17 +2562,22 @@ final class PostsPageViewController: ViewController {
         navController.updateNavigationBarTintForScrollProgress(NSNumber(value: 0.0))
 
         navigationBar.setNeedsLayout()
-        // Forcing synchronous bar layout during a push/pop makes UIKit
-        // relayout the title inside its clipping transition container;
-        // defer to the normal layout pass while a transition is running.
-        if transitionCoordinator == nil {
-            navigationBar.layoutIfNeeded()
-        }
 
         if let previousVC = navigationController?.viewControllers.dropLast().last {
             previousVC.navigationItem.backBarButtonItem?.tintColor = navTextColor
         }
+    }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        if #available(iOS 26.0, *), LiquidGlass.isEnabled {
+            // Style the bar before the push animates, not from `title`'s setter, which landed
+            // mid-transition and rebuilt the bar under the animating back button.
+            configureNavigationBarForLiquidGlass()
+            // Reappearing over a scrolled page (e.g. after a modal) keeps the transparent bar.
+            postsView.syncNavigationBarScrollProgress()
+        }
     }
 
     override func viewDidAppear(_ animated: Bool) {

@@ -222,7 +222,6 @@
 		2D5009F32F9C9FF300887F4B /* LoadMoreCollectionFooter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D5009F22F9C9FF300887F4B /* LoadMoreCollectionFooter.swift */; };
 		2D571B472EC83DD00026826C /* AttachmentCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D571B462EC83DD00026826C /* AttachmentCardView.swift */; };
 		2D571B492EC8765F0026826C /* ImmersiveModeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D571B482EC876590026826C /* ImmersiveModeManager.swift */; };
-		2D62DEA42EBFE93800F7121B /* LiquidGlassTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D62DEA32EBFE93600F7121B /* LiquidGlassTitleView.swift */; };
 		2D62DEA62EBFE95B00F7121B /* PostsPageTopBarLiquidGlass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D62DEA52EBFE95500F7121B /* PostsPageTopBarLiquidGlass.swift */; };
 		2D62DEA82EBFEB2000F7121B /* GradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D62DEA72EBFEB1D00F7121B /* GradientView.swift */; };
 		2D921269292F588100B16011 /* platinum-member.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D921268292F588100B16011 /* platinum-member.png */; };
@@ -592,7 +591,6 @@
 		2D5009F22F9C9FF300887F4B /* LoadMoreCollectionFooter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadMoreCollectionFooter.swift; sourceTree = "<group>"; };
 		2D571B462EC83DD00026826C /* AttachmentCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentCardView.swift; sourceTree = "<group>"; };
 		2D571B482EC876590026826C /* ImmersiveModeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImmersiveModeManager.swift; sourceTree = "<group>"; };
-		2D62DEA32EBFE93600F7121B /* LiquidGlassTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiquidGlassTitleView.swift; sourceTree = "<group>"; };
 		2D62DEA52EBFE95500F7121B /* PostsPageTopBarLiquidGlass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsPageTopBarLiquidGlass.swift; sourceTree = "<group>"; };
 		2D62DEA72EBFEB1D00F7121B /* GradientView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientView.swift; sourceTree = "<group>"; };
 		2D921268292F588100B16011 /* platinum-member.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "platinum-member.png"; sourceTree = "<group>"; };
@@ -1274,7 +1272,6 @@
 			isa = PBXGroup;
 			children = (
 				2D939F222EC48FDE00F3464B /* PageNumberView.swift */,
-				2D62DEA32EBFE93600F7121B /* LiquidGlassTitleView.swift */,
 				1CC22AB419F972C200D5BABD /* HairlineView.swift */,
 				1C16FC011CC29B2C00C88BD1 /* LoadingView.swift */,
 				1CD9FB631D1A38030070C8C7 /* NigglyRefreshView.swift */,
@@ -1861,7 +1858,6 @@
 				1C25AC521F57784A00977D6F /* AnnouncementListRefresher.swift in Sources */,
 				1C8A8CFA1A3C14DF00E4F6A4 /* ReplyWorkspace.swift in Sources */,
 				2D3D26012F85E80100862513 /* NewThreadDraft.swift in Sources */,
-				2D62DEA42EBFE93800F7121B /* LiquidGlassTitleView.swift in Sources */,
 				1CC256BC1A3AA82F003FA7A8 /* ShowSmilieKeyboardCommand.swift in Sources */,
 				1C220E3B2B814D5A00DA92B0 /* SettingsViewController.swift in Sources */,
 				1C3E1819224EF97D00BD88E5 /* PostedSmilie.swift in Sources */,

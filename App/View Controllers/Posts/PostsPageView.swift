@@ -923,6 +923,6 @@ extension PostsPageView: ScrollViewDelegateExtras {
         }
 
         navController.updateNavigationBarTintForScrollProgress(NSNumber(value: Float(progress)))
-        viewController.updateTitleViewTextColorForScrollProgress(progress)
+        viewController.navigationItem.updateTitleLabelTextColor(forScrollProgress: progress, theme: viewController.theme)
     }
 }
