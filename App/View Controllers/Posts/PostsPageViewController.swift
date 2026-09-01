@@ -60,9 +60,9 @@ final class PostsPageViewController: ViewController {
     /// The thread's poll, once a page has come back from the Forums saying there is one. We don't
     /// persist it: it's cheap to re-scrape and goes stale the moment anyone votes.
     private var poll: ThreadPoll?
-    /// Whether we've already offered the poll toast during this visit to the thread. Set on the
-    /// first render that has a poll to offer, and never reset — the controller is built fresh each
-    /// time the thread is pushed, so leaving and coming back offers it again.
+    /// Whether we've already considered offering the poll toast during this visit to the thread.
+    /// Set on the first render that has a poll to offer, and never reset, so the on-disk check in
+    /// `OfferedPollToastStore` happens once per visit rather than once per render.
     private var hasOfferedPollToast = false
     @FoilDefaultStorage(Settings.pullForNext) private var pullForNext
     private var replyWorkspace: ReplyWorkspace? {
@@ -297,12 +297,9 @@ final class PostsPageViewController: ViewController {
         }
         guard isViewLoaded, replyWorkspace != nil else { return }
 
-        // Hosted in `postsView` rather than `view` so the transient toasts shown in `view` (e.g.
-        // the poll toast) don't replace it — `BannerToastView.show` dismisses any existing banners
-        // in its host view.
         minimizedDraftBanner?.dismiss(animated: false)
         minimizedDraftBanner = BannerToastView.show(
-            in: postsView,
+            in: view,
             theme: theme,
             message: minimizedDraftMessage,
             duration: nil,
@@ -1763,15 +1760,20 @@ final class PostsPageViewController: ViewController {
         present(viewer, animated: true)
     }
 
-    /// Offers the poll toast, at most once per visit to this thread.
+    /// Offers the poll toast the first time this thread is opened, and never again for it: the
+    /// "View poll" item in the thread actions menu is the way back to a poll after that.
     ///
     /// Called from every render. Rendering happens twice on a typical load — once from the cached
     /// posts, then again once the network comes back — and only the second one knows about a poll.
     /// Hence the ordering here: checking `poll` *before* spending `hasOfferedPollToast` means the
-    /// cached render doesn't burn the one offer we get.
+    /// cached render doesn't burn the one check we do per visit.
     private func offerPollToastIfNeeded() {
         guard !hasOfferedPollToast, poll != nil else { return }
         hasOfferedPollToast = true
+
+        let store = OfferedPollToastStore.shared
+        guard !store.hasOffered(threadID: thread.threadID) else { return }
+        store.markOffered(threadID: thread.threadID)
 
         BannerToastView.show(
             in: view,

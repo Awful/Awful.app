@@ -199,6 +199,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     /// Used by the Settings "Clear Cache" button; logout intentionally does not call this.
     func emptyCacheAndResetStore() async {
         await emptyCache()
+        OfferedPollToastStore.shared.removeAll()
 
         // ForumsClient's background MOC retains objects tied to the old persistent store,
         // so cycle its MOC around the reset — otherwise a subsequent save-notification

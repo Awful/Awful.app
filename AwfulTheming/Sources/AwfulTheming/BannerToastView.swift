@@ -10,6 +10,9 @@ import UIKit
 /// Pass `duration: nil` for a persistent banner that stays until the caller dismisses it — and if
 /// such a banner has an `onAction` but no `action`, the whole banner becomes the tappable action
 /// (it does not dismiss itself; the caller owns its visibility).
+///
+/// Banners shown in the same host view stack vertically rather than drawing over one another:
+/// persistent banners sit at the bottom, and each new transient one appears directly above them.
 public final class BannerToastView: UIView {
 
     /// How the banner offers its action, if it has one.
@@ -21,9 +24,9 @@ public final class BannerToastView: UIView {
         case link(text: String, actionName: String)
     }
 
-    /// Shows a banner near the bottom of `hostView`, above the keyboard when one is up, replacing any banner already shown there.
+    /// Shows a banner near the bottom of `hostView`, above the keyboard when one is up, stacking above any banners already shown there. Persistent banners (`duration: nil`) stay at the very bottom of the stack.
     /// Pass `action`/`onAction` for a tappable action; omit both for a plain informational toast.
-    /// Pass `bottomInset` to clear chrome the safe area doesn't know about, such as a toolbar laid out inside a subview.
+    /// Pass `bottomInset` to clear chrome the safe area doesn't know about, such as a toolbar laid out inside a subview. The stack sits up by the largest inset among the banners showing.
     @discardableResult
     public static func show(
         in hostView: UIView,
@@ -34,36 +37,40 @@ public final class BannerToastView: UIView {
         bottomInset: CGFloat = 0,
         onAction: (() -> Void)? = nil
     ) -> BannerToastView {
-        for existing in hostView.subviews.compactMap({ $0 as? BannerToastView }) {
-            existing.dismiss(animated: false)
-        }
+        let stack = BannerToastStackView.findOrMake(in: hostView)
+        // Anything the host adds later (a loading view, say) shouldn't cover the banners.
+        hostView.bringSubviewToFront(stack)
 
-        let banner = BannerToastView(theme: theme, message: message, action: action, onAction: onAction)
+        let banner = BannerToastView(
+            theme: theme,
+            message: message,
+            action: action,
+            onAction: onAction,
+            isPersistent: duration == nil,
+            bottomInset: bottomInset
+        )
         banner.translatesAutoresizingMaskIntoConstraints = false
-        hostView.addSubview(banner)
 
-        // Sit above whichever comes first: the keyboard (its layout guide includes any input accessory view) or the bottom safe area. The lower-priority equality pulls the banner as far down as those allow.
-        let restToBottom = banner.bottomAnchor.constraint(equalTo: hostView.safeAreaLayoutGuide.bottomAnchor, constant: -8 - bottomInset)
-        restToBottom.priority = .defaultHigh
-        NSLayoutConstraint.activate([
-            banner.bottomAnchor.constraint(lessThanOrEqualTo: hostView.keyboardLayoutGuide.topAnchor, constant: -8),
-            banner.bottomAnchor.constraint(lessThanOrEqualTo: hostView.safeAreaLayoutGuide.bottomAnchor, constant: -8 - bottomInset),
-            restToBottom,
-            // Centred on the safe area rather than the host's full width: on iPad an open sidebar
-            // sits over the left of the posts view and shows up as a left safe-area inset, so
-            // centring on `hostView` would push the banner off to the side. Constraining to the
-            // guide also means it re-centres by itself as the sidebar comes and goes. On iPhone the
-            // horizontal insets are symmetric, so this is the same as before.
-            banner.centerXAnchor.constraint(equalTo: hostView.safeAreaLayoutGuide.centerXAnchor),
-            banner.leadingAnchor.constraint(greaterThanOrEqualTo: hostView.safeAreaLayoutGuide.leadingAnchor, constant: 12),
-            banner.trailingAnchor.constraint(lessThanOrEqualTo: hostView.safeAreaLayoutGuide.trailingAnchor, constant: -12),
-        ])
-
+        // With neighbours, start collapsed so the stack animates them out of the way as this one
+        // grows in. Alone, keep the plain fade-and-rise.
+        banner.isHidden = !stack.arrangedSubviews.isEmpty
         banner.alpha = 0
         banner.transform = CGAffineTransform(translationX: 0, y: 8)
+        stack.insertArrangedSubview(banner, at: stack.insertionIndex(isPersistent: banner.isPersistent))
+        banner.widthAnchor.constraint(lessThanOrEqualTo: stack.widthAnchor).isActive = true
+
+        // Settle the stack at its final spot before animating, so a lone banner fades in where it
+        // belongs rather than sliding up over the toolbar.
+        stack.updateBottomInset()
+        hostView.layoutIfNeeded()
+
         UIView.animate(withDuration: 0.25) {
+            if banner.isHidden {
+                banner.isHidden = false
+            }
             banner.alpha = 1
             banner.transform = .identity
+            hostView.layoutIfNeeded()
         }
 
         if let duration {
@@ -82,6 +89,13 @@ public final class BannerToastView: UIView {
     /// When the banner has an `onAction` but no styled `action`, a tap anywhere on it triggers the
     /// action rather than dismissing.
     private let wholeBannerIsAction: Bool
+    /// Whether the banner stays until the caller dismisses it.
+    fileprivate let isPersistent: Bool
+    /// How far above the safe area this banner asked to sit; the stack honours the largest.
+    fileprivate let bottomInset: CGFloat
+    /// Set for good once `dismiss` starts, so a tap during the fade-out or an auto-dismiss landing
+    /// mid-dismiss doesn't run the exit again.
+    fileprivate private(set) var isDismissing = false
     private var scheduledDismissal: DispatchWorkItem?
     /// The label carrying the message, kept around so a tap can be mapped back onto `linkRange`.
     private let label = UILabel()
@@ -90,9 +104,18 @@ public final class BannerToastView: UIView {
     /// The glass background on iOS 26+, kept around so `layoutSubviews` can keep it a pill. Nil on the legacy path, where the background is drawn by the banner itself.
     private var visualEffectView: UIVisualEffectView?
 
-    private init(theme: Theme, message: String, action: Action?, onAction: (() -> Void)?) {
+    private init(
+        theme: Theme,
+        message: String,
+        action: Action?,
+        onAction: (() -> Void)?,
+        isPersistent: Bool,
+        bottomInset: CGFloat
+    ) {
         self.onAction = onAction
         self.wholeBannerIsAction = action == nil && onAction != nil
+        self.isPersistent = isPersistent
+        self.bottomInset = bottomInset
         super.init(frame: .zero)
 
         let background: UIColor? = theme["sheetBackgroundColor"] ?? theme["listBackgroundColor"]
@@ -175,11 +198,15 @@ public final class BannerToastView: UIView {
         let horizontalMargin: CGFloat = usesGlass ? 20 : 14
         stack.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 10, leading: horizontalMargin, bottom: 10, trailing: horizontalMargin)
         contentParent.addSubview(stack)
+        // The bottom edge yields: the banner stack collapses a banner to zero height while it's
+        // hidden on the way in or out, and a required content height would fight that.
+        let contentBottom = stack.bottomAnchor.constraint(equalTo: contentParent.bottomAnchor)
+        contentBottom.priority = UILayoutPriority(999)
         NSLayoutConstraint.activate([
             stack.topAnchor.constraint(equalTo: contentParent.topAnchor),
             stack.leadingAnchor.constraint(equalTo: contentParent.leadingAnchor),
             stack.trailingAnchor.constraint(equalTo: contentParent.trailingAnchor),
-            stack.bottomAnchor.constraint(equalTo: contentParent.bottomAnchor),
+            contentBottom,
         ])
 
         if case .button(let title) = action {
@@ -273,14 +300,33 @@ public final class BannerToastView: UIView {
     }
 
     public func dismiss(animated: Bool = true) {
+        guard !isDismissing else { return }
+        isDismissing = true
         scheduledDismissal?.cancel()
         scheduledDismissal = nil
-        guard animated else { return removeFromSuperview() }
+
+        let stack = superview as? BannerToastStackView
+        let finish = {
+            self.removeFromSuperview()
+            stack?.updateBottomInset()
+            stack?.removeIfEmpty()
+        }
+        guard animated, let hostView = stack?.superview else {
+            return finish()
+        }
+
+        let hasNeighbours = (stack?.arrangedSubviews.count ?? 0) > 1
         UIView.animate(withDuration: 0.25, animations: {
             self.alpha = 0
             self.transform = CGAffineTransform(translationX: 0, y: 8)
+            // Collapse so the neighbours slide into the gap, rather than jumping once this is gone.
+            if hasNeighbours, !self.isHidden {
+                self.isHidden = true
+            }
+            stack?.updateBottomInset()
+            hostView.layoutIfNeeded()
         }, completion: { _ in
-            self.removeFromSuperview()
+            finish()
         })
     }
 }
@@ -289,6 +335,82 @@ extension BannerToastView: UIGestureRecognizerDelegate {
     public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
         // Let the action button handle its own taps.
         !(touch.view is UIControl)
+    }
+}
+
+/// The column of banners in one host view, one per host. Owns the position each banner used to
+/// take for itself: bottom-pinned above the keyboard or the safe area, sitting up by the largest
+/// `bottomInset` among the banners still showing.
+private final class BannerToastStackView: UIStackView {
+
+    /// The safe-area constraints whose constant carries the bottom inset.
+    private var insetConstraints: [NSLayoutConstraint] = []
+
+    static func findOrMake(in hostView: UIView) -> BannerToastStackView {
+        if let existing = hostView.subviews.lazy.compactMap({ $0 as? BannerToastStackView }).first {
+            return existing
+        }
+
+        let stack = BannerToastStackView()
+        stack.axis = .vertical
+        stack.alignment = .center
+        stack.spacing = 8
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        hostView.addSubview(stack)
+
+        // Sit above whichever comes first: the keyboard (its layout guide includes any input accessory view) or the bottom safe area. The lower-priority equality pulls the stack as far down as those allow.
+        let restToBottom = stack.bottomAnchor.constraint(equalTo: hostView.safeAreaLayoutGuide.bottomAnchor, constant: -8)
+        restToBottom.priority = .defaultHigh
+        let clearSafeArea = stack.bottomAnchor.constraint(lessThanOrEqualTo: hostView.safeAreaLayoutGuide.bottomAnchor, constant: -8)
+        stack.insetConstraints = [restToBottom, clearSafeArea]
+        NSLayoutConstraint.activate([
+            stack.bottomAnchor.constraint(lessThanOrEqualTo: hostView.keyboardLayoutGuide.topAnchor, constant: -8),
+            clearSafeArea,
+            restToBottom,
+            // Spanning the safe area rather than the host's full width: on iPad an open sidebar
+            // sits over the left of the posts view and shows up as a left safe-area inset, so
+            // centring on `hostView` would push the banners off to the side. Constraining to the
+            // guide also means they re-centre by themselves as the sidebar comes and goes.
+            stack.leadingAnchor.constraint(equalTo: hostView.safeAreaLayoutGuide.leadingAnchor, constant: 12),
+            stack.trailingAnchor.constraint(equalTo: hostView.safeAreaLayoutGuide.trailingAnchor, constant: -12),
+        ])
+        return stack
+    }
+
+    /// The banners that count for layout decisions: everything not already on its way out.
+    private var liveBanners: [BannerToastView] {
+        arrangedSubviews.compactMap { $0 as? BannerToastView }.filter { !$0.isDismissing }
+    }
+
+    /// Where a new banner goes. Index 0 is the top: persistent banners go below everything, and a
+    /// transient one goes directly above the persistent block, pushing older transients up.
+    func insertionIndex(isPersistent: Bool) -> Int {
+        if isPersistent {
+            return arrangedSubviews.count
+        }
+        return arrangedSubviews.firstIndex { ($0 as? BannerToastView)?.isPersistent == true } ?? arrangedSubviews.count
+    }
+
+    /// Lifts the stack by the largest inset among the live banners. With none left the current
+    /// inset stands, so the last banner fades out in place instead of sliding down as it goes.
+    func updateBottomInset() {
+        guard let inset = liveBanners.map(\.bottomInset).max() else { return }
+        for constraint in insetConstraints {
+            constraint.constant = -8 - inset
+        }
+    }
+
+    func removeIfEmpty() {
+        if arrangedSubviews.isEmpty {
+            removeFromSuperview()
+        }
+    }
+
+    /// The stack spans the safe area, but only the banners should be tappable: a touch beside a
+    /// short pill falls through to whatever the host has there.
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        let hit = super.hitTest(point, with: event)
+        return hit === self ? nil : hit
     }
 }
 
