@@ -464,12 +464,7 @@ final class PostsPageViewController: ViewController {
                 if !posts.isEmpty {
                     self.posts = posts
 
-                    let anyPost = posts[0]
-                    if self.author != nil {
-                        self.page = .specific(anyPost.singleUserPage)
-                    } else {
-                        self.page = .specific(anyPost.page)
-                    }
+                    self.page = .specific(self.pageNumber(of: posts[0]))
                 }
 
                 switch newPage {
@@ -492,9 +487,10 @@ final class PostsPageViewController: ViewController {
                 // If the staged anchor isn't on the loaded page (rolled over, filter
                 // excludes, deleted), drop everything so the first-unread fallback below
                 // takes over.
-                if let stagedAnchorID = self.anchorPostIDAfterLoading,
-                   !self.posts.contains(where: { $0.postID == stagedAnchorID })
-                {
+                let stagedAnchorIndex = self.anchorPostIDAfterLoading.flatMap { anchorID in
+                    self.posts.firstIndex(where: { $0.postID == anchorID })
+                }
+                if self.anchorPostIDAfterLoading != nil, stagedAnchorIndex == nil {
                     self.scrollToFractionAfterLoading = nil
                     self.hiddenPostsAfterLoading = nil
                     self.anchorPostIDAfterLoading = nil
@@ -502,9 +498,15 @@ final class PostsPageViewController: ViewController {
                 }
 
                 if let pendingHidden = self.hiddenPostsAfterLoading {
-                    // A value staged from a saved user activity can exceed this page's post
-                    // count (e.g. captured mid-endless-scroll), so clamp it.
-                    self.hiddenPosts = min(pendingHidden, self.posts.count)
+                    // A count that would hide every post, or hide the (by definition visible)
+                    // anchor, came from an inconsistent payload — e.g. an older build's snapshot
+                    // taken mid-endless-scroll — so show everything rather than an empty document.
+                    let anchorWouldBeHidden = stagedAnchorIndex.map { $0 < pendingHidden } ?? false
+                    if pendingHidden <= 0 || pendingHidden >= self.posts.count || anchorWouldBeHidden {
+                        self.hiddenPosts = 0
+                    } else {
+                        self.hiddenPosts = pendingHidden
+                    }
                     self.hiddenPostsAfterLoading = nil
                 } else if self.hiddenPosts == 0, let firstUnreadPost = firstUnreadPost, firstUnreadPost > 0 {
                     let pendingTargetOnPage: Bool
@@ -609,7 +611,7 @@ final class PostsPageViewController: ViewController {
                 var previousPage: Int?
                 context["posts"] = subset.map { post -> [String: Any] in
                     var postContext = PostRenderModel(post).context
-                    let postPage = Int(author == nil ? post.page : post.singleUserPage)
+                    let postPage = pageNumber(of: post)
                     if let previousPage, postPage != previousPage {
                         postContext["pageDivider"] = "Page \(postPage) of \(numberOfPages)"
                     }
@@ -2173,8 +2175,30 @@ final class PostsPageViewController: ViewController {
         }
     }
 
+    /// The forum page a post lives on, respecting the single-user filter.
+    private func pageNumber(of post: Post) -> Int {
+        author == nil ? post.page : post.singleUserPage
+    }
+
+    /// The page `posts` starts on. After endless-scroll appends this is the page whose posts
+    /// the `hiddenPosts` prefix describes; `page` has moved on to the last appended page.
+    private var firstLoadedPage: ThreadPage? {
+        posts.first.map { .specific(pageNumber(of: $0)) }
+    }
+
+    /// The page a restoration payload should name: after endless-scroll appends, the page of the
+    /// topmost-visible post rather than `page` (the last appended one), so restoration lands on
+    /// the anchor and `hiddenPosts` isn't applied to a different page's posts.
+    private var restorationPage: ThreadPage? {
+        guard endlessScrollDidAppend,
+              let anchorID = cachedAnchorPostID,
+              let anchorPost = posts.first(where: { $0.postID == anchorID })
+        else { return page }
+        return .specific(pageNumber(of: anchorPost))
+    }
+
     var restorationRoute: AwfulRoute? {
-        guard let page = page, case .specific = page else { return nil }
+        guard let page = restorationPage, case .specific = page else { return nil }
         if let author = author {
             return .threadPageSingleUser(threadID: thread.threadID, userID: author.userID, page: page, .seen)
         } else {
@@ -2184,10 +2208,17 @@ final class PostsPageViewController: ViewController {
 
     var currentScrollFraction: CGFloat? {
         guard isViewLoaded else { return nil }
+        // After appends the fraction describes the multi-page document, not the single page
+        // restoration loads; the anchor carries position instead.
+        guard !endlessScrollDidAppend else { return nil }
         return postsView.renderView.scrollView.fractionalContentOffset.y
     }
 
-    var currentHiddenPosts: Int { hiddenPosts }
+    /// `hiddenPosts` indexes the first loaded page's posts, so it only travels with a payload
+    /// that restores that page.
+    var currentHiddenPosts: Int {
+        restorationPage == firstLoadedPage ? hiddenPosts : 0
+    }
 
     var currentScrollAnchor: (postID: String, deltaY: CGFloat)? {
         if let postID = cachedAnchorPostID, let delta = cachedAnchorDeltaY {
@@ -2259,11 +2290,9 @@ final class PostsPageViewController: ViewController {
     }
 
     override func updateUserActivityState(_ activity: NSUserActivity) {
-        guard let page = page, case .specific = page else { return }
+        guard let route = restorationRoute else { return }
 
-        activity.route = author.map {
-            .threadPageSingleUser(threadID: thread.threadID, userID: $0.userID, page: page, .seen)
-        } ?? .threadPage(threadID: thread.threadID, page: page, .seen)
+        activity.route = route
         activity.title = thread.title
 
         logger.debug("handoff activity set: \(activity.activityType) with \(activity.userInfo ?? [:])")
