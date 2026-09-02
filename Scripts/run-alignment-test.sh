@@ -10,12 +10,22 @@
 #   ./Scripts/run-alignment-test.sh <udid> [...]   # specific simulators
 #   ./Scripts/run-alignment-test.sh -o /tmp/align  # elsewhere
 #   ./Scripts/run-alignment-test.sh -c             # rebuild collages only
+#   ./Scripts/run-alignment-test.sh -t testAlignmentLandscapeReducedGlass <udid>
+#                                                  # a single test method
+#
+# The suite has four tests: testAlignmentLandscape / testAlignmentPortrait
+# with the app's own defaults, and the *ReducedGlass pair, which launch with
+# the "Reduce Liquid Glass" setting forced on (the iPad sidebar keeps its
+# glass-panel rendering either way, so both states are measured). -t runs
+# just one of them; the device folder then holds only that test's output.
 #
 # Output, per device:
 #   ScreenshotMatrix/alignment/<device-slug>/
 #     <Screen>-<orientation>.png   annotated screenshots (measurement lines
 #                                  drawn on by the test itself)
-#     report.txt                   the measurement table for both orientations
+#     <Screen>-<orientation>-reduced-glass.png
+#                                  the same, with Reduce Liquid Glass on
+#     report.txt                   the measurement tables for every pass
 #     test.log                     full xcodebuild output
 #     result.xcresult              kept only with --keep-results
 #
@@ -39,6 +49,7 @@ REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 OUT_ROOT="${OUT_ROOT:-$REPO_ROOT/ScreenshotMatrix/alignment}"
 KEEP_RESULTS=0
 COLLAGE_ONLY=0
+ONLY_TEST=""
 DEVICES=()
 
 # The whole header comment, however long it grows.
@@ -49,6 +60,7 @@ while [ $# -gt 0 ]; do
         -o|--out)          OUT_ROOT="${2:?--out needs a directory}"; shift 2 ;;
         -k|--keep-results) KEEP_RESULTS=1; shift ;;
         -c|--collage-only) COLLAGE_ONLY=1; shift ;;
+        -t|--test)         ONLY_TEST="${2:?--test needs a test method name}"; shift 2 ;;
         -h|--help)         usage; exit 0 ;;
         -*)                echo "unknown option: $1" >&2; usage >&2; exit 1 ;;
         *)                 DEVICES+=("$1"); shift ;;
@@ -170,6 +182,7 @@ for udid in "${DEVICES[@]}"; do
         -project "$REPO_ROOT/Awful.xcodeproj" -scheme Awful -testPlan UITests \
         -destination "platform=iOS Simulator,id=$udid" \
         -resultBundlePath "$xcresult" \
+        ${ONLY_TEST:+"-only-testing:AwfulUITests/SidebarAlignmentTests/$ONLY_TEST"} \
         > "$outdir/test.log" 2>&1
     rc=$?
 
@@ -178,8 +191,9 @@ for udid in "${DEVICES[@]}"; do
     grep -E "Test Case.*(passed|failed|skipped)|Executed" "$outdir/test.log" >> "$outdir/report.txt"
 
     # Annotated screenshots, renamed from the manifest's readable names.
-    # Only the test's own attachments ("<Screen> (landscape)" etc.) — the
-    # automatic UI snapshots and debug descriptions stay in the xcresult.
+    # Only the test's own attachments ("<Screen> (landscape)", "<Screen>
+    # (portrait, reduced glass)" etc.) — the automatic UI snapshots and debug
+    # descriptions stay in the xcresult.
     if [ -d "$xcresult" ]; then
         tmp=$(mktemp -d)
         if xcrun xcresulttool export attachments --path "$xcresult" --output-path "$tmp" >/dev/null 2>&1; then
@@ -191,9 +205,10 @@ for test in json.load(open(os.path.join(tmp, 'manifest.json'))):
     for a in test.get('attachments', []):
         name = a.get('suggestedHumanReadableName', a.get('configuredName', ''))
         base = name.split('_0_')[0]
-        m = re.match(r'^(.+) \((landscape|portrait)\)$', base)
+        m = re.match(r'^(.+) \((landscape|portrait)(, reduced glass)?\)$', base)
         if m:
-            dest = f"{m.group(1).replace(' ', '-')}-{m.group(2)}.png"
+            variant = '-reduced-glass' if m.group(3) else ''
+            dest = f"{m.group(1).replace(' ', '-')}-{m.group(2)}{variant}.png"
         elif base in ('login-screen', 'no-tab-bar'):
             dest = base + '.png'
         else:

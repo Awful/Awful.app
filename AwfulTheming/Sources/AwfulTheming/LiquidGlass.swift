@@ -13,6 +13,15 @@ public enum LiquidGlass {
         guard #available(iOS 26.0, *) else { return false }
         return !UserDefaults.standard.bool(forKey: Settings.disableLiquidGlass.key)
     }
+
+    /// True on iOS 26+ iPad regardless of "Reduce Liquid Glass". That setting only swaps the
+    /// app's own bar appearances; UIKit keeps rendering the split view's sidebar column as a
+    /// flat glass panel (vibrancy-tinted labels and buttons, asymmetric title layout), so the
+    /// sidebar mitigations must key off this rather than `isEnabled`.
+    public static var affectsPadSidebar: Bool {
+        guard #available(iOS 26.0, *) else { return false }
+        return UIDevice.current.userInterfaceIdiom == .pad
+    }
 }
 
 /// Identifies the background view installed by `setLegacyOpaqueBackground(color:)`.

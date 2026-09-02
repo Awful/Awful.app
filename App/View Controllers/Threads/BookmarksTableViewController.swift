@@ -636,8 +636,7 @@ final class BookmarksTableViewController: HostedCollectionViewController {
         setupSearchButton()
 
         if #available(iOS 26.0, *),
-           LiquidGlass.isEnabled,
-           UIDevice.current.userInterfaceIdiom == .pad,
+           LiquidGlass.affectsPadSidebar,
            let filterHosting = filterButton.customView,
            let searchHosting = searchButton.customView {
             // Combine the two right-side icons into a single customView so
@@ -709,8 +708,7 @@ final class BookmarksTableViewController: HostedCollectionViewController {
         let label = LocalizedString("bookmarks.filter.button.accessibility-label")
 
         if #available(iOS 26.0, *),
-           LiquidGlass.isEnabled,
-           UIDevice.current.userInterfaceIdiom == .pad,
+           LiquidGlass.affectsPadSidebar,
            let image = UIImage(systemName: "line.3.horizontal.decrease") {
             // iPad sidebar on iOS 26 renders bar buttons inside a glass panel,
             // which tints UIButton images via vibrancy. Use the SwiftUI
@@ -742,8 +740,7 @@ final class BookmarksTableViewController: HostedCollectionViewController {
         let label = LocalizedString("bookmarks.search.button.accessibility-label")
 
         if #available(iOS 26.0, *),
-           LiquidGlass.isEnabled,
-           UIDevice.current.userInterfaceIdiom == .pad,
+           LiquidGlass.affectsPadSidebar,
            let image = UIImage(named: "quick-look") {
             let hosting = NavigationController.makeSidebarImageHostingView(
                 image: image,
@@ -880,6 +877,16 @@ final class BookmarksTableViewController: HostedCollectionViewController {
 
         let isFilterMenuOpen = filterPopoverController != nil
 
+        // The iOS 26 paths — glass on, or the iPad sidebar's hosting views with glass reduced —
+        // show an active filter/search by dimming; the classic path recolors instead.
+        let dimsActiveButtons = LiquidGlass.isEnabled || LiquidGlass.affectsPadSidebar
+        let filterAlpha: CGFloat = dimsActiveButtons && (isFilterActive || isFilterMenuOpen) ? 0.5 : 1.0
+        let searchAlpha: CGFloat = dimsActiveButtons && isSearchVisible ? 0.5 : 1.0
+        filterButton?.customView?.alpha = filterAlpha
+        filterButtonView?.alpha = filterAlpha
+        searchButton?.customView?.alpha = searchAlpha
+        searchButtonView?.alpha = searchAlpha
+
         if #available(iOS 26.0, *), LiquidGlass.isEnabled {
             // Explicit tint color prevents system default blue when NavigationController sets tintColor = nil
             let buttonTintColor = theme["mode"] == "dark" ? UIColor.white : UIColor.black
@@ -888,18 +895,7 @@ final class BookmarksTableViewController: HostedCollectionViewController {
             filterButtonView?.tintColor = buttonTintColor
             searchButton?.tintColor = buttonTintColor
             searchButtonView?.tintColor = buttonTintColor
-
-            filterButton?.customView?.alpha = (isFilterActive || isFilterMenuOpen) ? 0.5 : 1.0
-            filterButtonView?.alpha = (isFilterActive || isFilterMenuOpen) ? 0.5 : 1.0
-
-            searchButton?.customView?.alpha = isSearchVisible ? 0.5 : 1.0
-            searchButtonView?.alpha = isSearchVisible ? 0.5 : 1.0
         } else {
-            filterButton?.customView?.alpha = 1.0
-            filterButtonView?.alpha = 1.0
-            searchButton?.customView?.alpha = 1.0
-            searchButtonView?.alpha = 1.0
-
             let selectedColor = theme[uicolor: "tintColor"] ?? theme[uicolor: "navigationBarTextColor"]
             let normalColor = theme[uicolor: "navigationBarTextColor"]
 

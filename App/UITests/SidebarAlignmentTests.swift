@@ -12,6 +12,11 @@ import XCTest
 /// bundle, so a run doubles as a visual matrix. Assertions fire only when a
 /// measurement exceeds the tolerances below.
 ///
+/// Each orientation runs twice: once with the app's own defaults and once with
+/// the "Reduce Liquid Glass" setting forced on through a launch argument. The
+/// iPad sidebar keeps UIKit's glass-panel rendering either way, so the title
+/// centering and button treatment must hold in both states.
+///
 /// Requires a logged-in simulator; the test skips loudly otherwise. Buttons
 /// are measured, never tapped — no compose screen is ever opened.
 ///
@@ -83,12 +88,34 @@ final class SidebarAlignmentTests: XCTestCase {
         try runAlignmentPass(orientation: .portrait, name: "portrait")
     }
 
+    func testAlignmentLandscapeReducedGlass() throws {
+        try runAlignmentPass(orientation: .landscapeLeft, name: "landscape", reduceLiquidGlass: true)
+    }
+
+    func testAlignmentPortraitReducedGlass() throws {
+        try runAlignmentPass(orientation: .portrait, name: "portrait", reduceLiquidGlass: true)
+    }
+
     // MARK: Pass
 
-    private func runAlignmentPass(orientation: UIDeviceOrientation, name orientationName: String) throws {
+    private func runAlignmentPass(
+        orientation: UIDeviceOrientation,
+        name orientationName: String,
+        reduceLiquidGlass: Bool = false
+    ) throws {
         XCUIDevice.shared.orientation = orientation
+        if reduceLiquidGlass {
+            // `-key value` pairs land in UserDefaults' argument domain, which
+            // overrides the app domain for the launched process only — nothing
+            // persists on the simulator. The value must be the plist literal:
+            // a bare `1` or `YES` arrives as a String, and Foil's
+            // @FoilDefaultStorage force-unwraps its Bool cast at app-delegate
+            // init, crashing the app before the first screen.
+            app.launchArguments += ["-disable_liquid_glass", "<true/>"]
+        }
         app.launch()
         try skipUnlessLoggedIn()
+        let variant = reduceLiquidGlass ? "\(orientationName), reduced glass" : orientationName
 
         // Tab roots first (Forums last so the push flows continue from it).
         // (name, tab-button labels to try, nav title hints)
@@ -104,24 +131,71 @@ final class SidebarAlignmentTests: XCTestCase {
         for (name, labels, hints) in tabs {
             guard selectTab(name, labels: labels) else { continue }
             revealSidebarIfHidden()
-            measureScreen("\(name) (\(orientationName))", expectedTitleHints: hints)
+            measureScreen("\(name) (\(variant))", expectedTitleHints: hints)
+            if name == "Settings" {
+                verifyReduceLiquidGlassToggle(expected: reduceLiquidGlass, screen: "\(name) (\(variant))")
+            }
         }
 
         // Thread list: push the first forum row in the sidebar.
         if pushFirstCell(fromScreen: "Forums") {
-            measureScreen("Thread list (\(orientationName))", expectedTitleHints: [])
+            measureScreen("Thread list (\(variant))", expectedTitleHints: [])
 
             // Posts view: the first thread row fills the detail pane.
             if pushFirstCell(fromScreen: "Thread list") {
                 // Give the posts web view a moment; the nav chrome is what we
                 // measure but the layout settles with the page.
                 _ = app.webViews.firstMatch.waitForExistence(timeout: 10)
-                measureScreen("Posts (\(orientationName))", expectedTitleHints: [], detailOnly: true)
+                measureScreen("Posts (\(variant))", expectedTitleHints: [], detailOnly: true)
             }
         }
     }
 
     // MARK: Navigation
+
+    /// Confirms the launch argument reached the app by reading the Settings
+    /// toggle, which mirrors the same user default. Without this a reduced-glass
+    /// pass that silently measured normal glass would still pass.
+    ///
+    /// The toggle lives in the Themes section, well below the fold, and SwiftUI
+    /// only exposes rows once they're on screen — so page the sidebar's own
+    /// scroll view (never the detail pane) until it turns up. Settings has
+    /// already been measured by now, so the scrolling is harmless. The toggle
+    /// only exists on iOS 26, so a switch that never appears is recorded, not
+    /// failed.
+    private func verifyReduceLiquidGlassToggle(expected: Bool, screen: String) {
+        let toggle = app.switches
+            .matching(NSPredicate(format: "label BEGINSWITH %@", "Reduce Liquid Glass"))
+            .firstMatch
+        var swipes = 0
+        while !toggle.exists, swipes < 10, let list = sidebarScrollableElement() {
+            list.swipeUp()
+            swipes += 1
+        }
+        guard toggle.waitForExistence(timeout: 2) else {
+            record(screen, pane: "-", metric: "glass-mode", detail: "Reduce Liquid Glass toggle not exposed; unverified", value: nil, ok: true)
+            return
+        }
+        let isOn = (toggle.value as? String) == "1"
+        let state = { (on: Bool) in on ? "on" : "off" }
+        record(screen, pane: "-", metric: "glass-mode",
+               detail: "Reduce Liquid Glass toggle \(state(isOn)), expected \(state(expected))",
+               value: nil, ok: isOn == expected)
+        XCTAssertEqual(isOn, expected,
+                       "\(screen): Reduce Liquid Glass toggle is \(state(isOn)) but this pass expected \(state(expected))")
+    }
+
+    /// The sidebar column's scrolling content (Settings' Form, a table, …):
+    /// the first scrollable element sitting under the sidebar nav bar.
+    private func sidebarScrollableElement() -> XCUIElement? {
+        guard let barFrame = sidebarNavigationBar()?.frame else { return nil }
+        let candidates = [app.collectionViews, app.tables, app.scrollViews]
+            .flatMap { $0.allElementsBoundByIndex }
+        return candidates.first {
+            $0.exists && $0.frame.width > 0
+                && $0.frame.midX > barFrame.minX && $0.frame.midX < barFrame.maxX
+        }
+    }
 
     private func skipUnlessLoggedIn() throws {
         // State restoration can land anywhere — e.g. a posts view with the
@@ -452,10 +526,10 @@ final class SidebarAlignmentTests: XCTestCase {
             s.count >= width ? s : s + String(repeating: " ", count: width - s.count)
         }
         var lines = ["", "=== Alignment report ==="]
-        lines.append(pad("screen", 28) + pad("pane", 9) + pad("metric", 11) + pad("points", 9) + pad("ok", 6) + "detail")
+        lines.append(pad("screen", 40) + pad("pane", 9) + pad("metric", 11) + pad("points", 9) + pad("ok", 6) + "detail")
         for m in measurements {
             let value = m.value.map { fmt($0) } ?? "-"
-            lines.append(pad(m.screen, 28) + pad(m.pane, 9) + pad(m.metric, 11) + pad(value, 9)
+            lines.append(pad(m.screen, 40) + pad(m.pane, 9) + pad(m.metric, 11) + pad(value, 9)
                          + pad(m.ok ? "OK" : "FAIL", 6) + m.detail)
         }
         lines.append("========================")

@@ -514,22 +514,13 @@ final class NavigationController: UINavigationController, Themeable {
 
         themeDidChange()
 
-        // Set forcedTintColor early for iPad sidebar so the first
-        // layoutSubviews pass uses the correct color.
-        if #available(iOS 26.0, *),
-           LiquidGlass.isEnabled,
-           UIDevice.current.userInterfaceIdiom == .pad,
-           tabBarController != nil {
-            awfulNavigationBar.forcedTintColor = theme[uicolor: "navigationBarTextColor"] ?? .white
-        }
-
         interactivePopGestureRecognizer?.delegate = self
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        if #available(iOS 26.0, *), LiquidGlass.isEnabled {
+        if #available(iOS 26.0, *) {
             applySidebarAppearanceIfNeeded(with: theme)
         }
     }
@@ -537,7 +528,7 @@ final class NavigationController: UINavigationController, Themeable {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        if #available(iOS 26.0, *), LiquidGlass.isEnabled {
+        if #available(iOS 26.0, *) {
             applySidebarAppearanceIfNeeded(with: theme)
         }
     }
@@ -549,11 +540,7 @@ final class NavigationController: UINavigationController, Themeable {
         updateNavigationBarAppearance(with: theme)
 
         if #available(iOS 26.0, *) {
-            if LiquidGlass.isEnabled {
-                applySidebarAppearanceIfNeeded(with: theme)
-            } else {
-                awfulNavigationBar.forcedTintColor = nil
-            }
+            applySidebarAppearanceIfNeeded(with: theme)
             if let topVC = topViewController {
                 updateSharedBackgroundVisibility(for: topVC)
             }
@@ -563,7 +550,12 @@ final class NavigationController: UINavigationController, Themeable {
     /// On iPad sidebar, the nav bar is inside a glass panel so buttons get
     /// flat rendering and fall back to the app's default tintColor. This
     /// method overrides with an opaque themed appearance and explicit colors.
-    /// Called from both `willShow` (push/pop) and `viewWillAppear` (tab switch).
+    /// Called on push/pop (`willShow`), view appearance (tab switch), and
+    /// theme changes.
+    ///
+    /// Runs regardless of the Reduce Liquid Glass setting: that setting only
+    /// swaps the app's own bar appearances, while UIKit keeps rendering the
+    /// sidebar column as a glass panel, so the bypass is needed either way.
     @available(iOS 26.0, *)
     private func applySidebarAppearanceIfNeeded(with theme: Theme) {
         // A nav controller inside the tab bar controller is always a
@@ -966,8 +958,10 @@ final class NavigationController: UINavigationController, Themeable {
             action: nil
         )
         // Purely decorative here: the SwiftUI Button inside would otherwise swallow the taps
-        // meant for the menu button layered over it.
+        // meant for the menu button layered over it, and would surface to VoiceOver (and
+        // XCUITest) as an unlabeled button beside the real, labeled one.
         iconView.isUserInteractionEnabled = false
+        iconView.accessibilityElementsHidden = true
 
         let button = UIButton(type: .system)
         button.showsMenuAsPrimaryAction = true
@@ -1370,15 +1364,12 @@ extension NavigationController: UINavigationControllerDelegate {
         // Apply sidebar glass bypass (titleView, button replacement) for
         // pushed VCs too, not just on tab switches.
         if #available(iOS 26.0, *) {
-            if LiquidGlass.isEnabled {
-                applySidebarAppearanceIfNeeded(with: vcTheme)
-            }
+            applySidebarAppearanceIfNeeded(with: vcTheme)
             updateSharedBackgroundVisibility(for: viewController)
         }
 
         if awfulNavigationBar.backIndicatorImage == nil {
             if #available(iOS 26.0, *),
-               LiquidGlass.isEnabled,
                UIDevice.current.userInterfaceIdiom == .pad,
                tabBarController != nil,
                let textColor = vcTheme[uicolor: "navigationBarTextColor"] {
@@ -1416,7 +1407,6 @@ extension NavigationController: UINavigationControllerDelegate {
                 // On iPad sidebar with iOS 26, replace text-based items with
                 // custom-view equivalents to bypass glass vibrancy.
                 if #available(iOS 26.0, *),
-                   LiquidGlass.isEnabled,
                    UIDevice.current.userInterfaceIdiom == .pad,
                    tabBarController != nil {
                     replaceSidebarBarButtonItems(for: viewController)

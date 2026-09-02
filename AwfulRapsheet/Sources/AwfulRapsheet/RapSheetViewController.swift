@@ -631,7 +631,7 @@ public final class RapSheetViewController: ViewController {
         let filterImage = UIImage(systemName: "line.3.horizontal.decrease", withConfiguration: filterConfiguration)
         let refreshImage = UIImage(systemName: "arrow.clockwise")
 
-        if #available(iOS 26.0, *), LiquidGlass.isEnabled, UIDevice.current.userInterfaceIdiom == .pad {
+        if #available(iOS 26.0, *), LiquidGlass.affectsPadSidebar {
             // The iPad glass sidebar tints plain UIButton images via vibrancy, so route both icons through
             // the SwiftUI `.glassEffect(.identity)` hosting view to preserve the theme's tint.
             var arranged: [UIView] = []

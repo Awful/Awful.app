@@ -381,30 +381,31 @@ final class ForumsTableViewController: CollectionViewController {
     /// Right-bar items are ordered right-to-left, so ⋯ keeps the rightmost spot with Search to its left.
     ///
     /// iOS 26's iPad navigation bar mishandles a menu-bearing bar button placed beside another item —
-    /// the menu won't open and the spacing is off. Match `BookmarksTableViewController`: on iOS 26 iPad
-    /// pack both icons into a single customView stack, driving the ⋯ menu ourselves via
-    /// `showsMenuAsPrimaryAction` and routing the Search icon through
-    /// `makeSidebarImageHostingView` so the glass sidebar doesn't mis-tint it.
+    /// the menu won't open and the spacing is off — and the sidebar's glass panel tints plain
+    /// UIButton glyphs via vibrancy, with Reduce Liquid Glass on or off. So on iPad, pack both icons
+    /// into a single customView stack (as `BookmarksTableViewController` does) and draw each through
+    /// `NavigationController`'s themed SwiftUI hosting views; the ⋯ gets a transparent menu button
+    /// floated over its icon, the arrangement Lepers uses.
     private func updateRightBarButtons() {
         let canSearch = canSendPrivateMessages
 
-        if #available(iOS 26.0, *), LiquidGlass.isEnabled, UIDevice.current.userInterfaceIdiom == .pad {
-            // Button text/image color comes from `navigationBar.tintColor` (see
-            // NavigationController.configureButtonAppearance), so these inherit it. `.normal` tint
-            // adjustment keeps them from dimming, matching BookmarksTableViewController.
-            let moreButton = UIButton(type: .system)
-            moreButton.setImage(UIImage(systemName: "ellipsis"), for: .normal)
-            moreButton.setPreferredSymbolConfiguration(UIImage.SymbolConfiguration(pointSize: 20), forImageIn: .normal)
-            moreButton.showsMenuAsPrimaryAction = true
-            moreButton.menu = moreMenu()
-            moreButton.accessibilityLabel = "More"
-            moreButton.tintAdjustmentMode = .normal
+        if #available(iOS 26.0, *), LiquidGlass.affectsPadSidebar,
+           let moreImage = UIImage(systemName: "ellipsis") {
+            // 17pt like Lepers' symbols: the hosting view scales the glyph to fill its box, so an
+            // SF symbol at the 20pt default reads heavier than the 20pt Search asset beside it. A
+            // 28pt tap target (rather than the 44pt default) keeps the pair packed about as
+            // tightly as a plain button would. The menu is rebuilt with the buttons whenever the
+            // settings driving them change, so a one-shot menu is fine.
+            let moreButton = NavigationController.makeSidebarMenuButtonView(
+                image: moreImage,
+                accessibilityLabel: "More",
+                pointSize: 17,
+                tapTargetSize: 28,
+                menu: moreMenu()
+            )
 
             var arranged: [UIView] = []
             if canSearch, let searchImage = UIImage(named: "quick-look") {
-                // The iPad glass sidebar tints plain UIButton images via vibrancy, so route
-                // the Search icon through the SwiftUI `.glassEffect(.identity)` hosting view
-                // to preserve the theme's navigation-bar tint — same as Bookmarks' Search.
                 let searchHosting = NavigationController.makeSidebarImageHostingView(
                     image: searchImage,
                     accessibilityLabel: "Search",
@@ -416,11 +417,11 @@ final class ForumsTableViewController: CollectionViewController {
             arranged.append(moreButton)
             let stack = UIStackView(arrangedSubviews: arranged)
             stack.axis = .horizontal
-            stack.spacing = 8
+            stack.spacing = 4
             stack.alignment = .center
             navigationItem.setRightBarButtonItems([UIBarButtonItem(customView: stack)], animated: false)
-            // This path tints itself (Search via `makeSidebarImageHostingView`'s `.themed()`
-            // SwiftUI view, ⋯ via its inherited tint), so drop the standard-path references.
+            // This path tints itself (both icons via the `.themed()` SwiftUI hosting views), so
+            // drop the standard-path references.
             moreButtonView = nil
             searchButtonView = nil
             return

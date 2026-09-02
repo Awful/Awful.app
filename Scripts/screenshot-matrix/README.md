@@ -374,6 +374,18 @@ the log, and attaches per-screen screenshots to the xcresult. It is not in the
 default test plan, so `⌘U` and CI stay unit-test-only. This matrix remains the
 tool for themes and device coverage.
 
+Each orientation is measured twice: with the app's own defaults, and with the
+"Reduce Liquid Glass" setting forced on through a launch argument
+(`-disable_liquid_glass <true/>`, argument domain only, so nothing persists on
+the simulator). The iPad sidebar keeps UIKit's glass-panel rendering either
+way, so the centering and button fixes must hold in both states; the
+reduced-glass screenshots export as `<Screen>-<orientation>-reduced-glass.png`.
+To run a single test method:
+
+```bash
+./Scripts/run-alignment-test.sh -t testAlignmentLandscapeReducedGlass <udid>
+```
+
 ## Known limits — likely places to want changes
 
 * **Login cannot be scripted.** A fresh simulator must be logged in by hand;
