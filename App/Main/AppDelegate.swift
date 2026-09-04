@@ -207,6 +207,10 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         ForumsClient.shared.managedObjectContext = nil
         dataStore.deleteStoreAndReset()
         ForumsClient.shared.managedObjectContext = managedObjectContext
+
+        // These timestamps live in UserDefaults, so without this they outlive the data they
+        // describe and suppress refreshes of a now-empty store.
+        RefreshMinder.sharedMinder.forgetEverything()
     }
 
     func calculateCacheSize() async -> Int64 {

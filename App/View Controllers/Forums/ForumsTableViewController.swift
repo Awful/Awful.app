@@ -23,6 +23,7 @@ final class ForumsTableViewController: CollectionViewController {
     @FoilDefaultStorage(Settings.canSendPrivateMessages) private var canSendPrivateMessages
     @FoilDefaultStorage(Settings.hasArchives) private var hasArchives
     private var favoriteForumCountObserver: ManagedObjectCountObserver!
+    private var isRefreshing = false
     private var listDataSource: ForumListDataSource!
     let managedObjectContext: NSManagedObjectContext
     @FoilDefaultStorage(Settings.showUnreadAnnouncementsBadge) private var showUnreadAnnouncementsBadge
@@ -234,12 +235,16 @@ final class ForumsTableViewController: CollectionViewController {
     }
 
     private func refreshIfNecessary() {
-        if RefreshMinder.sharedMinder.shouldRefresh(.forumList) {
+        if !listDataSource.hasForums || RefreshMinder.sharedMinder.shouldRefresh(.forumList) {
             refresh()
         }
     }
 
     private func refresh() {
+        guard !isRefreshing else { return }
+        isRefreshing = true
+        startAnimatingPullToRefresh()
+
         Task {
             do {
                 try await ForumsClient.shared.taxonomizeForums()
@@ -249,6 +254,7 @@ final class ForumsTableViewController: CollectionViewController {
                 logger.error("Could not taxonomize forums: \(error)")
             }
 
+            isRefreshing = false
             stopAnimatingPullToRefresh()
         }
     }

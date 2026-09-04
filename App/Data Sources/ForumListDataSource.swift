@@ -217,6 +217,13 @@ final class ForumListDataSource: NSObject {
         return (favoriteForumsController.fetchedObjects?.count ?? 0) > 0
     }
 
+    /// Announcements and favorites are deliberately excluded: an announcement can arrive without a
+    /// forum list, and favorites can't exist without forums, so the forums fetch is what says
+    /// whether the list is usable.
+    var hasForums: Bool {
+        return !(forumsController.fetchedObjects ?? []).isEmpty
+    }
+
     var nextFavoriteIndex: Int32 {
         let last = favoriteForumsController.fetchedObjects?.last
         return last.map { $0.favoriteIndex + 1 } ?? 1
