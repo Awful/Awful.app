@@ -83,3 +83,39 @@ final class UITextViewReplaceSelectionTests: XCTestCase {
         XCTAssertEqual(textView.selectedRange, NSRange(location: 9, length: 0))
     }
 }
+
+extension UITextViewReplaceSelectionTests {
+
+    private func pumpRunLoop() {
+        RunLoop.main.run(until: Date(timeIntervalSinceNow: 0.1))
+    }
+
+    func testReplaceSelectionScrollsCaretAboveBottomInset() {
+        let textView = UITextView(frame: CGRect(x: 0, y: 0, width: 320, height: 240))
+        textView.contentInset.bottom = 100
+        textView.font = .systemFont(ofSize: 17)
+
+        textView.replaceSelection(with: Array(repeating: "line", count: 60).joined(separator: "\n"))
+        pumpRunLoop()
+
+        XCTAssertGreaterThan(textView.contentOffset.y, 0)
+        let caret = textView.caretRect(for: textView.selectedTextRange!.end)
+        let visibleBottom = textView.contentOffset.y + textView.bounds.height - textView.adjustedContentInset.bottom
+        XCTAssertLessThanOrEqual(caret.maxY, visibleBottom + 0.5)
+    }
+
+    func testCaretOnlyScrollLeavesVisibleCaretAlone() {
+        let textView = UITextView(frame: CGRect(x: 0, y: 0, width: 320, height: 240))
+        textView.text = "short"
+        textView.selectedRange = NSRange(location: 5, length: 0)
+        pumpRunLoop()
+        let offset = textView.contentOffset
+        let size = textView.contentSize
+
+        textView.scrollCaretToVisible(layout: .caretOnly)
+        pumpRunLoop()
+
+        XCTAssertEqual(textView.contentOffset, offset)
+        XCTAssertEqual(textView.contentSize, size)
+    }
+}

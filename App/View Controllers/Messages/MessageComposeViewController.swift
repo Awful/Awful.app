@@ -205,16 +205,16 @@ final class MessageComposeViewController: ComposeTextViewController {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: work)
     }
 
-    /// Synchronously runs any pending auto-save. Called on dismissal so the last keystrokes
-    /// aren't lost to the 0.5 s debounce.
+    /// Synchronously runs any pending auto-save, waiting for the draft to reach disk. Called on
+    /// dismissal so the last keystrokes aren't lost to the 0.5 s debounce.
     private func flushDraftAutoSave() {
         guard autoSaveWorkItem != nil else { return }
         autoSaveWorkItem?.cancel()
         autoSaveWorkItem = nil
-        saveDraftNow()
+        saveDraftNow(waitUntilFinished: true)
     }
 
-    private func saveDraftNow() {
+    private func saveDraftNow(waitUntilFinished: Bool = false) {
         draft.to = fieldView.toField.textField.text ?? ""
         draft.subject = fieldView.subjectField.textField.text ?? ""
         draft.threadTag = threadTag
@@ -226,7 +226,11 @@ final class MessageComposeViewController: ComposeTextViewController {
         {
             DraftStore.sharedStore().deleteDraft(draft)
         } else {
-            DraftStore.sharedStore().saveDraft(draft)
+            DraftStore.sharedStore().saveDraft(draft, waitUntilFinished: waitUntilFinished)
+            // Any image still encoding in the background was archived as a thumbnail; save again once its bytes are ready.
+            if textView.attributedText.hasTextAttachmentsPreparingForArchive {
+                scheduleDraftAutoSave()
+            }
         }
     }
 

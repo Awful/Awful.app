@@ -52,6 +52,10 @@ public final class ForumAttachment: NSObject, NSCoding {
     public let photoAssetIdentifier: String?
     public private(set) var validationError: ValidationError?
 
+    /// PNG bytes archived for attachments with no photo asset, encoded once rather than on every
+    /// draft autosave. Seeded from the archive on decode.
+    private var archivedImageData: Data?
+
     public enum ValidationError: Error {
         case fileTooLarge(actualSize: Int, maxSize: Int)
         case dimensionsTooLarge(width: Int, height: Int, maxDimension: Int)
@@ -109,6 +113,7 @@ public final class ForumAttachment: NSObject, NSCoding {
         } else if let imageData = coder.decodeObject(of: NSData.self, forKey: CodingKeys.imageData.rawValue) {
             self.image = UIImage(data: imageData as Data)
             self.photoAssetIdentifier = nil
+            self.archivedImageData = imageData as Data
         } else {
             return nil
         }
@@ -120,8 +125,13 @@ public final class ForumAttachment: NSObject, NSCoding {
     public func encode(with coder: NSCoder) {
         if let photoAssetIdentifier = photoAssetIdentifier {
             coder.encode(photoAssetIdentifier as NSString, forKey: CodingKeys.assetIdentifier.rawValue)
-        } else if let image = image, let imageData = image.pngData() {
-            coder.encode(imageData as NSData, forKey: CodingKeys.imageData.rawValue)
+        } else {
+            if archivedImageData == nil {
+                archivedImageData = image?.pngData()
+            }
+            if let imageData = archivedImageData {
+                coder.encode(imageData as NSData, forKey: CodingKeys.imageData.rawValue)
+            }
         }
     }
 

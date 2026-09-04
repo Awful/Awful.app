@@ -135,7 +135,7 @@ final class ReplyWorkspace: NSObject {
             }
 
             textViewNotificationToken = NotificationCenter.default.addObserver(forName: UITextView.textDidChangeNotification, object: compositionViewController.textView, queue: OperationQueue.main) { [unowned self] note in
-                self.rightButtonItem.isEnabled = textView.hasText && !self.isSubmitting
+                self.updateRightButtonEnabled()
                 self.scheduleDraftAutoSave()
             }
 
@@ -163,7 +163,8 @@ final class ReplyWorkspace: NSObject {
             }
 
             compositionViewController.onAttachmentProcessingChanged = { [weak self] isProcessing in
-                self?.rightButtonItem.isEnabled = !isProcessing && !(self?.isSubmitting ?? false)
+                self?.isProcessingAttachment = isProcessing
+                self?.updateRightButtonEnabled()
             }
 
             DispatchQueue.main.async { [weak self] in
@@ -196,6 +197,45 @@ final class ReplyWorkspace: NSObject {
 
     fileprivate func updateRightButtonItem() {
         rightButtonItem.title = confirmBeforeReplying ? "Preview" : draft.submitButtonTitle
+    }
+
+    /// Set from `CompositionViewController.onAttachmentProcessingChanged` while an attachment is being resized.
+    private var isProcessingAttachment = false
+
+    /// Number of quotes still being fetched for this reply. Posting waits for them so a quote can
+    /// never be submitted before it has appeared in the text view.
+    private var pendingQuoteCount = 0 {
+        didSet {
+            updateLoadingQuoteIndicator()
+            updateRightButtonEnabled()
+        }
+    }
+
+    private lazy var loadingQuoteItem: UIBarButtonItem = {
+        let spinner = UIActivityIndicatorView(style: .medium)
+        spinner.startAnimating()
+        return UIBarButtonItem(customView: spinner)
+    }()
+
+    /// Swaps the Post/Preview button for a spinner while a quote is on its way.
+    private func updateLoadingQuoteIndicator() {
+        guard let compositionViewController else { return }
+        let navigationItem = compositionViewController.navigationItem
+        if pendingQuoteCount > 0 {
+            (loadingQuoteItem.customView as? UIActivityIndicatorView)?.startAnimating()
+            navigationItem.rightBarButtonItem = loadingQuoteItem
+        } else if navigationItem.rightBarButtonItem !== rightButtonItem {
+            navigationItem.rightBarButtonItem = rightButtonItem
+        }
+    }
+
+    /// The single place that decides whether Post/Preview is tappable.
+    fileprivate func updateRightButtonEnabled() {
+        guard let compositionViewController else { return }
+        rightButtonItem.isEnabled = compositionViewController.textView.hasText
+            && !isSubmitting
+            && !isProcessingAttachment
+            && pendingQuoteCount == 0
     }
     
     private var draftMenuTitle: String {
@@ -270,7 +310,7 @@ final class ReplyWorkspace: NSObject {
 
             if let error = error {
                 sender?.isEnabled = true
-                self.rightButtonItem.isEnabled = self.compositionViewController.textView.hasText
+                self.updateRightButtonEnabled()
                 if (error as? CocoaError)?.code != .userCancelled {
                     if case ImageUploadError.authenticationRequired = error {
                         let alert = UIAlertController(
@@ -369,20 +409,25 @@ final class ReplyWorkspace: NSObject {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: work)
     }
 
-    /// Synchronously runs the pending auto-save. Called on dismissal paths where the 0.5 s
-    /// debounce might otherwise drop the user's most recent edits.
+    /// Synchronously runs the pending auto-save, waiting for the draft to reach disk. Called on
+    /// dismissal paths where the 0.5 s debounce might otherwise drop the user's most recent edits.
     private func flushDraftAutoSave() {
         autoSaveWorkItem?.cancel()
         autoSaveWorkItem = nil
-        performDraftAutoSave()
+        performDraftAutoSave(waitUntilFinished: true)
     }
 
-    private func performDraftAutoSave() {
+    private func performDraftAutoSave(waitUntilFinished: Bool = false) {
         saveTextToDraft()
-        if compositionViewController.textView.attributedText.length == 0 {
+        let text: NSAttributedString = compositionViewController.textView.attributedText
+        if text.length == 0 {
             DraftStore.sharedStore().deleteDraft(draft)
         } else {
-            DraftStore.sharedStore().saveDraft(draft)
+            DraftStore.sharedStore().saveDraft(draft, waitUntilFinished: waitUntilFinished)
+            // Any image still encoding in the background was archived as a thumbnail; save again once its bytes are ready.
+            if text.hasTextAttachmentsPreparingForArchive {
+                scheduleDraftAutoSave()
+            }
         }
     }
     
@@ -433,10 +478,25 @@ final class ReplyWorkspace: NSObject {
         presenter.present(alert, animated: true)
     }
 
-    /// Append a quoted post to the reply.
+    /**
+     Fetches a post's quote BBcode and inserts it into the reply.
+
+     The sheet stays interactive while the fetch is in flight, so the quote lands where it was
+     requested: at the caret as it was when this was called, if the user hasn't typed since, and
+     otherwise appended to the end of the reply, leaving the caret on whatever the user is typing.
+     Post/Preview shows a spinner and is untappable until the quote is on screen.
+     */
     @MainActor
     func quotePost(_ post: Post) async throws {
         createCompositionViewController()
+        let textView = compositionViewController.textView
+
+        // Snapshot the request site before the await; the user is free to keep typing meanwhile.
+        let requestedRange = textView.selectedRange
+        let requestedText = textView.textStorage.string
+
+        pendingQuoteCount += 1
+        defer { pendingQuoteCount -= 1 }
 
         let bbcode = try await ForumsClient.shared.quoteBBcodeContents(of: post)
 
@@ -445,27 +505,11 @@ final class ReplyWorkspace: NSObject {
         // user is typing now.
         try Task.checkCancellation()
 
-        let textView = compositionViewController.textView
-        var replacement = bbcode
-        let selectedRange = textView.selectedTextRange ?? textView.textRange(from: textView.endOfDocument, to: textView.endOfDocument)!
-
-        // Yep. This is just a delight.
-        let precedingOffset = max(-2, textView.offset(from: selectedRange.start, to: textView.beginningOfDocument))
-        if
-            precedingOffset < 0,
-            let precedingStart = textView.position(from: selectedRange.start, offset: precedingOffset),
-            let precedingRange = textView.textRange(from: precedingStart, to: selectedRange.start),
-            let preceding = textView.text(in: precedingRange),
-            preceding != "\n\n"
-        {
-            if preceding.hasSuffix("\n") {
-                replacement = "\n" + replacement
-            } else {
-                replacement = "\n\n" + replacement
-            }
-        }
-
-        textView.replaceSelection(with: replacement)
+        let currentText = textView.textStorage.string as NSString
+        let userHasTyped = currentText as String != requestedText
+        let insertionRange = userHasTyped ? NSRange(location: currentText.length, length: 0) : requestedRange
+        let replacement = quoteSeparator(before: insertionRange.location, in: currentText) + bbcode
+        textView.insert(replacement, replacing: insertionRange, moveCaretAfterInsertion: !userHasTyped)
     }
 }
 
@@ -552,7 +596,11 @@ final class EditReplyDraft: NSObject, ReplyDraft {
     var text: NSAttributedString?
     var forumAttachment: ForumAttachment?
     var existingAttachmentInfo: (id: String, filename: String)?
-    var existingAttachmentImage: UIImage?
+    var existingAttachmentImage: UIImage? {
+        didSet { existingAttachmentImageData = nil }
+    }
+    /// PNG bytes of `existingAttachmentImage`, encoded once rather than on every autosave.
+    private var existingAttachmentImageData: Data?
     var shouldDeleteAttachment = false
     /// Whether the server's edit form supports attachment uploads for this post.
     var canAddAttachment = false
@@ -605,6 +653,7 @@ final class EditReplyDraft: NSObject, ReplyDraft {
         }
         if let imageData = coder.decodeObject(of: NSData.self, forKey: Keys.attachmentImageData) as? Data {
             self.existingAttachmentImage = UIImage(data: imageData)
+            self.existingAttachmentImageData = imageData
         }
         self.shouldDeleteAttachment = coder.decodeBool(forKey: Keys.shouldDeleteAttachment)
         self.forumAttachment = coder.decodeObject(of: ForumAttachment.self, forKey: Keys.forumAttachment)
@@ -617,7 +666,8 @@ final class EditReplyDraft: NSObject, ReplyDraft {
             coder.encode(existingAttachmentInfo.id as NSString, forKey: Keys.attachmentID)
             coder.encode(existingAttachmentInfo.filename as NSString, forKey: Keys.attachmentFilename)
         }
-        if let imageData = existingAttachmentImage?.pngData() {
+        if let imageData = existingAttachmentImageData ?? existingAttachmentImage?.pngData() {
+            existingAttachmentImageData = imageData
             coder.encode(imageData as NSData, forKey: Keys.attachmentImageData)
         }
         coder.encode(shouldDeleteAttachment, forKey: Keys.shouldDeleteAttachment)

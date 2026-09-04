@@ -1496,10 +1496,8 @@ final class PostsPageViewController: ViewController {
         func quotePost() {
             guard let workspace = self.replyWorkspace, let post = self.selectedPost else { return }
 
-            // Present the compose sheet before fetching, so the quote is always inserted where the
-            // user can see it.
-            self.showReplyWorkspace()
-
+            // Start the fetch first so it isn't queued behind the presentation, then present the
+            // compose sheet right away: the quote is only ever inserted where the user can see it.
             self.quoteFetchTask?.cancel()
             self.quoteFetchTask = Task { @MainActor [weak self] in
                 do {
@@ -1512,6 +1510,7 @@ final class PostsPageViewController: ViewController {
                     (self.presentedViewController ?? self).present(alert, animated: true)
                 }
             }
+            self.showReplyWorkspace()
         }
         self.dismiss(animated: false) {
             switch self.replyWorkspace?.status {

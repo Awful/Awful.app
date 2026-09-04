@@ -17,7 +17,18 @@ public final class NigglyPullToRefresh {
 
     deinit {
         // PullToRefresh observes the scroll view via KVO; detach before everything deallocates.
-        scrollView?.removePullToRefresh(at: .top)
+        // A deinit is never actor-isolated, so get back onto the main actor to do it. The strong
+        // capture keeps the scroll view (and its observer) alive until the detach has run.
+        guard let scrollView else { return }
+        if Thread.isMainThread {
+            MainActor.assumeIsolated {
+                scrollView.removePullToRefresh(at: .top)
+            }
+        } else {
+            Task { @MainActor in
+                scrollView.removePullToRefresh(at: .top)
+            }
+        }
     }
 
     public func install(on scrollView: UIScrollView, theme: Theme, action: @escaping () -> Void) {

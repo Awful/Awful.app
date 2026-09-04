@@ -278,6 +278,10 @@ final class CompositionMenuTree: NSObject {
         let textColor = textView.textColor
 
         let attachment = TextAttachment(image: image, photoAssetIdentifier: assetID)
+        // Size the thumbnail now, outside of layout, and start encoding the bytes that draft
+        // autosaves will archive so they never have to re-encode the full-size image.
+        _ = attachment.thumbnailImage
+        attachment.prepareArchivableImageData()
         textView.insertAttachmentOnOwnLine(attachment)
 
         textView.font = font

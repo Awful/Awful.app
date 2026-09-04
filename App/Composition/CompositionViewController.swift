@@ -161,8 +161,8 @@ final class CompositionViewController: ViewController, ModernToolbarActionHandli
             systemInterfaceStyle: view.window?.traitCollection.userInterfaceStyle
                 ?? traitCollection.userInterfaceStyle
         )
-        // replaceSelection(with:) posts textDidChangeNotification, which enables the Post button,
-        // schedules the draft autosave, and scrolls the caret (now after the specs) into view.
+        // replaceSelection(with:) posts textDidChangeNotification (which enables the Post button
+        // and schedules the draft autosave) and then scrolls the caret (now after the specs) into view.
         textView.selectedRange = NSRange(location: textView.textStorage.length, length: 0)
         textView.replaceSelection(with: separator + report.text)
     }
@@ -281,13 +281,14 @@ final class CompositionViewController: ViewController, ModernToolbarActionHandli
             self?.textView.scrollCaretToVisible()
         }
 
-        // Follow the caret as text changes (typing and programmatic inserts like pasted images)
-        // so it stays visible above the input accessory toolbars. UIKit's built-in follow is
-        // unreliable here, especially after inserting a tall image attachment.
+        // Follow the caret as the user types so it stays visible above the input accessory
+        // toolbars; UIKit's built-in follow is unreliable here. This runs on every keystroke, so
+        // it trusts the current layout. Programmatic inserts (images, quotes) go through
+        // `replaceSelection(with:)`, which does the full-layout scroll itself.
         textDidChangeObserver = NotificationCenter.default.addObserver(
             forName: UITextView.textDidChangeNotification, object: textView, queue: .main
         ) { [weak self] _ in
-            self?.textView.scrollCaretToVisible()
+            self?.textView.scrollCaretToVisible(layout: .caretOnly)
         }
 
         menuTree = CompositionMenuTree(textView: textView)

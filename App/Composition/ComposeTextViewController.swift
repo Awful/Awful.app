@@ -150,7 +150,8 @@ class ComposeTextViewController: ViewController, ModernToolbarActionHandling {
         textDidChangeObserver = NotificationCenter.default.addObserver(forName: UITextView.textDidChangeNotification, object: textView, queue: OperationQueue.main, using: { [weak self] (note: Notification) in
             self?.updateSubmitButtonItem()
             self?.bodyTextDidChange()
-            self?.textView.scrollCaretToVisible()
+            // Per keystroke, so trust the current layout; programmatic inserts scroll themselves.
+            self?.textView.scrollCaretToVisible(layout: .caretOnly)
         })
     }
     private func endObservingTextChangeNotification() {

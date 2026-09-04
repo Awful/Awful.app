@@ -17,6 +17,11 @@ public final class ForumsClient {
     private var lastModifiedObserver: LastModifiedContextObserver?
     private var urlSession: URLSession?
 
+    /// Carries attachment bytes (`attachment.php`) on its own connections, capped at two, so
+    /// multi-megabyte image downloads stay off the connections page and form requests use.
+    /// Shares cookies with `urlSession` via `HTTPCookieStorage.shared`.
+    private var attachmentSession: URLSession?
+
     /// A block to call when the login session is destroyed. Not called when logging out from Awful.
     public var didRemotelyLogOut: (() -> Void)?
 
@@ -34,21 +39,30 @@ public final class ForumsClient {
             guard oldValue != baseURL else { return }
             urlSession?.invalidateAndCancel()
             urlSession = nil
+            attachmentSession?.invalidateAndCancel()
+            attachmentSession = nil
 
             if baseURL != nil {
-                let config = URLSessionConfiguration.default
-                var headers = config.httpAdditionalHeaders ?? [:]
-                headers["User-Agent"] = awfulUserAgent
-                config.httpAdditionalHeaders = headers
+                urlSession = URLSession(configuration: makeSessionConfiguration(), delegate: CachebustingSessionDelegate(), delegateQueue: nil)
 
-#if DEBUG
-                let protocolClasses = [FixtureURLProtocol.self] + (config.protocolClasses ?? [])
-                config.protocolClasses = protocolClasses
-#endif
-
-                urlSession = URLSession(configuration: config, delegate: CachebustingSessionDelegate(), delegateQueue: nil)
+                let attachmentConfig = makeSessionConfiguration()
+                attachmentConfig.httpMaximumConnectionsPerHost = 2
+                attachmentSession = URLSession(configuration: attachmentConfig, delegate: CachebustingSessionDelegate(), delegateQueue: nil)
             }
         }
+    }
+
+    private func makeSessionConfiguration() -> URLSessionConfiguration {
+        let config = URLSessionConfiguration.default
+        var headers = config.httpAdditionalHeaders ?? [:]
+        headers["User-Agent"] = awfulUserAgent
+        config.httpAdditionalHeaders = headers
+
+#if DEBUG
+        let protocolClasses = [FixtureURLProtocol.self] + (config.protocolClasses ?? [])
+        config.protocolClasses = protocolClasses
+#endif
+        return config
     }
 
     /// A managed object context into which data is imported after scraping.
@@ -1658,19 +1672,19 @@ public final class ForumsClient {
 
     /// Fetches attachment bytes plus the server-reported MIME type.
     public func fetchAttachment(id: String) async throws -> (data: Data, mimeType: String?) {
-        guard let urlSession else { throw Error.missingURLSession }
+        guard let attachmentSession else { throw Error.missingURLSession }
 
         guard let attachmentURL = URL(string: "attachment.php?attachmentid=\(id)", relativeTo: baseURL) else {
             throw Error.invalidBaseURL
         }
 
-        let (data, response) = try await urlSession.data(for: URLRequest(url: attachmentURL))
+        let (data, response) = try await attachmentSession.data(for: URLRequest(url: attachmentURL))
         return (data: data, mimeType: response.mimeType)
     }
 
     /// Fetches attachment image data directly by attachment ID.
     public func fetchAttachmentImageByID(attachmentID: String) async throws -> Data {
-        guard let urlSession else { throw Error.missingURLSession }
+        guard let attachmentSession else { throw Error.missingURLSession }
 
         guard let attachmentURL = URL(string: "attachment.php?attachmentid=\(attachmentID)", relativeTo: baseURL) else {
             throw Error.invalidBaseURL
@@ -1679,7 +1693,7 @@ public final class ForumsClient {
         var request = URLRequest(url: attachmentURL)
         request.httpMethod = "GET"
 
-        let (imageData, _) = try await urlSession.data(for: request)
+        let (imageData, _) = try await attachmentSession.data(for: request)
         return imageData
     }
 

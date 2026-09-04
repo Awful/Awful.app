@@ -231,6 +231,9 @@
 		2DA10C032F1A2B3C00DE01AA /* UnpopStackTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA10C042F1A2B3C00DE01AA /* UnpopStackTests.swift */; };
 		2DA10C062F1A2B3C00DE01AB /* UITextViewReplaceSelectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA10C052F1A2B3C00DE01AB /* UITextViewReplaceSelectionTests.swift */; };
 		2DA10C082F1A2B3C00DE01AB /* UITextViewInsertAttachmentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA10C072F1A2B3C00DE01AB /* UITextViewInsertAttachmentTests.swift */; };
+		2DA10C122F1A2B3C00DE01AB /* TextAttachmentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA10C112F1A2B3C00DE01AB /* TextAttachmentTests.swift */; };
+		2DA10C142F1A2B3C00DE01AB /* DraftStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA10C132F1A2B3C00DE01AB /* DraftStoreTests.swift */; };
+		2DA10C162F1A2B3C00DE01AB /* QuoteInsertionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA10C152F1A2B3C00DE01AB /* QuoteInsertionTests.swift */; };
 		2DA77AC22F8800010015A90D /* AttachmentSchemeHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA77AC12F8800010015A90D /* AttachmentSchemeHandler.swift */; };
 		2DB447302EC1E2DA00F03402 /* AttachmentPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB4472F2EC1E2DA00F03402 /* AttachmentPreviewView.swift */; };
 		2DB447312EC1E2DA00F03402 /* AttachmentEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB4472E2EC1E2DA00F03402 /* AttachmentEditView.swift */; };
@@ -601,6 +604,9 @@
 		2DA10C042F1A2B3C00DE01AA /* UnpopStackTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnpopStackTests.swift; sourceTree = "<group>"; };
 		2DA10C052F1A2B3C00DE01AB /* UITextViewReplaceSelectionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITextViewReplaceSelectionTests.swift; sourceTree = "<group>"; };
 		2DA10C072F1A2B3C00DE01AB /* UITextViewInsertAttachmentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITextViewInsertAttachmentTests.swift; sourceTree = "<group>"; };
+		2DA10C112F1A2B3C00DE01AB /* TextAttachmentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextAttachmentTests.swift; sourceTree = "<group>"; };
+		2DA10C132F1A2B3C00DE01AB /* DraftStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DraftStoreTests.swift; sourceTree = "<group>"; };
+		2DA10C152F1A2B3C00DE01AB /* QuoteInsertionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuoteInsertionTests.swift; sourceTree = "<group>"; };
 		2DA77AC12F8800010015A90D /* AttachmentSchemeHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttachmentSchemeHandler.swift; sourceTree = "<group>"; };
 		2DB4472E2EC1E2DA00F03402 /* AttachmentEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentEditView.swift; sourceTree = "<group>"; };
 		2DB4472F2EC1E2DA00F03402 /* AttachmentPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentPreviewView.swift; sourceTree = "<group>"; };
@@ -1096,6 +1102,9 @@
 				2DA10C042F1A2B3C00DE01AA /* UnpopStackTests.swift */,
 				2DA10C052F1A2B3C00DE01AB /* UITextViewReplaceSelectionTests.swift */,
 				2DA10C072F1A2B3C00DE01AB /* UITextViewInsertAttachmentTests.swift */,
+				2DA10C112F1A2B3C00DE01AB /* TextAttachmentTests.swift */,
+				2DA10C132F1A2B3C00DE01AB /* DraftStoreTests.swift */,
+				2DA10C152F1A2B3C00DE01AB /* QuoteInsertionTests.swift */,
 				1C9AEBC7210C3B2300C9A567 /* Info.plist */,
 			);
 			path = Tests;
@@ -1759,6 +1768,9 @@
 				2DA10C032F1A2B3C00DE01AA /* UnpopStackTests.swift in Sources */,
 				2DA10C062F1A2B3C00DE01AB /* UITextViewReplaceSelectionTests.swift in Sources */,
 				2DA10C082F1A2B3C00DE01AB /* UITextViewInsertAttachmentTests.swift in Sources */,
+				2DA10C122F1A2B3C00DE01AB /* TextAttachmentTests.swift in Sources */,
+				2DA10C142F1A2B3C00DE01AB /* DraftStoreTests.swift in Sources */,
+				2DA10C162F1A2B3C00DE01AB /* QuoteInsertionTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -33,5 +33,11 @@ extension URLSession {
         ) async -> URLRequest? {
             await willRedirect(response, request)
         }
+
+#if DEBUG
+        func urlSession(_ session: URLSession, task: URLSessionTask, didFinishCollecting metrics: URLSessionTaskMetrics) {
+            logRequestMetrics(task: task, metrics: metrics)
+        }
+#endif
     }
 }

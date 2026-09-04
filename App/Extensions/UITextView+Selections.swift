@@ -2,7 +2,10 @@
 //
 //  Copyright 2019 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import os
 import UIKit
+
+private let signposter = OSSignposter(subsystem: Bundle.main.bundleIdentifier!, category: "Composition")
 
 extension UITextView {
 
@@ -11,7 +14,7 @@ extension UITextView {
 
      This bypasses input traits and avoids text view contents jumping around after inserting an image.
 
-     `Notification.Name.UITextViewTextDidChange` is manually posted while calling this method. I haven't tested whether `UITextViewDelegate` calls get made as a result of calling this method, but I would not be surprised if they are bypassed.
+     `Notification.Name.UITextViewTextDidChange` is manually posted while calling this method, and the caret is then scrolled into view with a full layout pass (see `scrollCaretToVisible(paddingBelow:animated:layout:)`). I haven't tested whether `UITextViewDelegate` calls get made as a result of calling this method, but I would not be surprised if they are bypassed.
 
      - Seealso: rdar://problem/34617193 UITextView that isn't first responder ignores smartQuotesType when calling replace(_:withText:)
      */
@@ -33,21 +36,57 @@ extension UITextView {
 
     /// Replaces the `selectedRange` with `attributedText` by modifying `textStorage` directly. See `replaceSelection(with:)` above for caveats.
     func replaceSelection(with attributedText: NSAttributedString) {
+        insert(attributedText, replacing: selectedRange, moveCaretAfterInsertion: true)
+    }
+
+    /**
+     Replaces `range` with `text` by modifying `textStorage` directly, for insertions that were requested earlier than they happen (e.g. a quote that arrives after the user has kept typing).
+
+     When `moveCaretAfterInsertion` is `false` the selection stays on the text it was on: unchanged if it precedes `range`, shifted by the inserted length if it sits at or beyond it.
+
+     Posts `UITextView.textDidChangeNotification` and scrolls the caret into view, like `replaceSelection(with:)`.
+     */
+    func insert(_ text: String, replacing range: NSRange, moveCaretAfterInsertion: Bool) {
+        insert(NSAttributedString(string: text, attributes: attributesForStorageInsertion), replacing: range, moveCaretAfterInsertion: moveCaretAfterInsertion)
+    }
+
+    private func insert(_ attributedText: NSAttributedString, replacing range: NSRange, moveCaretAfterInsertion: Bool) {
         let previouslySelected = selectedRange
+        var range = range
+        if range.location == NSNotFound || range.location > textStorage.length {
+            range = NSRange(location: textStorage.length, length: 0)
+        }
+        range.length = min(range.length, textStorage.length - range.location)
 
         textStorage.beginEditing()
-        textStorage.replaceCharacters(in: previouslySelected, with: attributedText)
+        textStorage.replaceCharacters(in: range, with: attributedText)
         textStorage.endEditing()
 
         // Setting the selection mid-batch hands a stale range to the text input controller's
         // tokenizer and crashes when the text view is first responder (NLStringTokenizer, iOS 26);
         // it must happen after endEditing() has published the edit. Clamp defensively.
-        let newLocation = min(previouslySelected.location + attributedText.length, textStorage.length)
-        selectedRange = NSRange(location: newLocation, length: 0)
+        let newSelection: NSRange
+        if moveCaretAfterInsertion {
+            newSelection = NSRange(location: range.location + attributedText.length, length: 0)
+        } else if previouslySelected.location >= NSMaxRange(range) {
+            newSelection = NSRange(location: previouslySelected.location + attributedText.length - range.length, length: previouslySelected.length)
+        } else if NSMaxRange(previouslySelected) > range.location {
+            // The selection straddled the replaced text; collapse it after the insertion.
+            newSelection = NSRange(location: range.location + attributedText.length, length: 0)
+        } else {
+            newSelection = previouslySelected
+        }
+        let clampedLocation = min(newSelection.location, textStorage.length)
+        selectedRange = NSRange(location: clampedLocation, length: min(newSelection.length, textStorage.length - clampedLocation))
 
         // Mucking with text storage does not send this notification automatically, but we'd like this notification to be sent.
         // Posted after the selection is final: CloseBBcodeTagCommand's observer reads selectedRange.
         NotificationCenter.default.post(name: UITextView.textDidChangeNotification, object: self)
+
+        // Programmatic inserts can be tall (image attachments, long quotes), and TextKit 2's lazy
+        // contentSize doesn't account for them yet, so this is the one place that pays for a full
+        // layout before scrolling. Observers of the notification above only do the cheap follow.
+        scrollCaretToVisible(layout: .wholeDocument)
     }
 
     /// Inserts `attachment` at the selection Notes-style: the attachment on its own line, with the caret on a fresh line below it.
@@ -65,21 +104,34 @@ extension UITextView {
         replaceSelection(with: insertion)
     }
 
+    /// How much layout work `scrollCaretToVisible` does before reading the caret's position.
+    enum CaretScrollLayout {
+        /// Lay out the whole document and repair `contentSize` first. Needed after programmatic
+        /// inserts of tall content and after inset changes, when TextKit 2's lazily estimated
+        /// `contentSize` is stale.
+        case wholeDocument
+        /// Trust the current layout and `contentSize`. Cheap enough for every keystroke.
+        case caretOnly
+    }
+
     /// Scrolls so the caret is visible, with `padding` points of breathing room below it.
-    func scrollCaretToVisible(paddingBelow padding: CGFloat = 20, animated: Bool = false) {
+    func scrollCaretToVisible(paddingBelow padding: CGFloat = 20, animated: Bool = false, layout: CaretScrollLayout = .wholeDocument) {
         // TextKit 2 lays out lazily: right after an edit (especially a tall image attachment),
         // the caret rect and contentSize are stale until the next layout pass, so scrolling
         // immediately computes garbage. Wait a runloop tick, then force layout and scroll.
         DispatchQueue.main.async { [weak self] in
-            self?.reallyScrollCaretToVisible(paddingBelow: padding, animated: animated)
+            self?.reallyScrollCaretToVisible(paddingBelow: padding, animated: animated, layout: layout)
         }
     }
 
-    private func reallyScrollCaretToVisible(paddingBelow padding: CGFloat, animated: Bool) {
+    private func reallyScrollCaretToVisible(paddingBelow padding: CGFloat, animated: Bool, layout: CaretScrollLayout) {
+        let state = signposter.beginInterval("scrollCaretToVisible", "\(layout == .wholeDocument ? "wholeDocument" : "caretOnly")")
+        defer { signposter.endInterval("scrollCaretToVisible", state) }
+
         // The caret can be far below the lazily-laid-out viewport; ensure the whole document is
         // laid out so caretRect and the laid-out height are trustworthy.
         var layoutHeight: CGFloat = 0
-        if #available(iOS 16.0, *), let textLayoutManager {
+        if layout == .wholeDocument, #available(iOS 16.0, *), let textLayoutManager {
             textLayoutManager.ensureLayout(for: textLayoutManager.documentRange)
             layoutHeight = textLayoutManager.usageBoundsForTextContainer.maxY
                 + textContainerInset.top + textContainerInset.bottom
@@ -94,9 +146,12 @@ extension UITextView {
         // UITextView can lag updating contentSize after an edit, and the padded caret rect can
         // extend past the end of the content; widen contentSize so the offset we set below isn't
         // clamped back to a smaller maximum.
-        let contentHeight = max(contentSize.height, layoutHeight, rect.maxY)
-        if contentSize.height < contentHeight {
-            contentSize.height = contentHeight
+        var contentHeight = contentSize.height
+        if layout == .wholeDocument {
+            contentHeight = max(contentSize.height, layoutHeight, rect.maxY)
+            if contentSize.height < contentHeight {
+                contentSize.height = contentHeight
+            }
         }
 
         // scrollRectToVisible ignores contentInset, so anything scrolled to the bottom of our
@@ -115,5 +170,20 @@ extension UITextView {
         if target.y != contentOffset.y {
             setContentOffset(target, animated: animated)
         }
+    }
+}
+
+/// The line breaks to put before a quote inserted at `location` so it starts on its own paragraph: nothing at the start of the document or after a blank line, one newline after a line break, otherwise two.
+func quoteSeparator(before location: Int, in string: NSString) -> String {
+    let location = max(0, min(location, string.length))
+    guard location > 0 else { return "" }
+    let precedingLength = min(2, location)
+    let preceding = string.substring(with: NSRange(location: location - precedingLength, length: precedingLength))
+    if preceding == "\n\n" {
+        return ""
+    } else if preceding.hasSuffix("\n") {
+        return "\n"
+    } else {
+        return "\n\n"
     }
 }
