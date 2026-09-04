@@ -1,11 +1,45 @@
 {
   "color-space-for-untagged-svg-colors" : "display-p3",
-  "fill" : "system-light",
+  "fill" : {
+    "linear-gradient" : [
+      "display-p3:0.94686,0.94686,0.94686,1.00000",
+      "srgb:0.65060,0.65060,0.65060,1.00000"
+    ],
+    "orientation" : {
+      "start" : {
+        "x" : 0.5,
+        "y" : 0
+      },
+      "stop" : {
+        "x" : 0.5,
+        "y" : 0.7
+      }
+    }
+  },
   "groups" : [
     {
       "blend-mode" : "normal",
       "blur-material" : null,
       "layers" : [
+        {
+          "fill" : {
+            "linear-gradient" : [
+              "display-p3:0.94919,0.94919,0.94919,1.00000",
+              "srgb:0.64509,0.64509,0.64509,1.00000"
+            ]
+          },
+          "hidden" : false,
+          "image-name" : "eyes 2.svg",
+          "name" : "eyes 2",
+          "opacity" : 0.1,
+          "position" : {
+            "scale" : 1.04,
+            "translation-in-points" : [
+              0,
+              0
+            ]
+          }
+        },
         {
           "hidden" : false,
           "image-name" : "eyes 2.svg",

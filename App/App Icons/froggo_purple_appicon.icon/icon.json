@@ -19,7 +19,7 @@
       "layers" : [
         {
           "fill" : {
-            "solid" : "display-p3:0.60000,0.00000,0.01000,1.00000"
+            "solid" : "display-p3:0.72979,0.00000,0.17759,1.00000"
           },
           "hidden" : false,
           "image-name" : "numouth.svg",
@@ -64,7 +64,7 @@
       ],
       "lighting" : "combined",
       "name" : "Eyes",
-      "opacity" : 0.95,
+      "opacity" : 1,
       "position" : {
         "scale" : 1.14,
         "translation-in-points" : [
@@ -87,6 +87,22 @@
       "hidden" : false,
       "layers" : [
         {
+          "fill" : {
+            "linear-gradient" : [
+              "display-p3:0.63857,0.23727,0.82946,1.00000",
+              "srgb:1.00000,0.34726,0.78468,1.00000"
+            ],
+            "orientation" : {
+              "start" : {
+                "x" : 0.4999999999999999,
+                "y" : 0.19186994532561027
+              },
+              "stop" : {
+                "x" : 0.4999999999999999,
+                "y" : 0.759213623814609
+              }
+            }
+          },
           "hidden" : false,
           "image-name" : "skin purple2.svg",
           "name" : "skin purple2",
@@ -117,15 +133,17 @@
       }
     },
     {
+      "hidden" : false,
       "layers" : [
         {
           "fill" : {
-            "solid" : "display-p3:0.32568,0.19775,0.53320,1.00000"
+            "solid" : "display-p3:0.54008,0.20657,0.70000,1.00000"
           },
           "glass" : false,
           "hidden" : false,
           "image-name" : "nose.svg",
           "name" : "nose",
+          "opacity" : 0.85,
           "position" : {
             "scale" : 1,
             "translation-in-points" : [
@@ -135,13 +153,14 @@
           }
         }
       ],
+      "opacity" : 1,
       "shadow" : {
         "kind" : "none",
         "opacity" : 0.5
       },
       "specular" : false,
       "translucency" : {
-        "enabled" : true,
+        "enabled" : false,
         "value" : 0.5
       }
     }

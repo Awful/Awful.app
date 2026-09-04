@@ -1,8 +1,6 @@
 {
   "color-space-for-untagged-svg-colors" : "display-p3",
-  "fill" : {
-    "solid" : "srgb:1.00000,1.00000,1.00000,1.00000"
-  },
+  "fill" : "system-light",
   "groups" : [
     {
       "blend-mode" : "normal",

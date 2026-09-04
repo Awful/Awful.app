@@ -1,12 +1,14 @@
 {
   "color-space-for-untagged-svg-colors" : "display-p3",
-  "fill" : "automatic",
+  "fill" : "system-light",
   "groups" : [
     {
+      "hidden" : false,
       "layers" : [
         {
-          "image-name" : "riker.png",
-          "name" : "riker"
+          "glass" : false,
+          "image-name" : "Cw78CG1.png",
+          "name" : "Cw78CG1"
         }
       ],
       "position" : {
@@ -17,12 +19,12 @@
         ]
       },
       "shadow" : {
-        "kind" : "layer-color",
+        "kind" : "none",
         "opacity" : 0.55
       },
-      "specular" : true,
+      "specular" : false,
       "translucency" : {
-        "enabled" : true,
+        "enabled" : false,
         "value" : 0.2
       }
     }
