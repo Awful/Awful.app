@@ -42,6 +42,15 @@ final class ForumsTableViewController: CollectionViewController {
     /// `updateButtonColors()` can retint them on theme changes — mirroring `BookmarksTableViewController`.
     private var moreButtonView: UIButton?
     private var searchButtonView: UIButton?
+    private lazy var editBarButton = EditBarButton(for: self)
+    /// The bar text colour baked into the image buttons while the bar rests at the top (see
+    /// NavigationBarScrollTransitioning); nil once scrolled.
+    private var glassGlyphColor: UIColor?
+
+    override func updateGlassBarButtonGlyphs(color: UIColor?) {
+        glassGlyphColor = color
+        updateButtonColors()
+    }
 
     init(managedObjectContext: NSManagedObjectContext) {
         self.managedObjectContext = managedObjectContext
@@ -274,7 +283,7 @@ final class ForumsTableViewController: CollectionViewController {
     }
 
     private func updateEditingState(favoriteCount: Int) {
-        navigationItem.setLeftBarButton(favoriteCount > 0 ? editButtonItem : nil, animated: true)
+        navigationItem.setLeftBarButton(favoriteCount > 0 ? editBarButton.item : nil, animated: true)
 
         if isEditing, favoriteCount == 0 {
             setEditing(false, animated: true)
@@ -469,15 +478,17 @@ final class ForumsTableViewController: CollectionViewController {
     /// active/selected state, so there's no alpha dimming to mirror.)
     private func updateButtonColors() {
         if #available(iOS 26.0, *), LiquidGlass.isEnabled {
-            // Explicit tint color prevents system default blue when NavigationController sets tintColor = nil.
-            let buttonTintColor = theme["mode"] == "dark" ? UIColor.white : UIColor.black
-            moreButtonView?.tintColor = buttonTintColor
-            searchButtonView?.tintColor = buttonTintColor
+            // An explicit tint prevents system default blue once NavigationController nils the bar's.
+            let scrolledTint = theme.glassContentTextColor
+            moreButtonView?.setGlassGlyph(bakedColor: glassGlyphColor, tint: scrolledTint)
+            searchButtonView?.setGlassGlyph(bakedColor: glassGlyphColor, tint: scrolledTint)
         } else {
             let normalColor = theme[uicolor: "navigationBarTextColor"]
             moreButtonView?.tintColor = normalColor
             searchButtonView?.tintColor = normalColor
         }
+        // The Edit stand-in exists under Reduce Liquid Glass too, so it is coloured either way.
+        editBarButton.setGlassGlyphColor(glassGlyphColor, theme: theme)
     }
 
     @objc private func searchForums() {
@@ -518,6 +529,7 @@ final class ForumsTableViewController: CollectionViewController {
     override func setEditing(_ editing: Bool, animated: Bool) {
         super.setEditing(editing, animated: animated)
         collectionView.isEditing = editing
+        editBarButton.setEditing(editing)
     }
 
     override func viewDidAppear(_ animated: Bool) {

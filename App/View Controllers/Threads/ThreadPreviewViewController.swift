@@ -34,13 +34,12 @@ final class ThreadPreviewViewController: ViewController {
     
     private typealias HTMLAndForm = (previewHTML: String, formData: ForumsClient.PostNewThreadFormData)
     
-    private lazy var postButtonItem = UIBarButtonItem(primaryAction: UIAction(
-        title: LocalizedString("compose.thread-preview.submit-button"),
-        handler: { [unowned self] action in
-            (action.sender as? UIBarButtonItem)?.isEnabled = false
-            self.submitBlock?()
-        }
-    ))
+    private lazy var postButton: GlassTextBarButton = GlassTextBarButton(
+        title: LocalizedString("compose.thread-preview.submit-button")
+    ) { [unowned self] in
+        postButton.item.isEnabled = false
+        submitBlock?()
+    }
 
     private lazy var renderView: RenderView = {
         let renderView = RenderView(frame: CGRect(origin: .zero, size: view.bounds.size))
@@ -57,7 +56,7 @@ final class ThreadPreviewViewController: ViewController {
         
         super.init(nibName: nil, bundle: nil)
         
-        navigationItem.rightBarButtonItem = postButtonItem
+        navigationItem.rightBarButtonItem = postButton.item
         
         title = LocalizedString("compose.thread-preview.title")
     }
@@ -203,18 +202,33 @@ final class ThreadPreviewViewController: ViewController {
         }
         
         loadingView?.tintColor = theme["backgroundColor"]
+
+        if isViewLoaded {
+            // The bar stays opaque over the preview, so its glass circles read as the bar at
+            // every offset (see NavigationBarScrollTransitioning).
+            renderView.scrollView.pinNavigationBarPlatterBackdrop(theme: theme)
+        }
     }
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
         repositionCell()
+        renderView.scrollView.relayoutNavigationBarPlatterBackdrop()
     }
     
     // MARK: Gunk
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+}
+
+extension ThreadPreviewViewController: NavigationBarScrollTransitioning {
+    var navigationBarScrollView: UIScrollView? { renderView.scrollView }
+
+    func updateGlassBarButtonGlyphs(color: UIColor?) {
+        postButton.setGlassGlyphColor(color, theme: theme)
     }
 }
 

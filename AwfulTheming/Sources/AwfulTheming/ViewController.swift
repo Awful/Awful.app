@@ -114,8 +114,20 @@ open class HostingController<Content: View>: UIHostingController<Content>, Theme
 
     For load-more pagination, see `LoadMoreCollectionFooter`.
  */
-open class CollectionViewController: UICollectionViewController, Themeable {
+open class CollectionViewController: UICollectionViewController, Themeable, NavigationBarScrollTransitioning {
     private var viewIsLoading = false
+
+    // MARK: NavigationBarScrollTransitioning
+
+    public var navigationBarScrollView: UIScrollView? { collectionView }
+
+    /// Subclasses with image bar buttons bake `color` into them (see the protocol).
+    open func updateGlassBarButtonGlyphs(color: UIColor?) {}
+
+    open override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        collectionView.relayoutNavigationBarPlatterBackdrop()
+    }
 
     public override init(nibName: String?, bundle: Bundle?) {
         super.init(nibName: nibName, bundle: bundle)
@@ -296,7 +308,7 @@ open class CollectionViewController: UICollectionViewController, Themeable {
 
     open override func scrollViewDidScroll(_ scrollView: UIScrollView) {
         // Update navigation bar tint for iOS 26+ dynamic colors
-        if #available(iOS 26.0, *), LiquidGlass.isEnabled {
+        if #available(iOS 26.0, *), LiquidGlass.usesGlassNavigationBar {
             // Skip programmatic offset changes (e.g. pull-to-refresh) that can
             // briefly appear "fully scrolled" and flip the nav bar to transparent.
             guard scrollView.isDragging || scrollView.isDecelerating else {
@@ -340,8 +352,20 @@ open class CollectionViewController: UICollectionViewController, Themeable {
     Provides the same theming, pull-to-refresh, visibility tracking, tab-bar-item
     label management, and iOS 26 scroll-progress hook as `CollectionViewController`.
  */
-open class HostedCollectionViewController: UIViewController, Themeable {
+open class HostedCollectionViewController: UIViewController, Themeable, NavigationBarScrollTransitioning {
     private var viewIsLoading = false
+
+    // MARK: NavigationBarScrollTransitioning
+
+    public var navigationBarScrollView: UIScrollView? { collectionView }
+
+    /// Subclasses with image bar buttons bake `color` into them (see the protocol).
+    open func updateGlassBarButtonGlyphs(color: UIColor?) {}
+
+    open override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        collectionView.relayoutNavigationBarPlatterBackdrop()
+    }
 
     public let collectionView: UICollectionView
 
@@ -498,7 +522,7 @@ extension HostedCollectionViewController: UICollectionViewDelegate {
     open func scrollViewDidScroll(_ scrollView: UIScrollView) {
         // Update navigation bar tint for iOS 26+ dynamic colors. Same logic as
         // CollectionViewController.
-        if #available(iOS 26.0, *), LiquidGlass.isEnabled {
+        if #available(iOS 26.0, *), LiquidGlass.usesGlassNavigationBar {
             guard scrollView.isDragging || scrollView.isDecelerating else { return }
 
             let topInset = scrollView.adjustedContentInset.top

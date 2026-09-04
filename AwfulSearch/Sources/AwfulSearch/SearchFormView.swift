@@ -186,7 +186,6 @@ public final class SearchFormViewController: HostingController<AnyView> {
     private var cancellables: Set<AnyCancellable> = []
     /// A message that arrived before there was anywhere to show it. See `viewDidAppear`.
     private var pendingBannerMessage: String?
-
     /// `.plain` rather than `.done`: on iOS 26 a `.done` item renders as a filled, tinted capsule,
     /// which doesn't match the plain glass buttons everywhere else in the app.
     ///
@@ -214,7 +213,9 @@ public final class SearchFormViewController: HostingController<AnyView> {
         handlers: SearchHandlers
     ) {
         model = SearchPageViewModel(threadID: threadID, restoring: restoring, handlers: handlers)
-        super.init(rootView: AnyView(SearchFormView(model: model).themed()))
+        // The backdrop gives the bar's glass circles a scroll view to sample: the forum list
+        // starts below the header, so nothing of the screen's own reaches the bar.
+        super.init(rootView: AnyView(SearchFormView(model: model).navigationBarPlatterBackdropSurface().themed()))
 
         title = model.threadID == nil
             ? String(localized: "Search Forums", bundle: .module)

@@ -28,7 +28,7 @@ public final class NigglyPullToRefresh {
         let targetSize = CGSize(width: scrollView.bounds.width, height: 0)
         niggly.bounds.size = niggly.systemLayoutSizeFitting(targetSize, withHorizontalFittingPriority: .required, verticalFittingPriority: .fittingSizeLevel)
         niggly.autoresizingMask = .flexibleWidth
-        niggly.backgroundColor = theme[uicolor: "backgroundColor"]
+        niggly.backgroundColor = Self.backgroundColor(for: theme)
         self.niggly = niggly
 
         let animator = NigglyRefreshLottieView.RefreshAnimator(view: niggly)
@@ -42,7 +42,15 @@ public final class NigglyPullToRefresh {
 
     public func themeDidChange(_ theme: Theme) {
         niggly?.theme = theme
-        niggly?.backgroundColor = theme[uicolor: "backgroundColor"]
+        niggly?.backgroundColor = Self.backgroundColor(for: theme)
+    }
+
+    /// Under Liquid Glass the refresh view stays transparent: it sits in the scroll view's top
+    /// inset, which `UIScrollView.applyNavigationBarPlatterBackdrop` paints the bar colour so the
+    /// glass bar buttons read as dark on a dark bar, and an opaque refresh view there would be
+    /// sampled instead. The view behind is the same theme background, so nothing looks different.
+    private static func backgroundColor(for theme: Theme) -> UIColor? {
+        LiquidGlass.isEnabled ? nil : theme[uicolor: "backgroundColor"]
     }
 
     public func endRefreshing() {

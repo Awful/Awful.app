@@ -108,11 +108,22 @@ extension Theme {
         keyboardAppearance == .dark
     }
 
-    /// The theme's light/dark as a trait style, per its `mode` key. Liquid Glass resolves
-    /// its platters' light/dark from the trait collection rather than from appearance
-    /// colors, so glass bars force this via `overrideUserInterfaceStyle`.
+    /// The theme's light/dark as a trait style, per its `mode` key, for views whose dynamic
+    /// colours should follow the theme rather than the system appearance.
     public var userInterfaceStyle: UIUserInterfaceStyle {
         self[string: "mode"] == "light" ? .light : .dark
+    }
+
+    /// Light/dark of the theme's navigation bar, per its `statusBarBackground` key. `mode`
+    /// describes the content; Classic-style themes are light-mode with a dark blue bar.
+    public var navigationBarUserInterfaceStyle: UIUserInterfaceStyle {
+        self[string: "statusBarBackground"] == "light" ? .light : .dark
+    }
+
+    /// Plain white or black per the theme's `mode`: what the iOS 26 glass bar's title and
+    /// bar-button glyphs take once the bar has gone transparent over the content.
+    public var glassContentTextColor: UIColor {
+        self[string: "mode"] == "dark" ? .white : .black
     }
 
     /// The desired scroll indicator style for scrollbars. Must be specified by the theme or one of its ancestors.

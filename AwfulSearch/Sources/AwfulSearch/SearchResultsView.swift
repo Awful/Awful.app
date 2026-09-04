@@ -29,76 +29,79 @@ struct SearchResultsView: View {
             } else {
                 ScrollViewReader { proxy in
                     ScrollView {
-                        // The search screen's message line only renders on the form, so anything that
-                        // goes wrong while paging through results would otherwise be silent.
-                        if !model.searchState.resultsMessage.isEmpty {
-                            Text(model.searchState.resultsMessage)
-                                .font(.caption)
-                                .foregroundColor(theme[color: "unreadBadgeRedColor"] ?? theme[color: "listTextColor"])
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .padding(.horizontal)
-                                .padding(.top)
-                        }
+                        VStack {
+                            // The search screen's message line only renders on the form, so anything that
+                            // goes wrong while paging through results would otherwise be silent.
+                            if !model.searchState.resultsMessage.isEmpty {
+                                Text(model.searchState.resultsMessage)
+                                    .font(.caption)
+                                    .foregroundColor(theme[color: "unreadBadgeRedColor"] ?? theme[color: "listTextColor"])
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .padding(.horizontal)
+                                    .padding(.top)
+                            }
 
-                        if model.searchResults.isEmpty && !model.searchState.resultInfo.isEmpty {
-                            VStack(alignment: .leading, spacing: 12) {
-                                // Parse and display the search info with proper formatting
-                                let lines = model.searchState.resultInfo
-                                    .trimmingCharacters(in: .whitespacesAndNewlines)
-                                    .components(separatedBy: .newlines)
-                                    .map { $0.trimmingCharacters(in: .whitespaces) }
-                                    .filter { !$0.isEmpty }
+                            if model.searchResults.isEmpty && !model.searchState.resultInfo.isEmpty {
+                                VStack(alignment: .leading, spacing: 12) {
+                                    // Parse and display the search info with proper formatting
+                                    let lines = model.searchState.resultInfo
+                                        .trimmingCharacters(in: .whitespacesAndNewlines)
+                                        .components(separatedBy: .newlines)
+                                        .map { $0.trimmingCharacters(in: .whitespaces) }
+                                        .filter { !$0.isEmpty }
                             
-                                ForEach(Array(lines.enumerated()), id: \.offset) { index, line in
-                                    if line.starts(with: "Searched for") {
-                                        Text(line)
-                                            .font(.headline)
-                                            .foregroundColor(theme[color: "listTextColor"])
-                                            .padding(.bottom, 4)
-                                            .frame(maxWidth: .infinity, alignment: .leading)
-                                    } else if line == "following criteria:" {
-                                        Text(line)
-                                            .font(.headline)
-                                            .foregroundColor(theme[color: "listTextColor"])
-                                            .frame(maxWidth: .infinity, alignment: .leading)
-                                    } else if line.starts(with: "Text contains") || line.starts(with: "Posted by") {
-                                        Text(line)
-                                            .font(.body)
-                                            .foregroundColor(theme[color: "listTextColor"])
-                                            .padding(.vertical, 8)
-                                            .padding(.leading, 16)
-                                            .frame(maxWidth: .infinity, alignment: .leading)
-                                    } else if line.starts(with: "There were no results") {
-                                        Text(line)
-                                            .font(.body)
-                                            .fontWeight(.medium)
-                                            .foregroundColor(theme[color: "listTextColor"])
-                                            .padding(.top, 8)
-                                            .frame(maxWidth: .infinity, alignment: .leading)
-                                    } else if !line.isEmpty {
-                                        Text(line)
-                                            .font(.body)
-                                            .foregroundColor(theme[color: "listTextColor"])
-                                            .frame(maxWidth: .infinity, alignment: .leading)
+                                    ForEach(Array(lines.enumerated()), id: \.offset) { index, line in
+                                        if line.starts(with: "Searched for") {
+                                            Text(line)
+                                                .font(.headline)
+                                                .foregroundColor(theme[color: "listTextColor"])
+                                                .padding(.bottom, 4)
+                                                .frame(maxWidth: .infinity, alignment: .leading)
+                                        } else if line == "following criteria:" {
+                                            Text(line)
+                                                .font(.headline)
+                                                .foregroundColor(theme[color: "listTextColor"])
+                                                .frame(maxWidth: .infinity, alignment: .leading)
+                                        } else if line.starts(with: "Text contains") || line.starts(with: "Posted by") {
+                                            Text(line)
+                                                .font(.body)
+                                                .foregroundColor(theme[color: "listTextColor"])
+                                                .padding(.vertical, 8)
+                                                .padding(.leading, 16)
+                                                .frame(maxWidth: .infinity, alignment: .leading)
+                                        } else if line.starts(with: "There were no results") {
+                                            Text(line)
+                                                .font(.body)
+                                                .fontWeight(.medium)
+                                                .foregroundColor(theme[color: "listTextColor"])
+                                                .padding(.top, 8)
+                                                .frame(maxWidth: .infinity, alignment: .leading)
+                                        } else if !line.isEmpty {
+                                            Text(line)
+                                                .font(.body)
+                                                .foregroundColor(theme[color: "listTextColor"])
+                                                .frame(maxWidth: .infinity, alignment: .leading)
+                                        }
                                     }
                                 }
-                            }
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding()
-                            .background(theme[color: "sheetBackgroundColor"] ?? Color(.secondarySystemGroupedBackground))
-                            .cornerRadius(12)
-                            .id(topID)
-                            .padding()
-                        } else {
-                            LazyVStack(spacing: 12) {
-                                ForEach(model.searchResults) { searchResult in
-                                    SearchResultCard(result: searchResult)
-                                        .onTapGesture { onSelect(searchResult) }
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .padding()
+                                .background(theme[color: "sheetBackgroundColor"] ?? Color(.secondarySystemGroupedBackground))
+                                .cornerRadius(12)
+                                .id(topID)
+                                .padding()
+                            } else {
+                                LazyVStack(spacing: 12) {
+                                    ForEach(model.searchResults) { searchResult in
+                                        SearchResultCard(result: searchResult)
+                                            .onTapGesture { onSelect(searchResult) }
+                                    }
                                 }
+                                .id(topID)
+                                .padding()
                             }
-                            .id(topID)
-                            .padding()
                         }
+                        .navigationBarPlatterBackdrop()
                     }
                     .background(theme[color: "backgroundColor"] ?? Color(.systemBackground))
                     .onChange(of: model.currentPage) { _ in

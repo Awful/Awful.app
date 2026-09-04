@@ -22,6 +22,24 @@ public enum LiquidGlass {
         guard #available(iOS 26.0, *) else { return false }
         return UIDevice.current.userInterfaceIdiom == .pad
     }
+
+    /// True on iOS 26+ regardless of "Reduce Liquid Glass". That setting hides the shared glass
+    /// background behind the app's own bar button items, but the system back button doesn't
+    /// expose `hidesSharedBackground` and keeps its platter — and the platter's vibrancy washes
+    /// out its chevron, and rubs off onto a neighbouring text item (Edit) when a push transition
+    /// hands the bar back. So bar-button glyph colours have to be baked in either way.
+    public static var affectsBarButtonPlatters: Bool {
+        guard #available(iOS 26.0, *) else { return false }
+        return true
+    }
+
+    /// True on iOS 26+ regardless of "Reduce Liquid Glass". The navigation bar keeps its iOS 26
+    /// behaviour either way — translucent, with the opaque→clear scroll transition — because that
+    /// transition is what keeps the bar-button platters correct at every scroll offset. What the
+    /// setting reduces is the app's own chrome: flat bar buttons (`hidesSharedBackground`) and no
+    /// soft scroll-edge blur. An opaque bar instead leaves the one platter the app can't hide —
+    /// the system back button's — stuck pale on a dark bar, with no API to tone it.
+    public static var usesGlassNavigationBar: Bool { affectsBarButtonPlatters }
 }
 
 /// Identifies the background view installed by `setLegacyOpaqueBackground(color:)`.

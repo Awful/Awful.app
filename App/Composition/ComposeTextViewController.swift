@@ -32,14 +32,13 @@ class ComposeTextViewController: ViewController, ModernToolbarActionHandling {
     }
     
     /// The button that submits the composition when tapped. Set its title property.
-    fileprivate(set) lazy var submitButtonItem: UIBarButtonItem = {
-        return UIBarButtonItem(title: "Submit", style: .plain, target: self, action: #selector(didTapSubmit))
-    }()
-    
+    fileprivate(set) lazy var submitButtonItem: UIBarButtonItem = submitButton.item
+
     /// The button that cancels the composition when tapped. Set its title as appropriate.
-    fileprivate(set) lazy var cancelButtonItem: UIBarButtonItem = {
-        return UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(didTapCancel))
-    }()
+    fileprivate(set) lazy var cancelButtonItem: UIBarButtonItem = cancelButton.item
+
+    private lazy var submitButton = GlassTextBarButton(title: "Submit") { [weak self] in self?.didTapSubmit() }
+    private lazy var cancelButton = GlassTextBarButton(title: "Cancel") { [weak self] in self?.didTapCancel() }
     
     /// Tells a reasonable responder to become first responder.
     func focusInitialFirstResponder() {
@@ -324,7 +323,7 @@ class ComposeTextViewController: ViewController, ModernToolbarActionHandling {
         customView?.enabled = false
     }
     
-    @objc fileprivate func didTapSubmit() {
+    fileprivate func didTapSubmit() {
         if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
@@ -343,7 +342,7 @@ class ComposeTextViewController: ViewController, ModernToolbarActionHandling {
         })
     }
     
-    @objc fileprivate func didTapCancel() {
+    fileprivate func didTapCancel() {
         if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
@@ -393,6 +392,10 @@ class ComposeTextViewController: ViewController, ModernToolbarActionHandling {
         textView.keyboardAppearance = theme.keyboardAppearance
         toolbarContainer?.keyboardAppearance = theme.keyboardAppearance
         toolbarContainer?.fontName = theme["listFontName"]
+
+        // The bar stays opaque over the composition, so its glass circles read as the bar at
+        // every offset (see NavigationBarScrollTransitioning).
+        textView.pinNavigationBarPlatterBackdrop(theme: theme)
     }
     
     override func viewDidLoad() {
@@ -415,6 +418,12 @@ class ComposeTextViewController: ViewController, ModernToolbarActionHandling {
         menuTree.onShowImageOptions = { [weak self] in self?.showImageOptions() }
     }
     
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        textView.relayoutNavigationBarPlatterBackdrop()
+    }
+
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         
@@ -452,6 +461,15 @@ class ComposeTextViewController: ViewController, ModernToolbarActionHandling {
         super.viewWillDisappear(animated)
         
         view.endEditing(true)
+    }
+}
+
+extension ComposeTextViewController: NavigationBarScrollTransitioning {
+    var navigationBarScrollView: UIScrollView? { textView }
+
+    func updateGlassBarButtonGlyphs(color: UIColor?) {
+        cancelButton.setGlassGlyphColor(color, theme: theme)
+        submitButton.setGlassGlyphColor(color, theme: theme)
     }
 }
 

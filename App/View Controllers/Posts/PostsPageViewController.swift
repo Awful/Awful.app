@@ -2544,8 +2544,8 @@ final class PostsPageViewController: ViewController {
         // Hide the custom bottom border from NavigationBar for liquid glass effect
         if let awfulNavigationBar = navigationBar as? NavigationBar {
             awfulNavigationBar.bottomBorderColor = .clear
-            // Keep the glass platters' trait in lockstep with the forum theme when this
-            // method restyles the bar outside NavigationController's willShow path.
+            // Keep the bar's trait in lockstep with the forum theme when this method restyles
+            // the bar outside NavigationController's willShow path.
             awfulNavigationBar.overrideUserInterfaceStyle = theme.userInterfaceStyle
         }
         // Start with opaque background - NavigationController will handle the transition to clear on scroll
@@ -2584,9 +2584,10 @@ final class PostsPageViewController: ViewController {
         navigationBar.compactAppearance = appearance
         navigationBar.compactScrollEdgeAppearance = appearance
 
-        // Set tintColor AFTER applying appearance to ensure back button uses theme color
-        let navTextColor: UIColor = theme["mode"] == "dark" ? .white : .black
-        navigationBar.tintColor = navTextColor
+        // Set tintColor AFTER applying appearance to ensure back button uses theme color. The
+        // glass circles behind the buttons read as the bar at the top (NavigationBarScrollTransitioning),
+        // so the theme's own bar text colour goes on them.
+        navigationBar.tintColor = textColor
 
         // Force the navigation controller to start at scroll position 0 (top)
         // This will also update tintColor based on scroll position if needed
@@ -2595,7 +2596,7 @@ final class PostsPageViewController: ViewController {
         navigationBar.setNeedsLayout()
 
         if let previousVC = navigationController?.viewControllers.dropLast().last {
-            previousVC.navigationItem.backBarButtonItem?.tintColor = navTextColor
+            previousVC.navigationItem.backBarButtonItem?.tintColor = textColor
         }
     }
 
@@ -2845,6 +2846,10 @@ extension PostsPageViewController {
 
         return keyCommands
     }
+}
+
+extension PostsPageViewController: NavigationBarScrollTransitioning {
+    var navigationBarScrollView: UIScrollView? { postsView.renderView.scrollView }
 }
 
 extension PostsPageViewController: NavigationBarScrollProgressProviding {

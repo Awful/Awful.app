@@ -21,35 +21,38 @@ struct GlossaryLetterView: View {
 
     var body: some View {
         ScrollView {
-            switch viewModel.state {
-            case .loading:
-                ProgressView()
-                    .tint(theme[color: "tintColor"])
-                    .frame(maxWidth: .infinity)
-                    .padding(.top, 60)
+            Group {
+                switch viewModel.state {
+                case .loading:
+                    ProgressView()
+                        .tint(theme[color: "tintColor"])
+                        .frame(maxWidth: .infinity)
+                        .padding(.top, 60)
 
-            case .failed(let message):
-                GlossaryMessageView(text: message) {
-                    Task { await viewModel.load() }
-                }
-
-            case .loaded(let index):
-                if index.topics.isEmpty {
-                    GlossaryMessageView(text: "No topics start with “\(letter)”.")
-                } else {
-                    LazyVStack(spacing: 8) {
-                        ForEach(index.topics) { topic in
-                            NavigationLink {
-                                GlossaryTopicView(source: .topic(id: topic.topicID))
-                            } label: {
-                                GlossaryTopicRow(title: topic.title)
-                            }
-                            .buttonStyle(.plain)
-                        }
+                case .failed(let message):
+                    GlossaryMessageView(text: message) {
+                        Task { await viewModel.load() }
                     }
-                    .padding()
+
+                case .loaded(let index):
+                    if index.topics.isEmpty {
+                        GlossaryMessageView(text: "No topics start with “\(letter)”.")
+                    } else {
+                        LazyVStack(spacing: 8) {
+                            ForEach(index.topics) { topic in
+                                NavigationLink {
+                                    GlossaryTopicView(source: .topic(id: topic.topicID))
+                                } label: {
+                                    GlossaryTopicRow(title: topic.title)
+                                }
+                                .buttonStyle(.plain)
+                            }
+                        }
+                        .padding()
+                    }
                 }
             }
+            .navigationBarPlatterBackdrop()
         }
         .frame(maxWidth: .infinity)
         .background(theme[color: "backgroundColor"]!)

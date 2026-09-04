@@ -35,6 +35,11 @@ final class MessageListViewController: CollectionViewController {
     private var allFolders: [PrivateMessageFolder] = []
     private var editToolbar: UIToolbar?
     private var headerRegistration: UICollectionView.SupplementaryRegistration<UICollectionReusableView>!
+    private lazy var editBarButton = EditBarButton(for: self)
+
+    override func updateGlassBarButtonGlyphs(color: UIColor?) {
+        editBarButton.setGlassGlyphColor(color, theme: theme)
+    }
 
     init(managedObjectContext: NSManagedObjectContext) {
         self.managedObjectContext = managedObjectContext
@@ -58,7 +63,7 @@ final class MessageListViewController: CollectionViewController {
             didChange: updateBadgeValue)
         updateBadgeValue(unreadMessageCountObserver.count)
 
-        navigationItem.leftBarButtonItem = editButtonItem
+        navigationItem.leftBarButtonItem = editBarButton.item
         let composeItem = UIBarButtonItem(image: UIImage(named: "compose"), style: .plain, target: self, action: #selector(MessageListViewController.didTapComposeButtonItem(_:)))
         composeItem.accessibilityLabel = LocalizedString("private-message-list.compose-button.accessibility-label")
         navigationItem.rightBarButtonItem = composeItem
@@ -366,6 +371,7 @@ final class MessageListViewController: CollectionViewController {
 
         collectionView.isEditing = editing
         collectionView.allowsMultipleSelectionDuringEditing = editing
+        editBarButton.setEditing(editing)
 
         if editing {
             showEditToolbar()

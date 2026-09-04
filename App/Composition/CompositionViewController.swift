@@ -51,6 +51,11 @@ final class CompositionViewController: ViewController, ModernToolbarActionHandli
     }
 
     private let containerView = UIView()
+    /// Behind the content, so the bar's glass circles have a scroll view to sample: the text view
+    /// starts below the bar (see `UIScrollView.makeNavigationBarPlatterBackdrop(theme:)`).
+    private lazy var barBackdrop = UIScrollView.makeNavigationBarPlatterBackdrop(theme: theme)
+    /// The bar buttons `ReplyWorkspace` puts on this screen, whose labels take the resting colour.
+    var glassTextBarButtons: [GlassTextBarButton] = []
     private let attachmentPreviewView = AttachmentPreviewView()
     private let attachmentEditView = AttachmentEditView()
     private var attachmentPreviewHeightConstraint: NSLayoutConstraint!
@@ -78,6 +83,7 @@ final class CompositionViewController: ViewController, ModernToolbarActionHandli
             self?.handleAttachmentEditAction(action)
         }
 
+        containerView.addSubview(barBackdrop)
         containerView.addSubview(attachmentPreviewView)
         containerView.addSubview(attachmentEditView)
         containerView.addSubview(_textView)
@@ -266,6 +272,8 @@ final class CompositionViewController: ViewController, ModernToolbarActionHandli
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        barBackdrop.frame = view.bounds
+
         keyboardAvoider = ScrollViewKeyboardAvoider(textView)
         // Re-scroll once the insets settle, in case text was inserted while the keyboard was
         // still animating up (e.g. pasting an image right after the picker dismisses).
@@ -301,8 +309,16 @@ final class CompositionViewController: ViewController, ModernToolbarActionHandli
         }
     }
     
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        view.sendSubviewToBack(barBackdrop)
+    }
+
     override func themeDidChange() {
         super.themeDidChange()
+
+        barBackdrop.theme = theme
 
         textView.backgroundColor = theme["backgroundColor"]
         textView.textColor = theme["listTextColor"]
@@ -373,6 +389,16 @@ final class CompositionViewController: ViewController, ModernToolbarActionHandli
         return [
             UIKeyCommand(action: #selector(cancel(_:)), input: UIKeyCommand.inputEscape, discoverabilityTitle: "Cancel"),
         ]
+    }
+}
+
+extension CompositionViewController: NavigationBarScrollTransitioning {
+    var navigationBarScrollView: UIScrollView? { barBackdrop }
+
+    func updateGlassBarButtonGlyphs(color: UIColor?) {
+        for button in glassTextBarButtons {
+            button.setGlassGlyphColor(color, theme: theme)
+        }
     }
 }
 

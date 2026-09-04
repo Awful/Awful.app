@@ -36,9 +36,8 @@ public struct NavigationConfigurator: UIViewControllerRepresentable {
                 if let backImage = UIImage(named: "back") {
                     let indicator: UIImage
                     if #available(iOS 26.0, *), LiquidGlass.isEnabled {
-                        // Template so the Liquid Glass bar tints it black/white dynamically
-                        // (tintColor is cleared below), matching the app's main navigation bar.
-                        indicator = backImage.withRenderingMode(.alwaysTemplate)
+                        // Glass vibrancy ignores tintColor on the dark platter; bake the colour in.
+                        indicator = backImage.withTintColor(textColor, renderingMode: .alwaysOriginal)
                     } else {
                         indicator = backImage
                     }
@@ -47,34 +46,23 @@ public struct NavigationConfigurator: UIViewControllerRepresentable {
 
                 // Ensure text-based bar button items adopt theme font (rounded if enabled)
                 let buttonFont = UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .regular)
+                let buttonAttrs: [NSAttributedString.Key: Any] = [
+                    .foregroundColor: textColor,
+                    .font: buttonFont
+                ]
+                navAppearance.buttonAppearance.normal.titleTextAttributes = buttonAttrs
+                navAppearance.buttonAppearance.highlighted.titleTextAttributes = buttonAttrs
+                navAppearance.doneButtonAppearance.normal.titleTextAttributes = buttonAttrs
+                navAppearance.doneButtonAppearance.highlighted.titleTextAttributes = buttonAttrs
+                navAppearance.backButtonAppearance.normal.titleTextAttributes = buttonAttrs
+                navAppearance.backButtonAppearance.highlighted.titleTextAttributes = buttonAttrs
+                navigationController.navigationBar.tintColor = textColor
+
                 if #available(iOS 26.0, *), LiquidGlass.isEnabled {
-                    // Liquid Glass: omit the button color and clear tintColor so the OS renders the
-                    // bar buttons black/white against the glass for legibility, like the main Forums
-                    // bar. A forced theme color (e.g. a white navigationBarTextColor) is hard to read
-                    // on the glass platter. Keep only the font.
-                    let fontOnly: [NSAttributedString.Key: Any] = [.font: buttonFont]
-                    navAppearance.buttonAppearance.normal.titleTextAttributes = fontOnly
-                    navAppearance.buttonAppearance.highlighted.titleTextAttributes = fontOnly
-                    navAppearance.doneButtonAppearance.normal.titleTextAttributes = fontOnly
-                    navAppearance.doneButtonAppearance.highlighted.titleTextAttributes = fontOnly
-                    navAppearance.backButtonAppearance.normal.titleTextAttributes = fontOnly
-                    navAppearance.backButtonAppearance.highlighted.titleTextAttributes = fontOnly
-                    navigationController.navigationBar.tintColor = nil
-                    // Liquid Glass resolves its platters' light/dark from the bar's
-                    // trait, not from appearance colors.
-                    navigationController.navigationBar.overrideUserInterfaceStyle = theme.userInterfaceStyle
+                    // Nothing scrolls beneath this bar, so the glass bar-button circles take
+                    // their light/dark from the bar's trait: dark circles on a dark bar.
+                    navigationController.navigationBar.overrideUserInterfaceStyle = theme.navigationBarUserInterfaceStyle
                 } else {
-                    let buttonAttrs: [NSAttributedString.Key: Any] = [
-                        .foregroundColor: textColor,
-                        .font: buttonFont
-                    ]
-                    navAppearance.buttonAppearance.normal.titleTextAttributes = buttonAttrs
-                    navAppearance.buttonAppearance.highlighted.titleTextAttributes = buttonAttrs
-                    navAppearance.doneButtonAppearance.normal.titleTextAttributes = buttonAttrs
-                    navAppearance.doneButtonAppearance.highlighted.titleTextAttributes = buttonAttrs
-                    navAppearance.backButtonAppearance.normal.titleTextAttributes = buttonAttrs
-                    navAppearance.backButtonAppearance.highlighted.titleTextAttributes = buttonAttrs
-                    navigationController.navigationBar.tintColor = textColor
                     navigationController.navigationBar.overrideUserInterfaceStyle = .unspecified
                 }
                 
@@ -105,16 +93,17 @@ public struct NavigationConfigurator: UIViewControllerRepresentable {
     }
 }
 
-/// Applies `foregroundColor(_:)` unless Liquid Glass is in effect (iOS 26+ and not disabled by the
-/// user), in which case the bar renders the button black/white dynamically. `@AppStorage` keeps the
-/// choice live: toggling "Reduce Liquid Glass" re-evaluates without relaunching.
+/// Applies `foregroundColor(_:)`. Under Liquid Glass (iOS 26+ and not disabled by the user) the
+/// glass platter's vibrancy would tint the label with the bar colour behind it, so the button is
+/// also drawn under `glassEffect(.identity)`, which keeps the colour as given. `@AppStorage` keeps
+/// the choice live: toggling "Reduce Liquid Glass" re-evaluates without relaunching.
 private struct LiquidGlassBarButtonColorModifier: ViewModifier {
     let color: Color?
     @AppStorage(Settings.disableLiquidGlass) private var disableLiquidGlass
 
     func body(content: Content) -> some View {
         if #available(iOS 26.0, *), !disableLiquidGlass {
-            content
+            content.foregroundColor(color).glassEffect(.identity)
         } else {
             content.foregroundColor(color)
         }
@@ -137,19 +126,16 @@ private struct LiquidGlassNavigationTintModifier: ViewModifier {
 }
 
 extension View {
-    /// Colors a navigation-bar toolbar button with `color` on iOS < 26 and when the user has
-    /// disabled Liquid Glass. When glass is in effect it applies no color, letting the Liquid Glass
-    /// bar render the button black/white dynamically for legibility, matching the app's main Forums
-    /// bar. Pair with `liquidGlassNavigationTint` so SwiftUI doesn't stamp a per-item tint that
-    /// would override the bar's cleared `tintColor` (see NavigationConfigurator).
+    /// Colors a navigation-bar toolbar button with `color`, drawn so the Liquid Glass platter's
+    /// vibrancy can't retint it (see NavigationConfigurator for the bar side).
     public func liquidGlassBarButtonColor(_ color: Color?) -> some View {
         modifier(LiquidGlassBarButtonColorModifier(color: color))
     }
 
     /// Tints the navigation stack with `color` on iOS < 26 and when the user has disabled Liquid
-    /// Glass. When glass is in effect the tint is omitted so the Liquid Glass bar's buttons follow
-    /// the bar's cleared `tintColor` and render black/white dynamically. Content sets its own
-    /// colors, so dropping the ambient tint there is safe.
+    /// Glass. When glass is in effect the tint is omitted: the bar buttons are coloured by
+    /// `liquidGlassBarButtonColor` instead. Content sets its own colors, so dropping the ambient
+    /// tint there is safe.
     public func liquidGlassNavigationTint(_ color: Color?) -> some View {
         modifier(LiquidGlassNavigationTintModifier(color: color))
     }

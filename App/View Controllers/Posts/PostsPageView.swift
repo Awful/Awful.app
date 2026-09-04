@@ -399,6 +399,7 @@ final class PostsPageView: UIView {
         if scrollView.contentInset != contentInset {
             scrollView.contentInset = contentInset
         }
+        scrollView.relayoutNavigationBarPlatterBackdrop()
 
         let indicatorBottomInset = calculateBottomInset()
 
@@ -894,7 +895,7 @@ extension PostsPageView: ScrollViewDelegateExtras {
             }
         }
 
-        if #available(iOS 26.0, *), LiquidGlass.isEnabled {
+        if #available(iOS 26.0, *), LiquidGlass.usesGlassNavigationBar {
             updateNavigationBarForScrollProgress(scrollView)
         }
 

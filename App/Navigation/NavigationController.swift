@@ -17,12 +17,14 @@ import UIKit
 private struct SidebarButtonView: View {
     let title: String
     var weight: Font.Weight = .regular
+    /// Overrides the theme's bar text colour, for bars whose glyph colour follows the scroll state.
+    var color: Color? = nil
     let action: () -> Void
 
     @SwiftUI.Environment(\.theme) private var theme
 
     var body: some View {
-        let color = theme[color: "navigationBarTextColor"] ?? .white
+        let color = color ?? theme[color: "navigationBarTextColor"] ?? .white
         Button(action: action) {
             Text(title)
                 .font(.system(size: 17, weight: weight))
@@ -65,6 +67,178 @@ private struct SidebarImageButtonView: View {
         .offset(x: visualOffsetX)
         .glassEffect(.identity)
         .accessibilityLabel(accessibilityLabel ?? "")
+    }
+}
+
+// MARK: - Glass Text Bar Button
+
+/// A custom-view stand-in for a text bar button item (such as `editButtonItem`) on the iPhone
+/// glass bar. The system item's label is composited through the platter's vibrancy, which
+/// tints it with the bar colour behind; hosting the text under `.glassEffect(.identity)`
+/// draws it in the given colour, the way the baked image items are.
+@available(iOS 26.0, *)
+final class GlassTextBarButtonView: UIView {
+    private let hostingController: UIHostingController<AnyView>
+    private var title: String
+    private var weight: Font.Weight
+    private var color: UIColor
+    private let action: () -> Void
+
+    init(title: String, weight: Font.Weight = .regular, color: UIColor, action: @escaping () -> Void) {
+        self.title = title
+        self.weight = weight
+        self.color = color
+        self.action = action
+        hostingController = UIHostingController(rootView: AnyView(EmptyView()))
+        super.init(frame: .zero)
+        hostingController.view.backgroundColor = .clear
+        hostingController.view.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(hostingController.view)
+        NSLayoutConstraint.activate([
+            hostingController.view.leadingAnchor.constraint(equalTo: leadingAnchor),
+            hostingController.view.trailingAnchor.constraint(equalTo: trailingAnchor),
+            hostingController.view.topAnchor.constraint(equalTo: topAnchor),
+            hostingController.view.bottomAnchor.constraint(equalTo: bottomAnchor),
+        ])
+        render()
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    func update(title: String? = nil, weight: Font.Weight? = nil, color: UIColor? = nil) {
+        let title = title ?? self.title
+        let weight = weight ?? self.weight
+        let color = color ?? self.color
+        guard title != self.title || weight != self.weight || color != self.color else { return }
+        self.title = title
+        self.weight = weight
+        self.color = color
+        render()
+    }
+
+    /// Matches the label inset of a system text item, so the platter keeps its pill shape.
+    private static let horizontalPadding: CGFloat = 14
+
+    private func render() {
+        hostingController.rootView = AnyView(
+            SidebarButtonView(title: title, weight: weight, color: Color(color), action: action)
+                .padding(.horizontal, Self.horizontalPadding)
+                .themed()
+        )
+        let size = hostingController.sizeThatFits(in: CGSize(width: CGFloat.greatestFiniteMagnitude, height: 44))
+        frame.size = size
+        invalidateIntrinsicContentSize()
+        superview?.setNeedsLayout()
+    }
+
+    override var intrinsicContentSize: CGSize { frame.size }
+}
+
+/// A screen's Edit/Done bar button: the system `editButtonItem`, or on iOS 26 iPhone a
+/// `GlassTextBarButtonView` stand-in (the iPad sidebar makes its own replacements). Call
+/// `setEditing(_:)` from the screen's `setEditing(_:animated:)` and `setGlassGlyphColor(_:theme:)`
+/// alongside its other glass glyph updates.
+final class EditBarButton {
+    private weak var viewController: UIViewController?
+    private var glassView: UIView?
+
+    init(for viewController: UIViewController) {
+        self.viewController = viewController
+    }
+
+    var item: UIBarButtonItem {
+        guard let viewController else { return UIBarButtonItem() }
+        guard #available(iOS 26.0, *), LiquidGlass.affectsBarButtonPlatters, !LiquidGlass.affectsPadSidebar else {
+            glassView = nil
+            return viewController.editButtonItem
+        }
+        if let glassView {
+            return UIBarButtonItem(customView: glassView)
+        }
+        // The colour is set by `setGlassGlyphColor` before the bar shows.
+        let view = GlassTextBarButtonView(
+            title: Self.title(isEditing: viewController.isEditing),
+            weight: viewController.isEditing ? .bold : .regular,
+            color: .white
+        ) { [weak viewController] in
+            guard let viewController else { return }
+            viewController.setEditing(!viewController.isEditing, animated: true)
+        }
+        glassView = view
+        return UIBarButtonItem(customView: view)
+    }
+
+    func setEditing(_ isEditing: Bool) {
+        guard #available(iOS 26.0, *), let view = glassView as? GlassTextBarButtonView else { return }
+        view.update(title: Self.title(isEditing: isEditing), weight: isEditing ? .bold : .regular)
+    }
+
+    /// `bakedColor` is the theme's bar text colour while the bar rests on the screen (see
+    /// NavigationBarScrollTransitioning); nil once scrolled, when the label takes the mode colour
+    /// the adaptive glass wants.
+    func setGlassGlyphColor(_ bakedColor: UIColor?, theme: Theme) {
+        guard #available(iOS 26.0, *), let view = glassView as? GlassTextBarButtonView else { return }
+        view.update(color: bakedColor ?? theme.glassContentTextColor)
+    }
+
+    static func title(isEditing: Bool) -> String {
+        isEditing
+            ? NSLocalizedString("Done", comment: "Edit button done state")
+            : NSLocalizedString("Edit", comment: "Edit button")
+    }
+}
+
+/// A screen's plain text bar button (Cancel, Send, Preview…). On iOS 26 the system item's label
+/// is composited through a bar-button platter's vibrancy, which washes it into the bar colour
+/// behind, so the item gets a `GlassTextBarButtonView` stand-in that keeps the colour it is
+/// given — the text equivalent of baking an image item's glyph.
+///
+/// Use `item` wherever the plain item went, including for `title` and `isEnabled`: the stand-in
+/// follows both. Screens hand the resting colour along from their
+/// `NavigationBarScrollTransitioning.updateGlassBarButtonGlyphs(color:)`.
+final class GlassTextBarButton {
+    let item: UIBarButtonItem
+    private var glassView: UIView?
+    private var observations: [NSKeyValueObservation] = []
+    /// The colour the label rests at; nil until the bar first styles the screen.
+    private var bakedColor: UIColor?
+
+    init(title: String, weight: Font.Weight = .regular, action: @escaping () -> Void) {
+        if #available(iOS 26.0, *), LiquidGlass.affectsBarButtonPlatters {
+            // The colour arrives from `setGlassGlyphColor` before the bar shows.
+            let view = GlassTextBarButtonView(title: title, weight: weight, color: .white, action: action)
+            glassView = view
+            item = UIBarButtonItem(customView: view)
+            item.title = title
+        } else {
+            item = UIBarButtonItem(title: title, image: nil, primaryAction: UIAction { _ in action() }, menu: nil)
+        }
+        // A custom view shows neither the item's title nor its disabled state, so mirror both.
+        observations = [
+            item.observe(\.title) { [weak self] item, _ in self?.applyTitle(item.title) },
+            item.observe(\.isEnabled) { [weak self] item, _ in self?.applyColor(isEnabled: item.isEnabled) },
+        ]
+    }
+
+    /// The theme's bar text colour while the bar rests opaque on the screen, nil once scrolled —
+    /// see `NavigationBarScrollTransitioning`.
+    func setGlassGlyphColor(_ color: UIColor?, theme: Theme) {
+        bakedColor = color ?? theme.glassContentTextColor
+        applyColor(isEnabled: item.isEnabled)
+    }
+
+    private func applyTitle(_ title: String?) {
+        guard #available(iOS 26.0, *), let view = glassView as? GlassTextBarButtonView, let title else { return }
+        view.update(title: title)
+    }
+
+    private func applyColor(isEnabled: Bool) {
+        guard #available(iOS 26.0, *), let view = glassView as? GlassTextBarButtonView else { return }
+        let color = bakedColor ?? .white
+        view.update(color: isEnabled ? color : color.withAlphaComponent(0.4))
+        view.isUserInteractionEnabled = isEnabled
     }
 }
 
@@ -408,7 +582,125 @@ final class NavigationController: UINavigationController, Themeable {
     private var cachedGradientImage: UIImage?
     private var cachedGradientImageColor: UIColor?
     private lazy var cachedBackIndicatorTemplate: UIImage? = UIImage(named: "back")?.withRenderingMode(.alwaysTemplate)
-    private lazy var cachedBackIndicatorLabelTinted: UIImage? = UIImage(named: "back")?.withTintColor(.label, renderingMode: .alwaysOriginal)
+    private var cachedBackIndicatorsByColor: [UIColor: UIImage] = [:]
+
+    /// The back chevron with `color` baked in: glass vibrancy ignores `tintColor` on the dark
+    /// circles the bar shows at the top (see NavigationBarScrollTransitioning), and the bar's
+    /// trait follows the bar rather than the content, so a dynamic colour would resolve wrongly
+    /// once scrolled.
+    private func backIndicatorImage(tinted color: UIColor) -> UIImage? {
+        if let cached = cachedBackIndicatorsByColor[color] {
+            return cached
+        }
+        guard let image = UIImage(named: "back")?.withTintColor(color, renderingMode: .alwaysOriginal) else { return nil }
+        cachedBackIndicatorsByColor[color] = image
+        return image
+    }
+
+    private lazy var listPlatterBackdropStrip: UIView = {
+        let strip = UIView()
+        strip.isUserInteractionEnabled = false
+        return strip
+    }()
+
+    private lazy var listPlatterBackdrop: UIScrollView = {
+        let backdrop = UIScrollView()
+        backdrop.isScrollEnabled = false
+        backdrop.isUserInteractionEnabled = false
+        backdrop.scrollsToTop = false
+        backdrop.backgroundColor = .clear
+        backdrop.contentInsetAdjustmentBehavior = .never
+        backdrop.showsVerticalScrollIndicator = false
+        backdrop.showsHorizontalScrollIndicator = false
+        backdrop.accessibilityElementsHidden = true
+        backdrop.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        backdrop.addSubview(listPlatterBackdropStrip)
+        return backdrop
+    }()
+
+    /// A collection view can't hand the bar a usable backdrop: its cells scroll over anything we
+    /// put under the bar, and its capture ignores our own subviews entirely (verified by pixel
+    /// sampling with a navy view covering the whole visible area, above every cell and below the
+    /// scroll indicators). So under Reduce Liquid Glass the list is kept out from under the bar
+    /// (`edgesForExtendedLayout`) and this inert scroll view takes its place there — clear, so the
+    /// capture samples rather than flattening to a colour, with one bar-coloured strip for it to
+    /// sample. The opaque bar hides it.
+    @available(iOS 26.0, *)
+    private func installListPlatterBackdrop(for viewController: UIViewController, theme: Theme) {
+        // The list has to stop at the bar, or it is the one UIKit picks and samples.
+        if viewController.edgesForExtendedLayout != [] {
+            viewController.edgesForExtendedLayout = []
+            viewController.view.setNeedsLayout()
+        }
+        let backdrop = listPlatterBackdrop
+        backdrop.overrideUserInterfaceStyle = theme.navigationBarUserInterfaceStyle
+        listPlatterBackdropStrip.backgroundColor = theme[uicolor: "navigationBarTintColor"]
+        if backdrop.superview !== view {
+            backdrop.frame = view.bounds
+            view.insertSubview(backdrop, at: 0)
+        }
+        layoutListPlatterBackdrop()
+        if viewController.contentScrollView(for: .top) !== backdrop {
+            viewController.setContentScrollView(backdrop, for: .top)
+        }
+    }
+
+    /// Re-fits the backdrop after a bounds change (rotation): the strip has to keep covering the
+    /// bar, and an inert scroll view has to keep `contentSize` in step with its bounds.
+    @available(iOS 26.0, *)
+    private func layoutListPlatterBackdrop() {
+        guard listPlatterBackdrop.superview === view else { return }
+        listPlatterBackdrop.frame = view.bounds
+        listPlatterBackdrop.contentSize = listPlatterBackdrop.bounds.size
+        // The navigation controller's own safe area stops at the status bar, but the platter sits
+        // in the bar below it, so the strip is sized to the bar instead.
+        let barBottom = max(navigationBar.frame.maxY, view.safeAreaInsets.top)
+        listPlatterBackdropStrip.frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: barBottom)
+    }
+
+    /// Undoes `installListPlatterBackdrop` when Liquid Glass is switched back on, so the list goes
+    /// back to scrolling under the translucent bar and driving the platters itself.
+    @available(iOS 26.0, *)
+    private func removeListPlatterBackdrop(for viewController: UIViewController) {
+        if viewController.contentScrollView(for: .top) === listPlatterBackdrop {
+            viewController.setContentScrollView(nil, for: .top)
+        }
+        if viewController.edgesForExtendedLayout != .all {
+            viewController.edgesForExtendedLayout = .all
+            viewController.view.setNeedsLayout()
+        }
+        if listPlatterBackdrop.superview != nil {
+            listPlatterBackdrop.removeFromSuperview()
+        }
+    }
+
+    /// iOS 26 glass bar-button circles take their light/dark from the scroll view beneath the
+    /// bar (or from the bar's own trait when nothing scrolls beneath it), and their glyphs ignore
+    /// tintColor on dark glass. At the top, make the screen's scroll view read as the bar (dark
+    /// glass on a dark bar, even in a light theme) and bake the theme's bar text colour into its
+    /// glyphs; once scrolled, hand both back to the content.
+    @available(iOS 26.0, *)
+    private func applyGlassRestingState(atTop: Bool, for viewController: UIViewController?, theme: Theme) {
+        guard let viewController else { return }
+        let screen = viewController as? NavigationBarScrollTransitioning
+        if LiquidGlass.isEnabled {
+            screen?.navigationBarScrollView?.applyNavigationBarPlatterBackdrop(atTop: atTop, theme: theme)
+            removeListPlatterBackdrop(for: viewController)
+        } else if screen?.navigationBarScrollView is UICollectionView {
+            // See `installListPlatterBackdrop`: a collection view can't be made to sample right.
+            installListPlatterBackdrop(for: viewController, theme: theme)
+        } else {
+            // Reduce Liquid Glass keeps the bar solid at every offset, so the backdrop never gets
+            // handed back to the content — and it has to sit in front of it to stay sampled.
+            screen?.navigationBarScrollView?.pinNavigationBarPlatterBackdropOverContent(theme: theme)
+        }
+
+        let color = atTop ? theme[uicolor: "navigationBarTextColor"] : nil
+        for item in navigationBarItems(of: viewController) where item.customView == nil && item.image != nil {
+            item.setGlassGlyph(bakedColor: color, tint: nil)
+        }
+        screen?.updateGlassBarButtonGlyphs(color: color)
+    }
 
     @available(iOS 26.0, *)
     private func gradientBackgroundImage(from color: UIColor) -> UIImage? {
@@ -432,12 +724,11 @@ final class NavigationController: UINavigationController, Themeable {
     }
 
     override var preferredStatusBarStyle: UIStatusBarStyle {
-        // For iOS 26+: use dynamic when scrolled
-        if #available(iOS 26.0, *), LiquidGlass.isEnabled, isScrolledFromTop {
-            return .default  // Let system handle it dynamically when scrolled
+        // Once the glass bar has gone transparent the system picks the style for the content.
+        if #available(iOS 26.0, *), LiquidGlass.usesGlassNavigationBar, isScrolledFromTop {
+            return .default
         }
 
-        // Otherwise: follow the theme setting
         if isDarkContentBackground {
             return .lightContent
         } else {
@@ -509,6 +800,13 @@ final class NavigationController: UINavigationController, Themeable {
     
     // MARK: View lifecycle
     
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        if #available(iOS 26.0, *) {
+            layoutListPlatterBackdrop()
+        }
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -672,12 +970,74 @@ final class NavigationController: UINavigationController, Themeable {
     @available(iOS 26.0, *)
     private func updateSharedBackgroundVisibility(for viewController: UIViewController) {
         let hide = !LiquidGlass.isEnabled
-        let items = (viewController.navigationItem.leftBarButtonItems ?? [])
-            + (viewController.navigationItem.rightBarButtonItems ?? [])
-            + (viewController.toolbarItems ?? [])
-        for item in items where !item.isSpacer {
+        let toolbarItems = (viewController.toolbarItems ?? []).filter { !$0.isSpacer }
+        for item in navigationBarItems(of: viewController) + toolbarItems {
             item.hidesSharedBackground = hide
         }
+    }
+
+    /// Hands both screens' bar button items their shared glass background back for the length of a
+    /// push or pop, then takes it away again.
+    ///
+    /// UIKit morphs the outgoing screen's bar-button background into the incoming one's. Under
+    /// Reduce Liquid Glass ours are hidden, so the morph has no shape to start from and UIKit
+    /// materialises the incoming platter out of the item's raw bounds instead: a hard-cornered
+    /// rectangle that rounds into the back button's circle, after which the glass lens goes on
+    /// refracting that rectangle for the best part of a second. Lending the background back for
+    /// the transition gives the morph a capsule to grow from, and the resting state is untouched
+    /// because it is taken away again the moment the transition ends (whether it finished or was
+    /// cancelled).
+    ///
+    /// Verified frame by frame: everything else that looked promising — `UIBarButtonItem`'s
+    /// `identifier` and `sharesBackground`, a capsule `cornerConfiguration` on the custom views,
+    /// and dropping the navigation bar's forced mid-transition layout passes — changed nothing.
+    /// Nor is the custom-view stand-in to blame: a plain system `editButtonItem` with the
+    /// background hidden shows exactly the same rectangle.
+    @available(iOS 26.0, *)
+    private func lendSharedBackgroundDuringTransition(_ navigationController: UINavigationController) {
+        guard !LiquidGlass.isEnabled, let coordinator = navigationController.transitionCoordinator else { return }
+        let screens = [coordinator.viewController(forKey: .from), coordinator.viewController(forKey: .to)]
+            .compactMap { $0 }
+            .filter { !navigationBarItems(of: $0).isEmpty }
+        guard !screens.isEmpty else { return }
+
+        for item in screens.flatMap(navigationBarItems) {
+            item.hidesSharedBackground = false
+        }
+
+        // Re-read the setting when restoring rather than assuming: the user can flip it while the
+        // transition is in flight.
+        //
+        // Known cost: UIKit animates the loan away by shrinking it into a tight ring around the
+        // label, which sits on the arriving screen's button for about a third of a second after
+        // the transition has finished. It resists `UIView.performWithoutAnimation`,
+        // `CATransaction.setDisableActions`, restoring off the animation context on the next
+        // runloop turn, re-seating the bar's items, toggling `sharesBackground` around the change,
+        // and restoring partway through the transition instead of at the end. Restoring inside
+        // the transition's own animation removes the ring but brings the rectangle back, because
+        // the morph loses its shape halfway through.
+        let restore = { [weak self] in
+            guard let self else { return }
+            let hide = !LiquidGlass.isEnabled
+            for screen in screens {
+                for item in self.navigationBarItems(of: screen) {
+                    item.hidesSharedBackground = hide
+                }
+            }
+        }
+        if !coordinator.animate(alongsideTransition: nil, completion: { _ in restore() }) {
+            // The coordinator wouldn't take the block, so there is nothing to restore it later.
+            restore()
+        }
+    }
+
+    /// The screen's own bar button items — the ones `hidesSharedBackground` applies to. The system
+    /// back button isn't among them; it keeps its platter either way.
+    @available(iOS 26.0, *)
+    private func navigationBarItems(of viewController: UIViewController) -> [UIBarButtonItem] {
+        let navigationItem = viewController.navigationItem
+        return ((navigationItem.leftBarButtonItems ?? []) + (navigationItem.rightBarButtonItems ?? []))
+            .filter { !$0.isSpacer }
     }
 
     /// Replaces text-based bar button items with custom-view equivalents that
@@ -843,9 +1203,7 @@ final class NavigationController: UINavigationController, Themeable {
     @available(iOS 26.0, *)
     private func makeEditBarButtonItem(for viewController: UIViewController) -> UIBarButtonItem {
         let isEditing = viewController.isEditing
-        let title = isEditing
-            ? NSLocalizedString("Done", comment: "Edit button done state")
-            : NSLocalizedString("Edit", comment: "Edit button")
+        let title = EditBarButton.title(isEditing: isEditing)
         let weight: Font.Weight = isEditing ? .bold : .regular
 
         let view = SidebarButtonView(title: title, weight: weight) { [weak viewController] in
@@ -988,9 +1346,14 @@ final class NavigationController: UINavigationController, Themeable {
     }
 
     /// Configures button appearance attributes for iOS 26 liquid glass compatibility.
-    /// Omits foregroundColor to allow navigationBar.tintColor to control button text color.
-    private func configureButtonAppearance(_ appearance: UINavigationBarAppearance, font: UIFont) {
-        let buttonAttributes: [NSAttributedString.Key: Any] = [.font: font]
+    /// Omits foregroundColor (so navigationBar.tintColor controls button text color) unless
+    /// `color` is given, which the resting-at-the-top state does: the glass circles read as the
+    /// bar there and take the theme's bar text colour (see NavigationBarScrollTransitioning).
+    private func configureButtonAppearance(_ appearance: UINavigationBarAppearance, font: UIFont, color: UIColor? = nil) {
+        var buttonAttributes: [NSAttributedString.Key: Any] = [.font: font]
+        if let color {
+            buttonAttributes[.foregroundColor] = color
+        }
         appearance.buttonAppearance.normal.titleTextAttributes = buttonAttributes
         appearance.buttonAppearance.highlighted.titleTextAttributes = buttonAttributes
         appearance.doneButtonAppearance.normal.titleTextAttributes = buttonAttributes
@@ -1006,7 +1369,7 @@ final class NavigationController: UINavigationController, Themeable {
     }
 
     @objc func updateNavigationBarTintForScrollProgress(_ progress: NSNumber) {
-        guard #available(iOS 26.0, *), LiquidGlass.isEnabled else { return }
+        guard #available(iOS 26.0, *), LiquidGlass.usesGlassNavigationBar else { return }
 
         // On iPad/macOS, only the detail column does the glass scroll transition.
         // The sidebar (primary) keeps its opaque themed nav bar.
@@ -1014,7 +1377,8 @@ final class NavigationController: UINavigationController, Themeable {
             return // sidebar/primary — keep opaque
         }
 
-        let progressValue = CGFloat(progress.floatValue)
+        // Reduce Liquid Glass never lets the bar go clear: it stays at the resting state.
+        let progressValue = LiquidGlass.isEnabled ? CGFloat(progress.floatValue) : 0
 
         // Snap to the extremes: near-0 and near-1 scrolls render identically to 0 and 1,
         // so collapse them into a single stable value. Without this, oscillations around
@@ -1034,6 +1398,13 @@ final class NavigationController: UINavigationController, Themeable {
             return
         }
         lastAppliedScrollProgress = snappedProgress
+
+        // Before the appearance is rebuilt: the glass circles re-evaluate their light/dark then.
+        if snappedProgress == 0 {
+            applyGlassRestingState(atTop: true, for: topViewController, theme: theme)
+        } else if snappedProgress == 1 {
+            applyGlassRestingState(atTop: false, for: topViewController, theme: theme)
+        }
 
         updateNavigationBarBackgroundWithProgress(snappedProgress)
 
@@ -1061,7 +1432,7 @@ final class NavigationController: UINavigationController, Themeable {
     }
 
     @objc func updateNavigationBarTintForScrollPosition(_ isAtTop: NSNumber) {
-        guard #available(iOS 26.0, *), LiquidGlass.isEnabled else { return }
+        guard #available(iOS 26.0, *), LiquidGlass.usesGlassNavigationBar else { return }
         // Scroll-based appearance handled in updateNavigationBarTintForScrollProgress,
         // which already guards against iPad split view.
         let progress = isAtTop.boolValue ? 0.0 : 1.0
@@ -1124,9 +1495,15 @@ final class NavigationController: UINavigationController, Themeable {
 
     @available(iOS 26.0, *)
     private func configureBackIndicator(for appearance: UINavigationBarAppearance, progress: CGFloat) {
-        let backImage = progress > ScrollProgress.fullyScrolled
-            ? cachedBackIndicatorLabelTinted
-            : cachedBackIndicatorTemplate
+        let backImage: UIImage?
+        if progress > ScrollProgress.fullyScrolled {
+            backImage = backIndicatorImage(tinted: theme.glassContentTextColor)
+        } else if progress < ScrollProgress.atTop,
+                  let textColor = theme[uicolor: "navigationBarTextColor"] {
+            backImage = backIndicatorImage(tinted: textColor)
+        } else {
+            backImage = cachedBackIndicatorTemplate
+        }
         if let backImage {
             appearance.setBackIndicatorImage(backImage, transitionMaskImage: backImage)
         }
@@ -1136,7 +1513,7 @@ final class NavigationController: UINavigationController, Themeable {
     private func configureTitleAndButtons(for appearance: UINavigationBarAppearance, progress: CGFloat) {
         let textColor: UIColor
         if progress > ScrollProgress.fullyScrolled {
-            textColor = theme["mode"] == "dark" ? .white : .black
+            textColor = theme.glassContentTextColor
         } else {
             textColor = theme[uicolor: "navigationBarTextColor"] ?? .label
         }
@@ -1147,7 +1524,8 @@ final class NavigationController: UINavigationController, Themeable {
         ]
 
         let buttonFont = UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .regular)
-        configureButtonAppearance(appearance, font: buttonFont)
+        let restingOnBar = progress < ScrollProgress.atTop
+        configureButtonAppearance(appearance, font: buttonFont, color: restingOnBar ? textColor : nil)
     }
 
     @available(iOS 26.0, *)
@@ -1158,10 +1536,9 @@ final class NavigationController: UINavigationController, Themeable {
         awfulNavigationBar.compactScrollEdgeAppearance = appearance
 
         if progress < ScrollProgress.atTop {
-            // At the top the bar is opaque, but liquid glass still renders the
-            // buttons in glass circles — use the mode colour, not the theme's
-            // white (matches configureNavigationBarForLiquidGlass).
-            awfulNavigationBar.tintColor = theme["mode"] == "dark" ? .white : .black
+            // At the top the glass circles read as the bar, so text items take the theme's bar
+            // text colour (image items are baked; see applyGlassRestingState).
+            awfulNavigationBar.tintColor = theme[uicolor: "navigationBarTextColor"] ?? .label
         } else if progress > ScrollProgress.fullyScrolled {
             awfulNavigationBar.tintColor = nil
         }
@@ -1193,117 +1570,71 @@ final class NavigationController: UINavigationController, Themeable {
         awfulNavigationBar.barTintColor = theme["navigationBarTintColor"]
 
         // Repair the init-time value when the Reduce Liquid Glass setting changes while running.
-        awfulNavigationBar.isTranslucent = LiquidGlass.isEnabled
+        awfulNavigationBar.isTranslucent = LiquidGlass.usesGlassNavigationBar
 
-        if #available(iOS 26.0, *), LiquidGlass.isEnabled {
+        if #available(iOS 26.0, *), LiquidGlass.usesGlassNavigationBar {
             awfulNavigationBar.bottomBorderColor = .clear
-        } else {
-            awfulNavigationBar.bottomBorderColor = theme["topBarBottomBorderColor"]
-        }
-
-        if #available(iOS 26.0, *), LiquidGlass.isEnabled {
             awfulNavigationBar.layer.shadowOpacity = 0
             awfulNavigationBar.layer.shadowColor = UIColor.clear.cgColor
         } else {
+            awfulNavigationBar.bottomBorderColor = theme["topBarBottomBorderColor"]
             awfulNavigationBar.layer.shadowOpacity = Float(theme[double: "navigationBarShadowOpacity"] ?? 1)
         }
 
-        // Apply theme's status bar setting
         if theme["statusBarBackground"] == "light" {
             statusBarEnterLightBackground()
         } else {
             statusBarEnterDarkBackground()
         }
 
-        if #available(iOS 15.0, *) {
-            if #available(iOS 26.0, *),
-               LiquidGlass.isEnabled,
-               !(UIDevice.current.userInterfaceIdiom == .pad && tabBarController != nil) {
-                // iPhone and iPad detail column: iOS 26 glass-capable appearance.
-                // Sidebar nav controllers skip this — they use the opaque path
-                // below so willShow/tab switches never reset tintColor to nil.
+        let textColor = theme[uicolor: "navigationBarTextColor"] ?? .label
+        let isSidebar = UIDevice.current.userInterfaceIdiom == .pad && tabBarController != nil
+        let backImage: UIImage?
+        let buttonTitleColor: UIColor?
+        if #available(iOS 26.0, *), LiquidGlass.usesGlassNavigationBar, !isSidebar {
+            // iPhone and iPad detail column: the glass-capable bar. Sidebar nav controllers take
+            // the opaque path so willShow/tab switches never reset tintColor to nil.
+            //
+            // The glass bar-button circles follow this trait when nothing scrolls beneath the bar
+            // (the search and settings screens); a scroll view beneath the bar overrides it (see
+            // applyGlassRestingState).
+            awfulNavigationBar.overrideUserInterfaceStyle = theme.navigationBarUserInterfaceStyle
 
-                // Liquid Glass resolves its platters' light/dark (title capsule, round
-                // bar-button glass) from the bar's trait, not from appearance colors.
-                awfulNavigationBar.overrideUserInterfaceStyle = theme.userInterfaceStyle
-
-                let initialAppearance = UINavigationBarAppearance()
-                initialAppearance.configureWithOpaqueBackground()
-                initialAppearance.backgroundColor = theme["navigationBarTintColor"]
-                initialAppearance.shadowColor = nil
-                initialAppearance.shadowImage = nil
-
-                let textColor = theme[uicolor: "navigationBarTextColor"] ?? .label
-
-                if let backImage = UIImage(named: "back")?.withRenderingMode(.alwaysTemplate) {
-                    initialAppearance.setBackIndicatorImage(backImage, transitionMaskImage: backImage)
-                }
-
-                initialAppearance.titleTextAttributes = [
-                    .foregroundColor: textColor,
-                    .font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .semibold)
-                ]
-                let buttonFont = UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .regular)
-                configureButtonAppearance(initialAppearance, font: buttonFont)
-
-                awfulNavigationBar.standardAppearance = initialAppearance
-                awfulNavigationBar.scrollEdgeAppearance = initialAppearance
-                awfulNavigationBar.compactAppearance = initialAppearance
-                awfulNavigationBar.compactScrollEdgeAppearance = initialAppearance
-
-                awfulNavigationBar.tintColor = nil
-
-                awfulNavigationBar.setNeedsLayout()
-                awfulNavigationBar.layoutIfNeeded()
-
-            } else {
-                // Undo the glass branch's trait override (matters when Reduce Liquid
-                // Glass is toggled while running).
-                awfulNavigationBar.overrideUserInterfaceStyle = .unspecified
-
-                let appearance = UINavigationBarAppearance()
-                appearance.configureWithOpaqueBackground()
-                appearance.backgroundColor = theme["navigationBarTintColor"]
-                appearance.shadowColor = nil
-                appearance.shadowImage = nil
-
-                if let backImage = UIImage(named: "back")?.withRenderingMode(.alwaysTemplate) {
-                    appearance.setBackIndicatorImage(backImage, transitionMaskImage: backImage)
-                }
-
-                let textColor = theme[uicolor: "navigationBarTextColor"] ?? .label
-
-                appearance.titleTextAttributes = [.foregroundColor: textColor,
-                                                 .font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .semibold)]
-
-                let buttonFont = UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .regular)
-                configureButtonAppearance(appearance, font: buttonFont)
-
-                awfulNavigationBar.standardAppearance = appearance
-                awfulNavigationBar.scrollEdgeAppearance = appearance
-                awfulNavigationBar.compactAppearance = appearance
-                awfulNavigationBar.compactScrollEdgeAppearance = appearance
-
-                awfulNavigationBar.tintColor = textColor
-
-                awfulNavigationBar.setNeedsLayout()
-                awfulNavigationBar.layoutIfNeeded()
-            }
+            // At the top the glass circles read as the bar, and their glyphs take the theme's bar
+            // text colour, baked in where vibrancy would otherwise override it.
+            applyGlassRestingState(atTop: true, for: viewController ?? topViewController, theme: theme)
+            backImage = backIndicatorImage(tinted: textColor)
+            buttonTitleColor = textColor
         } else {
-            guard let fallbackTextColor = theme[uicolor: "navigationBarTextColor"] else { return }
-            let attrs: [NSAttributedString.Key: Any] = [
-                .foregroundColor: fallbackTextColor,
-                .font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .regular)
-            ]
-            UIBarButtonItem.appearance().setTitleTextAttributes(attrs, for: .normal)
-            UIBarButtonItem.appearance().setTitleTextAttributes(attrs, for: .highlighted)
-
-            if let backImage = UIImage(named: "back") {
-                let tintedBackImage = backImage.withRenderingMode(.alwaysTemplate)
-                navigationBar.backIndicatorImage = tintedBackImage
-                navigationBar.backIndicatorTransitionMaskImage = tintedBackImage
-            }
+            awfulNavigationBar.overrideUserInterfaceStyle = .unspecified
+            backImage = cachedBackIndicatorTemplate
+            buttonTitleColor = nil
         }
+
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = theme["navigationBarTintColor"]
+        appearance.shadowColor = nil
+        appearance.shadowImage = nil
+        if let backImage {
+            appearance.setBackIndicatorImage(backImage, transitionMaskImage: backImage)
+        }
+        appearance.titleTextAttributes = [
+            .foregroundColor: textColor,
+            .font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .semibold)
+        ]
+        let buttonFont = UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .regular)
+        configureButtonAppearance(appearance, font: buttonFont, color: buttonTitleColor)
+
+        awfulNavigationBar.standardAppearance = appearance
+        awfulNavigationBar.scrollEdgeAppearance = appearance
+        awfulNavigationBar.compactAppearance = appearance
+        awfulNavigationBar.compactScrollEdgeAppearance = appearance
+
+        awfulNavigationBar.tintColor = textColor
+
+        awfulNavigationBar.setNeedsLayout()
+        awfulNavigationBar.layoutIfNeeded()
     }
     
     // MARK: Delegate delegation
@@ -1366,19 +1697,18 @@ extension NavigationController: UINavigationControllerDelegate {
         if #available(iOS 26.0, *) {
             applySidebarAppearanceIfNeeded(with: vcTheme)
             updateSharedBackgroundVisibility(for: viewController)
+            lendSharedBackgroundDuringTransition(navigationController)
         }
 
         if awfulNavigationBar.backIndicatorImage == nil {
-            if #available(iOS 26.0, *),
-               UIDevice.current.userInterfaceIdiom == .pad,
-               tabBarController != nil,
-               let textColor = vcTheme[uicolor: "navigationBarTextColor"] {
-                // Sidebar: bake color in with .alwaysOriginal to bypass glass vibrancy
-                awfulNavigationBar.backIndicatorImage = UIImage(named: "back")?.withTintColor(textColor, renderingMode: .alwaysOriginal)
-                awfulNavigationBar.backIndicatorTransitionMaskImage = UIImage(named: "back")?.withTintColor(textColor, renderingMode: .alwaysOriginal)
+            if #available(iOS 26.0, *), let backImage = vcTheme[uicolor: "navigationBarTextColor"].flatMap(backIndicatorImage(tinted:)) {
+                // Glass vibrancy ignores tintColor, on the sidebar panel and on the back button's
+                // platter alike (which stays even under Reduce Liquid Glass), so bake the colour in.
+                awfulNavigationBar.backIndicatorImage = backImage
+                awfulNavigationBar.backIndicatorTransitionMaskImage = backImage
             } else {
-                awfulNavigationBar.backIndicatorImage = UIImage(named: "back")?.withRenderingMode(.alwaysTemplate)
-                awfulNavigationBar.backIndicatorTransitionMaskImage = UIImage(named: "back")?.withRenderingMode(.alwaysTemplate)
+                awfulNavigationBar.backIndicatorImage = cachedBackIndicatorTemplate
+                awfulNavigationBar.backIndicatorTransitionMaskImage = cachedBackIndicatorTemplate
             }
         }
 
@@ -1393,7 +1723,7 @@ extension NavigationController: UINavigationControllerDelegate {
             // tintColor — we must set it explicitly. Pre-iOS 26 also
             // needs manual tinting.
             let needsManualButtonTint: Bool = {
-                if #available(iOS 26.0, *), LiquidGlass.isEnabled {
+                if #available(iOS 26.0, *), LiquidGlass.usesGlassNavigationBar {
                     if let splitVC = tabBarController?.splitViewController ?? splitViewController,
                        !splitVC.isCollapsed {
                         return true // iPad with expanded split view
@@ -1412,10 +1742,12 @@ extension NavigationController: UINavigationControllerDelegate {
                     replaceSidebarBarButtonItems(for: viewController)
                 } else {
                     let buttonTintColor: UIColor
-                    if #available(iOS 26.0, *), LiquidGlass.isEnabled {
-                        // Liquid glass renders bar buttons in glass circles; ignore the
-                        // theme's white and match the title label / back button.
-                        buttonTintColor = vcTheme["mode"] == "dark" ? .white : .black
+                    if #available(iOS 26.0, *), LiquidGlass.usesGlassNavigationBar,
+                       !(viewController is NavigationBarScrollTransitioning) {
+                        // Liquid glass renders bar buttons in glass circles that adapt to the
+                        // content; ignore the theme's white and match the title label / back
+                        // button. (Screens whose circles read as the bar take the theme colour.)
+                        buttonTintColor = vcTheme.glassContentTextColor
                     } else {
                         buttonTintColor = textColor
                     }
@@ -1435,7 +1767,7 @@ extension NavigationController: UINavigationControllerDelegate {
         awfulNavigationBar.setNeedsLayout()
         awfulNavigationBar.layoutIfNeeded()
 
-        if #available(iOS 26.0, *), LiquidGlass.isEnabled {
+        if #available(iOS 26.0, *), LiquidGlass.usesGlassNavigationBar {
             isScrolledFromTop = false
             invalidateScrollProgressCache()
 
@@ -1485,7 +1817,7 @@ extension NavigationController: UINavigationControllerDelegate {
         if animated {
             unpopHandler?.navigationControllerDidFinishAnimating()
         }
-        
+
         pushAnimationInProgress = false
         
         realDelegate?.navigationController?(navigationController, didShow: viewController, animated: animated)

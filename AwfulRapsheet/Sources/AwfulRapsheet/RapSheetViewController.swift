@@ -101,6 +101,9 @@ public final class RapSheetViewController: ViewController {
     /// `updateButtonColors()` can retint them on theme changes — mirroring `ForumsTableViewController`.
     private var filterButtonView: UIButton?
     private var refreshButtonView: UIButton?
+    /// The bar text colour baked into the image buttons while the bar rests at the top (see
+    /// NavigationBarScrollTransitioning); nil once scrolled.
+    private var glassGlyphColor: UIColor?
 
     /// Top-left "More…" button, shown only while endless scrolling. Its menu is the way back to the paging
     /// controls, which are hidden while endless scroll is on.
@@ -237,6 +240,7 @@ public final class RapSheetViewController: ViewController {
             ? max(0, view.bounds.maxY - view.safeAreaLayoutGuide.layoutFrame.maxY)
             : max(0, view.bounds.maxY - toolbar.frame.minY)
         renderView.scrollView.contentInset = UIEdgeInsets(top: topInset, left: 0, bottom: bottomInset, right: 0)
+        renderView.scrollView.relayoutNavigationBarPlatterBackdrop()
         renderView.scrollView.verticalScrollIndicatorInsets = UIEdgeInsets(top: topInset, left: 0, bottom: bottomInset, right: 0)
     }
 
@@ -356,7 +360,7 @@ public final class RapSheetViewController: ViewController {
             renderPunishments()
             // The document replacement returns to the top without any drag events, so reset the
             // iOS 26 bar to its opaque at-top state.
-            if #available(iOS 26.0, *), LiquidGlass.isEnabled {
+            if #available(iOS 26.0, *), LiquidGlass.usesGlassNavigationBar {
                 updateNavigationBarTint(progress: 0)
             }
             if isLepersColony {
@@ -745,16 +749,19 @@ public final class RapSheetViewController: ViewController {
     /// iOS 26's glass capsule doesn't dynamically tint customView buttons — a nilled tint falls back to
     /// system blue — so set the theme-appropriate color explicitly.
     private func updateButtonColors() {
-        let tintColor: UIColor?
-        if #available(iOS 26.0, *), LiquidGlass.isEnabled {
-            // An explicit tint prevents the system default blue when `NavigationController` sets tintColor = nil.
-            tintColor = theme["mode"] == "dark" ? UIColor.white : UIColor.black
+        let buttons = [filterButtonView, refreshButtonView, moreButtonView]
+        if #available(iOS 26.0, *), LiquidGlass.usesGlassNavigationBar {
+            // An explicit tint prevents system default blue once NavigationController nils the bar's.
+            let scrolledTint = theme.glassContentTextColor
+            for button in buttons {
+                button?.setGlassGlyph(bakedColor: glassGlyphColor, tint: scrolledTint)
+            }
         } else {
-            tintColor = theme[uicolor: "navigationBarTextColor"]
+            let tintColor = theme[uicolor: "navigationBarTextColor"]
+            for button in buttons {
+                button?.tintColor = tintColor
+            }
         }
-        filterButtonView?.tintColor = tintColor
-        refreshButtonView?.tintColor = tintColor
-        moreButtonView?.tintColor = tintColor
     }
 
     @objc private func filterButtonTapped() {
@@ -817,6 +824,17 @@ public final class RapSheetViewController: ViewController {
     }
 }
 
+// MARK: - NavigationBarScrollTransitioning
+
+extension RapSheetViewController: NavigationBarScrollTransitioning {
+    public var navigationBarScrollView: UIScrollView? { renderView.scrollView }
+
+    public func updateGlassBarButtonGlyphs(color: UIColor?) {
+        glassGlyphColor = color
+        updateButtonColors()
+    }
+}
+
 // MARK: - UIScrollViewDelegate (endless scroll trigger)
 
 extension RapSheetViewController: UIScrollViewDelegate {
@@ -832,7 +850,7 @@ extension RapSheetViewController: UIScrollViewDelegate {
         // Update navigation bar tint for iOS 26+ dynamic colors. Same logic as
         // CollectionViewController. The dragging/decelerating guard skips programmatic
         // scrolls (pull-to-refresh's inset dance would otherwise read as "fully scrolled").
-        if #available(iOS 26.0, *), LiquidGlass.isEnabled, scrollView.isDragging || scrollView.isDecelerating {
+        if #available(iOS 26.0, *), LiquidGlass.usesGlassNavigationBar, scrollView.isDragging || scrollView.isDecelerating {
             let topPosition = -scrollView.adjustedContentInset.top
             let transitionDistance: CGFloat = 30.0
             let progress = max(0, min(1, (scrollView.contentOffset.y - topPosition) / transitionDistance))

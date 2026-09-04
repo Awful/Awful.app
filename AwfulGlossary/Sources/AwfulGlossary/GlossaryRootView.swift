@@ -69,6 +69,7 @@ public struct GlossaryRootView: View {
                     }
                 }
                 .padding()
+                .navigationBarPlatterBackdrop()
             }
             .frame(maxWidth: .infinity)
             .background(theme[color: "backgroundColor"]!)

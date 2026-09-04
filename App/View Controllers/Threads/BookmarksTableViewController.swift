@@ -615,6 +615,16 @@ final class BookmarksTableViewController: HostedCollectionViewController {
     private var filterButtonView: UIButton?
     private var searchButton: UIBarButtonItem!
     private var searchButtonView: UIButton?
+    /// The bar text colour baked into the image buttons while the bar rests at the top (see
+    /// NavigationBarScrollTransitioning); nil once scrolled.
+    private var glassGlyphColor: UIColor?
+    private lazy var editBarButton = EditBarButton(for: self)
+
+    override func updateGlassBarButtonGlyphs(color: UIColor?) {
+        glassGlyphColor = color
+        updateButtonColors()
+    }
+
     private var isSearchVisible = false
     private var filterPopoverController: UIViewController?
 
@@ -648,9 +658,9 @@ final class BookmarksTableViewController: HostedCollectionViewController {
             stack.spacing = 4
             stack.alignment = .center
             navigationItem.rightBarButtonItems = [UIBarButtonItem(customView: stack)]
-            navigationItem.leftBarButtonItems = [editButtonItem]
+            navigationItem.leftBarButtonItems = [editBarButton.item]
         } else {
-            navigationItem.leftBarButtonItem = editButtonItem
+            navigationItem.leftBarButtonItem = editBarButton.item
             navigationItem.rightBarButtonItems = [filterButton, searchButton]
         }
 
@@ -887,14 +897,17 @@ final class BookmarksTableViewController: HostedCollectionViewController {
         searchButton?.customView?.alpha = searchAlpha
         searchButtonView?.alpha = searchAlpha
 
-        if #available(iOS 26.0, *), LiquidGlass.isEnabled {
-            // Explicit tint color prevents system default blue when NavigationController sets tintColor = nil
-            let buttonTintColor = theme["mode"] == "dark" ? UIColor.white : UIColor.black
+        // The Edit stand-in exists under Reduce Liquid Glass too, so it is coloured either way.
+        editBarButton.setGlassGlyphColor(glassGlyphColor, theme: theme)
 
-            filterButton?.tintColor = buttonTintColor
-            filterButtonView?.tintColor = buttonTintColor
-            searchButton?.tintColor = buttonTintColor
-            searchButtonView?.tintColor = buttonTintColor
+        if #available(iOS 26.0, *), LiquidGlass.isEnabled {
+            // An explicit tint prevents system default blue once NavigationController nils the bar's.
+            let scrolledTint = theme.glassContentTextColor
+
+            filterButton?.tintColor = scrolledTint
+            searchButton?.tintColor = scrolledTint
+            filterButtonView?.setGlassGlyph(bakedColor: glassGlyphColor, tint: scrolledTint)
+            searchButtonView?.setGlassGlyph(bakedColor: glassGlyphColor, tint: scrolledTint)
         } else {
             let selectedColor = theme[uicolor: "tintColor"] ?? theme[uicolor: "navigationBarTextColor"]
             let normalColor = theme[uicolor: "navigationBarTextColor"]
@@ -1087,6 +1100,7 @@ final class BookmarksTableViewController: HostedCollectionViewController {
         }
 
         collectionView.isEditing = editing
+        editBarButton.setEditing(editing)
     }
 
     override func themeDidChange() {

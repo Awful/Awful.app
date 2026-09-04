@@ -56,6 +56,7 @@ final class PostPreviewViewController: ViewController {
         super.init(nibName: nil, bundle: nil)
         
         navigationItem.rightBarButtonItem = postButtonItem
+        glassTextBarButtons = [postButton]
     }
     
     deinit {
@@ -70,13 +71,16 @@ final class PostPreviewViewController: ViewController {
         return forum?.managedObjectContext
     }
     
-    private lazy var postButtonItem = UIBarButtonItem(primaryAction: UIAction(
-        title: "Post",
-        handler: { [unowned self] action in
-            (action.sender as? UIBarButtonItem)?.isEnabled = false
-            self.submitBlock?()
-        }
-    ))
+    private lazy var postButton: GlassTextBarButton = GlassTextBarButton(title: "Post") { [unowned self] in
+        postButton.item.isEnabled = false
+        submitBlock?()
+    }
+
+    private var postButtonItem: UIBarButtonItem { postButton.item }
+
+    /// The bar buttons whose labels take the resting colour; `ReplyWorkspace` replaces the Post
+    /// button with one that submits its draft.
+    var glassTextBarButtons: [GlassTextBarButton] = []
 
     override var theme: Theme {
         guard
@@ -200,6 +204,12 @@ final class PostPreviewViewController: ViewController {
         }
     }
 
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        renderView.scrollView.relayoutNavigationBarPlatterBackdrop()
+    }
+
     override func themeDidChange() {
         super.themeDidChange()
         
@@ -208,12 +218,28 @@ final class PostPreviewViewController: ViewController {
         }
         
         loadingView?.tintColor = theme["backgroundColor"]
+
+        if isViewLoaded {
+            // The bar stays opaque over the preview, so its glass circles read as the bar at
+            // every offset (see NavigationBarScrollTransitioning).
+            renderView.scrollView.pinNavigationBarPlatterBackdrop(theme: theme)
+        }
     }
     
     // MARK: Gunk
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+}
+
+extension PostPreviewViewController: NavigationBarScrollTransitioning {
+    var navigationBarScrollView: UIScrollView? { renderView.scrollView }
+
+    func updateGlassBarButtonGlyphs(color: UIColor?) {
+        for button in glassTextBarButtons {
+            button.setGlassGlyphColor(color, theme: theme)
+        }
     }
 }
 

@@ -20,36 +20,39 @@ struct GlossaryTopicView: View {
 
     var body: some View {
         ScrollView {
-            switch viewModel.state {
-            case .loading:
-                ProgressView()
-                    .tint(theme[color: "tintColor"])
-                    .frame(maxWidth: .infinity)
-                    .padding(.top, 60)
+            Group {
+                switch viewModel.state {
+                case .loading:
+                    ProgressView()
+                        .tint(theme[color: "tintColor"])
+                        .frame(maxWidth: .infinity)
+                        .padding(.top, 60)
 
-            case .failed(let message):
-                GlossaryMessageView(text: message) {
-                    Task { await viewModel.load() }
-                }
+                case .failed(let message):
+                    GlossaryMessageView(text: message) {
+                        Task { await viewModel.load() }
+                    }
 
-            case .loaded(let topic):
-                LazyVStack(alignment: .leading, spacing: 16) {
-                    Text(topic.title)
-                        .font(.title.bold())
-                        .foregroundColor(theme[color: "listTextColor"])
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                case .loaded(let topic):
+                    LazyVStack(alignment: .leading, spacing: 16) {
+                        Text(topic.title)
+                            .font(.title.bold())
+                            .foregroundColor(theme[color: "listTextColor"])
+                            .frame(maxWidth: .infinity, alignment: .leading)
 
-                    if topic.entries.isEmpty {
-                        Text("This topic has no entries yet.", bundle: .module)
-                            .foregroundColor(theme[color: "listSecondaryTextColor"])
-                    } else {
-                        ForEach(topic.entries) { entry in
-                            GlossaryEntryView(entry: entry)
+                        if topic.entries.isEmpty {
+                            Text("This topic has no entries yet.", bundle: .module)
+                                .foregroundColor(theme[color: "listSecondaryTextColor"])
+                        } else {
+                            ForEach(topic.entries) { entry in
+                                GlossaryEntryView(entry: entry)
+                            }
                         }
                     }
+                    .padding()
                 }
-                .padding()
             }
+            .navigationBarPlatterBackdrop()
         }
         .frame(maxWidth: .infinity)
         .background(theme[color: "backgroundColor"]!)

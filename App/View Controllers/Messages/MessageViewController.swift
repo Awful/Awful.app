@@ -218,7 +218,7 @@ final class MessageViewController: ViewController {
         renderView.scrollView.delegate = self
         view.insertSubview(renderView, at: 0)
 
-        if #available(iOS 26.0, *), LiquidGlass.isEnabled {
+        if #available(iOS 26.0, *), LiquidGlass.usesGlassNavigationBar {
             configureNavigationBarForLiquidGlass()
         }
         
@@ -311,7 +311,7 @@ final class MessageViewController: ViewController {
         
         loadingView?.tintColor = theme["backgroundColor"]
 
-        if #available(iOS 26.0, *), LiquidGlass.isEnabled {
+        if #available(iOS 26.0, *), LiquidGlass.usesGlassNavigationBar {
             navigationItem.updateTitleLabelTextColor(
                 forScrollProgress: renderView.scrollView.navigationBarScrollProgress,
                 theme: theme
@@ -322,7 +322,7 @@ final class MessageViewController: ViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        if #available(iOS 26.0, *), LiquidGlass.isEnabled {
+        if #available(iOS 26.0, *), LiquidGlass.usesGlassNavigationBar {
             if let navController = navigationController as? NavigationController {
                 navController.updateNavigationBarTintForScrollProgress(NSNumber(value: 0.0))
             }
@@ -355,6 +355,7 @@ final class MessageViewController: ViewController {
         renderView.scrollView.contentInset.top = view.safeAreaInsets.top
         renderView.scrollView.contentInset.bottom = view.safeAreaInsets.bottom
         renderView.scrollView.scrollIndicatorInsets = renderView.scrollView.contentInset
+        renderView.scrollView.relayoutNavigationBarPlatterBackdrop()
     }
 
     @available(iOS 26.0, *)
@@ -478,7 +479,7 @@ extension MessageViewController: UIGestureRecognizerDelegate {
 
 extension MessageViewController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if #available(iOS 26.0, *), LiquidGlass.isEnabled {
+        if #available(iOS 26.0, *), LiquidGlass.usesGlassNavigationBar {
             let progress = scrollView.navigationBarScrollProgress
 
             if let navController = navigationController as? NavigationController {
@@ -488,6 +489,10 @@ extension MessageViewController: UIScrollViewDelegate {
             navigationItem.updateTitleLabelTextColor(forScrollProgress: progress, theme: theme)
         }
     }
+}
+
+extension MessageViewController: NavigationBarScrollTransitioning {
+    var navigationBarScrollView: UIScrollView? { renderView.scrollView }
 }
 
 extension MessageViewController: NavigationBarScrollProgressProviding {

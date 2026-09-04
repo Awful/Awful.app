@@ -68,7 +68,7 @@ final class ProfileViewController: ViewController {
         renderView.scrollView.contentInsetAdjustmentBehavior = .never
         renderView.scrollView.delegate = self
 
-        if #available(iOS 26.0, *), LiquidGlass.isEnabled {
+        if #available(iOS 26.0, *), LiquidGlass.usesGlassNavigationBar {
             configureNavigationBarForLiquidGlass()
         }
     }
@@ -82,7 +82,7 @@ final class ProfileViewController: ViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        if #available(iOS 26.0, *), LiquidGlass.isEnabled {
+        if #available(iOS 26.0, *), LiquidGlass.usesGlassNavigationBar {
             if let navController = navigationController as? NavigationController {
                 navController.updateNavigationBarTintForScrollProgress(NSNumber(value: 0.0))
             }
@@ -130,6 +130,7 @@ final class ProfileViewController: ViewController {
         renderView.scrollView.contentInset.top = view.safeAreaInsets.top
         renderView.scrollView.contentInset.bottom = view.safeAreaInsets.bottom
         renderView.scrollView.scrollIndicatorInsets = renderView.scrollView.contentInset
+        renderView.scrollView.relayoutNavigationBarPlatterBackdrop()
     }
 
     @available(iOS 26.0, *)
@@ -239,7 +240,7 @@ private struct ShowHomepageActions: RenderViewMessage {
 
 extension ProfileViewController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if #available(iOS 26.0, *), LiquidGlass.isEnabled {
+        if #available(iOS 26.0, *), LiquidGlass.usesGlassNavigationBar {
             let topInset = scrollView.adjustedContentInset.top
             let currentOffset = scrollView.contentOffset.y
             let topPosition = -topInset
@@ -261,6 +262,10 @@ extension ProfileViewController: UIScrollViewDelegate {
             }
         }
     }
+}
+
+extension ProfileViewController: NavigationBarScrollTransitioning {
+    var navigationBarScrollView: UIScrollView? { renderView.scrollView }
 }
 
 extension ProfileViewController: NavigationBarScrollProgressProviding {

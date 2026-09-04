@@ -92,7 +92,7 @@ final class SettingsViewController: HostingController<SettingsContainerView> {
     /// navigation controller.
     private func updateNavigationBarForScrollOffset(_ offsetFromTop: CGFloat) {
         guard #available(iOS 26.0, *),
-              LiquidGlass.isEnabled,
+              LiquidGlass.usesGlassNavigationBar,
               let navController = navigationController as? NavigationController
         else { return }
         let transitionDistance: CGFloat = 30.0

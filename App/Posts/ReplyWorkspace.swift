@@ -140,13 +140,14 @@ final class ReplyWorkspace: NSObject {
             }
 
             let navigationItem = compositionViewController.navigationItem
-            let cancelButton = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(ReplyWorkspace.didTapCancel(_:)))
-            // Liquid Glass handles the color automatically; otherwise tint explicitly.
+            // Pre-iOS 26 the plain item takes the theme tint; the iOS 26 stand-in is coloured by
+            // `setGlassGlyphColor`.
             if !LiquidGlass.isEnabled {
-                cancelButton.tintColor = compositionViewController.theme["navigationBarTextColor"]
+                cancelButton.item.tintColor = compositionViewController.theme["navigationBarTextColor"]
             }
-            navigationItem.leftBarButtonItem = cancelButton
+            navigationItem.leftBarButtonItem = cancelButton.item
             navigationItem.rightBarButtonItem = rightButtonItem
+            compositionViewController.glassTextBarButtons = [cancelButton, rightButton]
 
             $confirmBeforeReplying
                 .receive(on: RunLoop.main)
@@ -174,18 +175,27 @@ final class ReplyWorkspace: NSObject {
     
     fileprivate var textViewNotificationToken: AnyObject?
     
-    fileprivate lazy var rightButtonItem: UIBarButtonItem = { [unowned self] in
-        return UIBarButtonItem(title: self.draft.submitButtonTitle, style: .plain, target: self, action: #selector(ReplyWorkspace.didTapPost(_:)))
-        }()
-    
-    fileprivate func updateRightButtonItem() {
-        if confirmBeforeReplying {
-            rightButtonItem.title = "Preview"
-            rightButtonItem.action = #selector(ReplyWorkspace.didTapPreview(_:))
+    private lazy var cancelButton: GlassTextBarButton = GlassTextBarButton(title: "Cancel") { [unowned self] in
+        self.didTapCancel(self.cancelButton.item)
+    }
+
+    /// Held onto so its tap can pass it along as the button to disable while posting.
+    private var previewPostButton: GlassTextBarButton?
+
+    /// Posts, or previews first when the user has asked to confirm: a glass stand-in has no
+    /// target/action to swap, so the title and the tap follow the same setting.
+    private lazy var rightButton: GlassTextBarButton = GlassTextBarButton(title: draft.submitButtonTitle) { [unowned self] in
+        if self.confirmBeforeReplying {
+            self.didTapPreview()
         } else {
-            rightButtonItem.title = draft.submitButtonTitle
-            rightButtonItem.action = #selector(ReplyWorkspace.didTapPost(_:))
+            self.didTapPost(self.rightButton.item)
         }
+    }
+
+    fileprivate var rightButtonItem: UIBarButtonItem { rightButton.item }
+
+    fileprivate func updateRightButtonItem() {
+        rightButtonItem.title = confirmBeforeReplying ? "Preview" : draft.submitButtonTitle
     }
     
     private var draftMenuTitle: String {
@@ -219,7 +229,7 @@ final class ReplyWorkspace: NSObject {
         }
     }
     
-    @objc fileprivate func didTapPreview(_ sender: UIBarButtonItem) {
+    private func didTapPreview() {
         saveTextToDraft()
         
         let preview: PostPreviewViewController
@@ -228,19 +238,25 @@ final class ReplyWorkspace: NSObject {
         } else {
             preview = PostPreviewViewController(thread: draft.thread, BBcode: draft.text ?? .init())
         }
-        let postButton = UIBarButtonItem(title: draft.submitButtonTitle, style: .plain, target: self, action: #selector(ReplyWorkspace.didTapPost(_:)))
-        // Liquid Glass handles the color automatically; otherwise tint explicitly.
-        if !LiquidGlass.isEnabled {
-            postButton.tintColor = compositionViewController.theme["navigationBarTextColor"]
+        let postButton = GlassTextBarButton(title: draft.submitButtonTitle) { [unowned self] in
+            self.didTapPost(self.previewPostButton?.item)
         }
-        preview.navigationItem.rightBarButtonItem = postButton
+        previewPostButton = postButton
+        // Pre-iOS 26 the plain item takes the theme tint; the iOS 26 stand-in is coloured by
+        // `setGlassGlyphColor`.
+        if !LiquidGlass.isEnabled {
+            postButton.item.tintColor = compositionViewController.theme["navigationBarTextColor"]
+        }
+        preview.navigationItem.rightBarButtonItem = postButton.item
+        preview.glassTextBarButtons = [postButton]
         (viewController as! UINavigationController).pushViewController(preview, animated: true)
     }
     
-    @objc fileprivate func didTapPost(_ sender: UIBarButtonItem) {
+    /// `sender` is the button that was tapped: the composition's own, or the preview screen's.
+    fileprivate func didTapPost(_ sender: UIBarButtonItem?) {
         guard !isSubmitting else { return }
         isSubmitting = true
-        sender.isEnabled = false
+        sender?.isEnabled = false
         rightButtonItem.isEnabled = false
         saveTextToDraft()
 
@@ -253,7 +269,7 @@ final class ReplyWorkspace: NSObject {
             self.isSubmitting = false
 
             if let error = error {
-                sender.isEnabled = true
+                sender?.isEnabled = true
                 self.rightButtonItem.isEnabled = self.compositionViewController.textView.hasText
                 if (error as? CocoaError)?.code != .userCancelled {
                     if case ImageUploadError.authenticationRequired = error {
