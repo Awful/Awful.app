@@ -280,15 +280,6 @@ final class PostsPageViewController: ViewController {
     /// of the thread; tapping it (or any reply/quote/edit action) brings the sheet back.
     private var minimizedDraftBanner: BannerToastView?
 
-    private var minimizedDraftMessage: String {
-        switch replyWorkspace?.status {
-        case .editing:
-            return "Editing: \(thread.title ?? "")"
-        case .replying, nil:
-            return replyWorkspace?.draft.title ?? ""
-        }
-    }
-
     private func setMinimizedDraftBarVisible(_ visible: Bool) {
         guard visible else {
             minimizedDraftBanner?.dismiss()
@@ -301,7 +292,7 @@ final class PostsPageViewController: ViewController {
         minimizedDraftBanner = BannerToastView.show(
             in: view,
             theme: theme,
-            message: minimizedDraftMessage,
+            message: "Resume draft",
             duration: nil,
             bottomInset: pollToastBottomInset,
             onAction: { [weak self] in self?.showReplyWorkspace() }
