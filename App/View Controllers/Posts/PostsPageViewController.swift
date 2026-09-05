@@ -2576,7 +2576,9 @@ final class PostsPageViewController: ViewController {
 
         // Set tintColor AFTER applying appearance to ensure back button uses theme color. The
         // glass circles behind the buttons read as the bar at the top (NavigationBarScrollTransitioning),
-        // so the theme's own bar text colour goes on them.
+        // so the theme's own bar text colour goes on them. This is the resting state only: once
+        // scrolled, NavigationController.updateNavigationBarTintForScrollProgress nils the bar's
+        // tint and the back item's (set below) so the system colours them from the content.
         navigationBar.tintColor = textColor
 
         // Force the navigation controller to start at scroll position 0 (top)

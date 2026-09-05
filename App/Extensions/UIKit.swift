@@ -119,7 +119,10 @@ extension UINavigationItem {
         if progress < 0.01 {
             titleLabel.textColor = theme[uicolor: "navigationBarTextColor"] ?? .label
         } else if progress > 0.99 {
-            titleLabel.textColor = theme.glassContentTextColor
+            // Over the content the bar's trait is no longer pinned to the theme
+            // (NavigationController.applyAppearance), so a dynamic colour lets the label
+            // follow the bar's light/dark over what is beneath it, like the bar buttons.
+            titleLabel.textColor = .label
         }
     }
 }
