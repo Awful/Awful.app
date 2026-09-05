@@ -67,6 +67,9 @@ class LoginViewController: ViewController {
                     // The credentials never reached the Forums, so don't blame them.
                     title = String(localized: "Verification Needed")
                     message = [error.localizedDescription, error.failureReason].compactMap { $0 }.joined(separator: " ")
+                } else if let error = error as? ServerError, case .httpStatus = error {
+                    title = String(localized: "Problem Logging In")
+                    message = error.localizedDescription
                 } else {
                     title = String(localized: "Problem Logging In")
                     message = String(localized: "Double-check your username and password, then try again.")

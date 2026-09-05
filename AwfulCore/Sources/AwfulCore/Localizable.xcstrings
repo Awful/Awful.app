@@ -13,6 +13,9 @@
     "A poll question can be at most %lld characters." : {
 
     },
+    "Cloudflare Ray ID: %@" : {
+
+    },
     "Cloudflare wants to verify your browser before the Forums will respond." : {
 
     },
@@ -29,6 +32,9 @@
 
     },
     "Scraping failed" : {
+
+    },
+    "The Forums answered with HTTP %lld (%@)." : {
 
     },
     "The forums didn't accept the poll." : {

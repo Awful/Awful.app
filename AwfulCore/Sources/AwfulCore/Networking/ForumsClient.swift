@@ -172,7 +172,6 @@ public final class ForumsClient {
         case missingDataAndError
         case missingManagedObjectContext
         case requestSerializationError(String)
-        case unexpectedContentType(String, expected: String)
     }
 
     private enum Method: String {
@@ -2164,8 +2163,7 @@ public final class ForumsClient {
         parameters["submit"] = "Edit Folders"
 
         let (data, response) = try await fetch(method: .post, urlString: "private.php", parameters: parameters)
-        let (document, _) = try parseHTML(data: data, response: response)
-        try checkServerErrors(document)
+        _ = try parseHTML(data: data, response: response)
     }
 
     public func deletePrivateMessageFolder(folderID: String, folderName: String? = nil) async throws {
@@ -2234,8 +2232,7 @@ public final class ForumsClient {
         parameters["submit"] = "Edit Folders"
 
         let (data, response) = try await fetch(method: .post, urlString: "private.php", parameters: parameters)
-        let (document, _) = try parseHTML(data: data, response: response)
-        try checkServerErrors(document)
+        _ = try parseHTML(data: data, response: response)
     }
 
     public func deletePrivateMessage(
@@ -2249,8 +2246,7 @@ public final class ForumsClient {
             "privatemessageid": messageID,
             "delete": "yes",
         ])
-        let (document, _) = try parseHTML(data: data, response: response)
-        try checkServerErrors(document)
+        _ = try parseHTML(data: data, response: response)
     }
 
     public func movePrivateMessage(
@@ -2274,8 +2270,7 @@ public final class ForumsClient {
         ]
 
         let (data, response) = try await fetch(method: .post, urlString: "private.php", parameters: parameters)
-        let (document, _) = try parseHTML(data: data, response: response)
-        try checkServerErrors(document)
+        _ = try parseHTML(data: data, response: response)
 
         try await backgroundContext.perform {
             let messages = PrivateMessage.fetch(in: backgroundContext) {
@@ -2516,15 +2511,20 @@ private func parseHTML(data: Data, response: URLResponse) throws -> ParsedDocume
     let contentType = (response as? HTTPURLResponse)?.allHeaderFields["Content-Type"] as? String
     let document = HTMLDocument(data: data, contentTypeHeader: contentType)
     try checkServerErrors(document)
+    try checkHTTPStatus(response, document: document)
     return (document: document, url: response.url)
 }
 
-private func parseJSONDict(data: Data, response: URLResponse) throws -> [String: Any] {
-    let json = try JSONSerialization.jsonObject(with: data, options: [])
-    guard let dict = json as? [String: Any] else {
-        throw ForumsClient.Error.unexpectedContentType("\(type(of: json))", expected: "Dictionary<String, Any>")
-    }
-    return dict
+/**
+ Turns an error status on a page that isn't a Forums page (Cloudflare's 52x origin errors, gateway errors, rate limiting, WAF blocks) into a `ServerError` that names the status, instead of letting it surface as a scraping failure.
+
+ Runs after `checkServerErrors` so the Forums' own error pages keep their more specific messages. A page that still has the Forums' `#content` element is left to the scrapers regardless of status, so a Forums page that happens to arrive with an error status behaves exactly as it did before this check existed.
+ */
+private func checkHTTPStatus(_ response: URLResponse, document: HTMLDocument) throws {
+    guard let http = response as? HTTPURLResponse, http.statusCode >= 400,
+          document.firstNode(matchingParsedSelector: .cached("#content")) == nil
+    else { return }
+    throw ServerError.httpStatus(code: http.statusCode, cloudflareRayID: http.value(forHTTPHeaderField: "cf-ray"))
 }
 
 
@@ -2542,17 +2542,26 @@ public enum ServerError: LocalizedError {
     /// Cloudflare answered with a challenge that wasn't cleared (the user cancelled, or it didn't stick).
     case cloudflareChallenge(url: URL)
     case databaseUnavailable(title: String, message: String)
+    /// An error status with a page none of the scrapers recognise. The Ray ID is present when Cloudflare served the response, which is what the Forums' staff need to trace it.
+    case httpStatus(code: Int, cloudflareRayID: String?)
     case standard(title: String, message: String)
 
     public var errorDescription: String? {
         switch self {
         case .banned:
-            String(localized: "You've Been Banned", bundle: .module)
+            return String(localized: "You've Been Banned", bundle: .module)
         case .cloudflareChallenge:
-            String(localized: "Cloudflare wants to verify your browser before the Forums will respond.", bundle: .module)
+            return String(localized: "Cloudflare wants to verify your browser before the Forums will respond.", bundle: .module)
         case .databaseUnavailable(title: _, message: let message),
              .standard(title: _, message: let message):
-            message
+            return message
+        case .httpStatus(code: let code, cloudflareRayID: let rayID):
+            let reason = HTTPURLResponse.localizedString(forStatusCode: code)
+            var message = String(localized: "The Forums answered with HTTP \(code) (\(reason)).", bundle: .module)
+            if let rayID {
+                message += " " + String(localized: "Cloudflare Ray ID: \(rayID)", bundle: .module)
+            }
+            return message
         }
     }
 
@@ -2562,7 +2571,7 @@ public enum ServerError: LocalizedError {
             String(localized: "Congratulations! Please visit the Something Awful Forums website to learn why you were banned, to contact a mod or admin, to read the rules, or to reactivate your account.")
         case .cloudflareChallenge:
             String(localized: "Complete the verification when it appears, then try again.", bundle: .module)
-        case .databaseUnavailable, .standard:
+        case .databaseUnavailable, .httpStatus, .standard:
             nil
         }
     }

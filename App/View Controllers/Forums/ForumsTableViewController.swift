@@ -252,9 +252,14 @@ final class ForumsTableViewController: CollectionViewController {
                 migrateFavoriteForumsFromSettings()
             } catch {
                 logger.error("Could not taxonomize forums: \(error)")
-                // Most errors here are transient and the list keeps showing cached forums, but an uncleared Cloudflare challenge means nothing will load until the user deals with it.
-                if let error = error as? ServerError, case .cloudflareChallenge = error, visible {
-                    present(UIAlertController(networkError: error), animated: true)
+                // Connection errors are left quiet because the list keeps showing cached forums, but when the Forums answered and still wouldn't serve (a Cloudflare challenge, an outage), the user needs to hear about it.
+                switch error as? ServerError {
+                case .cloudflareChallenge, .httpStatus:
+                    if visible {
+                        present(UIAlertController(networkError: error), animated: true)
+                    }
+                default:
+                    break
                 }
             }
 
