@@ -22,16 +22,20 @@ body {
   touch-action: manipulation;
 }
 
-// Don't break tables with text, images, or videos.
+// Don't break tables with text, images, videos, or code.
 body {
   word-wrap: break-word;
 }
 .postbody {
+  // Grid item in the iPad layout (see ipad-responsive-postheader.less); without this, wide content grows the grid track instead of scrolling inside it.
+  min-width: 0;
+
   img, iframe, embed {
     max-width: 100%;
   }
-  div.code pre {
-    white-space: break-spaces;
+  // Long lines in [code] and [pre] blocks scroll within the block rather than widening the page.
+  pre {
+    overflow-x: auto;
   }
 }
 
@@ -53,6 +57,10 @@ body {
 
 post {
   display: block;
+
+  // Keep the web view from panning horizontally when post content is wider than the viewport. This has to be on the post: `overflow-x: hidden` on <html> or <body> doesn't stop WKWebView from panning. `clip` (iOS 16+) doesn't make the post a scroll container; `hidden` is the iOS 15 fallback.
+  overflow-x: hidden;
+  overflow-x: clip;
 
   .iphone & {
     .post-side-padding(0.6em);
@@ -373,7 +381,8 @@ blockquote {
   }
 }
 
-.bbc-block.code pre {
+// [code] and [pre] blocks.
+.bbc-block pre {
   margin: 0;
 }
 
