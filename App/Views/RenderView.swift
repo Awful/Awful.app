@@ -424,6 +424,53 @@ extension RenderView {
     func toggleOpaqueToFixIOS15ScrollThumbColor(setOpaqueTo: Bool) {
         webView.isOpaque = setOpaqueTo
     }
+
+    /// Mean relative luminance (0 dark … 1 light) of the rendered page within `rect` (in this
+    /// view's coordinates), or nil when nothing could be captured. Uses WebKit's own snapshot
+    /// path: `drawHierarchy` and `CALayer.render` don't read back web content on iOS 26. The
+    /// web view is transparent outside dark-mode scrolling, so `backdrop` (what shows through
+    /// it) is composited underneath before measuring.
+    func sampleLuminance(in rect: CGRect, over backdrop: UIColor?, completion: @escaping @MainActor (CGFloat?) -> Void) {
+        let webRect = convert(rect, to: webView).intersection(webView.bounds)
+        guard !webRect.isNull, webRect.width >= 1, webRect.height >= 1 else {
+            completion(nil)
+            return
+        }
+        let configuration = WKSnapshotConfiguration()
+        configuration.rect = webRect
+        // A few dozen pixels across is plenty for an average and keeps the capture cheap.
+        configuration.snapshotWidth = 24
+        configuration.afterScreenUpdates = false
+        webView.takeSnapshot(with: configuration) { image, _ in
+            guard let cgImage = image?.cgImage else {
+                completion(nil)
+                return
+            }
+            completion(Self.meanLuminance(of: cgImage, over: backdrop))
+        }
+    }
+
+    private static func meanLuminance(of image: CGImage, over backdrop: UIColor?) -> CGFloat? {
+        let width = image.width, height = image.height
+        guard width > 0, height > 0,
+              let context = CGContext(
+                data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: width * 4,
+                space: CGColorSpaceCreateDeviceRGB(),
+                bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)
+        else { return nil }
+        let bounds = CGRect(x: 0, y: 0, width: width, height: height)
+        context.setFillColor((backdrop ?? .black).cgColor)
+        context.fill(bounds)
+        context.draw(image, in: bounds)
+        guard let data = context.data else { return nil }
+        let pixels = data.assumingMemoryBound(to: UInt8.self)
+        var total: CGFloat = 0
+        for index in stride(from: 0, to: width * height * 4, by: 4) {
+            let r = CGFloat(pixels[index]), g = CGFloat(pixels[index + 1]), b = CGFloat(pixels[index + 2])
+            total += (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255
+        }
+        return total / CGFloat(width * height)
+    }
     
     /**
      Removes all previously-loaded content.
@@ -935,4 +982,149 @@ protocol RenderViewDelegate: AnyObject {
 
 private func escapeForEval(_ s: String) throws -> String {
     return String(data: try JSONEncoder().encode([s]), encoding: .utf8)! + "[0]"
+}
+
+/// Colours a navigation bar title black or white from the page beneath it once the iOS 26
+/// glass bar has gone transparent, the way the system colours its glass bar buttons.
+///
+/// The system can't do this for a title. Bar buttons adapt because their glass platter samples
+/// the pixels under it, whereas a title (or any platter-less bar item) takes the trait of the
+/// bar's content view, which UIKit seeds from the scroll view beneath and then only ever
+/// darkens over dark content — so in a dark theme it never goes black over light content.
+/// (Verified on iOS 26 by logging the trait chain; pinning `overrideUserInterfaceStyle` on the
+/// bar, the navigation controller or the screen changes nothing, and neither does an opaque web
+/// view painting its own background.) So the screen samples a strip of the page under the
+/// title itself, at most a few times a second, and decides with hysteresis so a busy image
+/// doesn't flicker it.
+///
+/// Call `sampleIfNeeded()` from scroll events while the bar is transparent and `reset()`
+/// otherwise; the label's colour is set here, and `color` is what the screen passes to
+/// `UINavigationItem.updateTitleLabelTextColor` until the next capture lands.
+@MainActor final class NavigationBarTitleContrastSampler {
+    private weak var renderView: RenderView?
+    private let titleLabel: () -> UILabel?
+    private let backdrop: () -> UIColor?
+
+    /// The colour the content beneath the title currently calls for; nil until the first
+    /// capture after `reset()`.
+    private(set) var color: UIColor?
+
+    /// Minimum time between captures.
+    private static let interval: CFTimeInterval = 0.1
+    /// How long to wait for WebKit before assuming a capture's completion is never coming
+    /// (e.g. the web content process went away mid-capture) and allowing the next one.
+    private static let captureTimeout: CFTimeInterval = 1
+    /// How long after the first capture following `reset()` to capture once more: a theme
+    /// change restyles the page asynchronously, so the first capture can still see the old
+    /// background, and nothing scrolls to trigger another.
+    private static let settleDelay: CFTimeInterval = 0.35
+
+    private var lastSampleTime: CFTimeInterval = 0
+    private var trailing: DispatchWorkItem?
+    private var settle: DispatchWorkItem?
+    private var isCapturing = false
+    private var wantsAnotherCapture = false
+    private var needsSettleCapture = false
+    /// Identifies the capture in flight, so the completion of one abandoned by `reset()` or the
+    /// timeout is ignored.
+    private var captureGeneration = 0
+
+    /// `titleLabel` and `backdrop` are looked up per capture: the label can be re-hosted, and
+    /// the theme (whose page background shows through the transparent web view) can change.
+    init(renderView: RenderView, titleLabel: @escaping () -> UILabel?, backdrop: @escaping () -> UIColor?) {
+        self.renderView = renderView
+        self.titleLabel = titleLabel
+        self.backdrop = backdrop
+    }
+
+    /// Captures now if the last capture is old enough, otherwise once the interval is up, so a
+    /// burst of scroll events costs at most one capture per interval and always ends with one
+    /// for the final position.
+    func sampleIfNeeded() {
+        let elapsed = CACurrentMediaTime() - lastSampleTime
+        if elapsed >= Self.interval {
+            sample()
+        } else if trailing == nil {
+            let work = DispatchWorkItem { [weak self] in
+                self?.trailing = nil
+                self?.sample()
+            }
+            trailing = work
+            DispatchQueue.main.asyncAfter(deadline: .now() + (Self.interval - elapsed), execute: work)
+        }
+    }
+
+    /// Forgets the sampled colour and abandons any capture in flight: the bar has gone opaque
+    /// again, or the page is about to change under the title.
+    func reset() {
+        trailing?.cancel()
+        trailing = nil
+        settle?.cancel()
+        settle = nil
+        captureGeneration += 1
+        isCapturing = false
+        wantsAnotherCapture = false
+        needsSettleCapture = true
+        color = nil
+    }
+
+    private func sample() {
+        lastSampleTime = CACurrentMediaTime()
+        if isCapturing {
+            wantsAnotherCapture = true
+            return
+        }
+        guard let renderView, let label = titleLabel(), label.window != nil else { return }
+        let rect = label.convert(label.bounds, to: renderView)
+        isCapturing = true
+        captureGeneration += 1
+        let generation = captureGeneration
+        DispatchQueue.main.asyncAfter(deadline: .now() + Self.captureTimeout) { [weak self] in
+            guard let self, self.captureGeneration == generation else { return }
+            self.captureGeneration += 1
+            self.finishCapture()
+        }
+        renderView.sampleLuminance(in: rect, over: backdrop()) { [weak self] luminance in
+            guard let self, self.captureGeneration == generation else { return }
+            if let luminance {
+                self.apply(luminance: luminance)
+            }
+            self.finishCapture()
+        }
+    }
+
+    private func finishCapture() {
+        isCapturing = false
+        if wantsAnotherCapture {
+            wantsAnotherCapture = false
+            sampleIfNeeded()
+        } else if needsSettleCapture {
+            needsSettleCapture = false
+            let work = DispatchWorkItem { [weak self] in
+                self?.settle = nil
+                self?.sample()
+            }
+            settle = work
+            DispatchQueue.main.asyncAfter(deadline: .now() + Self.settleDelay, execute: work)
+        }
+    }
+
+    private func apply(luminance: CGFloat) {
+        // Hysteresis: once decided, the content has to move well past the midpoint to flip.
+        let next: UIColor
+        switch color {
+        case .black?:
+            next = luminance < 0.4 ? .white : .black
+        case .white?:
+            next = luminance > 0.6 ? .black : .white
+        default:
+            next = luminance > 0.5 ? .black : .white
+        }
+        guard next != color else { return }
+        color = next
+        guard let label = titleLabel() else { return }
+        UIView.transition(with: label, duration: 0.15, options: [.transitionCrossDissolve, .beginFromCurrentState]) {
+            label.textColor = next
+        }
+    }
 }

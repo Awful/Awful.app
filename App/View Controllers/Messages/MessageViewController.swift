@@ -40,6 +40,14 @@ final class MessageViewController: ViewController {
         return renderView
     }()
 
+    /// Colours the title from the message beneath it while the iOS 26 glass bar is transparent
+    /// (see `NavigationBarTitleContrastSampler`).
+    private lazy var titleContrastSampler = NavigationBarTitleContrastSampler(
+        renderView: renderView,
+        titleLabel: { [weak self] in self?.navigationItem.titleView as? UILabel },
+        backdrop: { [weak self] in self?.theme[uicolor: "backgroundColor"] }
+    )
+
     private lazy var replyButtonItem: UIBarButtonItem = {
         return UIBarButtonItem(image: UIImage(named: "reply"), style: .plain, target: self, action: #selector(didTapReplyButtonItem))
     }()
@@ -312,6 +320,8 @@ final class MessageViewController: ViewController {
         loadingView?.tintColor = theme["backgroundColor"]
 
         if #available(iOS 26.0, *), LiquidGlass.usesGlassNavigationBar {
+            // The sampled colour was measured against the old theme's page background.
+            titleContrastSampler.reset()
             navigationItem.updateTitleLabelTextColor(
                 forScrollProgress: renderView.scrollView.navigationBarScrollProgress,
                 theme: theme
@@ -486,7 +496,16 @@ extension MessageViewController: UIScrollViewDelegate {
                 navController.updateNavigationBarTintForScrollProgress(NSNumber(value: Float(progress)))
             }
 
-            navigationItem.updateTitleLabelTextColor(forScrollProgress: progress, theme: theme)
+            if LiquidGlass.isEnabled, progress > 0.99 {
+                titleContrastSampler.sampleIfNeeded()
+            } else {
+                titleContrastSampler.reset()
+            }
+            navigationItem.updateTitleLabelTextColor(
+                forScrollProgress: progress,
+                theme: theme,
+                contentColor: titleContrastSampler.color
+            )
         }
     }
 }

@@ -691,6 +691,14 @@ final class PostsPageViewController: ViewController {
         ForumsClient.shared.currentArchivesTimeframe != nil
     }
 
+    /// Colours the title from the page beneath it while the iOS 26 glass bar is transparent;
+    /// driven from `PostsPageView.updateNavigationBarForScrollProgress`.
+    private(set) lazy var titleContrastSampler = NavigationBarTitleContrastSampler(
+        renderView: postsView.renderView,
+        titleLabel: { [weak self] in self?.navigationItem.titleView as? UILabel },
+        backdrop: { [weak self] in self?.theme[uicolor: "backgroundColor"] }
+    )
+
     private lazy var composeItem: UIBarButtonItem = {
         let item = UIBarButtonItem(image: UIImage(named: "compose"), style: .plain, target: self, action: #selector(compose))
         item.accessibilityLabel = NSLocalizedString("compose.accessibility-label", comment: "")
@@ -2307,10 +2315,13 @@ final class PostsPageViewController: ViewController {
         }
 
         if #available(iOS 26.0, *), LiquidGlass.isEnabled {
-            navigationItem.updateTitleLabelTextColor(
-                forScrollProgress: postsView.renderView.scrollView.navigationBarScrollProgress,
-                theme: theme
-            )
+            // The bar rests opaque while it is restyled here and by the navigation controller
+            // below, so the title takes the theme's bar colour to match. The sync at the end
+            // brings the bar and the title back to the real scroll offset together, and the
+            // sampled colour is dropped first because the page background it was measured
+            // against has just changed.
+            navigationItem.updateTitleLabelTextColor(forScrollProgress: 0, theme: theme)
+            titleContrastSampler.reset()
             configureNavigationBarForLiquidGlass()
         } else {
             navigationItem.titleLabel.textColor = Theme.defaultTheme()[uicolor: "navigationBarTextColor"] ?? .label
@@ -2328,6 +2339,12 @@ final class PostsPageViewController: ViewController {
             navController.themeDidChange()
         }
 
+        if #available(iOS 26.0, *), LiquidGlass.isEnabled {
+            // Everything above leaves the bar at its opaque resting state; a scrolled page wants
+            // it transparent again with the title coloured for the content (as viewWillAppear
+            // does after a modal), rather than waiting for the next scroll event.
+            postsView.syncNavigationBarScrollProgress()
+        }
 
         if postsView.loadingView != nil {
             postsView.loadingView = LoadingView.loadingViewWithTheme(theme)

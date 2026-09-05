@@ -584,11 +584,6 @@ final class NavigationController: UINavigationController, Themeable {
     private lazy var cachedBackIndicatorTemplate: UIImage? = UIImage(named: "back")?.withRenderingMode(.alwaysTemplate)
     private var cachedBackIndicatorsByColor: [UIColor: UIImage] = [:]
 
-    /// The bar trait that was pinned (by `updateNavigationBarAppearance` or a screen such as
-    /// PostsPageViewController.configureNavigationBarForLiquidGlass) before the scrolled state
-    /// unpinned it, so scrolling back to the top restores exactly that.
-    private var pinnedBarInterfaceStyle: UIUserInterfaceStyle?
-
     /// The back chevron with `color` baked in, for the bar resting at the top: glass vibrancy
     /// ignores `tintColor` on the dark circles the bar shows there (see
     /// NavigationBarScrollTransitioning). Once scrolled the chevron goes back to the template
@@ -1550,22 +1545,12 @@ final class NavigationController: UINavigationController, Themeable {
 
         if progress < ScrollProgress.atTop {
             // At the top the glass circles read as the bar, so text items take the theme's bar
-            // text colour (image items are baked; see applyGlassRestingState), and the bar's
-            // trait goes back to whatever the resting state had pinned.
+            // text colour (image items are baked; see applyGlassRestingState).
             awfulNavigationBar.tintColor = theme[uicolor: "navigationBarTextColor"] ?? .label
-            if awfulNavigationBar.overrideUserInterfaceStyle == .unspecified, let pinned = pinnedBarInterfaceStyle {
-                awfulNavigationBar.overrideUserInterfaceStyle = pinned
-            }
         } else if progress > ScrollProgress.fullyScrolled {
-            // Over the content, hand both back to the system: no tint, so the platters pick
-            // white or black from what is beneath them, and no pinned trait, so the title (a
-            // `.label` colour at this point, see UINavigationItem.updateTitleLabelTextColor)
-            // can follow the bar's light/dark over the content too.
+            // Over the content, hand the tint back to the system so the platters pick white or
+            // black from what is beneath them.
             awfulNavigationBar.tintColor = nil
-            if awfulNavigationBar.overrideUserInterfaceStyle != .unspecified {
-                pinnedBarInterfaceStyle = awfulNavigationBar.overrideUserInterfaceStyle
-            }
-            awfulNavigationBar.overrideUserInterfaceStyle = .unspecified
         }
     }
 

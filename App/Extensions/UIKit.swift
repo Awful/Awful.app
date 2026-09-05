@@ -112,17 +112,18 @@ extension UINavigationItem {
     /// Keeps `titleLabel` readable as the iOS 26 Liquid Glass bar goes from the opaque theme
     /// background (at the top) to transparent (once scrolled), matching the bar buttons.
     /// Thresholds rather than exact 0/1 avoid flicker from tiny offset adjustments.
-    func updateTitleLabelTextColor(forScrollProgress progress: CGFloat, theme: Theme) {
+    ///
+    /// `contentColor` is the colour `NavigationBarTitleContrastSampler` measured beneath the
+    /// title (the system won't adapt a title the way it does its glass bar buttons — see that
+    /// class); nil falls back to the theme's mode colour.
+    func updateTitleLabelTextColor(forScrollProgress progress: CGFloat, theme: Theme, contentColor: UIColor? = nil) {
         // Reduce Liquid Glass keeps the bar solid at every offset, so the title keeps the
         // theme's bar text colour rather than following the scroll into the content's.
         let progress = LiquidGlass.isEnabled ? progress : 0
         if progress < 0.01 {
             titleLabel.textColor = theme[uicolor: "navigationBarTextColor"] ?? .label
         } else if progress > 0.99 {
-            // Over the content the bar's trait is no longer pinned to the theme
-            // (NavigationController.applyAppearance), so a dynamic colour lets the label
-            // follow the bar's light/dark over what is beneath it, like the bar buttons.
-            titleLabel.textColor = .label
+            titleLabel.textColor = contentColor ?? theme.glassContentTextColor
         }
     }
 }

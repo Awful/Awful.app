@@ -924,6 +924,19 @@ extension PostsPageView: ScrollViewDelegateExtras {
         }
 
         navController.updateNavigationBarTintForScrollProgress(NSNumber(value: Float(progress)))
-        viewController.navigationItem.updateTitleLabelTextColor(forScrollProgress: progress, theme: viewController.theme)
+
+        // Over the content the title takes the colour sampled from the page beneath it; the
+        // sampler answers asynchronously, so the theme's mode colour covers the first frame.
+        let sampler = viewController.titleContrastSampler
+        if LiquidGlass.isEnabled, progress > 0.99 {
+            sampler.sampleIfNeeded()
+        } else {
+            sampler.reset()
+        }
+        viewController.navigationItem.updateTitleLabelTextColor(
+            forScrollProgress: progress,
+            theme: viewController.theme,
+            contentColor: sampler.color
+        )
     }
 }
