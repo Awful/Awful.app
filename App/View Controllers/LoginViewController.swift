@@ -63,6 +63,10 @@ class LoginViewController: ViewController {
                     // ServerError.banned has actually helpful info to report here.
                     title = error.localizedDescription
                     message = error.failureReason ?? ""
+                } else if let error = error as? ServerError, case .cloudflareChallenge = error {
+                    // The credentials never reached the Forums, so don't blame them.
+                    title = String(localized: "Verification Needed")
+                    message = [error.localizedDescription, error.failureReason].compactMap { $0 }.joined(separator: " ")
                 } else {
                     title = String(localized: "Problem Logging In")
                     message = String(localized: "Double-check your username and password, then try again.")

@@ -23,6 +23,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     private var announcementListRefresher: AnnouncementListRefresher?
     @FoilDefaultStorage(Settings.autoDarkTheme) private var automaticDarkTheme
     private var cancellables: Set<AnyCancellable> = []
+    private lazy var cloudflareChallengePresenter = CloudflareChallengePresenter(window: { [weak self] in self?.window })
     @FoilDefaultStorage(Settings.darkMode) private var darkMode
     private var dataStore: DataStore!
     @FoilDefaultStorage(Settings.defaultDarkThemeName) private var defaultDarkTheme
@@ -53,6 +54,13 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         ForumsClient.shared.didRemotelyLogOut = { [weak self] in
             self?.logOut()
         }
+        ForumsClient.shared.cloudflareChallengeHandler = { [weak self] challenge in
+            await self?.cloudflareChallengePresenter.resolve(challenge) ?? false
+        }
+#if DEBUG
+        // Uncomment to fake Cloudflare challenges until the stand-in sheet is verified (`.always` exercises the give-up path). See FixtureURLProtocol.
+        // FixtureURLProtocol.simulatedCloudflareChallenge = .untilVerified
+#endif
 
         URLCache.shared = {
             #if targetEnvironment(macCatalyst)
@@ -153,7 +161,8 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func logOut() {
         let cookieJar = HTTPCookieStorage.shared
-        for cookie in cookieJar.cookies ?? [] {
+        // Cloudflare's clearance is tied to this device, not the account; keeping it spares the login screen an immediate re-challenge.
+        for cookie in cookieJar.cookies ?? [] where !CloudflareChallenge.isCloudflareCookie(cookie) {
             cookieJar.deleteCookie(cookie)
         }
         UserDefaults.standard.removeSessionObjects()

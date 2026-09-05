@@ -252,6 +252,10 @@ final class ForumsTableViewController: CollectionViewController {
                 migrateFavoriteForumsFromSettings()
             } catch {
                 logger.error("Could not taxonomize forums: \(error)")
+                // Most errors here are transient and the list keeps showing cached forums, but an uncleared Cloudflare challenge means nothing will load until the user deals with it.
+                if let error = error as? ServerError, case .cloudflareChallenge = error, visible {
+                    present(UIAlertController(networkError: error), animated: true)
+                }
             }
 
             isRefreshing = false

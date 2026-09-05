@@ -13,6 +13,12 @@
     "A poll question can be at most %lld characters." : {
 
     },
+    "Cloudflare wants to verify your browser before the Forums will respond." : {
+
+    },
+    "Complete the verification when it appears, then try again." : {
+
+    },
     "Congratulations! Please visit the Something Awful Forums website to learn why you were banned, to contact a mod or admin, to read the rules, or to reactivate your account." : {
 
     },

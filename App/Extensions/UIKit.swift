@@ -197,6 +197,15 @@ extension UIViewController {
         nav.modalPresentationStyle = modalPresentationStyle
         return nav
     }
+
+    /// Follows `presentedViewController` to the top of the modal stack, ignoring a view controller that's on its way out.
+    var topmostPresentedViewController: UIViewController {
+        var viewController = self
+        while let presented = viewController.presentedViewController, !presented.isBeingDismissed {
+            viewController = presented
+        }
+        return viewController
+    }
 }
 
 public extension UIImage {

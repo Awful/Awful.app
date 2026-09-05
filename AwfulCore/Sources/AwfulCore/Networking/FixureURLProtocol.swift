@@ -34,6 +34,41 @@ public final class FixtureURLProtocol: URLProtocol {
      Any fixtures added here will be loaded, causing relevant requests to be intercepted. Initially the set of enabled fixtures is empty, at which point this URL protocol does nothing.
      */
     public static var enabledFixtures: Set<Fixture> = []
+
+    public enum SimulatedCloudflareChallenge {
+        case off
+
+        /// Every Forums request gets a synthetic challenge until the stand-in page's Verify link is followed, then none do. This is how real clearance behaves: zone-wide, so the launch burst and later navigation all recover from a single sheet.
+        case untilVerified
+
+        /// Every Forums request gets a synthetic challenge, verified or not, which exercises the give-up path (the retry is challenged too, so the request fails with `ServerError.cloudflareChallenge`).
+        case always
+    }
+
+    /**
+     Answers Forums requests with a synthetic Cloudflare challenge (a 403 carrying `cf-mitigated: challenge`).
+
+     Independent of `enabledFixtures` and needs no fixture files, so the setup is one line in `AppDelegate.application(_:willFinishLaunchingWithOptions:)`:
+
+         FixtureURLProtocol.simulatedCloudflareChallenge = .untilVerified
+
+     The challenge page that `CloudflareChallengeViewController` shows can't be intercepted here (WebKit ignores custom URL protocols), so it recognises ``simulatedCloudflareRayID``, shows a stand-in page instead, and sets ``simulatedCloudflareChallengeWasVerified`` when its Verify link is followed.
+     */
+    public static var simulatedCloudflareChallenge: SimulatedCloudflareChallenge = .off
+
+    /// Set by `CloudflareChallengeViewController` once a simulated challenge is verified. Reset it to see the sheet again without relaunching.
+    public static var simulatedCloudflareChallengeWasVerified = false
+
+    /// The `cf-ray` value on simulated challenges.
+    public static let simulatedCloudflareRayID = "simulated-DEBUG"
+
+    private static var shouldSimulateChallenge: Bool {
+        switch simulatedCloudflareChallenge {
+        case .off: false
+        case .untilVerified: !simulatedCloudflareChallengeWasVerified
+        case .always: true
+        }
+    }
     
     public struct Fixture: Hashable {
         fileprivate let basename: String
@@ -87,6 +122,11 @@ public final class FixtureURLProtocol: URLProtocol {
             return false
         }
         
+        if shouldSimulateChallenge {
+            logger.debug("simulating a Cloudflare challenge for \(request)")
+            return true
+        }
+
         if enabledFixtures.contains(where: { $0.matches(request) }) {
             logger.debug("we have a winner for \(request)!")
             return true
@@ -102,6 +142,11 @@ public final class FixtureURLProtocol: URLProtocol {
     
     public override func startLoading() {
         logger.debug("starting load for \(self.request)")
+
+        if FixtureURLProtocol.shouldSimulateChallenge, let url = request.url {
+            loadSimulatedCloudflareChallenge(for: url)
+            return
+        }
         
         guard
             let url = request.url,
@@ -149,6 +194,44 @@ public final class FixtureURLProtocol: URLProtocol {
     
     public override func stopLoading() {
         // nothing to do here; everything happens in startLoading()
+    }
+
+    /// Answers with the shape of a real Cloudflare managed challenge: a 403, the `cf-mitigated` header, and a minimal "Just a moment…" body carrying the markers `CloudflareChallenge` looks for.
+    private func loadSimulatedCloudflareChallenge(for url: URL) {
+        let body = """
+            <!DOCTYPE html>
+            <html lang="en-US">
+            <head>
+            <title>Just a moment...</title>
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+            </head>
+            <body class="no-js">
+            <div class="main-wrapper" role="main">
+            <h1>forums.somethingawful.com</h1>
+            <p>Verifying you are human. This may take a few seconds.</p>
+            <div id="cf-chl-widget"></div>
+            </div>
+            <script>window._cf_chl_opt = { cRay: "simulated" };</script>
+            <script src="/cdn-cgi/challenge-platform/h/b/orchestrate/chl_page/v1?ray=simulated"></script>
+            </body>
+            </html>
+            """
+        let data = Data(body.utf8)
+        let response = HTTPURLResponse(
+            url: url,
+            statusCode: 403,
+            httpVersion: "HTTP/1.1",
+            headerFields: [
+                "cf-mitigated": "challenge",
+                "cf-ray": FixtureURLProtocol.simulatedCloudflareRayID,
+                "Content-Type": "text/html; charset=UTF-8",
+                "Server": "cloudflare",
+            ]
+        )!
+        client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
+        client?.urlProtocol(self, didLoad: data)
+        client?.urlProtocolDidFinishLoading(self)
+        logger.debug("done simulating Cloudflare challenge for \(url)")
     }
 }
 

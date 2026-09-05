@@ -25,6 +25,14 @@ public final class ForumsClient {
     /// A block to call when the login session is destroyed. Not called when logging out from Awful.
     public var didRemotelyLogOut: (() -> Void)?
 
+    /**
+     Called (on the main actor) when the Forums answer with a Cloudflare challenge instead of a page.
+
+     Return `true` once the challenge is cleared and `HTTPCookieStorage.shared` holds the new clearance cookie; the original request is then retried once. Return `false` to fail the request with ``ServerError/cloudflareChallenge(url:)``. When unset, challenges fail immediately.
+     */
+    public var cloudflareChallengeHandler: CloudflareChallengeCoordinator.Handler?
+    private let challengeCoordinator = CloudflareChallengeCoordinator()
+
     /// Convenient singleton.
     public static let shared = ForumsClient()
     private init() {}
@@ -172,6 +180,64 @@ public final class ForumsClient {
         case post = "POST"
     }
 
+    /**
+     Sends a request, passing any Cloudflare challenge through ``cloudflareChallengeHandler`` and retrying once if it's cleared.
+
+     Every Forums request goes through here so a challenge is caught before its HTML reaches a scraper.
+     */
+    private func send(
+        _ request: URLRequest,
+        using session: URLSession,
+        willRedirect: ((_ response: HTTPURLResponse, _ newRequest: URLRequest) async -> URLRequest?)? = nil
+    ) async throws -> (Data, URLResponse) {
+        func perform() async throws -> (Data, URLResponse) {
+            if let willRedirect {
+                return try await session.data(for: request, willRedirect: willRedirect)
+            } else {
+                return try await session.data(for: request)
+            }
+        }
+
+        let startedAt = Date()
+        let first = try await perform()
+        guard let challenge = CloudflareChallenge(request: request, response: first.1, data: first.0) else {
+            return first
+        }
+
+        logger.info("Cloudflare challenge (\(challenge.statusCode)) for \(challenge.requestMethod) \(challenge.url, privacy: .public) ray=\(challenge.rayID ?? "-", privacy: .public)")
+        let cleared = await challengeCoordinator.resolve(challenge, requestStartedAt: startedAt, handler: cloudflareChallengeHandler)
+        guard cleared else {
+            throw ServerError.cloudflareChallenge(url: challenge.url)
+        }
+        try Task.checkCancellation()
+
+        logger.info("Cloudflare challenge cleared; retrying \(challenge.requestMethod) \(challenge.url, privacy: .public) with cookies \(self.cloudflareCookieNames().joined(separator: ","), privacy: .public)")
+        let second = try await perform()
+        if let stillChallenged = CloudflareChallenge(request: request, response: second.1, data: second.0) {
+            // One retry only. If the clearance didn't take, give up rather than loop.
+            logger.error("Still challenged after clearance for \(stillChallenged.url, privacy: .public) ray=\(stillChallenged.rayID ?? "-", privacy: .public)")
+            throw ServerError.cloudflareChallenge(url: stillChallenged.url)
+        }
+        return second
+    }
+
+    /// Names (never values) of the Cloudflare cookies currently held for the Forums, for logging.
+    private func cloudflareCookieNames() -> [String] {
+        baseURL
+            .flatMap { urlSession?.configuration.httpCookieStorage?.cookies(for: $0) }?
+            .filter(CloudflareChallenge.isCloudflareCookie)
+            .map(\.name)
+        ?? []
+    }
+
+    /// Deletes the Forums session cookies while keeping Cloudflare's, so a fresh login isn't immediately challenged again.
+    private func removeForumsCookiesPreservingCloudflare() {
+        guard let storage = urlSession?.configuration.httpCookieStorage else { return }
+        for cookie in storage.cookies ?? [] where !CloudflareChallenge.isCloudflareCookie(cookie) {
+            storage.deleteCookie(cookie)
+        }
+    }
+
     private func fetch(
         method: Method,
         urlString: String,
@@ -206,7 +272,7 @@ public final class ForumsClient {
                 try request.setMultipartFormData(parameters, encoding: .windowsCP1252)
             }
             request.httpMethod = method.rawValue
-            let tuple = try await urlSession.data(for: request, willRedirect: willRedirect)
+            let tuple = try await send(request, using: urlSession, willRedirect: willRedirect)
             result = .success(tuple)
         } catch {
             result = .failure(error)
@@ -243,7 +309,7 @@ public final class ForumsClient {
             result = try JSONDecoder().decode(IndexScrapeResult.self, from: data)
         } catch {
             // We can fail to decode JSON when the server responds with an error as HTML. We may actually be logged in despite the error (e.g. a banned user can "log in" but do basically nothing). However, subsequent launches will crash because we don't actually store the logged-in user's ID. We can avoid the crash by clearing cookies, so we seem logged out.
-            urlSession?.configuration.httpCookieStorage?.removeCookies(since: .distantPast)
+            removeForumsCookiesPreservingCloudflare()
 
             if let error = error as? DecodingError,
                case .dataCorrupted = error
@@ -330,7 +396,7 @@ public final class ForumsClient {
         request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
         request.httpBody = queryString
 
-        let (data, response) = try await urlSession.data(for: request)
+        let (data, response) = try await send(request, using: urlSession)
         return try parseHTML(data: data, response: response)
     }
 
@@ -1360,7 +1426,7 @@ public final class ForumsClient {
             mimeType: attachment.mimeType
         )
 
-        return try await urlSession.data(for: request)
+        return try await send(request, using: urlSession)
     }
 
     /// Parses the reply response to extract post ID
@@ -1599,7 +1665,7 @@ public final class ForumsClient {
             mimeType: attachment.mimeType
         )
 
-        return try await urlSession.data(for: request)
+        return try await send(request, using: urlSession)
     }
 
     private func editForm(
@@ -1678,7 +1744,7 @@ public final class ForumsClient {
             throw Error.invalidBaseURL
         }
 
-        let (data, response) = try await attachmentSession.data(for: URLRequest(url: attachmentURL))
+        let (data, response) = try await send(URLRequest(url: attachmentURL), using: attachmentSession)
         return (data: data, mimeType: response.mimeType)
     }
 
@@ -1693,7 +1759,7 @@ public final class ForumsClient {
         var request = URLRequest(url: attachmentURL)
         request.httpMethod = "GET"
 
-        let (imageData, _) = try await attachmentSession.data(for: request)
+        let (imageData, _) = try await send(request, using: attachmentSession)
         return imageData
     }
 
@@ -2473,6 +2539,8 @@ private func workAroundAnnoyingImageBBcodeTagNotMatching(in postbody: HTMLElemen
 
 public enum ServerError: LocalizedError {
     case banned(reason: URL?, help: URL?)
+    /// Cloudflare answered with a challenge that wasn't cleared (the user cancelled, or it didn't stick).
+    case cloudflareChallenge(url: URL)
     case databaseUnavailable(title: String, message: String)
     case standard(title: String, message: String)
 
@@ -2480,6 +2548,8 @@ public enum ServerError: LocalizedError {
         switch self {
         case .banned:
             String(localized: "You've Been Banned", bundle: .module)
+        case .cloudflareChallenge:
+            String(localized: "Cloudflare wants to verify your browser before the Forums will respond.", bundle: .module)
         case .databaseUnavailable(title: _, message: let message),
              .standard(title: _, message: let message):
             message
@@ -2490,6 +2560,8 @@ public enum ServerError: LocalizedError {
         switch self {
         case .banned:
             String(localized: "Congratulations! Please visit the Something Awful Forums website to learn why you were banned, to contact a mod or admin, to read the rules, or to reactivate your account.")
+        case .cloudflareChallenge:
+            String(localized: "Complete the verification when it appears, then try again.", bundle: .module)
         case .databaseUnavailable, .standard:
             nil
         }
