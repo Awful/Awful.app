@@ -31,7 +31,7 @@
           "hidden" : false,
           "image-name" : "eyes 2.svg",
           "name" : "eyes 2",
-          "opacity" : 0.1,
+          "opacity" : 0.55,
           "position" : {
             "scale" : 1.04,
             "translation-in-points" : [
@@ -105,7 +105,7 @@
         }
       ],
       "lighting" : "individual",
-      "opacity" : 0.8,
+      "opacity" : 1,
       "shadow" : {
         "kind" : "layer-color",
         "opacity" : 0.15
@@ -164,52 +164,6 @@
       "translucency" : {
         "enabled" : true,
         "value" : 0
-      }
-    },
-    {
-      "hidden" : false,
-      "layers" : [
-        {
-          "blend-mode" : "screen",
-          "fill" : {
-            "solid" : "gray:0.84883,1.00000"
-          },
-          "glass" : false,
-          "hidden" : false,
-          "image-name" : "is.svg",
-          "name" : "is",
-          "position" : {
-            "scale" : 1.04,
-            "translation-in-points" : [
-              0,
-              0
-            ]
-          }
-        },
-        {
-          "blend-mode" : "screen",
-          "fill" : {
-            "solid" : "gray:0.84883,1.00000"
-          },
-          "glass" : false,
-          "image-name" : "lips.svg",
-          "name" : "lips",
-          "position" : {
-            "scale" : 1.04,
-            "translation-in-points" : [
-              0,
-              0
-            ]
-          }
-        }
-      ],
-      "shadow" : {
-        "kind" : "neutral",
-        "opacity" : 0.5
-      },
-      "translucency" : {
-        "enabled" : true,
-        "value" : 0.5
       }
     }
   ],
