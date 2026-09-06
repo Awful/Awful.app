@@ -1583,17 +1583,20 @@ final class NavigationController: UINavigationController, Themeable {
 
     @available(iOS 26.0, *)
     private func configureTitleAndButtons(for appearance: UINavigationBarAppearance, progress: CGFloat) {
-        let textColor = theme[uicolor: "navigationBarTextColor"] ?? .label
+        // The system title follows the theme: bar text colour at the top, mode colour once the bar
+        // is transparent. Screens that sample the page instead (posts, a message, the rap sheet)
+        // use their own title label; see `NavigationBarTitleContrastSampler`.
+        let textColor: UIColor
+        if progress > ScrollProgress.fullyScrolled {
+            textColor = theme.glassContentTextColor
+        } else {
+            textColor = theme[uicolor: "navigationBarTextColor"] ?? .label
+        }
 
-        // Once the bar is transparent the system title takes no explicit colour, so it follows
-        // the bar's (unpinned, see applyAppearance) light/dark rather than the theme's.
-        var titleAttributes: [NSAttributedString.Key: Any] = [
+        appearance.titleTextAttributes = [
+            .foregroundColor: textColor,
             .font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .semibold)
         ]
-        if progress <= ScrollProgress.fullyScrolled {
-            titleAttributes[.foregroundColor] = textColor
-        }
-        appearance.titleTextAttributes = titleAttributes
 
         let buttonFont = UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .regular)
         let restingOnBar = progress < ScrollProgress.atTop

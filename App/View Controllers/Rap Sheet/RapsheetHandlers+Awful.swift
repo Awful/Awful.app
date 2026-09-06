@@ -121,6 +121,10 @@ private final class LepersColonyRenderView: RapsheetRenderer {
         renderView.setThemeStylesheet(css)
     }
 
+    func sampleLuminance(in rect: CGRect, over backdrop: UIColor?, completion: @escaping @MainActor (CGFloat?) -> Void) {
+        renderView.sampleLuminance(in: rect, over: backdrop, completion: completion)
+    }
+
     private struct DidTapPunishmentPost: RenderViewMessage {
         static let messageName = "didTapPunishmentPost"
         let postID: String?

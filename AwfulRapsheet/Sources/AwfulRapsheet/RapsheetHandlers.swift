@@ -35,6 +35,11 @@ public protocol RapsheetRenderer: AnyObject {
 
     /// Swaps in a new theme stylesheet without re-rendering.
     func setThemeStylesheet(_ css: String)
+
+    /// Mean relative luminance (0 dark … 1 light) of the rendered page within `rect` (in `view`'s
+    /// coordinates), composited over `backdrop`, or nil if nothing could be captured. Drives the
+    /// title's colour over the iOS 26 glass bar (`NavigationBarTitleContrastSampler`).
+    func sampleLuminance(in rect: CGRect, over backdrop: UIColor?, completion: @escaping @MainActor (CGFloat?) -> Void)
 }
 
 /// What the app does on the rap sheet's behalf. The package stays out of everything that depends
