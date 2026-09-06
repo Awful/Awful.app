@@ -1829,7 +1829,21 @@ extension NavigationController: UINavigationControllerDelegate {
         }
 
         pushAnimationInProgress = false
-        
+
+        // A completed transition (notably the swipe-from-right unpop onto a still-scrolled page)
+        // leaves the bar in the opaque resting state that willShow/viewWillAppear applied
+        // mid-transition, with no scroll event coming to clear it. Cancelled transitions are handled
+        // by the coordinator completion in willShow; this is the completed-transition counterpart.
+        // Only a scrolled page needs it: at the top the resting state is already right, and a fresh
+        // appearance object would make the glass circles re-sample for nothing.
+        if #available(iOS 26.0, *), LiquidGlass.usesGlassNavigationBar,
+           let screen = viewController as? NavigationBarScrollProgressProviding,
+           let scrollView = (viewController as? NavigationBarScrollTransitioning)?.navigationBarScrollView,
+           scrollView.navigationBarScrollProgress > ScrollProgress.atTop {
+            invalidateScrollProgressCache()
+            screen.resyncNavigationBarScrollProgress()
+        }
+
         realDelegate?.navigationController?(navigationController, didShow: viewController, animated: animated)
     }
     
@@ -1851,7 +1865,8 @@ extension NavigationController: UINavigationControllerDelegate {
 }
 
 /// A view controller that can re-derive the navigation bar's opaque/clear state from its current
-/// scroll position when no scroll event will arrive to do so (e.g. after a cancelled interactive pop).
+/// scroll position when no scroll event will arrive to do so (e.g. after a cancelled interactive pop,
+/// or after a completed transition such as an unpop back onto a still-scrolled page).
 @MainActor protocol NavigationBarScrollProgressProviding: UIViewController {
     func resyncNavigationBarScrollProgress()
 }
