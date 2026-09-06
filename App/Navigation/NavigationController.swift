@@ -604,6 +604,49 @@ final class NavigationController: UINavigationController, Themeable {
         return strip
     }()
 
+    /// What the root tab bar observes instead of the list. The tab bar resolves its glass's
+    /// light/dark from the scroll view it observes for the bottom edge, and left to itself it
+    /// picks the list — which carries the navigation bar's dark trait while the bar rests opaque
+    /// (`applyNavigationBarPlatterBackdrop`), turning the tab bar dark in a light theme (iOS 27
+    /// keeps it that way; iOS 26 flashes it at launch). This inert scroll view has no override,
+    /// so it resolves to the tab bar controller's own pin.
+    private lazy var tabBarTraitBackdrop: UIScrollView = {
+        let backdrop = UIScrollView()
+        backdrop.isScrollEnabled = false
+        backdrop.isUserInteractionEnabled = false
+        backdrop.scrollsToTop = false
+        backdrop.backgroundColor = .clear
+        backdrop.contentInsetAdjustmentBehavior = .never
+        backdrop.showsVerticalScrollIndicator = false
+        backdrop.showsHorizontalScrollIndicator = false
+        backdrop.accessibilityElementsHidden = true
+        return backdrop
+    }()
+
+    @available(iOS 26.0, *)
+    private func installTabBarTraitBackdrop(for viewController: UIViewController) {
+        let backdrop = tabBarTraitBackdrop
+        if backdrop.superview !== view {
+            view.insertSubview(backdrop, at: 0)
+        }
+        layoutTabBarTraitBackdrop()
+        if viewController.contentScrollView(for: .bottom) !== backdrop {
+            viewController.setContentScrollView(backdrop, for: .bottom)
+        }
+    }
+
+    /// Sits under the tab bar only, so it claims nothing else.
+    @available(iOS 26.0, *)
+    private func layoutTabBarTraitBackdrop() {
+        guard tabBarTraitBackdrop.superview === view else { return }
+        let height = max(view.safeAreaInsets.bottom, 1)
+        let frame = CGRect(x: 0, y: view.bounds.height - height, width: view.bounds.width, height: height)
+        if tabBarTraitBackdrop.frame != frame {
+            tabBarTraitBackdrop.frame = frame
+            tabBarTraitBackdrop.contentSize = frame.size
+        }
+    }
+
     private lazy var listPlatterBackdrop: UIScrollView = {
         let backdrop = UIScrollView()
         backdrop.isScrollEnabled = false
@@ -619,6 +662,10 @@ final class NavigationController: UINavigationController, Themeable {
         return backdrop
     }()
 
+    /// Under Reduce Liquid Glass the list stays out from under the opaque bar but keeps running
+    /// under the root tab bar, as it does with Liquid Glass on.
+    private static let listEdgesUnderOpaqueBar: UIRectEdge = [.left, .right, .bottom]
+
     /// A collection view can't hand the bar a usable backdrop: its cells scroll over anything we
     /// put under the bar, and its capture ignores our own subviews entirely (verified by pixel
     /// sampling with a navy view covering the whole visible area, above every cell and below the
@@ -626,18 +673,22 @@ final class NavigationController: UINavigationController, Themeable {
     /// (`edgesForExtendedLayout`) and this inert scroll view takes its place there — clear, so the
     /// capture samples rather than flattening to a colour, with one bar-coloured strip for it to
     /// sample. The opaque bar hides it.
+    ///
+    /// It is sized to the bar alone, and the list keeps `.bottom`: the root tab bar takes its
+    /// light/dark from the scroll view beneath it, and a full-height decoy carrying the bar's
+    /// dark trait is not what it should find there (see `tabBarTraitBackdrop`).
     @available(iOS 26.0, *)
     private func installListPlatterBackdrop(for viewController: UIViewController, theme: Theme) {
         // The list has to stop at the bar, or it is the one UIKit picks and samples.
-        if viewController.edgesForExtendedLayout != [] {
-            viewController.edgesForExtendedLayout = []
+        if viewController.edgesForExtendedLayout != Self.listEdgesUnderOpaqueBar {
+            viewController.edgesForExtendedLayout = Self.listEdgesUnderOpaqueBar
             viewController.view.setNeedsLayout()
         }
         let backdrop = listPlatterBackdrop
         backdrop.overrideUserInterfaceStyle = theme.navigationBarUserInterfaceStyle
         listPlatterBackdropStrip.backgroundColor = theme[uicolor: "navigationBarTintColor"]
         if backdrop.superview !== view {
-            backdrop.frame = view.bounds
+            backdrop.frame = listPlatterBackdropFrame
             view.insertSubview(backdrop, at: 0)
         }
         layoutListPlatterBackdrop()
@@ -646,17 +697,23 @@ final class NavigationController: UINavigationController, Themeable {
         }
     }
 
-    /// Re-fits the backdrop after a bounds change (rotation): the strip has to keep covering the
-    /// bar, and an inert scroll view has to keep `contentSize` in step with its bounds.
+    /// The part of the navigation controller's view under the bar. The controller's own safe
+    /// area stops at the status bar, but the platters sit in the bar below it, so this is sized
+    /// to the bar instead.
+    @available(iOS 26.0, *)
+    private var listPlatterBackdropFrame: CGRect {
+        let barBottom = max(navigationBar.frame.maxY, view.safeAreaInsets.top)
+        return CGRect(x: 0, y: 0, width: view.bounds.width, height: barBottom)
+    }
+
+    /// Re-fits the backdrop after a bounds change (rotation): it has to keep covering the bar and
+    /// nothing else, and an inert scroll view has to keep `contentSize` in step with its bounds.
     @available(iOS 26.0, *)
     private func layoutListPlatterBackdrop() {
         guard listPlatterBackdrop.superview === view else { return }
-        listPlatterBackdrop.frame = view.bounds
+        listPlatterBackdrop.frame = listPlatterBackdropFrame
         listPlatterBackdrop.contentSize = listPlatterBackdrop.bounds.size
-        // The navigation controller's own safe area stops at the status bar, but the platter sits
-        // in the bar below it, so the strip is sized to the bar instead.
-        let barBottom = max(navigationBar.frame.maxY, view.safeAreaInsets.top)
-        listPlatterBackdropStrip.frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: barBottom)
+        listPlatterBackdropStrip.frame = listPlatterBackdrop.bounds
     }
 
     /// Undoes `installListPlatterBackdrop` when Liquid Glass is switched back on, so the list goes
@@ -694,6 +751,12 @@ final class NavigationController: UINavigationController, Themeable {
             // Reduce Liquid Glass keeps the bar solid at every offset, so the backdrop never gets
             // handed back to the content — and it has to sit in front of it to stay sampled.
             screen?.navigationBarScrollView?.pinNavigationBarPlatterBackdropOverContent(theme: theme)
+        }
+
+        // Any tab-hosted screen whose scroll view just took the bar's trait (the lists, the
+        // Lepers rap sheet) needs the tab bar looking elsewhere; pushed screens hide the tab bar.
+        if screen?.navigationBarScrollView != nil, tabBarController != nil, UIDevice.current.userInterfaceIdiom != .pad {
+            installTabBarTraitBackdrop(for: viewController)
         }
 
         let color = atTop ? theme[uicolor: "navigationBarTextColor"] : nil
@@ -805,6 +868,7 @@ final class NavigationController: UINavigationController, Themeable {
         super.viewDidLayoutSubviews()
         if #available(iOS 26.0, *) {
             layoutListPlatterBackdrop()
+            layoutTabBarTraitBackdrop()
         }
     }
 
