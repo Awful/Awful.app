@@ -19,7 +19,7 @@
       "layers" : [
         {
           "fill" : {
-            "solid" : "display-p3:0.33670,0.09126,0.45045,1.00000"
+            "solid" : "display-p3:0.44513,0.06666,0.07297,1.00000"
           },
           "hidden" : false,
           "image-name" : "numouth.svg",
@@ -137,7 +137,7 @@
       "layers" : [
         {
           "fill" : {
-            "solid" : "display-p3:0.54008,0.20657,0.70000,1.00000"
+            "solid" : "display-p3:0.51620,0.22748,0.65000,1.00000"
           },
           "glass" : false,
           "hidden" : false,

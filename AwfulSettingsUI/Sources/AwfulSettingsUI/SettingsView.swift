@@ -25,9 +25,6 @@ public struct SettingsView: View {
     @AppStorage(Settings.fontScale) private var fontScale
     @AppStorage(Settings.frogAndGhostEnabled) private var frogAndGhostEnabled
     @AppStorage(Settings.handoffEnabled) private var handoffEnabled
-    @AppStorage(Settings.hasArchives) private var hasArchives
-    @AppStorage(Settings.hasNoAds) private var hasNoAds
-    @AppStorage(Settings.hasPlatinum) private var hasPlatinum
     @AppStorage(Settings.hidePostMetadataForReader) private var hidePostMetadataForReader
     @AppStorage(Settings.hideSidebarInLandscape) private var hideSidebarInLandscape
     @AppStorage(Settings.immersiveModeEnabled) private var immersiveModeEnabled
@@ -140,13 +137,6 @@ public struct SettingsView: View {
                     Text(currentUsername)
                 }
                 .header()
-            }
-            .section()
-
-            Section {
-                accountFeatureRow("Platinum", enabled: hasPlatinum)
-                accountFeatureRow("Archives", enabled: hasArchives)
-                accountFeatureRow("No Ads", enabled: hasNoAds)
             }
             .section()
 
@@ -423,19 +413,6 @@ public struct SettingsView: View {
             Text(caption, bundle: .module)
                 .font(.footnote)
                 .foregroundStyle(theme[color: "listSecondaryText"]!)
-        }
-    }
-
-    /// A read-only status row for a Something Awful account upgrade, styled after the "Clear Cache"
-    /// label + trailing-value idiom.
-    private func accountFeatureRow(_ name: LocalizedStringKey, enabled: Bool) -> some View {
-        HStack {
-            Text(name, bundle: .module)
-            Spacer()
-            Text(enabled ? "Enabled" : "No upgrade", bundle: .module)
-                .foregroundStyle(theme[color: "listSecondaryText"]!)
-            Image(systemName: enabled ? "checkmark.circle.fill" : "xmark.circle")
-                .foregroundStyle(theme[color: enabled ? "tint" : "listSecondaryText"]!)
         }
     }
 }
