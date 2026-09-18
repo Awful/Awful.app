@@ -146,12 +146,13 @@ To add a new alternate app icon:
 2. Add a new iOS App Icon.
 3. Name your app icon something appropriate, including the `_appicon` suffix.
 4. In the Attributes inspector, from the Appearances popover, choose "Any, Dark, Tinted" (assuming you have dark and tinted variants of your icon).
-4. Drag your 1024px×1024px image file over.
-5. Add a new Image Set with the same name as your icon set plus `_preview`.
-6. Make and drag 120px×120px (60pt @2x) and 180px×180px (60pt @3x) icons into your preview icon set. (e.g. `sips -Z 120 cool-icon.png`.)
-7. Run `Scripts/app-icons`. This will update the relevant build settings, make the image names available in Swift, and yell at you if you miss some of the above steps.
-8. Open `App/Settings/SettingsViewController.swift`.
-9. Add your new app icon info to the `appIcons` array.
+5. Drag your 1024px×1024px image file over.
+6. Add a new Image Set with the same name as your icon set plus `_preview`.
+7. In the Attributes inspector, set Scales to "Single Scale" and Appearances to "Any, Dark".
+8. Make and drag one 225px×225px image into each of the Any and Dark wells. (e.g. `sips -Z 225 cool-icon.png`.) Previews are drawn `.resizable()` at 70pt by `AppIconGridView`, so 210px (70pt @3x) is the most that can ever be used — @1x/@2x/@3x variants would only waste memory.
+9. Run `Scripts/app-icons`. This will update the relevant build settings, make the image names available in Swift, and yell at you if you miss some of the above steps.
+10. Open `App/Settings/SettingsViewController.swift`.
+11. Add your new app icon info to the `appIcons` array.
 
 The bookkeeping and duplicate images are unfortunate, but there's no public API to list app icon sets or to load app icon images for display. Instead of hacking together something that could break later, we'll do it ourselves.
 
