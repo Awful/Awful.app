@@ -241,6 +241,36 @@ final class PostsPageViewController: ViewController {
             let menuAppearance = Theme.defaultTheme()[string: "menuAppearance"]
             overrideUserInterfaceStyle = menuAppearance == "light" ? .light : .dark
         }
+
+        /// iOS 26 portals a Liquid Glass platter behind a menu's source view while the menu
+        /// animates in. Our source view is an invisible rect sitting over the web view's post
+        /// dots, so that platter shows up as a stray glass bead beside the menu. The button's own
+        /// `alpha = 0` doesn't suppress it — the platter is drawn by the menu presentation, not by
+        /// the button — so hand UIKit a preview with nothing in it instead.
+        override func contextMenuInteraction(
+            _ interaction: UIContextMenuInteraction,
+            previewForHighlightingMenuWithConfiguration configuration: UIContextMenuConfiguration
+        ) -> UITargetedPreview? {
+            emptyMenuPreview()
+        }
+
+        override func contextMenuInteraction(
+            _ interaction: UIContextMenuInteraction,
+            previewForDismissingMenuWithConfiguration configuration: UIContextMenuConfiguration
+        ) -> UITargetedPreview? {
+            emptyMenuPreview()
+        }
+
+        private func emptyMenuPreview() -> UITargetedPreview? {
+            // Pre-26 there's no platter to hide, and `UITargetedPreview(view:)` requires a window.
+            // nil in either case means "use the system default", i.e. today's behaviour.
+            guard #available(iOS 26.0, *), window != nil else { return nil }
+            let parameters = UIPreviewParameters()
+            parameters.backgroundColor = .clear
+            parameters.visiblePath = UIBezierPath(rect: .zero)
+            parameters.shadowPath = UIBezierPath(rect: .zero)
+            return UITargetedPreview(view: self, parameters: parameters)
+        }
     }
 
     private struct FYADFlagRequest: RenderViewMessage {
