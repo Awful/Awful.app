@@ -331,6 +331,7 @@ public struct SettingsView: View {
                 Section {
                     NavigationLink {
                         AppIconGridView(appIconDataSource: appIconDataSource)
+                            .environment(\.theme, theme) // Not inherited?
                     } label: {
                         HStack {
                             Text("App Icon", bundle: .module)

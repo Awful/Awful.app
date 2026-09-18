@@ -2,6 +2,7 @@
 //
 //  Copyright 2024 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import AwfulTheming
 import os
 import SwiftUI
 
@@ -10,6 +11,9 @@ private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: 
 @MainActor public class AppIconDataSource: ObservableObject {
     let appIcons: [AppIcon]
     let imageLoader: (AppIcon) -> Image
+    /// Loads the preview for a specific appearance, for the grid's Light/Dark picker.
+    /// Defaults to `imageLoader` — i.e. whatever the ambient appearance resolves to.
+    let appearanceImageLoader: (AppIcon, Theme.Mode) -> Image
     @Published private(set) var selected: AppIcon
     private let setter: (AppIcon) async throws -> Void
 
@@ -28,11 +32,13 @@ private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: 
     public init(
         appIcons: [AppIcon],
         imageLoader: @escaping (AppIcon) -> Image,
+        appearanceImageLoader: ((AppIcon, Theme.Mode) -> Image)? = nil,
         selected: AppIcon,
         setter: @escaping (AppIcon) async throws -> Void
     ) {
         self.appIcons = appIcons
         self.imageLoader = imageLoader
+        self.appearanceImageLoader = appearanceImageLoader ?? { icon, _ in imageLoader(icon) }
         self.selected = selected
         self.setter = setter
     }

@@ -237,6 +237,20 @@ private let appIcons: [AppIconDataSource.AppIcon] = [
     return AppIconDataSource(
         appIcons: appIcons,
         imageLoader: { Image("\($0.imageName)_preview", bundle: .main) },
+        appearanceImageLoader: { icon, mode in
+            let name = "\(icon.imageName)_preview"
+            let traits = UITraitCollection(userInterfaceStyle: mode == .dark ? .dark : .light)
+            guard let resolved = UIImage(named: name, in: .main, compatibleWith: traits),
+                  let cgImage = resolved.cgImage
+            else { return Image(name, bundle: .main) }
+            // Re-wrap to drop `imageAsset`: RootTabBarController pins overrideUserInterfaceStyle,
+            // so a still-dynamic UIImage gets re-resolved back to the app's theme mode.
+            return Image(uiImage: UIImage(
+                cgImage: cgImage,
+                scale: resolved.scale,
+                orientation: resolved.imageOrientation
+            ))
+        },
         selected: selected,
         setter: {
             let iconName = $0 == appIcons.first ? nil : $0.imageName

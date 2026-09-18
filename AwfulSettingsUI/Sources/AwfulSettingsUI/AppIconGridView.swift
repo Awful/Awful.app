@@ -9,7 +9,9 @@ struct AppIconGridView: View {
     @ObservedObject var appIconDataSource: AppIconDataSource
     @SwiftUI.Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @SwiftUI.Environment(\.theme) var theme
-    
+    /// Which appearance the previews render in. Affects the icon art only, never the chrome.
+    @State private var previewMode: Theme.Mode = .light
+
     init(appIconDataSource: AppIconDataSource) {
         self.appIconDataSource = appIconDataSource
     }
@@ -22,24 +24,47 @@ struct AppIconGridView: View {
     
     var body: some View {
         ScrollView {
-            LazyVGrid(columns: columns, spacing: 30) {
-                ForEach(appIconDataSource.appIcons) { appIcon in
-                    IconCell(
-                        image: appIconDataSource.imageLoader(appIcon),
-                        isSelected: appIconDataSource.selected == appIcon,
-                        select: {
-                            appIconDataSource.select(appIcon)
-                        }
-                    )
-                    .accessibilityLabel(appIcon.accessibilityLabel)
+            VStack(spacing: 0) {
+                LazyVGrid(columns: columns, spacing: 30) {
+                    ForEach(appIconDataSource.appIcons) { appIcon in
+                        IconCell(
+                            image: appIconDataSource.appearanceImageLoader(appIcon, previewMode),
+                            isSelected: appIconDataSource.selected == appIcon,
+                            select: {
+                                appIconDataSource.select(appIcon)
+                            }
+                        )
+                        .accessibilityLabel(appIcon.accessibilityLabel)
+                    }
                 }
+                .padding()
+                .padding(.top, 5)
+
+                appearancePicker
             }
-            .padding()
         }
         .background(theme[color: "sheetBackgroundColor"]!)
         .navigationTitle(Text("App Icon", bundle: .module))
         .foregroundStyle(theme[color: "sheetTitleColor"]!)
         .navigationBarTitleDisplayMode(.inline)
+    }
+
+    private var appearancePicker: some View {
+        // The `label:`-as-a-value initializer, not the trailing-closure one, which is iOS 16+.
+        // The segmented style doesn't render the label; it's here for VoiceOver.
+        Picker(selection: $previewMode, label: Text("Preview appearance", bundle: .module)) {
+            ForEach(Theme.Mode.allCases, id: \.self) { mode in
+                Text(mode.localizedDescription).tag(mode)
+            }
+        }
+        .pickerStyle(.segmented)
+        .tint(theme[color: "tintColor"])
+        .frame(maxWidth: 260)
+        // Sits just below the grid rather than pinned to the bottom of the screen, so it
+        // stays next to the icons on tall, narrow layouts like the iPad portrait sidebar.
+        .padding(.top, 30)
+        .padding(.bottom, 16)
+        .frame(maxWidth: .infinity)
     }
 }
 
@@ -47,42 +72,34 @@ private struct IconCell: View {
     let image: Image
     let isSelected: Bool
     let select: () -> Void
-    
+    @SwiftUI.Environment(\.theme) private var theme
+
+    private let iconSize: CGFloat = 70
+    private let iconRadius: CGFloat = 13
+    private let ringGap: CGFloat = 6      // visible gap, icon edge → inner edge of ring
+    private let ringWidth: CGFloat = 2.5
+    /// How far the stroke's centre path sits outside the icon. The half-width term is what
+    /// makes the gap read as the full `ringGap`, since `.stroke` straddles its path.
+    private var ringInset: CGFloat { ringGap + ringWidth / 2 }
+
     var body: some View {
         Button(action: select) {
-            ZStack {
-                image
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 70, height: 70)
-                    .clipShape(RoundedRectangle(cornerRadius: 13))
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 13)
-                            .stroke(isSelected ? Color.accentColor : Color.clear, lineWidth: 2.5)
-                    )
-                
-                if isSelected {
-                    VStack {
-                        Spacer()
-                        HStack {
-                            Spacer()
-                            Image(systemName: "checkmark.circle.fill")
-                                .resizable()
-                                .frame(width: 24, height: 24)
-                                .foregroundColor(.white)
-                                .background(
-                                    Circle()
-                                        .fill(Color.accentColor)
-                                        .frame(width: 22, height: 22)
-                                )
-                                .offset(x: -2, y: -2)
-                        }
-                    }
-                }
-            }
-            .frame(width: 70, height: 70)
+            image
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: iconSize, height: iconSize)
+                .clipShape(RoundedRectangle(cornerRadius: iconRadius))
+                .overlay(
+                    // Negative padding pushes the ring outside the icon without affecting
+                    // layout — an overlay is sized by its base and never grows it.
+                    RoundedRectangle(cornerRadius: iconRadius + ringInset)
+                        .stroke(isSelected ? theme[color: "tabBarIconSelectedColor"]! : .clear, lineWidth: ringWidth)
+                        .padding(-ringInset)
+                )
+                .contentShape(RoundedRectangle(cornerRadius: iconRadius))
         }
         .buttonStyle(PlainButtonStyle())
+        // Carries the full selection semantics now that the checkmark is gone.
         .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 }
