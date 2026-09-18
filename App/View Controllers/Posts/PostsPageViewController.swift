@@ -148,7 +148,7 @@ final class PostsPageViewController: ViewController {
             // Your posts
             UIAction(
                 title: "Your posts",
-                image: UIImage(named: "single-users-posts")!.withRenderingMode(.alwaysTemplate),
+                image: UIImage(named: "their-posts-itt")!.withRenderingMode(.alwaysTemplate),
                 identifier: .init("yourPosts"),
                 handler: { [unowned self] in yourPosts(action: $0) }
             ),
@@ -1382,7 +1382,7 @@ final class PostsPageViewController: ViewController {
             if author == nil {
                 let theirPosts = UIAction.Identifier("theirPosts")
                 let theirPostsAction = UIAction(title: "Their posts ITT",
-                                                image: UIImage(named: "single-users-posts")!.withRenderingMode(.alwaysTemplate),
+                                                image: UIImage(named: "their-posts-itt")!.withRenderingMode(.alwaysTemplate),
                                                 identifier: theirPosts,
                                                 handler: theirPosts(action:))
                 userActions.append(theirPostsAction)
@@ -1390,7 +1390,7 @@ final class PostsPageViewController: ViewController {
             // Their posts everywhere
             let theirPostsEverywhere = UIAction.Identifier("theirPostsEverywhere")
             let theirPostsEverywhereAction = UIAction(title: "All their posts",
-                                                      image: UIImage(systemName: "text.magnifyingglass"),
+                                                      image: UIImage(named: "all-their-posts"),
                                                       identifier: theirPostsEverywhere,
                                                       handler: theirPostsEverywhere(action:))
             userActions.append(theirPostsEverywhereAction)
