@@ -66,22 +66,35 @@ private struct SidebarImageButtonView: View {
 
 // MARK: - Glass Text Bar Button
 
-/// A custom-view stand-in for a text bar button item (such as `editButtonItem`) on the iPhone
+/// A custom-view stand-in for a text bar button item (such as `editButtonItem`) on the iOS 26
 /// glass bar. The system item's label is composited through the platter's vibrancy, which
 /// tints it with the bar colour behind; hosting the text under `.glassEffect(.identity)`
 /// draws it in the given colour, the way the baked image items are.
+///
+/// On the iPhone bar the colour follows the scroll state (see `update(color:)`), and the
+/// label is inset so the platter keeps its pill shape. The iPad sidebar has neither: its bar
+/// stays opaque, so a nil `color` reads the theme's bar text colour from the environment
+/// instead, and the sidebar's own item spacing does without the inset.
 @available(iOS 26.0, *)
 final class GlassTextBarButtonView: UIView {
     private let hostingController: UIHostingController<AnyView>
     private var title: String
     private var weight: Font.Weight
-    private var color: UIColor
+    private var color: UIColor?
+    private let horizontalPadding: CGFloat
     private let action: () -> Void
 
-    init(title: String, weight: Font.Weight = .regular, color: UIColor, action: @escaping () -> Void) {
+    init(
+        title: String,
+        weight: Font.Weight = .regular,
+        color: UIColor?,
+        horizontalPadding: CGFloat = GlassTextBarButtonView.platterPadding,
+        action: @escaping () -> Void
+    ) {
         self.title = title
         self.weight = weight
         self.color = color
+        self.horizontalPadding = horizontalPadding
         self.action = action
         hostingController = UIHostingController(rootView: AnyView(EmptyView()))
         super.init(frame: .zero)
@@ -113,12 +126,12 @@ final class GlassTextBarButtonView: UIView {
     }
 
     /// Matches the label inset of a system text item, so the platter keeps its pill shape.
-    private static let horizontalPadding: CGFloat = 14
+    static let platterPadding: CGFloat = 14
 
     private func render() {
         hostingController.rootView = AnyView(
-            SidebarButtonView(title: title, weight: weight, color: Color(color), action: action)
-                .padding(.horizontal, Self.horizontalPadding)
+            SidebarButtonView(title: title, weight: weight, color: color.map(Color.init), action: action)
+                .padding(.horizontal, horizontalPadding)
                 .themed()
         )
         let size = hostingController.sizeThatFits(in: CGSize(width: CGFloat.greatestFiniteMagnitude, height: 44))
@@ -130,10 +143,15 @@ final class GlassTextBarButtonView: UIView {
     override var intrinsicContentSize: CGSize { frame.size }
 }
 
-/// A screen's Edit/Done bar button: the system `editButtonItem`, or on iOS 26 iPhone a
-/// `GlassTextBarButtonView` stand-in (the iPad sidebar makes its own replacements). Call
-/// `setEditing(_:)` from the screen's `setEditing(_:animated:)` and `setGlassGlyphColor(_:theme:)`
-/// alongside its other glass glyph updates.
+/// A screen's Edit/Done bar button: the system `editButtonItem`, or on iOS 26 a
+/// `GlassTextBarButtonView` stand-in. Call `setEditing(_:)` from the screen's
+/// `setEditing(_:animated:)` and `setGlassGlyphColor(_:theme:)` alongside its other glass
+/// glyph updates.
+///
+/// The stand-in serves the iPad sidebar too, where the glass panel's vibrancy would otherwise
+/// tint the system item's label: `NavigationController.replaceSidebarBarButtonItems` leaves
+/// custom-view items alone, so this one owns the label and keeps it in step with the editing
+/// state (Edit ↔ Done) on both idioms.
 final class EditBarButton {
     private weak var viewController: UIViewController?
     private var glassView: UIView?
@@ -144,21 +162,32 @@ final class EditBarButton {
 
     var item: UIBarButtonItem {
         guard let viewController else { return UIBarButtonItem() }
-        guard #available(iOS 26.0, *), LiquidGlass.affectsBarButtonPlatters, !LiquidGlass.affectsPadSidebar else {
+        guard #available(iOS 26.0, *), LiquidGlass.affectsBarButtonPlatters else {
             glassView = nil
             return viewController.editButtonItem
         }
         if let glassView {
             return UIBarButtonItem(customView: glassView)
         }
-        // The colour is set by `setGlassGlyphColor` before the bar shows.
-        let view = GlassTextBarButtonView(
-            title: Self.title(isEditing: viewController.isEditing),
-            weight: viewController.isEditing ? .bold : .regular,
-            color: .white
-        ) { [weak viewController] in
-            guard let viewController else { return }
-            viewController.setEditing(!viewController.isEditing, animated: true)
+        let view: GlassTextBarButtonView
+        if LiquidGlass.affectsPadSidebar {
+            // The sidebar bar stays opaque, so the label reads the theme colour from the
+            // environment, and sits flush like the sidebar's other hosted items.
+            view = GlassTextBarButtonView(
+                title: Self.title(isEditing: viewController.isEditing),
+                weight: viewController.isEditing ? .bold : .regular,
+                color: nil,
+                horizontalPadding: 0,
+                action: Self.toggleEditing(of: viewController)
+            )
+        } else {
+            // The colour is set by `setGlassGlyphColor` before the bar shows.
+            view = GlassTextBarButtonView(
+                title: Self.title(isEditing: viewController.isEditing),
+                weight: viewController.isEditing ? .bold : .regular,
+                color: .white,
+                action: Self.toggleEditing(of: viewController)
+            )
         }
         glassView = view
         return UIBarButtonItem(customView: view)
@@ -171,10 +200,18 @@ final class EditBarButton {
 
     /// `bakedColor` is the theme's bar text colour while the bar rests on the screen (see
     /// NavigationBarScrollTransitioning); nil once scrolled, when the label takes the mode colour
-    /// the adaptive glass wants.
+    /// the adaptive glass wants. The iPad sidebar's label follows the theme on its own.
     func setGlassGlyphColor(_ bakedColor: UIColor?, theme: Theme) {
-        guard #available(iOS 26.0, *), let view = glassView as? GlassTextBarButtonView else { return }
+        guard #available(iOS 26.0, *), !LiquidGlass.affectsPadSidebar,
+              let view = glassView as? GlassTextBarButtonView else { return }
         view.update(color: bakedColor ?? theme.glassContentTextColor)
+    }
+
+    private static func toggleEditing(of viewController: UIViewController) -> () -> Void {
+        { [weak viewController] in
+            guard let viewController else { return }
+            viewController.setEditing(!viewController.isEditing, animated: true)
+        }
     }
 
     static func title(isEditing: Bool) -> String {
@@ -1361,26 +1398,28 @@ final class NavigationController: UINavigationController, Themeable {
         return UIBarButtonItem(customView: hosting.view)
     }
 
-    /// Creates a custom-view bar button item that replicates `editButtonItem` behavior
-    /// using SwiftUI with `.glassEffect(.identity)` to bypass vibrancy.
+    /// Creates a custom-view stand-in for a screen's plain system `editButtonItem`, for
+    /// screens that don't go through `EditBarButton`. The stand-in relabels itself when
+    /// tapped; a screen that changes its editing state some other way should use
+    /// `EditBarButton` so it can call `setEditing(_:)`.
     @available(iOS 26.0, *)
     private func makeEditBarButtonItem(for viewController: UIViewController) -> UIBarButtonItem {
         let isEditing = viewController.isEditing
-        let title = EditBarButton.title(isEditing: isEditing)
-        let weight: Font.Weight = isEditing ? .bold : .regular
-
-        let view = SidebarButtonView(title: title, weight: weight) { [weak viewController] in
+        // The action needs the view it lives in; hold it weakly so the view doesn't retain itself.
+        final class ViewRef { weak var view: GlassTextBarButtonView? }
+        let ref = ViewRef()
+        let view = GlassTextBarButtonView(
+            title: EditBarButton.title(isEditing: isEditing),
+            weight: isEditing ? .bold : .regular,
+            color: nil,
+            horizontalPadding: 0
+        ) { [weak viewController] in
             guard let vc = viewController else { return }
             vc.setEditing(!vc.isEditing, animated: true)
-            if let nav = vc.navigationController as? NavigationController {
-                nav.applySidebarAppearanceIfNeeded(with: nav.theme)
-            }
-        }.themed()
-        let hosting = UIHostingController(rootView: AnyView(view))
-        hosting.view.backgroundColor = .clear
-        let size = hosting.sizeThatFits(in: CGSize(width: CGFloat.greatestFiniteMagnitude, height: 44))
-        hosting.view.frame = CGRect(origin: .zero, size: size)
-        return UIBarButtonItem(customView: hosting.view)
+            ref.view?.update(title: EditBarButton.title(isEditing: vc.isEditing), weight: vc.isEditing ? .bold : .regular)
+        }
+        ref.view = view
+        return UIBarButtonItem(customView: view)
     }
 
     /// Creates a custom-view bar button item for an image button, using SwiftUI
