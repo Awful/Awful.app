@@ -103,6 +103,11 @@ public extension UIScrollView {
     /// bar so the circles read as dark glass on a dark bar (`statusBarBackground`); once scrolled,
     /// hand back to the content so the circles adapt to it as the bar goes transparent.
     ///
+    /// The trait is iOS 26 only. iOS 27 reads the bar's own trait for the circles (the
+    /// navigation controller sets it), and its root tab bar reads the tab root's view — which,
+    /// for a collection view controller, is this scroll view — so a dark override here turned a
+    /// light theme's tab bar dark. The background still tones the circles on both.
+    ///
     /// Collection views get a `backgroundView` that is the bar colour only in the strip under the
     /// bar, so the list looks unchanged (a collection view's list layout paints over anything else
     /// in the top inset). Other scroll views (the web views) get a bar-coloured strip subview in
@@ -113,9 +118,11 @@ public extension UIScrollView {
     /// follows inset and bar-height changes (rotation).
     func applyNavigationBarPlatterBackdrop(atTop: Bool, theme: Theme) {
         let readsAsBar = atTop && LiquidGlass.usesGlassNavigationBar
-        let style: UIUserInterfaceStyle = readsAsBar ? theme.navigationBarUserInterfaceStyle : .unspecified
-        if overrideUserInterfaceStyle != style {
-            overrideUserInterfaceStyle = style
+        if #unavailable(iOS 27.0) {
+            let style: UIUserInterfaceStyle = readsAsBar ? theme.navigationBarUserInterfaceStyle : .unspecified
+            if overrideUserInterfaceStyle != style {
+                overrideUserInterfaceStyle = style
+            }
         }
 
         if let collectionView = self as? UICollectionView {

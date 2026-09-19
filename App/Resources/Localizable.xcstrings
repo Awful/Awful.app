@@ -52,6 +52,12 @@
     "Author Profile" : {
 
     },
+    "Automatic Dark Mode" : {
+
+    },
+    "Avatars" : {
+
+    },
     "Back" : {
       "comment" : "Back button accessibility label"
     },
@@ -531,6 +537,9 @@
     "Cute" : {
 
     },
+    "Dark Mode" : {
+
+    },
     "Doggo" : {
 
     },
@@ -545,6 +554,9 @@
     },
     "Edit" : {
       "comment" : "Edit button"
+    },
+    "Exit Endless Scroll" : {
+
     },
     "Five" : {
 
@@ -644,6 +656,12 @@
           }
         }
       }
+    },
+    "Images" : {
+
+    },
+    "Immersive Mode" : {
+
     },
     "Jump to First Page" : {
 

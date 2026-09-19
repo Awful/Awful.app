@@ -155,6 +155,9 @@ final class GlassTextBarButtonView: UIView {
 final class EditBarButton {
     private weak var viewController: UIViewController?
     private var glassView: UIView?
+    /// Built once: Forums swaps the item in and out as its favourite count changes, and the same
+    /// item keeps what the navigation controller set on it (`hidesSharedBackground`, tint).
+    private var glassItem: UIBarButtonItem?
 
     init(for viewController: UIViewController) {
         self.viewController = viewController
@@ -164,10 +167,11 @@ final class EditBarButton {
         guard let viewController else { return UIBarButtonItem() }
         guard #available(iOS 26.0, *), LiquidGlass.affectsBarButtonPlatters else {
             glassView = nil
+            glassItem = nil
             return viewController.editButtonItem
         }
-        if let glassView {
-            return UIBarButtonItem(customView: glassView)
+        if let glassItem {
+            return glassItem
         }
         let view: GlassTextBarButtonView
         if LiquidGlass.affectsPadSidebar {
@@ -190,7 +194,9 @@ final class EditBarButton {
             )
         }
         glassView = view
-        return UIBarButtonItem(customView: view)
+        let item = UIBarButtonItem(customView: view)
+        glassItem = item
+        return item
     }
 
     func setEditing(_ isEditing: Bool) {
@@ -536,7 +542,7 @@ final class NavigationController: UINavigationController, Themeable {
         awfulNavigationBar.didLayoutSubviews = { [weak self] in
             guard let self else { return }
             if #available(iOS 26.0, *) {
-                self.restoreSidebarToggleItemIfDropped()
+                self.repairBarButtonItemsAfterLayout()
                 // The title places itself against the items' actual frames, which a bar layout
                 // may have moved without touching the title view's own frame.
                 (self.topViewController?.navigationItem.titleView as? SidebarTitleView)?.setNeedsLayout()
@@ -648,12 +654,16 @@ final class NavigationController: UINavigationController, Themeable {
         return strip
     }()
 
-    /// What the root tab bar observes instead of the list. The tab bar resolves its glass's
-    /// light/dark from the scroll view it observes for the bottom edge, and left to itself it
-    /// picks the list — which carries the navigation bar's dark trait while the bar rests opaque
-    /// (`applyNavigationBarPlatterBackdrop`), turning the tab bar dark in a light theme (iOS 27
-    /// keeps it that way; iOS 26 flashes it at launch). This inert scroll view has no override,
-    /// so it resolves to the tab bar controller's own pin.
+    /// What the root tab bar observes instead of the list, on iOS 26. There the tab bar resolves
+    /// its glass's light/dark from the scroll view it observes for the bottom edge, and left to
+    /// itself it picks the list — which carries the navigation bar's dark trait while the bar
+    /// rests opaque (`applyNavigationBarPlatterBackdrop`), flashing the tab bar dark at launch in
+    /// a light theme. This inert scroll view has no override, so it resolves to the tab bar
+    /// controller's own pin.
+    ///
+    /// iOS 27 ignores this registration and reads the tab root's own view instead, which for the
+    /// list screens is the list. So on 27 the list is simply never given the bar's trait (the
+    /// bar's circles read the bar's own trait there; see `applyNavigationBarPlatterBackdrop`).
     private lazy var tabBarTraitBackdrop: UIScrollView = {
         let backdrop = UIScrollView()
         backdrop.isScrollEnabled = false
@@ -719,8 +729,8 @@ final class NavigationController: UINavigationController, Themeable {
     /// sample. The opaque bar hides it.
     ///
     /// It is sized to the bar alone, and the list keeps `.bottom`: the root tab bar takes its
-    /// light/dark from the scroll view beneath it, and a full-height decoy carrying the bar's
-    /// dark trait is not what it should find there (see `tabBarTraitBackdrop`).
+    /// light/dark from what is beneath it, and a full-height decoy carrying the bar's dark trait
+    /// is not what it should find there (see `tabBarTraitBackdrop`).
     @available(iOS 26.0, *)
     private func installListPlatterBackdrop(for viewController: UIViewController, theme: Theme) {
         // The list has to stop at the bar, or it is the one UIKit picks and samples.
@@ -1048,18 +1058,27 @@ final class NavigationController: UINavigationController, Themeable {
         viewController.navigationItem.rightBarButtonItems = items
     }
 
-    /// Screens rebuild their right items at runtime (Forums on a settings change, Lepers on a
-    /// page load), dropping the toggle. The bar's layout pass is the one place that sees every
-    /// such change, so put it back from there — on the next turn, not mid-layout.
+    /// Screens rebuild their bar items at runtime: Forums swaps its Edit item in and out as the
+    /// favourite count changes and rebuilds its right items on a settings change, Lepers on a
+    /// page load. An item that arrives while the screen is already showing has missed `willShow`
+    /// and the appearance callbacks, so it still shows the shared glass background (the platter),
+    /// and on the sidebar a rebuild drops the toggle. The bar's layout pass is the one place that
+    /// sees every such change, so both are put right from there — on the next turn, not
+    /// mid-layout, and never during a push or pop, when `lendSharedBackgroundDuringTransition`
+    /// has the background on loan and restores it itself.
     @available(iOS 26.0, *)
-    private func restoreSidebarToggleItemIfDropped() {
-        guard isSidebarNavigationController, wantsSidebarToggleItem,
-              let topVC = topViewController,
-              !(topVC.navigationItem.rightBarButtonItems ?? []).contains(where: { $0 is SidebarToggleBarButtonItem })
-        else { return }
+    private func repairBarButtonItemsAfterLayout() {
+        guard transitionCoordinator == nil, let topVC = topViewController else { return }
+        let toggleDropped = isSidebarNavigationController && wantsSidebarToggleItem
+            && !(topVC.navigationItem.rightBarButtonItems ?? []).contains(where: { $0 is SidebarToggleBarButtonItem })
+        let hide = hidesSharedBarButtonBackground
+        let backgroundOutOfStep = sharedBackgroundItems(of: topVC).contains { $0.hidesSharedBackground != hide }
+        guard toggleDropped || backgroundOutOfStep else { return }
         DispatchQueue.main.async { [weak self, weak topVC] in
-            guard let self, let topVC, topVC === self.topViewController else { return }
-            self.updateSidebarToggleItem(for: topVC)
+            guard let self, let topVC, topVC === self.topViewController, self.transitionCoordinator == nil else { return }
+            if toggleDropped {
+                self.updateSidebarToggleItem(for: topVC)
+            }
             self.updateSharedBackgroundVisibility(for: topVC)
         }
     }
@@ -1169,10 +1188,17 @@ final class NavigationController: UINavigationController, Themeable {
     @available(iOS 26.0, *)
     private func updateSharedBackgroundVisibility(for viewController: UIViewController) {
         let hide = hidesSharedBarButtonBackground
-        let toolbarItems = (viewController.toolbarItems ?? []).filter { !$0.isSpacer }
-        for item in navigationBarItems(of: viewController) + toolbarItems {
+        for item in sharedBackgroundItems(of: viewController) {
             item.hidesSharedBackground = hide
         }
+    }
+
+    /// The items `updateSharedBackgroundVisibility` governs: the screen's bar and toolbar items,
+    /// spacers excepted (see `UIBarButtonItem.isSpacer`).
+    @available(iOS 26.0, *)
+    private func sharedBackgroundItems(of viewController: UIViewController) -> [UIBarButtonItem] {
+        let toolbarItems = (viewController.toolbarItems ?? []).filter { !$0.isSpacer }
+        return navigationBarItems(of: viewController) + toolbarItems
     }
 
     /// Hands both screens' bar button items their shared glass background back for the length of a
