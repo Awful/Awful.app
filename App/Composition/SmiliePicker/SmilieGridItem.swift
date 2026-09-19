@@ -2,22 +2,37 @@
 //
 //  Copyright 2025 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import os
 import SwiftUI
 import Smilies
 import UniformTypeIdentifiers
 import AwfulTheming
+
+private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "SmilieGridItem")
 
 struct SmilieGridItem: View {
     @ObservedObject var smilie: Smilie
     let onTap: () -> Void
     
     @SwiftUI.Environment(\.theme) private var theme: Theme
-    @State private var uiImage: UIImage?
-    @State private var imageLoadAttempted = false
-    @State private var retryCount = 0
+
+    /// The decoded still image for `smilie.imageData`. Each decoded case remembers the data it
+    /// came from so a cell scrolling back on screen doesn't decode (or show a spinner) again.
+    private enum DecodedImage {
+        case pending
+        case image(UIImage, source: Data)
+        case failed(source: Data)
+
+        var source: Data? {
+            switch self {
+            case .pending: nil
+            case .image(_, let source), .failed(let source): source
+            }
+        }
+    }
+    @State private var decoded: DecodedImage = .pending
     
     private let itemSize: CGFloat = 90
-    private let maxRetries = 2
     
     private var shouldUseAnimatedView: Bool {
         guard let imageUTI = smilie.imageUTI else { 
@@ -44,22 +59,22 @@ struct SmilieGridItem: View {
                                     .frame(maxWidth: itemSize - 16, maxHeight: itemSize - 16)
                                     .aspectRatio(contentMode: .fit)
                                     .clipped()
-                            } else if let uiImage = uiImage {
-                                // For non-GIF images
-                                Image(uiImage: uiImage)
-                                    .resizable()
-                                    .interpolation(.none)
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(maxWidth: itemSize - 16, maxHeight: itemSize - 16)
-                                    .clipped()
-                            } else if imageLoadAttempted {
-                                // Invalid image data
-                                placeholderView
                             } else {
-                                // Show loading state while image loads
-                                ProgressView()
-                                    .scaleEffect(0.7)
-                                    .frame(width: itemSize - 16, height: itemSize - 16)
+                                switch decoded {
+                                case .image(let uiImage, _):
+                                    Image(uiImage: uiImage)
+                                        .resizable()
+                                        .interpolation(.none)
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(maxWidth: itemSize - 16, maxHeight: itemSize - 16)
+                                        .clipped()
+                                case .failed:
+                                    placeholderView
+                                case .pending:
+                                    ProgressView()
+                                        .scaleEffect(0.7)
+                                        .frame(width: itemSize - 16, height: itemSize - 16)
+                                }
                             }
                         } else {
                             // No image data
@@ -82,30 +97,25 @@ struct SmilieGridItem: View {
         }
         .buttonStyle(SmilieButtonStyle())
         .accessibilityLabel(smilie.summary ?? smilie.text)
-        .onAppear {
-            // Only load if it's not a GIF (GIFs are handled by AnimatedImageView)
-            if !shouldUseAnimatedView {
-                loadImageIfNeeded()
-                
-                // Retry if image hasn't loaded after a short delay
-                if uiImage == nil && retryCount < maxRetries {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                        if self.uiImage == nil {
-                            self.retryCount += 1
-                            self.imageLoadAttempted = false
-                            self.loadImageIfNeeded()
-                        }
-                    }
-                }
+        // Keyed on the bytes the decode consumes (the grid already keys the cell itself by
+        // smilie). Leaving the grid cancels the task; scrolling back re-runs it, which the
+        // `source` check turns into a no-op.
+        .task(id: smilie.imageData) {
+            // GIFs are handled by AnimatedImageView.
+            guard !shouldUseAnimatedView, let imageData = smilie.imageData else { return }
+            guard decoded.source != imageData else { return }
+            if decoded.source != nil {
+                decoded = .pending
             }
-        }
-        .onChange(of: smilie.objectID) { _ in
-            // Reset state when smilie changes
-            uiImage = nil
-            imageLoadAttempted = false
-            retryCount = 0
-            if !shouldUseAnimatedView {
-                loadImageIfNeeded()
+            let image = await Self.decodeImage(imageData)
+            // A finished decode is worth keeping even if this task was cancelled meanwhile;
+            // only drop it if the data changed underneath.
+            guard smilie.imageData == imageData else { return }
+            if let image {
+                decoded = .image(image, source: imageData)
+            } else {
+                logger.error("failed to decode image for \(smilie.text ?? "")")
+                decoded = .failed(source: imageData)
             }
         }
     }
@@ -132,42 +142,22 @@ struct SmilieGridItem: View {
         .frame(width: itemSize - 16, height: itemSize - 16)
     }
     
-    private func loadImageIfNeeded() {
-        // Skip loading for GIFs - they'll be handled by AnimatedImageView
-        if shouldUseAnimatedView {
-            imageLoadAttempted = true
-            return
+    /// Decodes and pre-renders a still image on the global executor, off the main actor that
+    /// `View` members are isolated to.
+    @concurrent nonisolated private static func decodeImage(_ imageData: Data) async -> UIImage? {
+        let image: UIImage?
+        if let direct = UIImage(data: imageData) {
+            image = direct
+        } else if
+            let source = CGImageSourceCreateWithData(imageData as CFData, nil),
+            let cgImage = CGImageSourceCreateImageAtIndex(source, 0, nil)
+        {
+            image = UIImage(cgImage: cgImage)
+        } else {
+            image = nil
         }
-        
-        guard !imageLoadAttempted, let imageData = smilie.imageData else {
-            return
-        }
-        
-        imageLoadAttempted = true
-        
-        // Load image on background queue to avoid blocking UI
-        DispatchQueue.global(qos: .userInitiated).async {
-            if let image = UIImage(data: imageData) {
-                DispatchQueue.main.async {
-                    self.uiImage = image
-                }
-            } else {
-                // Try alternative loading method
-                if let cgImageSource = CGImageSourceCreateWithData(imageData as CFData, nil),
-                   let cgImage = CGImageSourceCreateImageAtIndex(cgImageSource, 0, nil) {
-                    let image = UIImage(cgImage: cgImage)
-                    DispatchQueue.main.async {
-                        self.uiImage = image
-                    }
-                } else {
-                    // Both loading methods failed
-                    DispatchQueue.main.async {
-                        self.imageLoadAttempted = true
-                    }
-                    print("SmilieGridItem: Failed to load image for \(smilie.text ?? "")")
-                }
-            }
-        }
+        // UIImage decodes lazily at draw time on the main thread; force it here instead.
+        return image?.preparingForDisplay() ?? image
     }
 }
 
@@ -181,25 +171,3 @@ struct SmilieButtonStyle: ButtonStyle {
             .animation(.easeInOut(duration: 0.1), value: configuration.isPressed)
     }
 }
-
-#if DEBUG
-struct SmilieGridItem_Previews: PreviewProvider {
-    static var previews: some View {
-        Group {
-            // Light mode preview
-            SmiliePickerView(dataStore: .shared) { smilie in
-                print("Selected: \(smilie.text ?? "")")
-            }
-            .environment(\.theme, Theme.defaultTheme())
-            .previewDisplayName("Light Mode")
-            
-            // Dark mode preview
-            SmiliePickerView(dataStore: .shared) { smilie in
-                print("Selected: \(smilie.text ?? "")")
-            }
-            .environment(\.theme, Theme.theme(named: "dark")!)
-            .previewDisplayName("Dark Mode")
-        }
-    }
-}
-#endif

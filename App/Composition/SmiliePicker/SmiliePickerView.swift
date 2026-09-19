@@ -11,7 +11,7 @@ struct SmiliePickerView: View {
     @SwiftUI.Environment(\.presentationMode) private var presentationMode: Binding<PresentationMode>
     @SwiftUI.Environment(\.theme) private var theme: Theme
     @SwiftUI.Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    // Uniform pill height (fits two lines of .subheadline), scales with Dynamic Type
+    // Uniform pill height, scales with Dynamic Type
     @ScaledMetric(relativeTo: .subheadline) private var pillHeight: CGFloat = 50
 
     let onSmilieSelected: (Smilie) -> Void
@@ -156,30 +156,31 @@ struct SmiliePickerView: View {
         return titles
     }
 
-    /// Namespaces section anchor ids so they can't collide with the pill row's own
-    /// `ForEach` identities — `ScrollViewProxy.scrollTo` searches every scroll view
-    /// under the reader, and a bare title would match the (already visible) pill.
-    private func sectionAnchorID(_ title: String) -> String {
-        "section-\(title)"
+    /// Identity for a category pill. A distinct type from the sections' `String` identities,
+    /// so `scrollTo(title)` can only ever match a section and never the (already visible) pill:
+    /// `ScrollViewProxy.scrollTo` searches every scroll view under the reader, the pill row's
+    /// horizontal one included.
+    private struct PillID: Hashable {
+        let title: String
     }
 
     private func categoryChipRow(proxy: ScrollViewProxy, maxPillWidth: CGFloat) -> some View {
         // Alternate titles between the two rows so adjacent categories stay near each other
-        let titles = categoryTitles
+        let titles = categoryTitles.map(PillID.init)
         let topRow = stride(from: 0, to: titles.count, by: 2).map { titles[$0] }
         let bottomRow = stride(from: 1, to: titles.count, by: 2).map { titles[$0] }
 
         return ScrollView(.horizontal, showsIndicators: false) {
             VStack(alignment: .leading, spacing: 8) {
                 HStack(spacing: 8) {
-                    ForEach(topRow, id: \.self) { title in
-                        categoryPill(title, proxy: proxy, maxWidth: maxPillWidth)
+                    ForEach(topRow, id: \.self) { pill in
+                        categoryPill(pill.title, proxy: proxy, maxWidth: maxPillWidth)
                     }
                 }
                 if !bottomRow.isEmpty {
                     HStack(spacing: 8) {
-                        ForEach(bottomRow, id: \.self) { title in
-                            categoryPill(title, proxy: proxy, maxWidth: maxPillWidth)
+                        ForEach(bottomRow, id: \.self) { pill in
+                            categoryPill(pill.title, proxy: proxy, maxWidth: maxPillWidth)
                         }
                     }
                 }
@@ -197,18 +198,21 @@ struct SmiliePickerView: View {
             // Deferring past the button's own transaction keeps scrollTo reliable on iOS 15
             DispatchQueue.main.async {
                 withAnimation {
-                    proxy.scrollTo(sectionAnchorID(title), anchor: .top)
+                    proxy.scrollTo(title, anchor: .top)
                 }
             }
         }) {
             Text(title)
                 .font(.subheadline)
                 .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                .multilineTextAlignment(.center)
-                .lineLimit(2)
+                .lineLimit(1)
                 .minimumScaleFactor(0.9)
                 .foregroundColor(theme[color: "sheetTextColor"]!)
                 .frame(maxWidth: maxWidth)
+                // Each pill takes its own title's width, capped above (an over-long title is
+                // truncated rather than wrapped). Without this the row's HStack splits its
+                // width evenly across the pills, padding out the short titles.
+                .fixedSize(horizontal: true, vertical: false)
                 .padding(.horizontal, 12)
                 .frame(height: pillHeight)
                 .background(
@@ -276,11 +280,15 @@ struct SmiliePickerView: View {
             
             smilieGrid(viewModel.recentlyUsedSmilies)
         }
-        .id(sectionAnchorID(recentlyUsedSectionTitle))
+        // Section identity is the title; the category pills scroll to it.
+        .id(recentlyUsedSectionTitle)
     }
     
     private var allSmiliesSection: some View {
         VStack(alignment: .leading, spacing: 20) {
+            // Section identity is the title; the category pills scroll to it. It has to be the
+            // `ForEach` identity itself: an `.id` nested inside the row isn't found by
+            // `scrollTo` on the iOS 27 simulator.
             ForEach(Array(viewModel.allSmilies.enumerated()), id: \.element.title) { index, section in
                 VStack(alignment: .leading, spacing: 10) {
                     if index > 0 {
@@ -298,7 +306,6 @@ struct SmiliePickerView: View {
 
                     smilieGrid(section.smilies)
                 }
-                .id(sectionAnchorID(section.title))
             }
         }
     }

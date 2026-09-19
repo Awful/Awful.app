@@ -13,7 +13,6 @@ private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: 
 
 final class ShowSmilieKeyboardCommand: NSObject {
     fileprivate let textView: UITextView
-    private weak var presentingViewController: UIViewController?
     
     init(textView: UITextView) {
         self.textView = textView
@@ -62,7 +61,7 @@ final class ShowSmilieKeyboardCommand: NSObject {
         }
         
         // Check if smilie picker is already being presented
-        if viewController is UIHostingController<SmiliePickerView> {
+        if viewController is SmiliePickerHost {
             return
         }
         
@@ -86,7 +85,7 @@ final class ShowSmilieKeyboardCommand: NSObject {
         }
         .themed()
 
-        let hostingController = UIHostingController(rootView: pickerView)
+        let hostingController = SmiliePickerHostingController(rootView: pickerView)
         hostingController.modalPresentationStyle = UIModalPresentationStyle.pageSheet
 
         if let sheet = hostingController.sheetPresentationController {
@@ -100,7 +99,6 @@ final class ShowSmilieKeyboardCommand: NSObject {
             sheet.delegate = self
         }
         
-        presentingViewController = viewController
         viewController.present(hostingController, animated: true)
     }
     
@@ -121,6 +119,13 @@ final class ShowSmilieKeyboardCommand: NSObject {
     
     fileprivate var justInsertedSmilieText: String?
 }
+
+/// Marks the presented smilie picker so it can be recognised by type check. The root view is a
+/// `ModifiedContent<…>` once `.onDisappear` and `.themed()` are applied, so a check against
+/// `UIHostingController<SmiliePickerView>` can never succeed.
+private protocol SmiliePickerHost: AnyObject {}
+
+private final class SmiliePickerHostingController<Content: View>: UIHostingController<Content>, SmiliePickerHost {}
 
 extension ShowSmilieKeyboardCommand: SmilieKeyboardDelegate {
     func advanceToNextInputMode(for keyboard: SmilieKeyboard) {
