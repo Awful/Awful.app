@@ -5,7 +5,7 @@
 import AwfulModelTypes
 import HTMLReader
 
-public struct PostsPageScrapeResult: ScrapeResult {
+public struct PostsPageScrapeResult: ScrapeResult, Sendable {
     public let advertisement: RawHTML
     public let breadcrumbs: ForumBreadcrumbsScrapeResult?
     public let forumID: ForumID?

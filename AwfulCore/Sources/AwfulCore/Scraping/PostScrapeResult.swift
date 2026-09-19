@@ -5,7 +5,7 @@
 import Foundation
 import HTMLReader
 
-public struct PostScrapeResult {
+public struct PostScrapeResult: Sendable {
     public let author: AuthorSidebarScrapeResult
     public let authorCanReceivePrivateMessages: Bool
     public let authorIsOriginalPoster: Bool

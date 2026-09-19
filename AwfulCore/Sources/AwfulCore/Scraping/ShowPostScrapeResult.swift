@@ -5,7 +5,7 @@
 import Foundation
 import HTMLReader
 
-public struct ShowPostScrapeResult: ScrapeResult {
+public struct ShowPostScrapeResult: ScrapeResult, Sendable {
     public let author: AuthorSidebarScrapeResult
     public let post: PostScrapeResult
     public let threadID: ThreadID?

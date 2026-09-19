@@ -5,7 +5,7 @@
 import Foundation
 import HTMLReader
 
-public struct PrivateMessageScrapeResult: ScrapeResult {
+public struct PrivateMessageScrapeResult: ScrapeResult, Sendable {
     public let author: AuthorSidebarScrapeResult?
     public let body: RawHTML
     public let hasBeenSeen: Bool

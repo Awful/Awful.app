@@ -6,7 +6,7 @@ import Foundation
 import HTMLReader
 
 /// Scrapes the sidebar with author info that appears alongside posts, private messages, and user profiles.
-public struct AuthorSidebarScrapeResult: ScrapeResult {
+public struct AuthorSidebarScrapeResult: ScrapeResult, Sendable {
     public let additionalAuthorClasses: Set<String>
     public let customTitle: RawHTML
     public let isAdministrator: Bool

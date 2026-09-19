@@ -5,7 +5,7 @@
 import Foundation
 import HTMLReader
 
-public struct ProfileScrapeResult: ScrapeResult {
+public struct ProfileScrapeResult: ScrapeResult, Sendable {
     public let about: RawHTML
     public let aimName: String
     public let author: AuthorSidebarScrapeResult

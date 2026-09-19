@@ -5,18 +5,18 @@
 import Foundation
 import HTMLReader
 
-public struct PrivateMessageFolderScrapeResult: ScrapeResult {
+public struct PrivateMessageFolderScrapeResult: ScrapeResult, Sendable {
     public let allFolders: [Folder]
     public let folder: Folder?
     public let isOnlyShowingLastFiftyMessages: Bool
     public let messages: [Message]
 
-    public struct Folder {
+    public struct Folder: Sendable {
         public let id: PrivateMessageFolderID
         public let name: String
     }
 
-    public struct Message {
+    public struct Message: Sendable {
         public let hasBeenSeen: Bool
         public let iconDescription: String
         public let iconImage: URL?
@@ -110,7 +110,7 @@ private let twelveHourSentDateFormatter = DateFormatter(scraping: "MMM d, yyyy '
 private let twentyFourHourSentDateFormatter = DateFormatter(scraping: "MMMM d, yyyy 'at' HH:mm")
 
 /// Private message folder IDs sure look numeric but we're gonna treat them as opaque.
-public struct PrivateMessageFolderID: Hashable, RawRepresentable {
+public struct PrivateMessageFolderID: Hashable, RawRepresentable, Sendable {
     public let rawValue: String
 
     public init?(rawValue: String) {

@@ -5,17 +5,17 @@
 import Foundation
 import HTMLReader
 
-public struct AnnouncementListScrapeResult: ScrapeResult {
+public struct AnnouncementListScrapeResult: ScrapeResult, Sendable {
     public let announcements: [Announcement]
 
-    public struct Announcement {
+    public struct Announcement: Sendable {
         let author: Author?
         let body: RawHTML
         let date: Date?
         let dateRaw: String?
     }
 
-    public struct Author {
+    public struct Author: Sendable {
         public let customTitle: RawHTML
         public let regdate: Date?
         public let regdateRaw: String?
