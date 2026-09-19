@@ -2,12 +2,7 @@
 
 import Foundation
 import ImageIO
-
-#if canImport(CoreServices)
-    import CoreServices
-#else
-    import MobileCoreServices
-#endif
+import UniformTypeIdentifiers
 
 /**
  Re-encodes an image into a format that Imgur accepts, if it isn't already in one.
@@ -21,7 +16,7 @@ import ImageIO
 internal final class TranscodeImage: AsynchronousOperation<ImageFile>, @unchecked Sendable {
 
     /// The image formats we're confident Imgur accepts. Everything else gets re-encoded.
-    private static let acceptableTypes = [kUTTypeJPEG, kUTTypePNG, kUTTypeGIF]
+    private static let acceptableTypes: [UTType] = [.jpeg, .png, .gif]
 
     /// High enough that the recompression isn't noticeable.
     private static let compressionQuality = 0.9
@@ -46,14 +41,15 @@ internal final class TranscodeImage: AsynchronousOperation<ImageFile>, @unchecke
             return finish(.success(originalImage))
         }
 
-        if TranscodeImage.acceptableTypes.contains(where: { UTTypeConformsTo(uti, $0) }) {
+        let sourceType = UTType(uti as String)
+        if TranscodeImage.acceptableTypes.contains(where: { sourceType?.conforms(to: $0) == true }) {
             log(.debug, "original image is a \(uti) which Imgur accepts, so there's nothing to transcode")
             return finish(.success(originalImage))
         }
 
         let properties = CGImageSourceCopyPropertiesAtIndex(imageSource, 0, nil) as NSDictionary?
         let hasAlpha = properties?[kCGImagePropertyHasAlpha] as? Bool ?? false
-        let destinationType = hasAlpha ? kUTTypePNG : kUTTypeJPEG
+        let destinationType: UTType = hasAlpha ? .png : .jpeg
 
         if CGImageSourceGetCount(imageSource) > 1 {
             log(.info, "original image has multiple frames, only the first of which survives transcoding")
@@ -71,13 +67,13 @@ internal final class TranscodeImage: AsynchronousOperation<ImageFile>, @unchecke
             throw ImageError.transcodingFailed
         }
 
-        let pathExtension = UTTypeCopyPreferredTagWithClass(destinationType, kUTTagClassFilenameExtension)?.takeRetainedValue() as String? ?? "jpeg"
+        let pathExtension = destinationType.preferredFilenameExtension ?? "jpeg"
         let transcodedImageURL = tempFolder.url
             .appendingPathComponent("transcoded", isDirectory: false)
             .appendingPathExtension(pathExtension)
 
-        guard let destination = CGImageDestinationCreateWithURL(transcodedImageURL as CFURL, destinationType, 1, nil) else {
-            log(.error, "could not make a \(destinationType) destination at \(transcodedImageURL)")
+        guard let destination = CGImageDestinationCreateWithURL(transcodedImageURL as CFURL, destinationType.identifier as CFString, 1, nil) else {
+            log(.error, "could not make a \(destinationType.identifier) destination at \(transcodedImageURL)")
             throw ImageError.destinationCreationFailed
         }
 
@@ -96,7 +92,7 @@ internal final class TranscodeImage: AsynchronousOperation<ImageFile>, @unchecke
 
         let originalByteSize = (try? originalImage.url.resourceValues(forKeys: [.fileSizeKey]))?.fileSize
         let transcodedByteSize = (try? transcodedImageURL.resourceValues(forKeys: [.fileSizeKey]))?.fileSize
-        log(.info, "transcoded \(uti) image of \(originalByteSize as Any) bytes into a \(destinationType) of \(transcodedByteSize as Any) bytes, as Imgur may not accept the original format")
+        log(.info, "transcoded \(uti) image of \(originalByteSize as Any) bytes into a \(destinationType.identifier) of \(transcodedByteSize as Any) bytes, as Imgur may not accept the original format")
 
         finish(.success(ImageFile(url: transcodedImageURL)))
     }
