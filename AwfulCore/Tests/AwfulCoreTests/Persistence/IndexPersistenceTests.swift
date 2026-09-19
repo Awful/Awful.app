@@ -82,6 +82,62 @@ class IndexPersistentTests: XCTestCase {
         XCTAssertEqual(pokeyman!.profile!.aboutMe, "2")
     }
 
+    // MARK: Duplicate rows
+
+    /// The model has no uniqueness constraints, so a user can end up in the store twice. The
+    /// moderator batch used to build its lookup with `Dictionary(uniqueKeysWithValues:)`, which
+    /// traps on the duplicate and took the forum list down on every refresh until reinstall.
+    func testDuplicateModeratorRowsAreMergedNotFatal() throws {
+        // 31158 moderates forum 273 in the fixture.
+        let genesplicerID = "31158"
+        let first = User.insert(into: context)
+        first.userID = genesplicerID
+        first.username = "old name"
+        let firstThread = AwfulThread.insert(into: context)
+        firstThread.threadID = "1"
+        firstThread.author = first
+
+        let second = User.insert(into: context)
+        second.userID = genesplicerID
+        let secondThread = AwfulThread.insert(into: context)
+        secondThread.threadID = "2"
+        secondThread.author = second
+        try context.save()
+
+        try scrapeJSONFixture(IndexScrapeResult.self, named: "index").upsert(into: context)
+        try context.save()
+
+        let survivors = User.fetch(in: context) {
+            $0.predicate = .init("\(\User.userID) = \(genesplicerID)")
+        }
+        XCTAssertEqual(survivors.count, 1, "the duplicate is deleted, not just skipped")
+        let survivor = try XCTUnwrap(survivors.first)
+        XCTAssertEqual(survivor.username, "Genesplicer")
+        XCTAssertEqual(Set(survivor.threads.map(\.threadID)), ["1", "2"], "the duplicate's relationships fold into the survivor")
+    }
+
+    /// Forums and groups get the plain keep-first treatment: nothing merges them, but a doubled
+    /// row must not crash the scrape either.
+    func testDuplicateForumRowsDoNotTrap() throws {
+        for _ in 0..<2 {
+            let forum = Forum.insert(into: context)
+            forum.forumID = "192"
+        }
+        for _ in 0..<2 {
+            let group = ForumGroup.insert(into: context)
+            group.groupID = "51"
+        }
+        try context.save()
+
+        try scrapeIndex().upsert(into: context)
+        try context.save()
+
+        let gadgets = Forum.fetch(in: context) { $0.predicate = .init("\(\Forum.forumID) = \("192")") }
+        XCTAssertEqual(gadgets.count, 2, "forums are not merged, only tolerated")
+        let updated = try XCTUnwrap(gadgets.first { $0.name == "Inspect Your Gadgets" })
+        XCTAssertEqual(updated.group?.groupID, "51")
+    }
+
     // MARK: Forums the site stops listing
 
     /// Decodes the `index` fixture, optionally dropping or renaming forums (at any depth) by ID.

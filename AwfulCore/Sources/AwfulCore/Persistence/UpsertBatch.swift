@@ -13,20 +13,24 @@ class UpsertBatch<T: NSManagedObject & Managed> {
     private let idKeyPath: WritableKeyPath<T, String>
     private var objects: [String: T]
 
+    /// - Parameter mergingDuplicates: Picks the one object to stand for an identifier that several
+    ///   fetched objects share. Nothing in the model enforces uniqueness, so duplicates do turn up
+    ///   in the store, and a batch that assumed otherwise would trap. The default keeps the first
+    ///   object fetched; pass something smarter (`merge(_:)` for users, say) to fold the others in.
     init(
         in context: NSManagedObjectContext,
         identifiedBy keyPath: WritableKeyPath<T, String>,
-        identifiers: [String]
+        identifiers: [String],
+        mergingDuplicates merge: ([T]) -> T = { $0[0] }
     ) {
         self.context = context
         idKeyPath = keyPath
 
-        objects = .init(uniqueKeysWithValues:
-            T.fetch(in: context) {
-                $0.predicate = .init("\(keyPath) IN \(identifiers)")
-                $0.returnsObjectsAsFaults = false
-            }.map { ($0[keyPath: keyPath], $0) }
-        )
+        let fetched = T.fetch(in: context) {
+            $0.predicate = .init("\(keyPath) IN \(identifiers)")
+            $0.returnsObjectsAsFaults = false
+        }
+        objects = Dictionary(grouping: fetched, by: { $0[keyPath: keyPath] }).mapValues(merge)
     }
 
     subscript(_ id: String) -> T {

@@ -49,7 +49,8 @@ extension IndexScrapeResult {
         let unorderedUsers = UpsertBatch(
             in: context,
             identifiedBy: \User.userID,
-            identifiers: moderators.map { $0.userID })
+            identifiers: moderators.map { $0.userID },
+            mergingDuplicates: merge)
         for mod in moderators {
             let user = unorderedUsers[mod.userID]
             mod.update(user)
