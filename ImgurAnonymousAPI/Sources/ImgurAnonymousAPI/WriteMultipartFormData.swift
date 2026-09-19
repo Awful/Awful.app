@@ -2,12 +2,7 @@
 
 import Foundation
 import ImageIO
-
-#if canImport(CoreServices)
-    import CoreServices
-#else
-    import MobileCoreServices
-#endif
+import UniformTypeIdentifiers
 
 internal struct FormDataFile {
     let boundary: String
@@ -33,19 +28,17 @@ internal final class WriteMultipartFormData: AsynchronousOperation<FormDataFile>
         let tempFolder = try firstDependencyValue(ofType: TemporaryFolder.self)
         let imageFile = try firstDependencyValue(ofType: ImageFile.self)
 
-        let uti = CGImageSourceCreateWithURL(imageFile.url as CFURL, nil)
+        let imageType = CGImageSourceCreateWithURL(imageFile.url as CFURL, nil)
             .flatMap { CGImageSourceGetType($0) }
-        let mimeType = uti
-            .flatMap { UTTypeCopyPreferredTagWithClass($0, kUTTagClassMIMEType)?.takeRetainedValue() as String? }
-            ?? "application/octet-stream"
+            .flatMap { UTType($0 as String) }
+        let mimeType = imageType?.preferredMIMEType ?? "application/octet-stream"
 
         let requestBodyURL = tempFolder.url
             .appendingPathComponent("request", isDirectory: false)
             .appendingPathExtension("dat")
 
         // Some servers sniff the filename extension in addition to the Content-Type, so give them one where we can.
-        let filename = uti
-            .flatMap { UTTypeCopyPreferredTagWithClass($0, kUTTagClassFilenameExtension)?.takeRetainedValue() as String? }
+        let filename = imageType?.preferredFilenameExtension
             .map { "image.\($0)" }
             ?? "image"
 
