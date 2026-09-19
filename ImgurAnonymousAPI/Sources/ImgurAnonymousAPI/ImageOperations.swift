@@ -2,6 +2,7 @@
 
 import Foundation
 import ImageIO
+import UniformTypeIdentifiers
 
 internal struct ImageFile {
     let url: URL
@@ -65,7 +66,7 @@ internal final class ResizeImage: AsynchronousOperation<ImageFile>, @unchecked S
             throw ImageError.sourceCreationFailed
         }
         
-        if let uti = CGImageSourceGetType(imageSource), UTTypeConformsTo(uti, kUTTypeGIF) {
+        if let uti = CGImageSourceGetType(imageSource), UTType(uti as String)?.conforms(to: .gif) == true {
             log(.debug, "original image is a GIF which we can't resize, so we'll just try the original")
             return finish(.success(originalImage))
         }
@@ -105,7 +106,7 @@ internal final class ResizeImage: AsynchronousOperation<ImageFile>, @unchecked S
                     kCGImageSourceShouldCache: false] as NSDictionary),
 
                 // This was originally kUTTypeTIFF in an attempt to preserve rotation data, but modern Imgur was rejecting tiff files. :-/
-                let destination = CGImageDestinationCreateWithURL(resizedImageURL as CFURL, CGImageSourceGetType(imageSource) ?? kUTTypePNG, 1, nil) else
+                let destination = CGImageDestinationCreateWithURL(resizedImageURL as CFURL, CGImageSourceGetType(imageSource) ?? (UTType.png.identifier as CFString), 1, nil) else
             {
                 log(.error, "thumbnail creation failed")
                 throw ImageError.thumbnailCreationFailed
@@ -183,7 +184,7 @@ internal final class SavePHAsset: AsynchronousOperation<ImageFile>, @unchecked S
 
         let imageURL: URL = {
             if photo.originalFilename.isEmpty {
-                let ext = UTTypeCopyPreferredTagWithClass(photo.uniformTypeIdentifier as CFString, kUTTagClassFilenameExtension)?.takeRetainedValue() as String? ?? "jpg"
+                let ext = UTType(photo.uniformTypeIdentifier)?.preferredFilenameExtension ?? "jpg"
                 return tempFolder.url
                     .appendingPathComponent("original", isDirectory: false)
                     .appendingPathExtension(ext)
@@ -210,7 +211,6 @@ internal final class SavePHAsset: AsynchronousOperation<ImageFile>, @unchecked S
 #endif
 
 #if canImport(UIKit)
-import MobileCoreServices
 import UIKit
 
 /// Writes the image data to file in a temporary folder.
@@ -235,7 +235,7 @@ internal final class SaveUIImage: AsynchronousOperation<ImageFile>, @unchecked S
         let tempFolder = try firstDependencyValue(ofType: TemporaryFolder.self)
         let imageURL = tempFolder.url.appendingPathComponent("original.gif", isDirectory: false)
         
-        guard let destination = CGImageDestinationCreateWithURL(imageURL as CFURL, kUTTypeGIF, frames.count, nil) else {
+        guard let destination = CGImageDestinationCreateWithURL(imageURL as CFURL, UTType.gif.identifier as CFString, frames.count, nil) else {
             throw ImageError.destinationCreationFailed
         }
         CGImageDestinationSetProperties(destination, [
@@ -267,7 +267,7 @@ internal final class SaveUIImage: AsynchronousOperation<ImageFile>, @unchecked S
             throw ImageError.missingCGImage
         }
 
-        guard let destination = CGImageDestinationCreateWithURL(imageURL as CFURL, kUTTypePNG, 1, nil) else {
+        guard let destination = CGImageDestinationCreateWithURL(imageURL as CFURL, UTType.png.identifier as CFString, 1, nil) else {
             throw ImageError.destinationCreationFailed
         }
 
