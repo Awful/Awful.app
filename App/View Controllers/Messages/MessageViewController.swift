@@ -149,39 +149,45 @@ final class MessageViewController: ViewController {
         }
     }
     
+    /// Shows the author-header menu on tap; see `HiddenMenuButton`.
+    private lazy var hiddenMenuButton: HiddenMenuButton = {
+        let button = HiddenMenuButton()
+        renderView.addSubview(button)
+        return button
+    }()
+
     private func showUserActions(from rect: CGRect) {
         guard let user = privateMessage.from else { return }
-        
-        func present(_ viewController: UIViewController) {
-            if UIDevice.current.userInterfaceIdiom == .pad {
-                self.present(viewController.enclosingNavigationController, animated: true, completion: nil)
-            } else {
-                self.navigationController?.pushViewController(viewController, animated: true)
-            }
-        }
-        
+
+        let menu = UIMenu(children: [
+            UIAction(
+                title: "Profile",
+                image: UIImage(named: "user-profile")?.withRenderingMode(.alwaysTemplate),
+                handler: { [weak self] _ in
+                    self?.showUserScreen(ProfileViewController(user: user))
+                }),
+            UIAction(
+                title: "Rap sheet",
+                image: UIImage(named: "rap-sheet")?.withRenderingMode(.alwaysTemplate),
+                handler: { [weak self] _ in
+                    self?.showUserScreen(RapSheetViewController(user: user, handlers: .awful))
+                }),
+        ])
+
         Task {
             var rect = await renderView.unionFrameOfElements(matchingSelector: ".avatar, .nameanddate")
-            let actionVC = InAppActionViewController()
-            actionVC.items = [
-                IconActionItem(.userProfile, block: {
-                    present(ProfileViewController(user: user))
-                }),
-                IconActionItem(.rapSheet, block: {
-                    present(RapSheetViewController(user: user, handlers: .awful))
-                })
-            ]
-
             if rect.isNull {
                 rect = CGRect(origin: .zero, size: CGSize(width: renderView.bounds.width, height: 1))
             }
+            hiddenMenuButton.show(menu: menu, from: rect)
+        }
+    }
 
-            actionVC.popoverPositioningBlock = { sourceRect, sourceView in
-                sourceRect.pointee = rect
-                sourceView.pointee = self.renderView
-            }
-
-            self.present(actionVC, animated: true)
+    private func showUserScreen(_ viewController: UIViewController) {
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            present(viewController.enclosingNavigationController, animated: true, completion: nil)
+        } else {
+            navigationController?.pushViewController(viewController, animated: true)
         }
     }
     

@@ -32,6 +32,13 @@ final class AnnouncementViewController: ViewController {
 
     private var messageViewController: MessageComposeViewController?
 
+    /// Shows the author-header menu on tap; see `HiddenMenuButton`.
+    private lazy var hiddenMenuButton: HiddenMenuButton = {
+        let button = HiddenMenuButton()
+        renderView.addSubview(button)
+        return button
+    }()
+
     private lazy var renderView: RenderView = {
         let renderView = RenderView(frame: CGRect(origin: .zero, size: view.bounds.size))
         renderView.delegate = self
@@ -247,45 +254,48 @@ final class AnnouncementViewController: ViewController {
             return
         }
 
-        var items: [IconActionItem] = []
+        var actions: [UIAction] = []
 
-        items.append(IconActionItem(.userProfile, block: {
-            let profileVC = ProfileViewController(user: user)
-            self.present(profileVC.enclosingNavigationController, animated: true)
-        }))
+        actions.append(UIAction(
+            title: "Profile",
+            image: UIImage(named: "user-profile")?.withRenderingMode(.alwaysTemplate),
+            handler: { [weak self] _ in
+                guard let self else { return }
+                let profileVC = ProfileViewController(user: user)
+                self.present(profileVC.enclosingNavigationController, animated: true)
+            }))
 
         if canSendPrivateMessages
             && user.canReceivePrivateMessages
             && user.userID != loggedInUserID
         {
-            items.append(IconActionItem(.sendPrivateMessage, block: {
-                let messageVC = MessageComposeViewController(recipient: user)
-                self.messageViewController = messageVC
-                messageVC.delegate = self
-                self.present(messageVC.enclosingNavigationController, animated: true)
+            actions.append(UIAction(
+                title: "Private message",
+                image: UIImage(named: "send-private-message")?.withRenderingMode(.alwaysTemplate),
+                handler: { [weak self] _ in
+                    guard let self else { return }
+                    let messageVC = MessageComposeViewController(recipient: user)
+                    self.messageViewController = messageVC
+                    messageVC.delegate = self
+                    self.present(messageVC.enclosingNavigationController, animated: true)
+                }))
+        }
+
+        actions.append(UIAction(
+            title: "Rap sheet",
+            image: UIImage(named: "rap-sheet")?.withRenderingMode(.alwaysTemplate),
+            handler: { [weak self] _ in
+                guard let self else { return }
+                let rapSheetVC = RapSheetViewController(user: user, handlers: .awful)
+                if self.traitCollection.userInterfaceIdiom == .pad || self.navigationController == nil {
+                    self.present(rapSheetVC.enclosingNavigationController, animated: true)
+                }
+                else {
+                    self.navigationController?.pushViewController(rapSheetVC, animated: true)
+                }
             }))
-        }
 
-        items.append(IconActionItem(.rapSheet, block: {
-            let rapSheetVC = RapSheetViewController(user: user, handlers: .awful)
-            if self.traitCollection.userInterfaceIdiom == .pad || self.navigationController == nil {
-                self.present(rapSheetVC.enclosingNavigationController, animated: true)
-            }
-            else {
-                self.navigationController?.pushViewController(rapSheetVC, animated: true)
-            }
-        }))
-
-        let actionVC = InAppActionViewController()
-        actionVC.items = items
-
-        actionVC.popoverPositioningBlock = { (sourceRect, sourceView) in
-            // TODO: previously this would eval some js on the webview to find the new location of the header after rotating, but that sync call on UIWebView is async on WKWebView, so ???
-            sourceRect.pointee = frame
-            sourceView.pointee = self.renderView
-        }
-
-        present(actionVC, animated: true)
+        hiddenMenuButton.show(menu: UIMenu(children: actions), from: frame)
     }
     
     // MARK: Gunk
