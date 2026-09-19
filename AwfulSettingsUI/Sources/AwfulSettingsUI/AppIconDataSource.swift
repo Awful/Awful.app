@@ -17,6 +17,14 @@ private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: 
     @Published private(set) var selected: AppIcon
     private let setter: (AppIcon) async throws -> Void
 
+    /// The icon the system last confirmed. `selected` runs ahead of this while a request is
+    /// in flight; a failed request falls back to it.
+    private var confirmed: AppIcon
+    private var selectionTask: Task<Void, Never>?
+    /// Incremented per `select(_:)`. A task compares its captured value to this to learn whether
+    /// it is still the latest request, since a task can't read its own handle from inside.
+    private var selectionGeneration = 0
+
     public struct AppIcon: Equatable, Identifiable {
         public let accessibilityLabel: String
         public let imageName: String
@@ -40,18 +48,35 @@ private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: 
         self.imageLoader = imageLoader
         self.appearanceImageLoader = appearanceImageLoader ?? { icon, _ in imageLoader(icon) }
         self.selected = selected
+        self.confirmed = selected
         self.setter = setter
     }
 
+    /// Optimistically selects `appIcon` and asks the system to apply it. Only the latest
+    /// request matters: requests are serialised behind the one in flight, a queued request
+    /// that is superseded before it starts is skipped, and only the latest request may roll
+    /// `selected` back on failure. The setter itself (`setAlternateIconName`) can't be
+    /// cancelled, so a superseded request that already started still records its outcome.
     func select(_ appIcon: AppIcon) {
-        let previous = selected
         selected = appIcon
-        Task {
+        selectionGeneration += 1
+        let generation = selectionGeneration
+        let previous = selectionTask
+        previous?.cancel()
+        selectionTask = Task {
+            await previous?.value
+            guard !Task.isCancelled else { return }
             do {
                 try await setter(appIcon)
+                confirmed = appIcon
             } catch {
-                selected = previous
                 logger.error("Could not set app icon to \(appIcon.imageName): \(error)")
+                if generation == selectionGeneration {
+                    selected = confirmed
+                }
+            }
+            if generation == selectionGeneration {
+                selectionTask = nil
             }
         }
     }
