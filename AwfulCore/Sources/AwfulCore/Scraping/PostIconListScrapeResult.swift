@@ -5,7 +5,7 @@
 import Foundation
 import HTMLReader
 
-public struct PostIconListScrapeResult: ScrapeResult {
+public struct PostIconListScrapeResult: ScrapeResult, Sendable {
     public let primaryIcons: [PostIcon]
     public let secondaryIcons: [PostIcon]
     public let selectedPrimaryIconFormName: String

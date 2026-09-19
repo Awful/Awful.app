@@ -5,7 +5,7 @@
 import AwfulModelTypes
 import HTMLReader
 
-public struct ForumBreadcrumbsScrapeResult: ScrapeResult {
+public struct ForumBreadcrumbsScrapeResult: ScrapeResult, Sendable {
     public let forums: [ForumBreadcrumb]
 
     public init(_ html: HTMLNode, url: URL?) throws {
@@ -23,7 +23,7 @@ public struct ForumBreadcrumbsScrapeResult: ScrapeResult {
     }
 }
 
-public struct ForumBreadcrumb: Hashable {
+public struct ForumBreadcrumb: Hashable, Sendable {
     public let depth: Int
     public let id: ForumID
     public let name: String

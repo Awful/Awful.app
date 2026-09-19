@@ -4,7 +4,7 @@
 
 import Foundation
 
-public struct PostIcon {
+public struct PostIcon: Sendable {
     public let id: String
     public let url: URL?
 }

@@ -15,7 +15,7 @@ public protocol ScrapeResult {
 // MARK: - Types common to several scrapers
 
 /// Post IDs sure look numeric but we're gonna treat them as opaque.
-public struct PostID: Hashable, RawRepresentable {
+public struct PostID: Hashable, RawRepresentable, Sendable {
     public let rawValue: String
 
     public init?(rawValue: String) {
@@ -26,7 +26,7 @@ public struct PostID: Hashable, RawRepresentable {
 
 
 /// Private message IDs sure look numeric but we're gonna treat them as opaque.
-public struct PrivateMessageID: Hashable, RawRepresentable {
+public struct PrivateMessageID: Hashable, RawRepresentable, Sendable {
     public let rawValue: String
 
     public init?(rawValue: String) {
@@ -41,7 +41,7 @@ public typealias RawHTML = String
 
 
 /// Thread IDs sure look numeric but we're gonna treat them as opaque.
-public struct ThreadID: Hashable, RawRepresentable {
+public struct ThreadID: Hashable, RawRepresentable, Sendable {
     public let rawValue: String
 
     public init?(rawValue: String) {
@@ -52,7 +52,7 @@ public struct ThreadID: Hashable, RawRepresentable {
 
 
 /// User IDs sure look numeric but we're gonna treat them as opaque.
-public struct UserID: Hashable, RawRepresentable {
+public struct UserID: Hashable, RawRepresentable, Sendable {
     public let rawValue: String
 
     public init?(rawValue: String) {

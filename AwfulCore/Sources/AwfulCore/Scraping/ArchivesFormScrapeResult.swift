@@ -8,7 +8,7 @@ import HTMLReader
 /// A locked archives ("time machine") timeframe. `year` is always present when engaged (the year
 /// `<select>` has no empty option); `month` and `day` are optional. A day is only meaningful with a
 /// month, so `day` is forced to `nil` whenever `month` is `nil`.
-public struct ArchivesTimeframe: Equatable, Hashable {
+public struct ArchivesTimeframe: Equatable, Hashable, Sendable {
     public let month: Int?
     public let day: Int?
     public let year: Int
@@ -29,7 +29,7 @@ public struct ArchivesTimeframe: Equatable, Hashable {
 /// `active` class, and the form's `<option selected>`s reflect the current timeframe. Note the year
 /// `<select>` marks its first `<option>` selected even when *inactive*, so a selected year is not a
 /// reliable "is engaged" signal — the class is.
-public struct ArchivesFormScrapeResult: ScrapeResult {
+public struct ArchivesFormScrapeResult: ScrapeResult, Sendable {
 
     /// Years offered by the site's `<select name="ac_year">`, newest first.
     public let availableYears: [Int]

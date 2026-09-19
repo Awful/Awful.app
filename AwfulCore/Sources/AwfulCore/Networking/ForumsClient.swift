@@ -1078,7 +1078,7 @@ public final class ForumsClient {
             .flatMap(threadID(fromURLString:))
     }
 
-    public struct PostNewThreadFormData {
+    public struct PostNewThreadFormData: Sendable {
         fileprivate let form: Form
         fileprivate let postIcons: PostIconListScrapeResult
     }

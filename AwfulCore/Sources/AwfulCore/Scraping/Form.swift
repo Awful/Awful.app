@@ -10,7 +10,7 @@ import HTMLReader
 
  - Seealso: `SubmittableForm` for assistance submitting an HTML form.
  */
-public struct Form: ScrapeResult {
+public struct Form: ScrapeResult, Sendable {
 
     // MARK: - Properties
 
@@ -32,7 +32,7 @@ public struct Form: ScrapeResult {
 
     // MARK: - Types
 
-    public enum Control {
+    public enum Control: Sendable {
 
         /// `<input type=checkbox>`. A missing `value` attribute results in a `value` of `"on"`.
         case checkbox(name: String, value: String, isChecked: Bool, isDisabled: Bool)
@@ -115,7 +115,7 @@ public struct Form: ScrapeResult {
         }
     }
 
-    public enum EncodingType {
+    public enum EncodingType: Sendable {
 
         /// `multipart/form-data`
         case multipart
@@ -130,14 +130,14 @@ public struct Form: ScrapeResult {
     }
 
     /// An HTTP method.
-    public enum Method {
+    public enum Method: Sendable {
         case get, post
 
         public static let `default` = Method.get
     }
 
     /// Buttons that can be the submitter of a form. The submitter is the only button that contributes to form data.
-    public struct SubmitButton: Equatable {
+    public struct SubmitButton: Equatable, Sendable {
 
         /// A submit button can override the form's encoding type by setting a `formenctype` attribute.
         public let encodingType: EncodingType?
@@ -158,7 +158,7 @@ public struct Form: ScrapeResult {
         /// The content of the `<input>` element's `value` attribute. If there is no `value` attribute, either the string `"Submit"` (for a plain submit button) or the empty string `""` (for an image button).
         public let value: String
 
-        public enum Kind: Equatable {
+        public enum Kind: Equatable, Sendable {
 
             /// A submit button that adds the clicked pixel's coordinates to the form data.
             case image

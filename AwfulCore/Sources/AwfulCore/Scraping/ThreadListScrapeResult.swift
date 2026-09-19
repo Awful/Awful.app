@@ -6,7 +6,7 @@ import AwfulModelTypes
 import Foundation
 import HTMLReader
 
-public struct ThreadListScrapeResult: ScrapeResult {
+public struct ThreadListScrapeResult: ScrapeResult, Sendable {
     public let announcements: [Announcement]
     /// The archives ("time machine") form, when present. `nil` when the user lacks the Archives upgrade.
     public let archivesForm: ArchivesFormScrapeResult?
@@ -19,7 +19,7 @@ public struct ThreadListScrapeResult: ScrapeResult {
     public let pageNumber: Int?
     public let threads: [Thread]
 
-    public struct Announcement {
+    public struct Announcement: Sendable {
         public let author: UserID?
         public let authorUsername: String
         public let lastUpdated: Date?
@@ -27,7 +27,7 @@ public struct ThreadListScrapeResult: ScrapeResult {
         public let title: String
     }
 
-    public struct Thread {
+    public struct Thread: Sendable {
         public let author: UserID?
         public let authorUsername: String
         public let bookmark: Bookmark
@@ -53,7 +53,7 @@ public struct ThreadListScrapeResult: ScrapeResult {
         /// Includes the original post.
         public let unreadPostCount: Int?
 
-        public enum Bookmark: Equatable {
+        public enum Bookmark: Equatable, Sendable {
             case none
             case orange, red, yellow, cyan, green, purple
         }
