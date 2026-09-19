@@ -415,6 +415,7 @@ final class ImmersiveModeManager: NSObject {
         if let navBar = findNavigationBar() {
             navBar.transform = CGAffineTransform(translationX: 0, y: navBarTransform)
         }
+        syncPlatterBackdropWithNavigationBar()
 
         topBarContainer?.transform = CGAffineTransform(translationX: 0, y: navBarTransform)
 
@@ -442,6 +443,7 @@ final class ImmersiveModeManager: NSObject {
         topBarContainer?.alpha = 0
         toolbar?.alpha = 0
         resetAllTransforms()
+        syncPlatterBackdropWithNavigationBar()
         safeAreaGradientView.alpha = 0.0
         CATransaction.commit()
 
@@ -457,6 +459,7 @@ final class ImmersiveModeManager: NSObject {
                 options: [.allowUserInteraction],
                 animations: {
                     navBar?.alpha = 1
+                    self.syncPlatterBackdropWithNavigationBar()
                     self.topBarContainer?.alpha = 1
                     self.toolbar?.alpha = 1
                 },
@@ -493,6 +496,7 @@ final class ImmersiveModeManager: NSObject {
         if let navBar = findNavigationBar() {
             navBar.alpha = alpha
         }
+        syncPlatterBackdropWithNavigationBar()
         topBarContainer?.alpha = alpha
         toolbar?.alpha = alpha
 
@@ -546,6 +550,7 @@ final class ImmersiveModeManager: NSObject {
         }
         topBarContainer?.transform = .identity
         toolbar?.transform = .identity
+        syncPlatterBackdropWithNavigationBar()
     }
 
     private func restoreBarAlphas() {
@@ -554,6 +559,16 @@ final class ImmersiveModeManager: NSObject {
         }
         topBarContainer?.alpha = 1.0
         toolbar?.alpha = 1.0
+        syncPlatterBackdropWithNavigationBar()
+    }
+
+    /// Under Reduce Liquid Glass a bar-coloured strip sits in front of the web content under the
+    /// bar (`UIScrollView.pinNavigationBarPlatterBackdropOverContent`), relying on the opaque bar
+    /// to hide it. It lives in the scroll view, so it has to be told to go where the bar goes:
+    /// call this after every change to the bar's transform or alpha.
+    private func syncPlatterBackdropWithNavigationBar() {
+        guard let navBar = findNavigationBar(), let scrollView = renderView?.scrollView else { return }
+        scrollView.followNavigationBarPlatterBackdrop(verticalOffset: navBar.transform.ty, alpha: navBar.alpha)
     }
 
     /// Remaining scroll distance to the effective bottom of content. Handles

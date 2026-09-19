@@ -157,9 +157,39 @@ public extension UIScrollView {
         objc_setAssociatedObject(self, key, observations, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
     }
 
-    /// The part of the visible area under the navigation bar.
+    /// The part of the visible area under the navigation bar (shifted with the bar when it has
+    /// slid away; see `followNavigationBarPlatterBackdrop`).
     private var navigationBarBackdropStripFrame: CGRect {
-        CGRect(x: 0, y: contentOffset.y, width: bounds.width, height: safeAreaInsets.top)
+        CGRect(
+            x: 0,
+            y: contentOffset.y + navigationBarBackdropFollowState.verticalOffset,
+            width: bounds.width,
+            height: safeAreaInsets.top
+        )
+    }
+
+    /// Where the strip is relative to its resting place under the bar, and how visible it is.
+    /// Mirrors the bar when a screen slides or fades it away over the content.
+    private struct NavigationBarBackdropFollowState {
+        var verticalOffset: CGFloat = 0
+        var alpha: CGFloat = 1
+    }
+
+    private var navigationBarBackdropFollowState: NavigationBarBackdropFollowState {
+        get { objc_getAssociatedObject(self, &backdropFollowStateKey) as? NavigationBarBackdropFollowState ?? .init() }
+        set { objc_setAssociatedObject(self, &backdropFollowStateKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC) }
+    }
+
+    /// For a bar that slides or fades away over the content (the posts page's immersive mode):
+    /// moves the strip with the bar so it stays under it and never shows on its own. Pass the
+    /// bar's translation and alpha; `0` and `1` put the strip back. Safe to call with no strip.
+    func followNavigationBarPlatterBackdrop(verticalOffset: CGFloat, alpha: CGFloat) {
+        let state = NavigationBarBackdropFollowState(verticalOffset: verticalOffset, alpha: alpha)
+        navigationBarBackdropFollowState = state
+        guard let strip = navigationBarBackdropStrip else { return }
+        // The bar is mid-motion; no glass refresh, the reposition path skips it while dragging too.
+        strip.frame = navigationBarBackdropStripFrame
+        strip.alpha = state.alpha
     }
 
     /// For a scroll view under a bar that stays opaque (the search results and SAclopedia
@@ -204,6 +234,7 @@ public extension UIScrollView {
         strip.backgroundColor = theme[uicolor: "navigationBarTintColor"]
         strip.isUserInteractionEnabled = false
         strip.frame = navigationBarBackdropStripFrame
+        strip.alpha = navigationBarBackdropFollowState.alpha
         raiseNavigationBarBackdropStrip(strip, wasInstalled: existing != nil)
     }
 
@@ -280,6 +311,7 @@ private extension UIView {
 private var pinnedBackdropObservationsKey = 0
 private var overContentBackdropObservationsKey = 0
 private var overContentBackdropThemeKey = 0
+private var backdropFollowStateKey = 0
 
 public extension View {
     /// Marks a SwiftUI scroll view whose bar stays opaque (the search results and SAclopedia
