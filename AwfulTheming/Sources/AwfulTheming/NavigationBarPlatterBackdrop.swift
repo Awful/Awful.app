@@ -77,15 +77,31 @@ private final class NavigationBarBackdropStripView: UIView {}
 /// The `backgroundView` installed by `applyNavigationBarPlatterBackdrop` in a collection view:
 /// the bar colour in the strip under the bar (what the glass circles sample), the list
 /// background everywhere else.
+///
+/// The strip is placed under the bar wherever the visible top edge is, not at the view's own
+/// top: the collection view places this view in its layout pass, so whenever that runs behind
+/// the bounds (see `UIScrollView.fitNavigationBarBackdropToBar`) the view sits out from under
+/// the bar and a strip at its top would show in the pull-to-refresh gap.
 private final class NavigationBarBackdropView: UIView {
+    /// The list background below the strip.
     let content = UIView()
+    /// The list background above the strip: the gap a pull past the top opens up.
+    let overscrollContent = UIView()
     var barHeight: CGFloat = 0 {
         didSet { setNeedsLayout() }
+    }
+    /// The visible top edge in this view's coordinates, when the layout pass can't read it (see
+    /// `UIScrollView.fitNavigationBarBackdropToBar`); nil derives it from the model geometry.
+    var visibleTopOverride: CGFloat? {
+        didSet {
+            if visibleTopOverride != oldValue { setNeedsLayout() }
+        }
     }
 
     override init(frame: CGRect) {
         super.init(frame: frame)
         isUserInteractionEnabled = false
+        addSubview(overscrollContent)
         addSubview(content)
     }
 
@@ -93,7 +109,18 @@ private final class NavigationBarBackdropView: UIView {
 
     override func layoutSubviews() {
         super.layoutSubviews()
-        content.frame = CGRect(x: 0, y: barHeight, width: bounds.width, height: max(0, bounds.height - barHeight))
+        let visibleTop: CGFloat
+        if let visibleTopOverride {
+            visibleTop = visibleTopOverride
+        } else if let scrollView = superview as? UIScrollView {
+            visibleTop = scrollView.navigationBarBackdropVisibleTop - frame.minY
+        } else {
+            visibleTop = 0
+        }
+        let stripTop = max(0, visibleTop)
+        let stripBottom = max(0, visibleTop + barHeight)
+        overscrollContent.frame = CGRect(x: 0, y: 0, width: bounds.width, height: stripTop)
+        content.frame = CGRect(x: 0, y: stripBottom, width: bounds.width, height: max(0, bounds.height - stripBottom))
     }
 }
 
@@ -131,9 +158,13 @@ public extension UIScrollView {
                 let backdrop = existing ?? NavigationBarBackdropView()
                 backdrop.backgroundColor = theme[uicolor: "navigationBarTintColor"]
                 backdrop.content.backgroundColor = theme[uicolor: "backgroundColor"]
+                backdrop.overscrollContent.backgroundColor = theme[uicolor: "backgroundColor"]
                 backdrop.barHeight = safeAreaInsets.top
                 if existing == nil {
                     collectionView.backgroundView = backdrop
+                }
+                observeNavigationBarBackdropGeometry(key: &backdropFitObservationsKey) { scrollView in
+                    scrollView.fitNavigationBarBackdropToBar()
                 }
             } else if existing != nil {
                 collectionView.backgroundView = nil
@@ -147,6 +178,9 @@ public extension UIScrollView {
                 strip.frame = navigationBarBackdropStripFrame
                 if existing == nil {
                     insertSubview(strip, at: 0)
+                }
+                observeNavigationBarBackdropGeometry(key: &backdropFitObservationsKey) { scrollView in
+                    scrollView.fitNavigationBarBackdropToBar()
                 }
             } else {
                 existing?.removeFromSuperview()
@@ -169,6 +203,7 @@ public extension UIScrollView {
         }
         if let collectionView = self as? UICollectionView {
             guard let backdrop = collectionView.backgroundView as? NavigationBarBackdropView else { return }
+            backdrop.setNeedsLayout()
             let barHeight = safeAreaInsets.top
             if backdrop.barHeight != barHeight {
                 backdrop.barHeight = barHeight
@@ -209,10 +244,54 @@ public extension UIScrollView {
     private var navigationBarBackdropStripFrame: CGRect {
         CGRect(
             x: 0,
-            y: contentOffset.y + navigationBarBackdropFollowState.verticalOffset,
+            y: navigationBarBackdropVisibleTop,
             width: bounds.width,
             height: safeAreaInsets.top
         )
+    }
+
+    /// The visible top edge, shifted with the bar when it has slid away.
+    fileprivate var navigationBarBackdropVisibleTop: CGFloat {
+        bounds.origin.y + navigationBarBackdropFollowState.verticalOffset
+    }
+
+    /// Keeps whichever backdrop is installed under the bar while the screen is at the top or
+    /// pulled past it (pull-to-refresh): a strip is a subview in content coordinates, so it
+    /// slides down out from under the bar with the content unless it is moved, and a collection
+    /// view only places its background view in its layout pass.
+    ///
+    /// Called from the offset observation, so it can run inside a `UIView.animate` block: a
+    /// pull-to-refresh release animates the offset that way, and the model geometry is at its
+    /// destination at once while what is on screen takes the animation's duration to get there.
+    /// Frames set inside the block animate in step with the bounds, which keeps the backdrop
+    /// under the bar throughout; a frame set from a later layout pass would jump ahead and show
+    /// below the bar until the bounds caught up.
+    private func fitNavigationBarBackdropToBar() {
+        let inAnimationBlock = UIView.inheritedAnimationDuration > 0
+        if let collectionView = self as? UICollectionView {
+            guard let backdrop = collectionView.backgroundView as? NavigationBarBackdropView else { return }
+            if inAnimationBlock {
+                // The collection view places its background view in its layout pass; have that
+                // happen inside the block too, so the view's frame animates on the same clock as
+                // the bounds and the backdrop can be fitted to where it is headed.
+                collectionView.layoutIfNeeded()
+                backdrop.visibleTopOverride = navigationBarBackdropVisibleTop - backdrop.frame.minY
+                backdrop.layoutIfNeeded()
+            } else {
+                backdrop.visibleTopOverride = nil
+                backdrop.setNeedsLayout()
+            }
+        } else if let strip = navigationBarBackdropStrip {
+            // A pinned strip follows the visible top at every offset by itself.
+            guard objc_getAssociatedObject(self, &pinnedBackdropObservationsKey) == nil else { return }
+            // Scrolled down, the strip is left to scroll away with the content (or to follow a
+            // bar sliding away; see `followNavigationBarPlatterBackdrop`).
+            guard bounds.origin.y <= -adjustedContentInset.top + 0.5 else { return }
+            let frame = navigationBarBackdropStripFrame
+            if strip.frame != frame {
+                strip.frame = frame
+            }
+        }
     }
 
     /// Where the strip is relative to its resting place under the bar, and how visible it is.
@@ -357,6 +436,7 @@ private extension UIView {
 
 private var pinnedBackdropObservationsKey = 0
 private var overContentBackdropObservationsKey = 0
+private var backdropFitObservationsKey = 0
 private var overContentBackdropThemeKey = 0
 private var backdropFollowStateKey = 0
 
