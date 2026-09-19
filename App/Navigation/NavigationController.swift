@@ -741,6 +741,11 @@ final class NavigationController: UINavigationController, Themeable {
     private func applyGlassRestingState(atTop: Bool, for viewController: UIViewController?, theme: Theme) {
         guard let viewController else { return }
         let screen = viewController as? NavigationBarScrollTransitioning
+
+        // Under the transparent bar, the automatic edge effect resolved to the soft fade on
+        // iOS 26 but to the hard cutoff on iOS 27 (lists and web views alike); ask for the fade.
+        screen?.navigationBarScrollView?.topEdgeEffect.style = .soft
+
         if LiquidGlass.isEnabled {
             screen?.navigationBarScrollView?.applyNavigationBarPlatterBackdrop(atTop: atTop, theme: theme)
             removeListPlatterBackdrop(for: viewController)
@@ -1465,9 +1470,16 @@ final class NavigationController: UINavigationController, Themeable {
         lastAppliedScrollProgress = snappedProgress
 
         // Before the appearance is rebuilt: the glass circles re-evaluate their light/dark then.
+        //
+        // The bar's own trait follows the same rule as the scroll view beneath it. iOS 26 took
+        // the circles' (and the edge fade's) light/dark from that scroll view, but iOS 27 reads
+        // the bar's trait instead, so a bar left on the theme's (dark) bar style over light
+        // content rendered dark glass circles with white glyphs and a dark, hard-edged fade.
         if snappedProgress == 0 {
+            awfulNavigationBar.overrideUserInterfaceStyle = theme.navigationBarUserInterfaceStyle
             applyGlassRestingState(atTop: true, for: topViewController, theme: theme)
         } else if snappedProgress == 1 {
+            awfulNavigationBar.overrideUserInterfaceStyle = theme.userInterfaceStyle
             applyGlassRestingState(atTop: false, for: topViewController, theme: theme)
         }
 
@@ -1674,7 +1686,9 @@ final class NavigationController: UINavigationController, Themeable {
             //
             // The glass bar-button circles follow this trait when nothing scrolls beneath the bar
             // (the search and settings screens); a scroll view beneath the bar overrides it (see
-            // applyGlassRestingState).
+            // applyGlassRestingState). This is the resting state: iOS 27 reads this trait for the
+            // circles even with a scroll view beneath, so once scrolled
+            // updateNavigationBarTintForScrollProgress hands it to the content's mode.
             awfulNavigationBar.overrideUserInterfaceStyle = theme.navigationBarUserInterfaceStyle
 
             // At the top the glass circles read as the bar, and their glyphs take the theme's bar

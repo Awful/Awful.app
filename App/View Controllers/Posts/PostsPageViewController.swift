@@ -2582,8 +2582,10 @@ final class PostsPageViewController: ViewController {
         if let awfulNavigationBar = navigationBar as? NavigationBar {
             awfulNavigationBar.bottomBorderColor = .clear
             // Keep the bar's trait in lockstep with the forum theme when this method restyles
-            // the bar outside NavigationController's willShow path.
-            awfulNavigationBar.overrideUserInterfaceStyle = theme.userInterfaceStyle
+            // the bar outside NavigationController's willShow path. This is the resting state,
+            // so it takes the theme's bar style as the navigation controller does; the scroll
+            // sync below hands it to the content's mode once scrolled.
+            awfulNavigationBar.overrideUserInterfaceStyle = theme.navigationBarUserInterfaceStyle
         }
         // Start with opaque background - NavigationController will handle the transition to clear on scroll
         let appearance = UINavigationBarAppearance()

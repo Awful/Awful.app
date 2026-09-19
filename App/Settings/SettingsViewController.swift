@@ -282,11 +282,17 @@ struct SettingsContainerView: View {
             // Report the Form's scroll position so the hosting controller can drive the
             // liquid-glass nav bar transition. The transformed value only changes with
             // vertical scrolling, so inner horizontal scrollers (the app icon grid) don't fire it.
-            core.onScrollGeometryChange(for: CGFloat.self) { geometry in
-                geometry.contentOffset.y + geometry.contentInsets.top
-            } action: { _, offsetFromTop in
-                onScrollOffsetFromTop(offsetFromTop)
-            }
+            //
+            // Under the transparent bar, the automatic edge effect resolved to the soft fade on
+            // iOS 26 but to the hard cutoff on iOS 27 (as NavigationController.applyGlassRestingState
+            // handles for UIKit scroll views); ask for the fade.
+            core
+                .scrollEdgeEffectStyle(.soft, for: .top)
+                .onScrollGeometryChange(for: CGFloat.self) { geometry in
+                    geometry.contentOffset.y + geometry.contentInsets.top
+                } action: { _, offsetFromTop in
+                    onScrollOffsetFromTop(offsetFromTop)
+                }
         } else {
             core
         }
