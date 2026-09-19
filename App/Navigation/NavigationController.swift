@@ -44,11 +44,6 @@ private struct SidebarImageButtonView: View {
     let image: Image
     let accessibilityLabel: String?
     var pointSize: CGFloat = 20
-    /// Visual horizontal offset applied to the rendered icon (and its hit
-    /// region). Used to nudge auto-replaced rightBarButtonItems toward the
-    /// trailing edge to tighten the gap to system-injected items like the
-    /// split-view sidebar toggle.
-    var visualOffsetX: CGFloat = 0
     let action: () -> Void
 
     @SwiftUI.Environment(\.theme) private var theme
@@ -64,7 +59,6 @@ private struct SidebarImageButtonView: View {
         }
         .buttonStyle(.plain)
         .frame(width: pointSize, height: pointSize)
-        .offset(x: visualOffsetX)
         .glassEffect(.identity)
         .accessibilityLabel(accessibilityLabel ?? "")
     }
@@ -242,49 +236,52 @@ final class GlassTextBarButton {
     }
 }
 
+// MARK: - Sidebar Toggle
+
+/// The app's own "hide sidebar" item on the iPad sidebar's bar, standing in for the system one.
+/// A subclass only so the item can be recognised in `rightBarButtonItems` on repeat passes.
+private final class SidebarToggleBarButtonItem: UIBarButtonItem {}
+
 // MARK: - Sidebar Title View
 
 /// A titleView that uses SwiftUI Text with `.glassEffect(.identity)` to bypass
 /// the glass panel's vibrancy compositing that tints UILabel text colors.
+///
+/// Centring is the view's own job, by one rule for every bar width: the view claims all the
+/// width the bar will give it — the span between the leading and trailing item clusters —
+/// and at layout time puts the text on the bar's centre when the whole text fits there
+/// without touching a cluster, otherwise as close to the bar's centre as the span allows,
+/// truncating only when the span can't hold it at all. Nothing here assumes a device, a
+/// column width or which items a screen has: the geometry is re-measured on every pass, so a
+/// rotation, a multitasking resize or a screen rebuilding its items lands on the same rule.
+/// (UIKit's own centring gives up as soon as a centred title would come near a cluster and
+/// shoves it into the middle of the leftover span, which on a lopsided bar is well off the
+/// bar's centre.)
 @available(iOS 26.0, *)
 final class SidebarTitleView: UIView {
     private var hostingController: UIHostingController<AnyView>?
     private var currentTitle: String
     private var currentColor: UIColor
     private var useRoundedFont: Bool
-    /// When true, the title view reports a very wide intrinsic content size
-    /// so UINavigationBar gives it the full available width; the SwiftUI
-    /// content then uses an HStack with Spacers to center the text inside.
-    /// When false (the default), the title view reports the natural text
-    /// width and renders a plain Text — the bar centers a snug-fitting
-    /// title view absolutely. The wide-mode is needed for VCs whose
-    /// leading/trailing bar items are asymmetric (e.g. auto-back-button
-    /// pushed VCs in iPad sidebar mode); the natural-mode is the right
-    /// default for tab roots, which usually have balanced bar items.
-    private var fillsAvailableWidth: Bool
+    /// The text's natural width, measured once per title/font change.
+    private var naturalTextWidth: CGFloat = 0
 
-    /// The hosting view's edge constraints, kept so `layoutSubviews()` can
-    /// shift the content in wide mode: the bar clamps this view to the span
-    /// between its item clusters, and when those clusters are unequal that
-    /// span — and anything centered within it — sits off the bar's center.
+    /// The hosting view's edge constraints: `layoutSubviews()` places the text by setting their
+    /// constants, the bar having clamped this view to the span between its item clusters.
     private var hostingLeadingConstraint: NSLayoutConstraint?
     private var hostingTrailingConstraint: NSLayoutConstraint?
 
     // Mid-transition the bar sits deeper: transition hosts add ~3 levels.
     private static let maxBarSearchDepth = 16
-    private static let correctionEpsilon: CGFloat = 0.5
-    private static let maxCorrectionDelta: CGFloat = 50
-    /// Below this bar width (iPad mini portrait sidebar ≈ 256pt; the Pros
-    /// are 350pt) a bar-centered title can't clear the trailing cluster, so
-    /// the title gap-centers between the clusters instead: the correction
-    /// stands down and the fill-mode Spacers do the centering.
-    static let narrowBarWidthThreshold: CGFloat = 300
+    private static let placementEpsilon: CGFloat = 0.5
+    /// The least the text keeps clear of the nearest item on either side. A spacing, not a
+    /// position: it is the same on every bar width.
+    private static let clusterGap: CGFloat = 8
 
-    init(title: String, color: UIColor, roundedFont: Bool, fillsAvailableWidth: Bool = false) {
+    init(title: String, color: UIColor, roundedFont: Bool) {
         self.currentTitle = title
         self.currentColor = color
         self.useRoundedFont = roundedFont
-        self.fillsAvailableWidth = fillsAvailableWidth
         super.init(frame: .zero)
         setupHostingView()
     }
@@ -293,16 +290,11 @@ final class SidebarTitleView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func update(title: String, color: UIColor, roundedFont: Bool, fillsAvailableWidth: Bool = false) {
-        guard title != currentTitle
-            || color != currentColor
-            || roundedFont != useRoundedFont
-            || fillsAvailableWidth != self.fillsAvailableWidth
-        else { return }
+    func update(title: String, color: UIColor, roundedFont: Bool) {
+        guard title != currentTitle || color != currentColor || roundedFont != useRoundedFont else { return }
         currentTitle = title
         currentColor = color
         useRoundedFont = roundedFont
-        self.fillsAvailableWidth = fillsAvailableWidth
         setupHostingView()
     }
 
@@ -317,40 +309,34 @@ final class SidebarTitleView: UIView {
             .lineLimit(1)
             .truncationMode(.tail)
 
-        let content: AnyView
-        if fillsAvailableWidth {
-            // HStack with leading/trailing Spacers + .frame(maxWidth: .infinity)
-            // so the title view fills the bar's available width and the Text
-            // sits at the visual center within. Long Text collapses Spacers
-            // to zero and fills + truncates trailing.
-            content = AnyView(
-                HStack(spacing: 0) {
-                    Spacer(minLength: 0)
-                    baseText
-                    Spacer(minLength: 0)
-                }
-                .frame(maxWidth: .infinity)
-                .glassEffect(.identity)
-            )
-        } else {
-            // Natural-width title — bar centers a snug-fitting title view
-            // absolutely. Used for tab roots with balanced bar items.
-            content = AnyView(baseText.glassEffect(.identity))
-        }
+        // The natural width is what the placement rule needs; measure the bare text, since the
+        // hosted content below stretches to whatever it is given.
+        let measuring = UIHostingController(rootView: AnyView(baseText))
+        naturalTextWidth = ceil(measuring.sizeThatFits(in: CGSize(
+            width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude
+        )).width)
 
-        let hosting = UIHostingController(rootView: AnyView(content))
+        // Spacers so the text centres in whatever width the constraints leave it; a text wider
+        // than that collapses them and truncates.
+        let content = AnyView(
+            HStack(spacing: 0) {
+                Spacer(minLength: 0)
+                baseText
+                Spacer(minLength: 0)
+            }
+            .frame(maxWidth: .infinity)
+            .glassEffect(.identity)
+        )
+
+        let hosting = UIHostingController(rootView: content)
         hosting.view.backgroundColor = .clear
         hosting.view.translatesAutoresizingMaskIntoConstraints = false
-        // Don't let the bar's safe area leak into the SwiftUI content: a
-        // wide-mode title view that the bar centers across the full width
-        // (Settings — no leading items) otherwise gets its HStack inset on
-        // one side and renders the text off-center inside a perfectly
-        // centered container.
+        // Don't let the bar's safe area leak into the SwiftUI content, which would inset the
+        // HStack on one side and put the text off the centre the constraints define.
         hosting.safeAreaRegions = []
         addSubview(hosting.view)
 
-        // Re-created (not reused) so every mode/title/color change starts
-        // from constants of 0, clearing any stale centering correction.
+        // Re-created (not reused) so every title/color change starts from constants of 0.
         let leading = hosting.view.leadingAnchor.constraint(equalTo: leadingAnchor)
         let trailing = hosting.view.trailingAnchor.constraint(equalTo: trailingAnchor)
         hostingLeadingConstraint = leading
@@ -367,99 +353,111 @@ final class SidebarTitleView: UIView {
         setContentHuggingPriority(.defaultLow, for: .horizontal)
         hosting.view.invalidateIntrinsicContentSize()
         invalidateIntrinsicContentSize()
+        setNeedsLayout()
     }
 
     override var intrinsicContentSize: CGSize {
-        // In wide mode, claim a width larger than any nav bar will ever be —
-        // UINavigationBar clamps to the available width between leading and
-        // trailing bar items, which is exactly what we want for VCs with
-        // asymmetric bar items. In default (natural) mode, return the
-        // hosting view's intrinsic so the bar can absolutely-center a
-        // snug-fitting title view (the right behavior for tab roots).
-        let hostingIntrinsic = hostingController?.view.intrinsicContentSize ?? .zero
-        if fillsAvailableWidth {
-            return CGSize(width: 10000, height: hostingIntrinsic.height)
-        } else {
-            return hostingIntrinsic
-        }
+        // Claim a width larger than any bar will ever be: UINavigationBar clamps the title view
+        // to the width available between its item clusters, which is the span the placement
+        // rule wants to work in.
+        let height = hostingController?.view.intrinsicContentSize.height ?? 0
+        return CGSize(width: 10000, height: height)
     }
 
     override func sizeToFit() {
-        hostingController?.view.sizeToFit()
-        let size = hostingController?.view.intrinsicContentSize ?? .zero
-        frame.size = size
+        let height = hostingController?.view.intrinsicContentSize.height ?? 0
+        frame.size = CGSize(width: naturalTextWidth, height: height)
     }
 
-    /// In wide mode, re-center the content on the navigation bar. The bar
-    /// clamps this view to the span between its leading and trailing item
-    /// clusters, and when those clusters are unequal (a lone back button
-    /// against compose + the system sidebar toggle, whose presence varies
-    /// with display mode) that span's center — where the Spacers put the
-    /// text — sits off the bar's center. The cluster widths change at
-    /// runtime, so measure and compensate at layout time.
-    ///
-    /// Updating the constants here is loop-safe: this view's own frame is
-    /// imposed by the bar's frame-based layout, and in wide mode
-    /// `intrinsicContentSize` is a constant, so the edit dirties only this
-    /// view — one extra pass recomputes an identical delta, lands inside
-    /// the epsilon, and stops.
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        guard fillsAvailableWidth,
-              bounds.width > 0,
-              window != nil,
-              let leading = hostingLeadingConstraint,
-              let trailing = hostingTrailingConstraint
-        else { return }
+    /// The bar can settle this view's frame before it is in a window and not touch it again,
+    /// so the placement (which needs the bar's geometry) has to be revisited on attach.
+    override func didMoveToWindow() {
+        super.didMoveToWindow()
+        setNeedsLayout()
+    }
 
+    private func enclosingNavigationBar() -> UINavigationBar? {
         var ancestor = superview
         var depth = 0
-        var bar: UINavigationBar?
         while let view = ancestor, depth < Self.maxBarSearchDepth {
-            if let navigationBar = view as? UINavigationBar {
-                bar = navigationBar
-                break
-            }
+            if let bar = view as? UINavigationBar { return bar }
             ancestor = view.superview
             depth += 1
         }
-        // No bar reachable (mid-transition/detached): keep the current
-        // correction — resetting would visibly jump, and the next pass in a
-        // settled hierarchy recomputes it anyway.
-        guard let bar else { return }
+        return nil
+    }
 
-        // Narrow bar: gap-center. There is no room to put the title on the
-        // bar's center without colliding with the trailing cluster, so let
-        // the content center in the span the bar granted and clear any
-        // correction left over from a wider layout.
-        if bar.bounds.width < Self.narrowBarWidthThreshold {
-            if abs(leading.constant) > Self.correctionEpsilon || abs(trailing.constant) > Self.correctionEpsilon {
-                leading.constant = 0
-                trailing.constant = 0
+    /// The x-range, in this view's coordinates, the text may occupy: from the nearest item on
+    /// the leading side to the nearest on the trailing side, each kept `clusterGap` clear. The
+    /// items are read off the bar's navigation item (their custom views, which every sidebar
+    /// item has), so the range follows whatever the screen has put in the bar. The span the bar
+    /// granted this view stops well short of the items — that padding is what the text is
+    /// allowed to run into — and stands in for a side that has no items at all, so a missing
+    /// cluster is never mistaken for free space.
+    private func allowedTextRange(in bar: UINavigationBar) -> ClosedRange<CGFloat> {
+        var minX: CGFloat?
+        var maxX: CGFloat?
+        if let item = bar.topItem {
+            let midX = bounds.midX
+            let views = ((item.leftBarButtonItems ?? []) + (item.rightBarButtonItems ?? []))
+                .compactMap(\.customView)
+                .filter { $0.window != nil && !$0.isHidden }
+            for view in views {
+                let frame = convert(view.bounds, from: view)
+                if frame.midX < midX {
+                    minX = max(minX ?? -.infinity, frame.maxX + Self.clusterGap)
+                } else {
+                    maxX = min(maxX ?? .infinity, frame.minX - Self.clusterGap)
+                }
             }
-            return
         }
+        let lower = minX ?? 0
+        let upper = maxX ?? bounds.width
+        return lower <= upper ? lower...upper : bounds.midX...bounds.midX
+    }
 
-        var delta = convert(CGPoint(x: bar.bounds.midX, y: 0), from: bar).x - bounds.midX
-        // A huge delta means the bar has this view staged at a transitional
-        // offset; skip rather than swing the content around mid-animation.
-        guard abs(delta) <= Self.maxCorrectionDelta else { return }
+    /// Places the text: centred on the bar when the whole text fits there within
+    /// `allowedTextRange`, else slid toward the bar's centre until it meets the range's edge,
+    /// else filling the range (and truncating).
+    ///
+    /// Updating the constants here is loop-safe: this view's own frame is imposed by the bar's
+    /// frame-based layout and `intrinsicContentSize` is a constant, so the edit dirties only
+    /// this view — one extra pass recomputes an identical placement, lands inside the epsilon,
+    /// and stops.
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        guard bounds.width > 0,
+              window != nil,
+              let leading = hostingLeadingConstraint,
+              let trailing = hostingTrailingConstraint,
+              // No bar reachable (mid-transition/detached): keep the current placement — resetting
+              // would visibly jump, and the next pass in a settled hierarchy recomputes it anyway.
+              let bar = enclosingNavigationBar()
+        else { return }
 
-        // The constants attach to leading/trailing anchors, which flip sides
-        // in right-to-left layout; delta is in x-coordinates.
+        let barCenterX = convert(CGPoint(x: bar.bounds.midX, y: 0), from: bar).x
+        // Staged at a transitional offset (the bar animates title views in from the side):
+        // leave the placement alone rather than swing the text around mid-animation. A settled
+        // span is always within half a bar of the bar's centre.
+        guard abs(barCenterX - bounds.midX) <= bar.bounds.width / 2 else { return }
+
+        let range = allowedTextRange(in: bar)
+        let textWidth = min(naturalTextWidth, range.upperBound - range.lowerBound)
+        let half = textWidth / 2
+        let centerX = min(max(barCenterX, range.lowerBound + half), range.upperBound - half)
+        // Insets from this view's own edges; negative where the text runs into the bar's
+        // padding beyond the span it granted (the view doesn't clip).
+        var leftInset = centerX - half
+        var rightInset = bounds.width - (centerX + half)
+        // The constants attach to leading/trailing anchors, which flip sides in right-to-left
+        // layout; the insets are in x-coordinates.
         if effectiveUserInterfaceLayoutDirection == .rightToLeft {
-            delta = -delta
+            swap(&leftInset, &rightInset)
         }
-
-        // Shifting one edge in by 2*delta moves the content's center by
-        // delta, and shrinks long titles to the symmetric span so they
-        // truncate centered instead of filling the lopsided one.
-        let newLeading = max(0, 2 * delta)
-        let newTrailing = min(0, 2 * delta)
-        if abs(newLeading - leading.constant) > Self.correctionEpsilon
-            || abs(newTrailing - trailing.constant) > Self.correctionEpsilon {
-            leading.constant = newLeading
-            trailing.constant = newTrailing
+        if abs(leftInset - leading.constant) > Self.placementEpsilon
+            || abs(-rightInset - trailing.constant) > Self.placementEpsilon {
+            leading.constant = leftInset
+            trailing.constant = -rightInset
         }
     }
 }
@@ -498,6 +496,15 @@ final class NavigationController: UINavigationController, Themeable {
     required init() {
         super.init(navigationBarClass: NavigationBar.self, toolbarClass: Toolbar.self)
         delegate = self
+        awfulNavigationBar.didLayoutSubviews = { [weak self] in
+            guard let self else { return }
+            if #available(iOS 26.0, *) {
+                self.restoreSidebarToggleItemIfDropped()
+                // The title places itself against the items' actual frames, which a bar layout
+                // may have moved without touching the title view's own frame.
+                (self.topViewController?.navigationItem.titleView as? SidebarTitleView)?.setNeedsLayout()
+            }
+        }
     }
     
     override convenience init(rootViewController: UIViewController) {
@@ -925,6 +932,109 @@ final class NavigationController: UINavigationController, Themeable {
         }
     }
 
+    /// True for a nav controller that is a column of the iPad sidebar. A nav controller inside
+    /// the tab bar controller is always a sidebar column on iPad; `splitViewController` isn't
+    /// consulted because it's nil during initial setup (the tab bar is added to the split view
+    /// AFTER its child nav controllers are configured).
+    private var isSidebarNavigationController: Bool {
+        UIDevice.current.userInterfaceIdiom == .pad && tabBarController != nil
+    }
+
+    /// Whether the app's own bar button items go without their shared glass background: under
+    /// Reduce Liquid Glass everywhere, and in the iPad sidebar regardless of that setting. iOS 26
+    /// never drew the platters inside the sidebar's glass panel; iOS 27 does, and the sidebar is
+    /// meant to stay flat.
+    @available(iOS 26.0, *)
+    private var hidesSharedBarButtonBackground: Bool {
+        !LiquidGlass.isEnabled || isSidebarNavigationController
+    }
+
+    /// Re-applies the sidebar chrome (title placement, toggle) after a layout the appearance
+    /// callbacks don't cover — a size transition that collapses or expands the split view.
+    func refreshSidebarChrome() {
+        guard isViewLoaded else { return }
+        if #available(iOS 26.0, *) {
+            applySidebarAppearanceIfNeeded(with: theme)
+        }
+    }
+
+    /// The display mode the split view is in, or is animating towards: RootViewControllerStack
+    /// hands it over from the split view delegate, since the live `displayMode` lags a change
+    /// until the animation ends. Drives the app's own sidebar toggle item.
+    var sidebarDisplayMode: UISplitViewController.DisplayMode? {
+        didSet {
+            // An unloaded tab picks the mode up in its first viewWillAppear.
+            guard sidebarDisplayMode != oldValue, isViewLoaded else { return }
+            if #available(iOS 26.0, *) {
+                applySidebarAppearanceIfNeeded(with: theme)
+            }
+        }
+    }
+
+    /// The app draws its own sidebar toggle so it can go without the glass platter iOS 27 puts
+    /// behind the system one, which the app can't reach (`displayModeButtonItem` isn't the item
+    /// the bar shows). Shown exactly when the system would show its own: a visible, uncollapsed
+    /// sidebar.
+    @available(iOS 26.0, *)
+    private var wantsSidebarToggleItem: Bool {
+        guard let splitViewController, !splitViewController.isCollapsed else { return false }
+        let mode = sidebarDisplayMode ?? splitViewController.displayMode
+        return mode == .oneBesideSecondary || mode == .oneOverSecondary
+    }
+
+    /// Adds or removes the app's sidebar toggle at the trailing end of the screen's right items
+    /// to match `wantsSidebarToggleItem`.
+    @available(iOS 26.0, *)
+    private func updateSidebarToggleItem(for viewController: UIViewController) {
+        var items = viewController.navigationItem.rightBarButtonItems ?? []
+        let existingIndex = items.firstIndex { $0 is SidebarToggleBarButtonItem }
+        switch (wantsSidebarToggleItem, existingIndex) {
+        case (true, .some), (false, .none):
+            return
+        case (false, .some(let index)):
+            items.remove(at: index)
+        case (true, .none):
+            guard let image = UIImage(systemName: "sidebar.leading") else { return }
+            let hosting = Self.makeSidebarImageHostingView(
+                image: image,
+                accessibilityLabel: NSLocalizedString("Hide Sidebar", comment: "Sidebar toggle accessibility label"),
+                target: self,
+                action: #selector(hideSidebarOnToggleTap)
+            )
+            // An ordinary bar item, laid out by the bar's own margins and spacing like any other
+            // — nothing here positions it. Right items run right-to-left, so index 0 is the
+            // trailing edge, where the system's toggle went.
+            let toggle = SidebarToggleBarButtonItem(customView: hosting)
+            items.insert(toggle, at: 0)
+            toggle.hidesSharedBackground = true
+        }
+        viewController.navigationItem.rightBarButtonItems = items
+    }
+
+    /// Screens rebuild their right items at runtime (Forums on a settings change, Lepers on a
+    /// page load), dropping the toggle. The bar's layout pass is the one place that sees every
+    /// such change, so put it back from there — on the next turn, not mid-layout.
+    @available(iOS 26.0, *)
+    private func restoreSidebarToggleItemIfDropped() {
+        guard isSidebarNavigationController, wantsSidebarToggleItem,
+              let topVC = topViewController,
+              !(topVC.navigationItem.rightBarButtonItems ?? []).contains(where: { $0 is SidebarToggleBarButtonItem })
+        else { return }
+        DispatchQueue.main.async { [weak self, weak topVC] in
+            guard let self, let topVC, topVC === self.topViewController else { return }
+            self.updateSidebarToggleItem(for: topVC)
+            self.updateSharedBackgroundVisibility(for: topVC)
+        }
+    }
+
+    @available(iOS 26.0, *)
+    @objc private func hideSidebarOnToggleTap() {
+        guard let splitViewController, !splitViewController.isCollapsed else { return }
+        // Straight to the display mode rather than `hidePrimaryViewController()`, which only
+        // dismisses an overlay: this also unpins a pinned sidebar, as the system toggle did.
+        UIView.animate(withDuration: 0.25) { splitViewController.preferredDisplayMode = .secondaryOnly }
+    }
+
     /// On iPad sidebar, the nav bar is inside a glass panel so buttons get
     /// flat rendering and fall back to the app's default tintColor. This
     /// method overrides with an opaque themed appearance and explicit colors.
@@ -936,13 +1046,7 @@ final class NavigationController: UINavigationController, Themeable {
     /// sidebar column as a glass panel, so the bypass is needed either way.
     @available(iOS 26.0, *)
     private func applySidebarAppearanceIfNeeded(with theme: Theme) {
-        // A nav controller inside the tab bar controller is always a
-        // sidebar column on iPad. We intentionally avoid checking
-        // splitViewController here because it isn't available during
-        // initial setup (the tab bar is added to the split view AFTER
-        // its child nav controllers are configured).
-        guard UIDevice.current.userInterfaceIdiom == .pad,
-              tabBarController != nil else { return }
+        guard isSidebarNavigationController else { return }
 
         let textColor = theme[uicolor: "navigationBarTextColor"] ?? .label
 
@@ -992,43 +1096,16 @@ final class NavigationController: UINavigationController, Themeable {
             // Replace system bar button items with custom-view equivalents
             // that bypass the glass panel's vibrancy compositing.
             replaceSidebarBarButtonItems(for: topVC)
+            updateSidebarToggleItem(for: topVC)
 
-            // Custom titleView using SwiftUI Text with .glassEffect(.identity)
-            // to bypass the glass panel's vibrancy compositing. Wide mode —
-            // where the title view claims the full available width and
-            // SidebarTitleView re-centers its content on the bar in
-            // layoutSubviews — is used for pushed VCs (their injected back
-            // button makes the bars asymmetric) and on narrow bars (iPad
-            // mini portrait), which leading-anchor a natural-width title
-            // view instead of centering it; there the fill content's
-            // Spacers gap-center the title between the clusters, with the
-            // bar-centering correction standing down. Tab roots on regular
-            // bars keep the natural-width mode where the bar
-            // absolutely-centers a snug title view.
-            //
-            // Width comes from our own view — the split view sizes the
-            // column before the first appearance pass, while the bar lays
-            // out a beat later, and a wrong first verdict renders one frame
-            // in the wrong mode. Zero (not yet laid out) means "not
-            // narrow"; a later pass corrects it.
+            // Custom titleView using SwiftUI Text with .glassEffect(.identity) to bypass the
+            // glass panel's vibrancy compositing; it centres itself on the bar (see
+            // SidebarTitleView), whatever the items either side of it weigh.
             let roundedFont = theme.roundedFonts
-            let columnWidth = view.bounds.width > 0 ? view.bounds.width : awfulNavigationBar.bounds.width
-            let isNarrowBar = columnWidth > 0 && columnWidth < SidebarTitleView.narrowBarWidthThreshold
-            let fillsAvailableWidth = viewControllers.first !== topVC || isNarrowBar
             if let existing = topVC.navigationItem.titleView as? SidebarTitleView {
-                existing.update(
-                    title: topVC.title ?? "",
-                    color: textColor,
-                    roundedFont: roundedFont,
-                    fillsAvailableWidth: fillsAvailableWidth
-                )
+                existing.update(title: topVC.title ?? "", color: textColor, roundedFont: roundedFont)
             } else {
-                let titleView = SidebarTitleView(
-                    title: topVC.title ?? "",
-                    color: textColor,
-                    roundedFont: roundedFont,
-                    fillsAvailableWidth: fillsAvailableWidth
-                )
+                let titleView = SidebarTitleView(title: topVC.title ?? "", color: textColor, roundedFont: roundedFont)
                 titleView.sizeToFit()
                 topVC.navigationItem.titleView = titleView
             }
@@ -1041,15 +1118,20 @@ final class NavigationController: UINavigationController, Themeable {
                     title: "", style: .plain, target: nil, action: nil
                 )
             }
+
+            // The replacements above are fresh items, and this runs from view appearance and
+            // the Edit tap as well as from willShow, so flag them here too.
+            updateSharedBackgroundVisibility(for: topVC)
         }
     }
 
-    /// When the user has disabled Liquid Glass, hides the shared glass background behind every
-    /// bar button item (the system back button doesn't expose this and stays glass). Assignment
-    /// rather than set-once so re-enabling glass recovers.
+    /// Hides the shared glass background behind every bar button item when the user has disabled
+    /// Liquid Glass, and always in the iPad sidebar (see `hidesSharedBarButtonBackground`); the
+    /// system back button doesn't expose this and stays glass. Assignment rather than set-once so
+    /// re-enabling glass recovers.
     @available(iOS 26.0, *)
     private func updateSharedBackgroundVisibility(for viewController: UIViewController) {
-        let hide = !LiquidGlass.isEnabled
+        let hide = hidesSharedBarButtonBackground
         let toolbarItems = (viewController.toolbarItems ?? []).filter { !$0.isSpacer }
         for item in navigationBarItems(of: viewController) + toolbarItems {
             item.hidesSharedBackground = hide
@@ -1060,7 +1142,8 @@ final class NavigationController: UINavigationController, Themeable {
     /// push or pop, then takes it away again.
     ///
     /// UIKit morphs the outgoing screen's bar-button background into the incoming one's. Under
-    /// Reduce Liquid Glass ours are hidden, so the morph has no shape to start from and UIKit
+    /// Reduce Liquid Glass, and in the iPad sidebar (see `hidesSharedBarButtonBackground`), ours
+    /// are hidden, so the morph has no shape to start from and UIKit
     /// materialises the incoming platter out of the item's raw bounds instead: a hard-cornered
     /// rectangle that rounds into the back button's circle, after which the glass lens goes on
     /// refracting that rectangle for the best part of a second. Lending the background back for
@@ -1075,7 +1158,7 @@ final class NavigationController: UINavigationController, Themeable {
     /// background hidden shows exactly the same rectangle.
     @available(iOS 26.0, *)
     private func lendSharedBackgroundDuringTransition(_ navigationController: UINavigationController) {
-        guard !LiquidGlass.isEnabled, let coordinator = navigationController.transitionCoordinator else { return }
+        guard hidesSharedBarButtonBackground, let coordinator = navigationController.transitionCoordinator else { return }
         let screens = [coordinator.viewController(forKey: .from), coordinator.viewController(forKey: .to)]
             .compactMap { $0 }
             .filter { !navigationBarItems(of: $0).isEmpty }
@@ -1098,7 +1181,7 @@ final class NavigationController: UINavigationController, Themeable {
         // the morph loses its shape halfway through.
         let restore = { [weak self] in
             guard let self else { return }
-            let hide = !LiquidGlass.isEnabled
+            let hide = self.hidesSharedBarButtonBackground
             for screen in screens {
                 for item in self.navigationBarItems(of: screen) {
                     item.hidesSharedBackground = hide
@@ -1309,19 +1392,12 @@ final class NavigationController: UINavigationController, Themeable {
         target: AnyObject?,
         action: Selector?
     ) -> UIBarButtonItem {
-        // Nudge the icon toward the trailing edge to tighten the gap to
-        // system-injected items (e.g. the split-view sidebar toggle), which
-        // can't be reduced through bar-item APIs.
         let hostingView = Self.makeSidebarImageHostingView(
             image: image,
             accessibilityLabel: accessibilityLabel,
-            visualOffsetX: 16,
             target: target,
             action: action
         )
-        // The icon overflows its hosting bounds because of the SwiftUI .offset;
-        // make sure UIKit doesn't clip those overflowing pixels.
-        hostingView.clipsToBounds = false
         return UIBarButtonItem(customView: hostingView)
     }
 
@@ -1334,7 +1410,6 @@ final class NavigationController: UINavigationController, Themeable {
         image: UIImage,
         accessibilityLabel: String?,
         pointSize: CGFloat = 20,
-        visualOffsetX: CGFloat = 0,
         target: AnyObject?,
         action: Selector?
     ) -> UIView {
@@ -1348,8 +1423,7 @@ final class NavigationController: UINavigationController, Themeable {
         let content = SidebarImageButtonView(
             image: swiftUIImage,
             accessibilityLabel: accessibilityLabel,
-            pointSize: pointSize,
-            visualOffsetX: visualOffsetX
+            pointSize: pointSize
         ) { [weak target] in
             if let target = target as? NSObject, let action {
                 target.perform(action, with: nil)
@@ -1707,7 +1781,7 @@ final class NavigationController: UINavigationController, Themeable {
         }
 
         let textColor = theme[uicolor: "navigationBarTextColor"] ?? .label
-        let isSidebar = UIDevice.current.userInterfaceIdiom == .pad && tabBarController != nil
+        let isSidebar = isSidebarNavigationController
         let backImage: UIImage?
         let buttonTitleColor: UIColor?
         if #available(iOS 26.0, *), LiquidGlass.usesGlassNavigationBar, !isSidebar {

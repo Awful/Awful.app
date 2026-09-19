@@ -20,10 +20,10 @@ import XCTest
 /// Requires a logged-in simulator; the test skips loudly otherwise. Buttons
 /// are measured, never tapped — no compose screen is ever opened.
 ///
-/// Caveat: metrics come from accessibility frames, which don't move with
-/// render-only shifts like SwiftUI `.offset` (e.g. the sidebar compose
-/// button's visualOffsetX nudge in NavigationController). Purely visual
-/// misalignment must be judged from the attached screenshots.
+/// The title contract (SidebarTitleView): centred on its pane whenever the
+/// whole text fits there clear of the item clusters; otherwise slid toward
+/// the pane's centre until it meets the nearer cluster. Bar width is never
+/// a special case — a narrow bar simply pins more titles.
 final class SidebarAlignmentTests: XCTestCase {
 
     // MARK: Tolerances (points)
@@ -39,10 +39,10 @@ final class SidebarAlignmentTests: XCTestCase {
     /// The split view's maximumPrimaryColumnWidth (RootViewControllerStack),
     /// used to tell the sidebar nav bar from the detail pane's.
     private static let sidebarMaxWidth: CGFloat = 350
-    /// Bars narrower than this (iPad mini portrait overlay ≈ 256pt) can't
-    /// center a title clear of the trailing cluster; the app gap-centers
-    /// there instead. Mirrors SidebarTitleView.narrowBarWidthThreshold.
-    private static let narrowBarWidth: CGFloat = 300
+    /// A title that couldn't be centred must sit no further than this from
+    /// the cluster it was slid up against: SidebarTitleView's 8pt cluster gap,
+    /// with a little room for measurement.
+    private static let pinnedGapMax: CGFloat = 12
 
     private var app: XCUIApplication!
     private var measurements: [Measurement] = []
@@ -372,42 +372,27 @@ final class SidebarAlignmentTests: XCTestCase {
         }
         let titleFrame = title.frame
 
-        // title-h: title center vs pane center (against the nearest
-        // acceptable center when the split view offers more than one).
-        // A title centered within its own granted container is also
-        // legitimate: on narrow bars (iPad mini portrait, ≈256pt) and in
-        // some overlay states, UIKit grants the title view a span between
-        // the item clusters that can't sit on the pane's center, and the
-        // app centers the text in that span. The container counts only
-        // when it's meaningfully wider than the text (fill-mode signature),
-        // so a snug leading-anchored title — the original bug — still
-        // fails, as does text sitting off-center inside a wide container.
-        var centers = panes.map(\.midX)
-        if let container = titleContainer(in: bar, matching: title),
-           container.frame.width >= titleFrame.width + 20 {
-            centers.append(container.frame.midX)
-        }
-        // On a bar too narrow to center anything, a long title that fills
-        // the whole inter-cluster gap has nowhere better to be — accept it
-        // as-is. Narrow bars only: on wide bars filling a lopsided gap was
-        // the original off-center bug and must keep failing. The diag row
-        // records the compared edges, for judging any flaky run at a glance.
-        if barFrame.width < Self.narrowBarWidth {
-            let leadEdge = buttons.filter { $0.frame.midX < barFrame.midX }
-                .map(\.frame.maxX).max() ?? barFrame.minX
-            let trailEdge = buttons.filter { $0.frame.midX > barFrame.midX }
-                .map(\.frame.minX).min() ?? barFrame.maxX
-            // ±40pt: the mini's overlay-state layout varies a little from
-            // run to run, and on a bar this narrow a title within 40pt of
-            // both clusters has no meaningfully better position anyway.
-            if titleFrame.minX <= leadEdge + 40, titleFrame.maxX >= trailEdge - 40 {
-                centers.append(titleFrame.midX)
-            }
-            record(screen, pane: pane, metric: "narrow-diag",
+        // title-h: title center vs pane center (against the nearest acceptable
+        // center when the split view offers more than one). A title that can't
+        // be centered clear of the item clusters is slid toward the center
+        // until it meets the nearer cluster (SidebarTitleView) — accepted only
+        // when it really is pinned there, so a snug leading-anchored title (the
+        // original bug) and text sitting off-center inside a wide container
+        // both still fail. Detail titles are the system's: same rule.
+        let centers = panes.map(\.midX)
+        var paneCenter = centers.min { abs(titleFrame.midX - $0) < abs(titleFrame.midX - $1) } ?? barFrame.midX
+        if abs(titleFrame.midX - paneCenter) > Self.horizontalTolerance {
+            let leadEdge = buttons.filter { $0.frame.midX < paneCenter }.map(\.frame.maxX).max() ?? barFrame.minX
+            let trailEdge = buttons.filter { $0.frame.midX > paneCenter }.map(\.frame.minX).min() ?? barFrame.maxX
+            let pinnedTrailing = titleFrame.midX < paneCenter && trailEdge - titleFrame.maxX <= Self.pinnedGapMax
+            let pinnedLeading = titleFrame.midX > paneCenter && titleFrame.minX - leadEdge <= Self.pinnedGapMax
+            record(screen, pane: pane, metric: "pinned-diag",
                    detail: "lead \(fmt(leadEdge)) trail \(fmt(trailEdge)) title \(fmt(titleFrame.minX))–\(fmt(titleFrame.maxX))",
                    value: nil, ok: true)
+            if pinnedTrailing || pinnedLeading {
+                paneCenter = titleFrame.midX
+            }
         }
-        let paneCenter = centers.min { abs(titleFrame.midX - $0) < abs(titleFrame.midX - $1) } ?? barFrame.midX
         // The pane whose center the verdict effectively used — margins and
         // the drawn measurement lines come from this rect, so they reflect
         // the judged pane rather than the bar element's raw frame (which on
@@ -503,10 +488,6 @@ final class SidebarAlignmentTests: XCTestCase {
 
     /// The widest same-label element enclosing the title text — the granted
     /// title-view span when the title exposes a container/text pair.
-    private func titleContainer(in bar: XCUIElement, matching title: XCUIElement) -> XCUIElement? {
-        titleTexts(in: bar).filter { $0.label == title.label }.max { $0.frame.width < $1.frame.width }
-    }
-
     private func buttonName(_ button: XCUIElement) -> String {
         let id = button.identifier
         if !id.isEmpty { return id }

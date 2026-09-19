@@ -90,11 +90,13 @@ final class NavigationBar: UINavigationBar {
     /// ignores appearance APIs and colors elements with the app tintColor.
     var forcedTintColor: UIColor?
 
-    private static let sidebarToggleOverlayTag = 9999
+    /// Called at the end of every layout pass, after the bar's own work.
+    var didLayoutSubviews: (() -> Void)?
 
     override func layoutSubviews() {
         super.layoutSubviews()
         layoutContentBlur()
+        defer { didLayoutSubviews?() }
 
         guard let forced = forcedTintColor else { return }
 
@@ -108,38 +110,6 @@ final class NavigationBar: UINavigationBar {
         func forceTint(in view: UIView) {
             if view.tintColor != forced {
                 view.tintColor = forced
-            }
-            // Also catch the system sidebar toggle: find SF Symbol images
-            // with vibrancy rendering and overlay with .alwaysOriginal.
-            // Skip our own replacement (identified by tag).
-            if let imageView = view as? UIImageView,
-               imageView.tag != Self.sidebarToggleOverlayTag,
-               let image = imageView.image,
-               image.isSymbolImage,
-               String(describing: image).contains("sidebar.leading") {
-                // Use both isHidden and alpha to prevent UIKit from
-                // resetting visibility during its own layout passes.
-                imageView.isHidden = true
-                imageView.alpha = 0
-                if let parent = imageView.superview {
-                    if let existing = parent.viewWithTag(Self.sidebarToggleOverlayTag) as? UIImageView {
-                        existing.image = UIImage(systemName: "sidebar.leading")?
-                            .withTintColor(forced, renderingMode: .alwaysOriginal)
-                    } else {
-                        let replacement = UIImageView(
-                            image: UIImage(systemName: "sidebar.leading")?
-                                .withTintColor(forced, renderingMode: .alwaysOriginal)
-                        )
-                        replacement.tag = Self.sidebarToggleOverlayTag
-                        replacement.isUserInteractionEnabled = false
-                        replacement.translatesAutoresizingMaskIntoConstraints = false
-                        parent.addSubview(replacement)
-                        NSLayoutConstraint.activate([
-                            replacement.centerXAnchor.constraint(equalTo: parent.centerXAnchor),
-                            replacement.centerYAnchor.constraint(equalTo: parent.centerYAnchor),
-                        ])
-                    }
-                }
             }
             for child in view.subviews {
                 forceTint(in: child)

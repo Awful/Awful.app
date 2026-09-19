@@ -24,7 +24,8 @@ public enum LiquidGlass {
     }
 
     /// True on iOS 26+ regardless of "Reduce Liquid Glass". That setting hides the shared glass
-    /// background behind the app's own bar button items, but the system back button doesn't
+    /// background behind the app's own bar button items (the iPad sidebar hides it whatever the
+    /// setting, since iOS 27 started drawing platters there), but the system back button doesn't
     /// expose `hidesSharedBackground` and keeps its platter — and the platter's vibrancy washes
     /// out its chevron, and rubs off onto a neighbouring text item (Edit) when a push transition
     /// hands the bar back. So bar-button glyph colours have to be baked in either way.

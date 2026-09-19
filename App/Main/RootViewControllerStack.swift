@@ -73,6 +73,16 @@ final class RootViewControllerStack: NSObject, AwfulSplitViewControllerDelegate 
         splitViewController.delegate = self
         splitViewController.maximumPrimaryColumnWidth = 350
         splitViewController.preferredPrimaryColumnWidthFraction = 0.5
+        if #available(iOS 26.0, *) {
+            // The sidebar column stays flat (see NavigationController.hidesSharedBarButtonBackground),
+            // but iOS 27 puts a glass platter behind the system sidebar toggle in that bar and
+            // nothing reaches it (`displayModeButtonItem.hidesSharedBackground` has no effect). So
+            // the sidebar nav controllers draw their own toggle, fed the display mode below, and
+            // the system's is switched off the only way a classic-style split view allows
+            // (`displayModeButtonVisibility` raises here). The edge swipe this also drops was
+            // already covered by AwfulSplitViewController's own reveal pan.
+            splitViewController.presentsWithGesture = false
+        }
 
         updateMessagesTabPresence()
         
@@ -176,6 +186,11 @@ final class RootViewControllerStack: NSObject, AwfulSplitViewControllerDelegate 
         UIView.animate(withDuration: 0.25) { svc.preferredDisplayMode = target }
     }
 
+    /// The tab roots' nav controllers, which draw the sidebar's own toggle on iOS 26+.
+    private var sidebarNavigationControllers: [NavigationController] {
+        (tabBarController.viewControllers ?? []).compactMap { $0 as? NavigationController }
+    }
+
     func didAppear() {
         // Believe me, it occurs to me that this is highly suspicious and probably indicates misuse of the split view controller. I would happily welcome corrected impressions and/or simplification suggestions. This is ugly.
 
@@ -188,6 +203,9 @@ final class RootViewControllerStack: NSObject, AwfulSplitViewControllerDelegate 
             if isPortrait && splitViewController.displayMode == .oneBesideSecondary {
                 splitViewController.preferredDisplayMode = .secondaryOnly
             }
+        }
+        for nav in sidebarNavigationControllers {
+            nav.sidebarDisplayMode = splitViewController.displayMode
         }
 
         let updateLeftButtonItem = { [weak self] in
@@ -374,6 +392,9 @@ extension RootViewControllerStack {
         _ svc: UISplitViewController,
         willChangeTo displayMode: UISplitViewController.DisplayMode
     ) {
+        for nav in sidebarNavigationControllers {
+            nav.sidebarDisplayMode = displayMode
+        }
         guard !svc.isCollapsed else { return }
         switch displayMode {
         case .secondaryOnly:
@@ -445,6 +466,10 @@ extension RootViewControllerStack {
             // overlay summoned in portrait becomes a pinned sidebar in landscape instead
             // of leaving preferredDisplayMode stuck at .oneOverSecondary.
             self.configureSplitViewControllerDisplayMode()
+            for nav in self.sidebarNavigationControllers {
+                nav.sidebarDisplayMode = self.splitViewController.displayMode
+                nav.refreshSidebarChrome()
+            }
 
             // Make sure the "show sidebar" button item is in place after an interface rotation.
             // (We used to misuse the delegate method `targetDisplayModeForAction(in:)` to do this, but that sometimes resulted in an endless recursive call starting on iOS 13.)
