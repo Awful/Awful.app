@@ -104,7 +104,7 @@
 		1C47122C2664CB8C00E5AA74 /* Smilies in Frameworks */ = {isa = PBXBuildFile; productRef = 1C47122B2664CB8C00E5AA74 /* Smilies */; };
 		1C47122F2664CE4E00E5AA74 /* WebArchive in Frameworks */ = {isa = PBXBuildFile; productRef = 1C47122E2664CE4E00E5AA74 /* WebArchive */; };
 		1C47AF4A19A7905F0098B828 /* PostsPageSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C47AF4919A7905F0098B828 /* PostsPageSettingsViewController.swift */; };
-		1C47AF4C19A790910098B828 /* PostsPageSettings.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C47AF4B19A790910098B828 /* PostsPageSettings.xib */; };
+		C1A00000000000000000A0B1 /* PostsPageSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1A00000000000000000A0F1 /* PostsPageSettingsView.swift */; };
 		1C48538E1F93BADF0042531A /* HTMLRenderingHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C48538D1F93BADF0042531A /* HTMLRenderingHelpers.swift */; };
 		1C4E68311B32558A00FC2A02 /* ForumListSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4E68301B32558A00FC2A02 /* ForumListSectionHeaderView.swift */; };
 		1C4EAD5E1BC0622D0008BE54 /* AwfulCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4EAD5D1BC0622D0008BE54 /* AwfulCore.swift */; };
@@ -461,7 +461,7 @@
 		1C453F45233849C2007AC6CD /* SafariActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariActivity.swift; sourceTree = "<group>"; };
 		1C47122D2664CCE700E5AA74 /* Awful.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = Awful.xctestplan; sourceTree = SOURCE_ROOT; };
 		1C47AF4919A7905F0098B828 /* PostsPageSettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostsPageSettingsViewController.swift; sourceTree = "<group>"; };
-		1C47AF4B19A790910098B828 /* PostsPageSettings.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PostsPageSettings.xib; sourceTree = "<group>"; };
+		C1A00000000000000000A0F1 /* PostsPageSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsPageSettingsView.swift; sourceTree = "<group>"; };
 		1C48538D1F93BADF0042531A /* HTMLRenderingHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLRenderingHelpers.swift; sourceTree = "<group>"; };
 		1C4D63842B6704CA005EB25C /* SystemCapabilities */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = SystemCapabilities; sourceTree = "<group>"; };
 		1C4E68301B32558A00FC2A02 /* ForumListSectionHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForumListSectionHeaderView.swift; sourceTree = "<group>"; };
@@ -872,7 +872,7 @@
 				1C16FBE61CBC671A00C88BD1 /* PostRenderModel.swift */,
 				1CFC99691BD3F402001180A7 /* PostsPageRefreshArrowView.swift */,
 				1CD0C54E1BE674D700C3AC80 /* PostsPageRefreshSpinnerView.swift */,
-				1C47AF4B19A790910098B828 /* PostsPageSettings.xib */,
+				C1A00000000000000000A0F1 /* PostsPageSettingsView.swift */,
 				1C47AF4919A7905F0098B828 /* PostsPageSettingsViewController.swift */,
 				1C16FBD61CBAA00200C88BD1 /* PostsPageTopBar.swift */,
 				1C16FC031CC3D84500C88BD1 /* PostsPageView.swift */,
@@ -1671,7 +1671,6 @@
 				1CC10E3B1DD9558B00E0FB63 /* PotentiallyObjectionableThreadTags.plist in Resources */,
 				8C483FC216852E5D00D02482 /* macinyos-loading@2x.png in Resources */,
 				1C8F67FD2221BB57007E61ED /* PrivateMessage.html.stencil in Resources */,
-				1C47AF4C19A790910098B828 /* PostsPageSettings.xib in Resources */,
 				1C8F67FF2221BDE8007E61ED /* PostPreview.html.stencil in Resources */,
 				1C29BD532251208200E1217A /* quote-post.png in Resources */,
 				2D19BA3B29C33303009DD94F /* toot60.json in Resources */,
@@ -1872,6 +1871,7 @@
 				1CC58F5D1B5AC4330016EE83 /* UIKit.swift in Sources */,
 				1C16FC021CC29B2C00C88BD1 /* LoadingView.swift in Sources */,
 				F2A00000000000000000A0B1 /* HiddenMenuButton.swift in Sources */,
+				C1A00000000000000000A0B1 /* PostsPageSettingsView.swift in Sources */,
 				1C47AF4A19A7905F0098B828 /* PostsPageSettingsViewController.swift in Sources */,
 				1C0D7FFE1CF38CA2003EE2D1 /* PostsPageViewController.swift in Sources */,
 				1CC256B71A39A6BE003FA7A8 /* AwfulBrowser.swift in Sources */,
