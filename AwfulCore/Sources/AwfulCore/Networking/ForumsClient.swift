@@ -660,7 +660,7 @@ public final class ForumsClient {
     public func markThreadAsSeenUpTo(
         _ post: Post
     ) async throws {
-        guard case let (threadID?, threadIndex) = await post.managedObjectContext!.perform({
+        guard case let (threadID?, threadIndex) = await post.onOwnContext({ post, _ in
             (post.thread?.threadID, post.threadIndex)
         }) else {
             assertionFailure("post needs a thread ID")
@@ -1269,10 +1269,10 @@ public final class ForumsClient {
         _ post: Post
     ) async throws {
         guard let backgroundContext = backgroundManagedObjectContext,
-              let postContext = post.managedObjectContext
+              post.managedObjectContext != nil
         else { throw Error.missingManagedObjectContext }
 
-        let postID: String = await postContext.perform { post.postID }
+        let postID: String = await post.onOwnContext { $0.postID }
         let (data, response) = try await fetch(method: .get, urlString: "showthread.php", parameters: [
             "action": "showpost",
             "postid": postID,
@@ -1283,8 +1283,8 @@ public final class ForumsClient {
             _ = try result.upsert(into: backgroundContext)
             try backgroundContext.save()
         }
-        await postContext.perform {
-            postContext.refresh(post, mergeChanges: true)
+        await post.onOwnContext { post, context in
+            context.refresh(post, mergeChanges: true)
         }
     }
 
@@ -1549,9 +1549,7 @@ public final class ForumsClient {
     public func findBBcodeContents(
         of post: Post
     ) async throws -> String {
-        let postID: String = await post.managedObjectContext!.perform {
-            post.postID
-        }
+        let postID: String = await post.onOwnContext { $0.postID }
         let (data, response) = try await fetch(method: .get, urlString: "editpost.php", parameters: [
             "action": "editpost",
             "postid": postID,
@@ -1561,9 +1559,7 @@ public final class ForumsClient {
     }
 
     public func quoteBBcodeContents(of post: Post) async throws -> String {
-        let postID: String = await post.managedObjectContext!.perform {
-            post.postID
-        }
+        let postID: String = await post.onOwnContext { $0.postID }
         let (data, response) = try await fetch(method: .get, urlString: "newreply.php", parameters: [
             "action": "newreply",
             "postid": postID,
@@ -1655,9 +1651,7 @@ public final class ForumsClient {
     private func editForm(
         for post: Post
     ) async throws -> Form {
-        let postID: String = await post.managedObjectContext!.perform {
-            post.postID
-        }
+        let postID: String = await post.onOwnContext { $0.postID }
         let (data, response) = try await fetch(method: .get, urlString: "editpost.php", parameters: [
             "action": "editpost",
             "postid": postID,
@@ -1686,7 +1680,7 @@ public final class ForumsClient {
     public func findEditAttachmentCapabilities(for post: Post) async throws -> EditAttachmentCapabilities {
         let (data, response) = try await fetch(method: .get, urlString: "editpost.php", parameters: [
             "action": "editpost",
-            "postid": await post.managedObjectContext!.perform { post.postID },
+            "postid": await post.onOwnContext { $0.postID },
         ])
         let (document, _) = try parseHTML(data: data, response: response)
 
@@ -1832,9 +1826,7 @@ public final class ForumsClient {
      Fetches the report form page for a post. If the post has already been reported, this will throw a `ServerError.standard` with the server's message.
      */
     public func fetchReportForm(for post: Post) async throws -> ReportFormContents {
-        let postID: String = await post.managedObjectContext!.perform {
-            post.postID
-        }
+        let postID: String = await post.onOwnContext { $0.postID }
         let (data, response) = try await fetch(method: .get, urlString: "modalert.php", parameters: [
             ("postid", postID),
         ])
@@ -1873,9 +1865,7 @@ public final class ForumsClient {
         reason: String,
         maxCharacters: Int = 1000
     ) async throws {
-        let postID: String = await post.managedObjectContext!.perform {
-            post.postID
-        }
+        let postID: String = await post.onOwnContext { $0.postID }
         var parameters: [String: Any] = [
             "action": "submit",
             "postid": postID,
