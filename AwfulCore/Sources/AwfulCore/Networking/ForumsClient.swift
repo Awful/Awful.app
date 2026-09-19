@@ -473,7 +473,7 @@ public final class ForumsClient {
               let mainContext = managedObjectContext
         else { throw Error.missingManagedObjectContext }
 
-        let (forumID, forumObjectID) = await forum.managedObjectContext!.perform {
+        let (forumID, forumObjectID) = await forum.onOwnContext { forum, _ in
             (forum.forumID, forum.objectID)
         }
         var parameters: Dictionary<String, Any> = [
@@ -1093,9 +1093,7 @@ public final class ForumsClient {
     ) async throws -> (previewHTML: String, formData: PostNewThreadFormData) {
         let previewParameters: [KeyValuePairs<String, Any>.Element]
         do {
-            let forumID: String = await forum.managedObjectContext!.perform {
-                forum.forumID
-            }
+            let forumID: String = await forum.onOwnContext { $0.forumID }
             let (data, response) = try await fetch(method: .get, urlString: "newthread.php", parameters: [
                 "action": "newthread",
                 "forumid": forumID,
@@ -1149,9 +1147,7 @@ public final class ForumsClient {
     public func flagForThread(
         in forum: Forum
     ) async throws -> Flag {
-        let forumID: String = await forum.managedObjectContext!.perform {
-            forum.forumID
-        }
+        let forumID: String = await forum.onOwnContext { $0.forumID }
         let (data, _) = try await fetch(method: .get, urlString: "flag.php", parameters: [
             "forumid": forumID,
         ])
@@ -1233,7 +1229,7 @@ public final class ForumsClient {
             parameters["noseen"] = "1"
         }
 
-        if let userID: String = await author?.managedObjectContext?.perform({ author?.userID }) {
+        if let userID: String = await author?.onOwnContext({ $0.userID }) {
             parameters["userid"] = userID
         }
 
@@ -2019,7 +2015,7 @@ public final class ForumsClient {
             return try await lepersColony(page: page, userID: nil, filter: filter)
         }
 
-        let maybe: (userID: String, username: String?) = await user.managedObjectContext!.perform {
+        let maybe: (userID: String, username: String?) = await user.onOwnContext { user, _ in
             (userID: user.userID, username: user.username)
         }
         let userID: String
@@ -2031,9 +2027,7 @@ public final class ForumsClient {
                 return try await lepersColony(page: page, userID: nil, filter: filter)
             }
             let profile = try await profileUser(.username(username))
-            userID = await profile.managedObjectContext!.perform {
-                profile.user.userID
-            }
+            userID = await profile.onOwnContext { $0.user.userID }
         }
 
         return try await lepersColony(page: page, userID: userID, filter: filter)
@@ -2368,9 +2362,7 @@ public final class ForumsClient {
         bbcode: String,
         about relevantMessage: RelevantMessage
     ) async throws {
-        let threadTagID: String = await threadTag?.managedObjectContext?.perform {
-            threadTag?.threadTagID
-        } ?? "0"
+        let threadTagID: String = await threadTag?.onOwnContext { $0.threadTagID } ?? "0"
         var parameters: Dictionary<String, Any> = [
             "touser": username,
             "title": subject,
