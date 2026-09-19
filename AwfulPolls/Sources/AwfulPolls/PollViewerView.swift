@@ -69,14 +69,19 @@ struct PollViewerView: View {
             if model.canVote {
                 tabSection
             }
-            if model.tab == .vote, model.canVote {
-                voteSection
-            } else {
+            if model.isShowingResults {
                 resultsSection
+            } else {
+                voteSection
             }
         }
         .listStyle(.insetGrouped)
         .modifier(HiddenScrollBackground())
+        // The view only reports that results are on screen; the model decides whether that means
+        // a fetch. `onAppear` covers a poll with no ballot (results are the whole screen), and
+        // `onChange` covers tapping the "Results" segment.
+        .onAppear(perform: model.showResultsIfNeeded)
+        .onChange(of: model.tab) { _ in model.showResultsIfNeeded() }
     }
 
     // MARK: Question
@@ -173,9 +178,6 @@ struct PollViewerView: View {
                     ProgressView()
                     Spacer()
                 }
-                // Only fetch once the user actually asks to see the results — this is the "look
-                // without voting" trip, and it shouldn't happen behind their back.
-                .task { await model.loadResults() }
             }
             .listRowBackground(theme[color: "sheetBackgroundColor"] ?? theme[color: "listBackgroundColor"])
 
@@ -191,9 +193,7 @@ struct PollViewerView: View {
                 Text(message)
                     .font(.footnote)
                     .foregroundColor(.red)
-                Button {
-                    Task { await model.loadResults(force: true) }
-                } label: {
+                Button(action: model.showResultsIfNeeded) {
                     Text("Try Again", bundle: .module)
                         .foregroundColor(theme[color: "tintColor"])
                 }
@@ -351,6 +351,8 @@ final class PollViewerModel: ObservableObject {
 
     enum ResultsState {
         case available(ThreadPoll)
+        /// Either a fetch is in flight, or nothing has asked for one yet: the spinner is right for
+        /// both, since a fetch starts the moment the results are on screen.
         case loading
         /// No results to be had: this poll came without one, and we've no poll ID to go asking with.
         case unavailable
@@ -363,8 +365,9 @@ final class PollViewerModel: ObservableObject {
     @Published private(set) var isSubmitting = false
     @Published private(set) var voteError: String?
     @Published private(set) var resultsState: ResultsState
-    /// Guards against the spinner row's `.task` re-entering `loadResults` while it's already running.
-    private var isLoadingResults = false
+    /// The results fetch in flight, if any. The model owns it, so leaving the results tab (or the
+    /// sheet) doesn't cancel it out from under us.
+    private var resultsTask: Task<Void, Never>?
 
     init(poll: ThreadPoll) {
         self.poll = poll
@@ -372,7 +375,14 @@ final class PollViewerModel: ObservableObject {
         self.resultsState = Self.resultsState(for: poll)
     }
 
+    deinit {
+        resultsTask?.cancel()
+    }
+
     var canVote: Bool { poll.canVote && !poll.options.isEmpty }
+
+    /// Whether the results (rather than the ballot) are what's on screen.
+    var isShowingResults: Bool { !(tab == .vote && canVote) }
 
     private static func resultsState(for poll: ThreadPoll) -> ResultsState {
         if poll.hasResults {
@@ -407,21 +417,34 @@ final class PollViewerModel: ObservableObject {
         }
     }
 
-    func loadResults(force: Bool = false) async {
-        if case .available = resultsState, !force { return }
-        // Moving to `.loading` puts the spinner row on screen, whose `.task` calls straight back in
-        // here. Without this we'd fire two GETs for every retry.
-        guard !isLoadingResults else { return }
+    /// Fetches the results if they're on screen and we don't have them yet.
+    ///
+    /// Only fetch once the user actually asks to see the results — this is the "look without
+    /// voting" trip, and it shouldn't happen behind their back. Every trigger (opening a poll with
+    /// no ballot, tapping "Results", "Try Again", a vote landing) calls this; a fetch already in
+    /// flight is left to finish.
+    func showResultsIfNeeded() {
+        guard isShowingResults, resultsTask == nil else { return }
+        if case .available = resultsState { return }
         guard let pollID = poll.pollID else {
             resultsState = .unavailable
             return
         }
-        isLoadingResults = true
         resultsState = .loading
-        defer { isLoadingResults = false }
+        resultsTask = Task { [weak self] in
+            await self?.fetchResults(pollID: pollID)
+        }
+    }
+
+    private func fetchResults(pollID: String) async {
+        defer { resultsTask = nil }
         do {
             let fetched = try await ForumsClient.shared.pollResults(pollID: pollID)
             resultsState = .available(fetched)
+        } catch is CancellationError {
+            // Only the sheet going away cancels us, and there's nobody left to tell.
+        } catch let error as URLError where error.code == .cancelled {
+            // Same thing, as URLSession reports it.
         } catch {
             resultsState = .failed(error.localizedDescription)
         }
@@ -442,9 +465,7 @@ final class PollViewerModel: ObservableObject {
             // picker disappears on its own now that there's no ballot.
             tab = .results
             onVoted(voted)
-            if case .loading = resultsState {
-                await loadResults()
-            }
+            showResultsIfNeeded()
         } catch {
             voteError = error.localizedDescription
         }
