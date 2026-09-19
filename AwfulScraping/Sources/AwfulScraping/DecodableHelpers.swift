@@ -5,7 +5,7 @@
 import Foundation
 import HTMLReader
 
-@propertyWrapper public struct DecodingEntities: Decodable {
+@propertyWrapper public struct DecodingEntities: Decodable, Sendable {
     public var wrappedValue: String
 
     public init(from decoder: Decoder) throws {
@@ -27,6 +27,7 @@ import HTMLReader
 }
 extension DefaultEmpty: Equatable where T: Equatable {}
 extension DefaultEmpty: Hashable where T: Hashable {}
+extension DefaultEmpty: Sendable where T: Sendable {}
 
 // MARK: -
 
@@ -51,9 +52,11 @@ extension DefaultEmpty: Hashable where T: Hashable {}
     }
 }
 
+extension EmptyStringNil: Sendable where T: Sendable {}
+
 // MARK: -
 
-@propertyWrapper public struct IntToBool: Decodable {
+@propertyWrapper public struct IntToBool: Decodable, Sendable {
     public var wrappedValue: Bool?
 
     public init(from decoder: Decoder) throws {
@@ -66,7 +69,7 @@ extension DefaultEmpty: Hashable where T: Hashable {}
 
 // MARK: -
 
-@propertyWrapper public struct IntOrString: Decodable {
+@propertyWrapper public struct IntOrString: Decodable, Sendable {
     public var wrappedValue: String
 
     public init(from decoder: Decoder) throws {
@@ -79,7 +82,7 @@ extension DefaultEmpty: Hashable where T: Hashable {}
     }
 }
 
-@propertyWrapper public struct CoerceIntToString: Decodable {
+@propertyWrapper public struct CoerceIntToString: Decodable, Sendable {
     public var wrappedValue: String?
 
     public init(from decoder: Decoder) throws {

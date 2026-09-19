@@ -9,7 +9,7 @@ import Foundation
 
  Assumes a date decoding strategy of `.awful` (see `AwfulDateDecodingStrategy`).
  */
-public struct IndexScrapeResult: Decodable {
+public struct IndexScrapeResult: Decodable, Sendable {
     public let currentUser: ScrapedProfile
     public let forums: [ScrapedForum]
     public let stats: Stats?
@@ -20,7 +20,7 @@ public struct IndexScrapeResult: Decodable {
         case stats
     }
 
-    public struct ScrapedForum: Decodable {
+    public struct ScrapedForum: Decodable, Sendable {
         public let description: String?
         public let hasThreads: Bool
         @EmptyStringNil public private(set) var icon: URL?
@@ -41,7 +41,7 @@ public struct IndexScrapeResult: Decodable {
             case title
         }
 
-        public struct Moderator: Decodable {
+        public struct Moderator: Decodable, Sendable {
             @IntOrString public private(set) var userID: String
             public let username: String
 
@@ -52,7 +52,7 @@ public struct IndexScrapeResult: Decodable {
         }
     }
 
-    public struct ScrapedProfile: Decodable {
+    public struct ScrapedProfile: Decodable, Sendable {
         @CoerceIntToString public private(set) var aim: String?
         @CoerceIntToString public private(set) var biography: String?
         @IntToBool public private(set) var canReceivePrivateMessages: Bool?
@@ -98,14 +98,14 @@ public struct IndexScrapeResult: Decodable {
             case yahoo = "yahoo"
         }
 
-        public enum Gender: String, Decodable {
+        public enum Gender: String, Decodable, Sendable {
             case female = "F"
             case male = "M"
             case porpoise = "U"
         }
     }
 
-    public struct Stats: Decodable {
+    public struct Stats: Decodable, Sendable {
         public let archivedPosts: Int?
         public let archivedThreads: Int?
         public let bannedUsersToday: Int?

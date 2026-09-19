@@ -2,7 +2,7 @@
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-public enum ThreadPage: Equatable {
+public enum ThreadPage: Equatable, Sendable {
 
     /// Not sure what the last page is, but you want it.
     case last
