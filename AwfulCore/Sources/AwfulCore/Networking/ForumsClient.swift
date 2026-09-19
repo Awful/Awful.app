@@ -1181,13 +1181,13 @@ public final class ForumsClient {
         ])
         let (document, url) = try parseHTML(data: data, response: response)
         let result = try AnnouncementListScrapeResult(document, url: url)
-        let backgroundAnnouncements = try await backgroundContext.perform {
+        let announcementIDs = try await backgroundContext.perform {
             let announcements = try result.upsert(into: backgroundContext)
             try backgroundContext.save()
-            return announcements
+            return announcements.map(\.objectID)
         }
         return await mainContext.perform {
-            backgroundAnnouncements.compactMap { mainContext.object(with: $0.objectID) as? Announcement }
+            announcementIDs.compactMap { mainContext.object(with: $0) as? Announcement }
         }
     }
 
@@ -1259,13 +1259,13 @@ public final class ForumsClient {
 
         try Task.checkCancellation()
 
-        let backgroundPosts = try await backgroundContext.perform {
+        let postIDs = try await backgroundContext.perform {
             let posts = try result.upsert(into: backgroundContext)
             try backgroundContext.save()
-            return posts
+            return posts.map(\.objectID)
         }
         let posts = await mainContext.perform {
-            backgroundPosts.compactMap { mainContext.object(with: $0.objectID) as? Post }
+            postIDs.compactMap { mainContext.object(with: $0) as? Post }
         }
         return (
             posts: posts,
@@ -1907,9 +1907,11 @@ public final class ForumsClient {
 
     // MARK: Users
 
+    /// Fetches and upserts a profile on the background context, returning its object ID so the
+    /// caller can look it up in whichever context it needs.
     private func profile(
         parameters: some Sequence<KeyValuePairs<String, Any>.Element>
-    ) async throws -> Profile {
+    ) async throws -> NSManagedObjectID {
         guard let backgroundContext = backgroundManagedObjectContext else {
             throw Error.missingManagedObjectContext
         }
@@ -1920,7 +1922,7 @@ public final class ForumsClient {
         return try await backgroundContext.perform {
             let profile = try result.upsert(into: backgroundContext)
             try backgroundContext.save()
-            return profile
+            return profile.objectID
         }
     }
 
@@ -1929,9 +1931,9 @@ public final class ForumsClient {
             throw Error.missingManagedObjectContext
         }
 
-        let backgroundProfile = try await profile(parameters: ["action": "getinfo"])
+        let profileID = try await profile(parameters: ["action": "getinfo"])
         return try await mainContext.perform {
-            guard let profile = mainContext.object(with: backgroundProfile.objectID) as? Profile else {
+            guard let profile = mainContext.object(with: profileID) as? Profile else {
                 throw AwfulCoreError.parseError(description: "Could not save profile")
             }
 
@@ -1957,9 +1959,9 @@ public final class ForumsClient {
             parameters["username"] = username
         }
 
-        let backgroundProfile = try await profile(parameters: parameters)
+        let profileID = try await profile(parameters: parameters)
         return try await mainContext.perform {
-            guard let profile = mainContext.object(with: backgroundProfile.objectID) as? Profile else {
+            guard let profile = mainContext.object(with: profileID) as? Profile else {
                 throw AwfulCoreError.parseError(description: "Could not save profile")
             }
             return profile
@@ -2056,7 +2058,7 @@ public final class ForumsClient {
         let (data, response) = try await fetch(method: .get, urlString: "private.php", parameters: parameters)
         let (document, url) = try parseHTML(data: data, response: response)
         let result = try PrivateMessageFolderScrapeResult(document, url: url)
-        let backgroundMessages = try await backgroundContext.perform {
+        let messageIDs = try await backgroundContext.perform {
             let messages = try result.upsert(into: backgroundContext, folderID: folderID)
             do {
                 try backgroundContext.save()
@@ -2070,10 +2072,10 @@ public final class ForumsClient {
                 logger.error("Failed to save folder \(folderID): \(error) [\(detailed ?? "")]")
                 throw error
             }
-            return messages
+            return messages.map(\.objectID)
         }
         return await mainContext.perform {
-            backgroundMessages.compactMap { mainContext.object(with: $0.objectID) as? PrivateMessage }
+            messageIDs.compactMap { mainContext.object(with: $0) as? PrivateMessage }
         }
     }
 
@@ -2086,7 +2088,7 @@ public final class ForumsClient {
         let (document, url) = try parseHTML(data: data, response: response)
         let result = try PrivateMessageFolderScrapeResult(document, url: url)
 
-        let backgroundFolders = try await backgroundContext.perform {
+        let folderIDs = try await backgroundContext.perform {
             var folders: [PrivateMessageFolder] = []
 
             for folderInfo in result.allFolders {
@@ -2108,11 +2110,11 @@ public final class ForumsClient {
             }
 
             try backgroundContext.save()
-            return folders
+            return folders.map(\.objectID)
         }
 
         return await mainContext.perform {
-            backgroundFolders.compactMap { mainContext.object(with: $0.objectID) as? PrivateMessageFolder }
+            folderIDs.compactMap { mainContext.object(with: $0) as? PrivateMessageFolder }
         }
     }
 
@@ -2308,13 +2310,13 @@ public final class ForumsClient {
         ])
         let (document, url) = try parseHTML(data: data, response: response)
         let result = try PrivateMessageScrapeResult(document, url: url)
-        let backgroundMessage = try await backgroundContext.perform {
+        let messageID = try await backgroundContext.perform {
             let message = try result.upsert(into: backgroundContext)
             try backgroundContext.save()
-            return message
+            return message.objectID
         }
         return try await mainContext.perform {
-            guard let privateMessage = mainContext.object(with: backgroundMessage.objectID) as? PrivateMessage else {
+            guard let privateMessage = mainContext.object(with: messageID) as? PrivateMessage else {
                 throw AwfulCoreError.parseError(description: "Could not save message")
             }
             return privateMessage
@@ -2343,13 +2345,13 @@ public final class ForumsClient {
         let (data, response) = try await fetch(method: .get, urlString: "private.php", parameters: ["action": "newmessage"])
         let (document, url) = try parseHTML(data: data, response: response)
         let result = try PostIconListScrapeResult(document, url: url)
-        let backgroundTags = try await backgroundContext.perform {
+        let tagIDs = try await backgroundContext.perform {
             let managed = try result.upsert(into: backgroundContext)
             try backgroundContext.save()
-            return managed.primary
+            return managed.primary.map(\.objectID)
         }
         return await mainContext.perform {
-            backgroundTags.compactMap { mainContext.object(with: $0.objectID) as? ThreadTag }
+            tagIDs.compactMap { mainContext.object(with: $0) as? ThreadTag }
         }
     }
 
