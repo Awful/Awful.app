@@ -207,8 +207,8 @@ final class MessageFolderManagementViewController: CollectionViewController {
             do {
                 try await ForumsClient.shared.createPrivateMessageFolder(name: name)
                 loadFolders()
-                await MainActor.run { [weak self] in
-                    self?.onFoldersChanged?()
+                await MainActor.run {
+                    onFoldersChanged?()
                 }
             } catch {
                 logger.error("Failed to create folder '\(name)': \(error)")
@@ -262,8 +262,7 @@ final class MessageFolderManagementViewController: CollectionViewController {
 
                 try await ForumsClient.shared.deletePrivateMessageFolder(folderID: folder.folderID, folderName: folder.name)
 
-                await MainActor.run { [weak self] in
-                    guard let self else { return }
+                await MainActor.run {
                     self.folders.remove(at: indexPath.row)
                     self.collectionView.deleteItems(at: [indexPath])
                     self.updateNavigationItems()
@@ -274,12 +273,12 @@ final class MessageFolderManagementViewController: CollectionViewController {
                 }
             } catch {
                 logger.error("Failed to delete folder '\(folder.name)': \(error)")
-                await MainActor.run { [weak self] in
+                await MainActor.run {
                     let alert = UIAlertController(
                         title: LocalizedString("private-message-folder.delete-error-title"),
                         error: error
                     )
-                    self?.present(alert, animated: true)
+                    present(alert, animated: true)
                 }
             }
         }

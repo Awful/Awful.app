@@ -104,7 +104,7 @@ final class TextAttachment: NSTextAttachment {
         let isAssetBacked = photoAssetIdentifier != nil
         let source = isAssetBacked ? (thumbnailImage ?? image) : image
         let preferPNG = !isAssetBacked && image.hasAlphaChannel
-        Self.encodingQueue.async {
+        Self.encodingQueue.async { [weak self] in
             let data: Data? = autoreleasepool {
                 preferPNG ? source.pngData() : source.jpegData(compressionQuality: isAssetBacked ? 0.8 : 0.9)
             }

@@ -166,9 +166,7 @@ final class SmilieSearchViewModel: ObservableObject {
         
         Task {
             guard let context = dataStore.managedObjectContext else { return }
-            await context.perform { [weak self] in
-                guard let self = self else { return }
-                
+            await context.perform {
                 let fetchRequest = NSFetchRequest<Smilie>(entityName: "Smilie")
                 fetchRequest.predicate = NSPredicate(
                     format: "text CONTAINS[cd] %@ OR summary CONTAINS[cd] %@",

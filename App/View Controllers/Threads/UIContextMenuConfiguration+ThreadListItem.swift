@@ -81,7 +81,7 @@ extension UIContextMenuConfiguration {
             return UIAction(
                 title: NSLocalizedString("Mark Thread As Read", comment: ""),
                 image: UIImage(named: "mark-read-up-to-here")!.withRenderingMode(.alwaysTemplate),
-                handler: { action in
+                handler: { [weak presenter] action in
                     Task { [weak presenter] in
                         do {
                             _ = try await ForumsClient.shared.listPosts(
