@@ -2213,9 +2213,7 @@ public final class ForumsClient {
     public func deletePrivateMessage(
         _ message: PrivateMessage
     ) async throws {
-        let messageID: String = await message.managedObjectContext!.perform {
-            message.messageID
-        }
+        let messageID: String = await message.onOwnContext { $0.messageID }
         let (data, response) = try await fetch(method: .post, urlString: "private.php", parameters: [
             "action": "dodelete",
             "privatemessageid": messageID,
@@ -2229,10 +2227,10 @@ public final class ForumsClient {
         toFolderID folderID: String
     ) async throws {
         guard let backgroundContext = backgroundManagedObjectContext,
-              let messageContext = message.managedObjectContext
+              message.managedObjectContext != nil
         else { throw Error.missingManagedObjectContext }
 
-        let (messageID, currentFolderID) = await messageContext.perform {
+        let (messageID, currentFolderID) = await message.onOwnContext { message, _ in
             (message.messageID, message.folder?.folderID ?? "0")
         }
 
@@ -2296,9 +2294,7 @@ public final class ForumsClient {
     public func quoteBBcodeContents(
         of message: PrivateMessage
     ) async throws -> String {
-        let messageID: String = await message.managedObjectContext!.perform {
-            message.messageID
-        }
+        let messageID: String = await message.onOwnContext { $0.messageID }
         let (data, response) = try await fetch(method: .get, urlString: "private.php", parameters: [
             "action": "newmessage",
             "privatemessageid": messageID,
@@ -2353,15 +2349,11 @@ public final class ForumsClient {
             break
         case .forwarding(let relevant):
             parameters["forward"] = "true"
-            let messageID: String = await relevant.managedObjectContext!.perform {
-                relevant.messageID
-            }
+            let messageID: String = await relevant.onOwnContext { $0.messageID }
             parameters["prevmessageid"] = messageID
         case .replyingTo(let relevant):
             parameters["forward"] = ""
-            let messageID: String = await relevant.managedObjectContext!.perform {
-                relevant.messageID
-            }
+            let messageID: String = await relevant.onOwnContext { $0.messageID }
             parameters["prevmessageid"] = messageID
         }
 
