@@ -608,20 +608,18 @@ public final class ForumsClient {
         _ thread: AwfulThread,
         isBookmarked: Bool
     ) async throws {
-        let threadID: String = await thread.managedObjectContext!.perform {
-            thread.threadID
-        }
+        let threadID: String = await thread.onOwnContext { $0.threadID }
         _ = try await fetch(method: .post, urlString: "bookmarkthreads.php", parameters: [
             "json": "1",
             "action": isBookmarked ? "add" : "remove",
             "threadid": threadID,
         ])
-        try await thread.managedObjectContext!.perform {
+        try await thread.onOwnContext { thread, context in
             thread.bookmarked = isBookmarked
             if isBookmarked, thread.bookmarkListPage <= 0 {
                 thread.bookmarkListPage = 1
             }
-            try thread.managedObjectContext!.save()
+            try context.save()
         }
     }
 
@@ -629,9 +627,7 @@ public final class ForumsClient {
         _ thread: AwfulThread,
         as rating: Int
     ) async throws {
-        let threadID: String = await thread.managedObjectContext!.perform {
-            thread.threadID
-        }
+        let threadID: String = await thread.onOwnContext { $0.threadID }
         _ = try await fetch(method: .post, urlString: "threadrate.php", parameters: [
             "vote": "\(rating.clamped(to: 1...5))",
             "threadid": threadID,
@@ -642,9 +638,7 @@ public final class ForumsClient {
         _ thread: AwfulThread,
         as category: StarCategory
     ) async throws {
-        let threadID: String = await thread.managedObjectContext!.perform {
-            thread.threadID
-        }
+        let threadID: String = await thread.onOwnContext { $0.threadID }
         // we can set the bookmark color by sending a "category_id" parameter with an "add" action
         _ = try await fetch(method: .post, urlString: "bookmarkthreads.php", parameters: [
             "threadid": threadID,
@@ -652,14 +646,14 @@ public final class ForumsClient {
             "category_id": "\(category.rawValue)",
             "json": "1",
         ])
-        try await thread.managedObjectContext!.perform {
+        try await thread.onOwnContext { thread, context in
             if thread.bookmarkListPage <= 0 {
                 thread.bookmarkListPage = 1
             }
             if thread.starCategory != category {
                 thread.starCategory = category
             }
-            try thread.managedObjectContext!.save()
+            try context.save()
         }
     }
 
@@ -683,9 +677,7 @@ public final class ForumsClient {
     public func markUnread(
         _ thread: AwfulThread
     ) async throws {
-        let threadID: String = await thread.managedObjectContext!.perform {
-            thread.threadID
-        }
+        let threadID: String = await thread.onOwnContext { $0.threadID }
         _ = try await fetch(method: .post, urlString: "showthread.php", parameters: [
             "threadid": threadID,
             "action": "resetseen",
@@ -1208,9 +1200,7 @@ public final class ForumsClient {
               let mainContext = managedObjectContext
         else { throw Error.missingManagedObjectContext }
 
-        let threadID: String = await thread.managedObjectContext!.perform {
-            thread.threadID
-        }
+        let threadID: String = await thread.onOwnContext { $0.threadID }
         var parameters: Dictionary<String, Any> = [
             "threadid": threadID,
             "perpage": "40",
@@ -1326,7 +1316,7 @@ public final class ForumsClient {
             throw Error.missingManagedObjectContext
         }
 
-        let (wasThreadClosed, threadID) = await thread.managedObjectContext!.perform {
+        let (wasThreadClosed, threadID) = await thread.onOwnContext { thread, _ in
             (thread.closed, thread.threadID)
         }
 
@@ -1471,9 +1461,7 @@ public final class ForumsClient {
      - Throws: An error if the request fails.
      */
     public func fetchAttachmentLimits(for thread: AwfulThread) async throws -> (maxFileSize: Int, maxDimension: Int) {
-        let threadID: String = await thread.managedObjectContext!.perform {
-            thread.threadID
-        }
+        let threadID: String = await thread.onOwnContext { $0.threadID }
         let (data, response) = try await fetch(method: .get, urlString: "newreply.php", parameters: [
             "action": "newreply",
             "threadid": threadID,
@@ -1530,9 +1518,7 @@ public final class ForumsClient {
     ) async throws -> String {
         let params: [KeyValuePairs<String, Any>.Element]
         do {
-            let threadID: String = await thread.managedObjectContext!.perform {
-                thread.threadID
-            }
+            let threadID: String = await thread.onOwnContext { $0.threadID }
             let (data, response) = try await fetch(method: .get, urlString: "newreply.php", parameters: [
                 "action": "newreply",
                 "threadid": threadID,
