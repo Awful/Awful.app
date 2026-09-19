@@ -723,10 +723,23 @@ final class PostsPageViewController: ViewController {
 
     /// Colours the title from the page beneath it while the iOS 26 glass bar is transparent;
     /// driven from `PostsPageView.updateNavigationBarForScrollProgress`.
-    private(set) lazy var titleContrastSampler = NavigationBarTitleContrastSampler(
+    private(set) lazy var titleContrastSampler = ContentContrastSampler(
         renderView: postsView.renderView,
         titleLabel: { [weak self] in self?.navigationItem.titleView as? UILabel },
-        backdrop: { [weak self] in self?.theme[uicolor: "backgroundColor"] }
+        backdrop: { [weak self] in self?.theme[uicolor: "backgroundColor"] },
+        titleOf: self
+    )
+
+    /// Likewise decides the status bar's light/dark from the page beneath it; the navigation
+    /// controller reads the result via `statusBarContentColor`, and the immersive mode's
+    /// safe-area gradient (drawn in the same strip) follows it too.
+    private(set) lazy var statusBarContrastSampler = ContentContrastSampler(
+        renderView: postsView.renderView,
+        backdrop: { [weak self] in self?.theme[uicolor: "backgroundColor"] },
+        statusBarOf: self,
+        onColorChange: { [weak self] color in
+            self?.postsView.immersiveModeManager.safeAreaGradientView.contentColor = color
+        }
     )
 
     private lazy var composeItem: UIBarButtonItem = {
@@ -2352,6 +2365,7 @@ final class PostsPageViewController: ViewController {
             // against has just changed.
             navigationItem.updateTitleLabelTextColor(forScrollProgress: 0, theme: theme)
             titleContrastSampler.reset()
+            statusBarContrastSampler.reset()
             configureNavigationBarForLiquidGlass()
         } else {
             navigationItem.titleLabel.textColor = Theme.defaultTheme()[uicolor: "navigationBarTextColor"] ?? .label
@@ -2891,6 +2905,12 @@ extension PostsPageViewController {
 
 extension PostsPageViewController: NavigationBarScrollTransitioning {
     var navigationBarScrollView: UIScrollView? { postsView.renderView.scrollView }
+
+    var statusBarContentColor: UIColor? { statusBarContrastSampler.color }
+
+    var navigationBarContentColor: UIColor? { titleContrastSampler.color }
+
+    var usesNavigationBarContentBlur: Bool { true }
 }
 
 extension PostsPageViewController: NavigationBarScrollProgressProviding {

@@ -925,13 +925,17 @@ extension PostsPageView: ScrollViewDelegateExtras {
 
         navController.updateNavigationBarTintForScrollProgress(NSNumber(value: Float(progress)))
 
-        // Over the content the title takes the colour sampled from the page beneath it; the
-        // sampler answers asynchronously, so the theme's mode colour covers the first frame.
+        // Over the content the title and the status bar take the colour sampled from the page
+        // beneath them; the samplers answer asynchronously, so the theme's mode colour covers
+        // the first frame.
         let sampler = viewController.titleContrastSampler
+        let statusBarSampler = viewController.statusBarContrastSampler
         if LiquidGlass.isEnabled, progress > 0.99 {
             sampler.sampleIfNeeded()
+            statusBarSampler.sampleIfNeeded()
         } else {
             sampler.reset()
+            statusBarSampler.reset()
         }
         viewController.navigationItem.updateTitleLabelTextColor(
             forScrollProgress: progress,

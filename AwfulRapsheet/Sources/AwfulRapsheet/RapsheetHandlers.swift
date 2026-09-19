@@ -38,7 +38,7 @@ public protocol RapsheetRenderer: AnyObject {
 
     /// Mean relative luminance (0 dark … 1 light) of the rendered page within `rect` (in `view`'s
     /// coordinates), composited over `backdrop`, or nil if nothing could be captured. Drives the
-    /// title's colour over the iOS 26 glass bar (`NavigationBarTitleContrastSampler`).
+    /// title's and status bar's colour over the iOS 26 glass bar (`ContentContrastSampler`).
     func sampleLuminance(in rect: CGRect, over backdrop: UIColor?, completion: @escaping @MainActor (CGFloat?) -> Void)
 }
 

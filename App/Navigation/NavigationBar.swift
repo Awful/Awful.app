@@ -20,6 +20,44 @@ final class NavigationBar: UINavigationBar {
         set { bottomBorder.backgroundColor = newValue }
     }
 
+    // MARK: Content blur
+
+    /// The blur behind the transparent bar on screens that ask for one
+    /// (`NavigationBarScrollTransitioning.usesNavigationBarContentBlur`), spanning the status bar
+    /// too. Created on first use, kept at the back of the bar so it follows the bar's transform
+    /// and alpha (immersive mode) but sits under everything the bar draws.
+    private var contentBlur: NavigationBarContentBlurView?
+
+    /// 0 while the bar rests opaque, up to 1 once it's transparent over the content.
+    var contentBlurAlpha: CGFloat = 0 {
+        didSet {
+            guard contentBlurAlpha != oldValue else { return }
+            if contentBlur == nil {
+                guard contentBlurAlpha > 0 else { return }
+                let blur = NavigationBarContentBlurView()
+                blur.overrideUserInterfaceStyle = contentBlurUserInterfaceStyle
+                insertSubview(blur, at: 0)
+                contentBlur = blur
+                setNeedsLayout()
+            }
+            contentBlur?.alpha = contentBlurAlpha
+        }
+    }
+
+    /// The light/dark of the content beneath the bar, so the blur's slight wash matches it.
+    var contentBlurUserInterfaceStyle: UIUserInterfaceStyle = .unspecified {
+        didSet { contentBlur?.overrideUserInterfaceStyle = contentBlurUserInterfaceStyle }
+    }
+
+    private func layoutContentBlur() {
+        guard let contentBlur else { return }
+        let statusBarHeight = window?.safeAreaInsets.top ?? 0
+        contentBlur.frame = CGRect(x: 0, y: -statusBarHeight, width: bounds.width, height: bounds.height + statusBarHeight)
+        if subviews.first !== contentBlur {
+            sendSubviewToBack(contentBlur)
+        }
+    }
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         
@@ -56,6 +94,7 @@ final class NavigationBar: UINavigationBar {
 
     override func layoutSubviews() {
         super.layoutSubviews()
+        layoutContentBlur()
 
         guard let forced = forcedTintColor else { return }
 
@@ -121,5 +160,46 @@ final class NavigationBar: UINavigationBar {
             leftmost.bounds.contains(sender.location(in: leftmost))
             else { return }
         nav.popToRootViewController(animated: true)
+    }
+}
+
+/// A blur that fades out towards its bottom edge: what the transparent iOS 26 bar sits on over
+/// the web-content screens instead of the system's soft edge effect.
+///
+/// The system effect can't be toned: on iOS 27 it washes the content in the bar's light or dark
+/// regardless of what's beneath, so a light theme puts a white haze over a dark image while the
+/// sampled title and status bar have gone white. A blur's own wash is much milder, and the bar
+/// points this view's trait at the sampled content (`NavigationBar.contentBlurUserInterfaceStyle`)
+/// so what little there is always matches.
+final class NavigationBarContentBlurView: UIView {
+    private let effectView = UIVisualEffectView(effect: UIBlurEffect(style: .regular))
+    private let fade = CAGradientLayer()
+
+    /// How much of the blur shows at its strongest, at the top.
+    private static let peakStrength: CGFloat = 0.55
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        isUserInteractionEnabled = false
+        // Part strength through the status bar and the top of the bar (full strength there reads
+        // as a frosted band under the status bar), then off by the bar's bottom.
+        let peak = UIColor.black.withAlphaComponent(Self.peakStrength).cgColor
+        fade.colors = [peak, peak, UIColor.clear.cgColor]
+        fade.locations = [0, 0.4, 1]
+        fade.startPoint = CGPoint(x: 0.5, y: 0)
+        fade.endPoint = CGPoint(x: 0.5, y: 1)
+        effectView.layer.mask = fade
+        addSubview(effectView)
+    }
+
+    required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        effectView.frame = bounds
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
+        fade.frame = effectView.bounds
+        CATransaction.commit()
     }
 }

@@ -24,10 +24,50 @@ public protocol NavigationBarScrollTransitioning: AnyObject {
     /// by the navigation controller; implement this to bake custom-view buttons with
     /// `UIButton.setGlassGlyph(bakedColor:tint:)` (nil restores the template).
     func updateGlassBarButtonGlyphs(color: UIColor?)
+
+    /// `.black` or `.white` as sampled from the content beneath the status bar while the bar is
+    /// transparent (see `ContentContrastSampler`), or nil when unknown: nothing sampled yet, or
+    /// the screen doesn't sample. The navigation controller derives the status bar style from it.
+    var statusBarContentColor: UIColor? { get }
+
+    /// Likewise for the content beneath the navigation bar (what the title is coloured for); the
+    /// navigation controller points the content blur's trait at it. Call
+    /// `contentContrastDidChange()` when either colour changes.
+    var navigationBarContentColor: UIColor? { get }
+
+    /// True to put a blur that fades out under the transparent bar in place of the system's soft
+    /// edge effect, whose light/dark wash on iOS 27 follows the bar rather than the content. For
+    /// screens whose content varies beneath the bar (the web views); lists keep the system effect.
+    var usesNavigationBarContentBlur: Bool { get }
 }
 
 public extension NavigationBarScrollTransitioning {
     func updateGlassBarButtonGlyphs(color: UIColor?) {}
+
+    var statusBarContentColor: UIColor? { nil }
+
+    var navigationBarContentColor: UIColor? { nil }
+
+    var usesNavigationBarContentBlur: Bool { false }
+}
+
+/// A navigation controller that restyles the status bar and its content blur from its top
+/// screen's `statusBarContentColor` and `navigationBarContentColor`.
+public protocol NavigationBarContentContrastObserving: AnyObject {
+    func topScreenContentContrastDidChange()
+}
+
+public extension UIViewController {
+    /// Tells the navigation controller that `statusBarContentColor` or
+    /// `navigationBarContentColor` changed; a navigation controller that doesn't observe just
+    /// gets a status bar appearance update.
+    func contentContrastDidChange() {
+        if let observer = navigationController as? NavigationBarContentContrastObserving {
+            observer.topScreenContentContrastDidChange()
+        } else {
+            navigationController?.setNeedsStatusBarAppearanceUpdate()
+        }
+    }
 }
 
 /// The bar-coloured strip `applyNavigationBarPlatterBackdrop` places under the bar in a plain

@@ -42,7 +42,7 @@ public extension UINavigationItem {
     /// background (at the top) to transparent (once scrolled), matching the bar buttons.
     /// Thresholds rather than exact 0/1 avoid flicker from tiny offset adjustments.
     ///
-    /// `contentColor` is the colour `NavigationBarTitleContrastSampler` measured beneath the
+    /// `contentColor` is the colour `ContentContrastSampler` measured beneath the
     /// title (the system won't adapt a title the way it does its glass bar buttons — see that
     /// class); nil falls back to the theme's mode colour.
     func updateTitleLabelTextColor(forScrollProgress progress: CGFloat, theme: Theme, contentColor: UIColor? = nil) {

@@ -744,7 +744,11 @@ final class NavigationController: UINavigationController, Themeable {
 
         // Under the transparent bar, the automatic edge effect resolved to the soft fade on
         // iOS 26 but to the hard cutoff on iOS 27 (lists and web views alike); ask for the fade.
-        screen?.navigationBarScrollView?.topEdgeEffect.style = .soft
+        // Screens that bring their own content blur (see NavigationBar.contentBlurAlpha) hide it.
+        if let scrollView = screen?.navigationBarScrollView {
+            scrollView.topEdgeEffect.style = .soft
+            scrollView.topEdgeEffect.isHidden = usesContentBlur(screen)
+        }
 
         if LiquidGlass.isEnabled {
             screen?.navigationBarScrollView?.applyNavigationBarPlatterBackdrop(atTop: atTop, theme: theme)
@@ -793,9 +797,15 @@ final class NavigationController: UINavigationController, Themeable {
     }
 
     override var preferredStatusBarStyle: UIStatusBarStyle {
-        // Once the glass bar has gone transparent the system picks the style for the content.
+        // Once the glass bar has gone transparent the status bar sits over the content. `.default`
+        // would follow a trait rather than the pixels (white over a light theme's page when the
+        // system is in dark mode), so screens that sample the page beneath the status bar
+        // (`ContentContrastSampler`) decide, and the theme's mode covers the rest.
         if #available(iOS 26.0, *), LiquidGlass.usesGlassNavigationBar, isScrolledFromTop {
-            return .default
+            if let color = (topViewController as? NavigationBarScrollTransitioning)?.statusBarContentColor {
+                return color == .black ? .darkContent : .lightContent
+            }
+            return theme.userInterfaceStyle == .dark ? .lightContent : .darkContent
         }
 
         if isDarkContentBackground {
@@ -1485,6 +1495,9 @@ final class NavigationController: UINavigationController, Themeable {
 
         updateNavigationBarBackgroundWithProgress(snappedProgress)
 
+        awfulNavigationBar.contentBlurAlpha = usesContentBlur(topViewController as? NavigationBarScrollTransitioning) ? snappedProgress : 0
+        awfulNavigationBar.contentBlurUserInterfaceStyle = contentBlurUserInterfaceStyle
+
         // The screen beneath the top one owns the back button's item; its explicit tint is
         // what screens set for the resting state (see PostsPageViewController.
         // configureNavigationBarForLiquidGlass), so it follows the scroll here too.
@@ -1512,6 +1525,23 @@ final class NavigationController: UINavigationController, Themeable {
 
             isScrolledFromTop = true
             setNeedsStatusBarAppearanceUpdate()
+        }
+    }
+
+    /// Whether `screen` gets the bar's content blur in place of the system edge effect. Reduce
+    /// Liquid Glass never lets the bar go transparent, so nothing is needed under it.
+    private func usesContentBlur(_ screen: NavigationBarScrollTransitioning?) -> Bool {
+        LiquidGlass.isEnabled && screen?.usesNavigationBarContentBlur == true
+    }
+
+    /// The content blur's light/dark: what the top screen sampled beneath the bar (or, failing
+    /// that, beneath the status bar), else the theme's mode. White text means dark content.
+    private var contentBlurUserInterfaceStyle: UIUserInterfaceStyle {
+        let screen = topViewController as? NavigationBarScrollTransitioning
+        switch screen?.navigationBarContentColor ?? screen?.statusBarContentColor {
+        case .white?: return .dark
+        case .black?: return .light
+        default: return theme.userInterfaceStyle
         }
     }
 
@@ -1597,7 +1627,7 @@ final class NavigationController: UINavigationController, Themeable {
     private func configureTitleAndButtons(for appearance: UINavigationBarAppearance, progress: CGFloat) {
         // The system title follows the theme: bar text colour at the top, mode colour once the bar
         // is transparent. Screens that sample the page instead (posts, a message, the rap sheet)
-        // use their own title label; see `NavigationBarTitleContrastSampler`.
+        // use their own title label; see `ContentContrastSampler`.
         let textColor: UIColor
         if progress > ScrollProgress.fullyScrolled {
             textColor = theme.glassContentTextColor
@@ -1860,6 +1890,7 @@ extension NavigationController: UINavigationControllerDelegate {
 
         if #available(iOS 26.0, *), LiquidGlass.usesGlassNavigationBar {
             isScrolledFromTop = false
+            awfulNavigationBar.contentBlurAlpha = 0
             invalidateScrollProgressCache()
 
             if animated {
@@ -1950,4 +1981,16 @@ extension NavigationController: UINavigationControllerDelegate {
 /// or after a completed transition such as an unpop back onto a still-scrolled page).
 @MainActor protocol NavigationBarScrollProgressProviding: UIViewController {
     func resyncNavigationBarScrollProgress()
+}
+
+extension NavigationController: NavigationBarContentContrastObserving {
+    /// A sampler on the top screen decided: the status bar follows `statusBarContentColor`, and
+    /// the content blur's wash follows `navigationBarContentColor`.
+    func topScreenContentContrastDidChange() {
+        guard #available(iOS 26.0, *), LiquidGlass.usesGlassNavigationBar else { return }
+        UIView.animate(withDuration: ContentContrastSampler.flipDuration) {
+            self.setNeedsStatusBarAppearanceUpdate()
+        }
+        awfulNavigationBar.contentBlurUserInterfaceStyle = contentBlurUserInterfaceStyle
+    }
 }

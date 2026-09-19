@@ -41,11 +41,19 @@ final class MessageViewController: ViewController {
     }()
 
     /// Colours the title from the message beneath it while the iOS 26 glass bar is transparent
-    /// (see `NavigationBarTitleContrastSampler`).
-    private lazy var titleContrastSampler = NavigationBarTitleContrastSampler(
+    /// (see `ContentContrastSampler`).
+    private lazy var titleContrastSampler = ContentContrastSampler(
         renderView: renderView,
         titleLabel: { [weak self] in self?.navigationItem.titleView as? UILabel },
-        backdrop: { [weak self] in self?.theme[uicolor: "backgroundColor"] }
+        backdrop: { [weak self] in self?.theme[uicolor: "backgroundColor"] },
+        titleOf: self
+    )
+
+    /// Likewise decides the status bar's light/dark from the message beneath it.
+    private lazy var statusBarContrastSampler = ContentContrastSampler(
+        renderView: renderView,
+        backdrop: { [weak self] in self?.theme[uicolor: "backgroundColor"] },
+        statusBarOf: self
     )
 
     private lazy var replyButtonItem: UIBarButtonItem = {
@@ -320,8 +328,9 @@ final class MessageViewController: ViewController {
         loadingView?.tintColor = theme["backgroundColor"]
 
         if #available(iOS 26.0, *), LiquidGlass.usesGlassNavigationBar {
-            // The sampled colour was measured against the old theme's page background.
+            // The sampled colours were measured against the old theme's page background.
             titleContrastSampler.reset()
+            statusBarContrastSampler.reset()
             navigationItem.updateTitleLabelTextColor(
                 forScrollProgress: renderView.scrollView.navigationBarScrollProgress,
                 theme: theme
@@ -498,8 +507,10 @@ extension MessageViewController: UIScrollViewDelegate {
 
             if LiquidGlass.isEnabled, progress > 0.99 {
                 titleContrastSampler.sampleIfNeeded()
+                statusBarContrastSampler.sampleIfNeeded()
             } else {
                 titleContrastSampler.reset()
+                statusBarContrastSampler.reset()
             }
             navigationItem.updateTitleLabelTextColor(
                 forScrollProgress: progress,
@@ -512,6 +523,12 @@ extension MessageViewController: UIScrollViewDelegate {
 
 extension MessageViewController: NavigationBarScrollTransitioning {
     var navigationBarScrollView: UIScrollView? { renderView.scrollView }
+
+    var statusBarContentColor: UIColor? { statusBarContrastSampler.color }
+
+    var navigationBarContentColor: UIColor? { titleContrastSampler.color }
+
+    var usesNavigationBarContentBlur: Bool { true }
 }
 
 extension MessageViewController: NavigationBarScrollProgressProviding {

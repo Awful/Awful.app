@@ -985,17 +985,43 @@ private func escapeForEval(_ s: String) throws -> String {
     return String(data: try JSONEncoder().encode([s]), encoding: .utf8)! + "[0]"
 }
 
-extension NavigationBarTitleContrastSampler {
-    /// Samples through `RenderView.sampleLuminance`.
-    convenience init(renderView: RenderView, titleLabel: @escaping () -> UILabel?, backdrop: @escaping () -> UIColor?) {
+extension ContentContrastSampler {
+    /// Samples the title's region through `RenderView.sampleLuminance`.
+    convenience init(
+        renderView: RenderView,
+        titleLabel: @escaping () -> UILabel?,
+        backdrop: @escaping () -> UIColor?,
+        titleOf viewController: UIViewController
+    ) {
         self.init(
             sourceView: renderView,
-            sample: { [weak renderView] rect, backdrop, completion in
-                guard let renderView else { return completion(nil) }
-                renderView.sampleLuminance(in: rect, over: backdrop, completion: completion)
-            },
+            sample: Self.sample(through: renderView),
             titleLabel: titleLabel,
-            backdrop: backdrop
+            backdrop: backdrop,
+            titleOf: viewController
         )
+    }
+
+    /// Samples the status bar's region through `RenderView.sampleLuminance`.
+    convenience init(
+        renderView: RenderView,
+        backdrop: @escaping () -> UIColor?,
+        statusBarOf viewController: UIViewController,
+        onColorChange: ((UIColor?) -> Void)? = nil
+    ) {
+        self.init(
+            sourceView: renderView,
+            sample: Self.sample(through: renderView),
+            backdrop: backdrop,
+            statusBarOf: viewController,
+            onColorChange: onColorChange
+        )
+    }
+
+    private static func sample(through renderView: RenderView) -> Sample {
+        { [weak renderView] rect, backdrop, completion in
+            guard let renderView else { return completion(nil) }
+            renderView.sampleLuminance(in: rect, over: backdrop, completion: completion)
+        }
     }
 }
