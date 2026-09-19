@@ -5,6 +5,7 @@
 import AwfulExtensions
 import AwfulSettings
 import AwfulTheming
+import CoreData
 import NukeUI
 import SwiftUI
 

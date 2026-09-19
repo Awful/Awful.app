@@ -4,6 +4,7 @@
 
 import AwfulCore
 import AwfulSettings
+import AwfulTheming
 import MRProgress
 import os
 import SwiftUI
@@ -60,7 +61,7 @@ extension UIContextMenuConfiguration {
                     let profile = UIHostingController(rootView: BookmarkColorPicker(
                         setBookmarkColor: ForumsClient.shared.setBookmarkColor(_:as:),
                         thread: thread
-                    ))
+                    ).themed())
                     profile.modalPresentationStyle = .pageSheet
                     if let sheet = profile.sheetPresentationController {
                         sheet.detents = [.medium()]

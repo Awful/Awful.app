@@ -630,6 +630,9 @@
         }
       }
     },
+    "Hide Sidebar" : {
+      "comment" : "Sidebar toggle accessibility label"
+    },
     "image-upload.generic-error-title" : {
       "comment" : "Title of a generic error uploading an image.",
       "extractionState" : "migrated",
