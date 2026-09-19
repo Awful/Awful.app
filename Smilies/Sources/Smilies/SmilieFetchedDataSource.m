@@ -6,8 +6,8 @@
 #import <tgmath.h>
 @import CoreData;
 @import FLAnimatedImage;
-@import MobileCoreServices;
 @import UIKit;
+@import UniformTypeIdentifiers;
 #import "Smilie.h"
 #import "SmilieCell.h"
 #import "SmilieDataStore.h"
@@ -197,7 +197,8 @@
     }
     
     id image;
-    if (UTTypeConformsTo((__bridge CFStringRef)smilie.imageUTI, kUTTypeGIF)) {
+    UTType *imageType = smilie.imageUTI ? [UTType typeWithIdentifier:smilie.imageUTI] : nil;
+    if ([imageType conformsToType:UTTypeGIF]) {
         image = [[FLAnimatedImage alloc] initWithAnimatedGIFData:smilie.imageData];
     } else {
         image = [UIImage imageWithData:smilie.imageData];
