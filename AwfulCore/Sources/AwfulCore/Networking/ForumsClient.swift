@@ -320,13 +320,13 @@ public final class ForumsClient {
             // We couldn't figure out a more helpful error, so throw the decoding error.
             throw error
         }
-        let backgroundUser = try await backgroundContext.perform {
+        let userID = try await backgroundContext.perform {
             let managed = try result.upsert(into: backgroundContext)
             try backgroundContext.save()
-            return managed.currentUser
+            return managed.currentUser.objectID
         }
         return try await mainContext.perform {
-            guard let user = mainContext.object(with: backgroundUser.objectID) as? User else {
+            guard let user = mainContext.object(with: userID) as? User else {
                 throw Error.failedTransferToMainContext
             }
             return user
@@ -473,8 +473,8 @@ public final class ForumsClient {
               let mainContext = managedObjectContext
         else { throw Error.missingManagedObjectContext }
 
-        let forumID = await forum.managedObjectContext!.perform {
-            forum.forumID
+        let (forumID, forumObjectID) = await forum.managedObjectContext!.perform {
+            (forum.forumID, forum.objectID)
         }
         var parameters: Dictionary<String, Any> = [
             "forumid": forumID,
@@ -492,11 +492,11 @@ public final class ForumsClient {
         if let archivesForm = result.archivesForm {
             await updateArchivesTimeframe(archivesForm.selectedTimeframe)
         }
-        let backgroundThreads = try await backgroundContext.perform {
+        let threadIDs = try await backgroundContext.perform {
             let threads = try result.upsert(into: backgroundContext)
             _ = try result.upsertAnnouncements(into: backgroundContext)
 
-            let forum = backgroundContext.object(with: forum.objectID) as! Forum
+            let forum = backgroundContext.object(with: forumObjectID) as! Forum
             forum.canPost = result.canPostNewThread
 
             if
@@ -508,10 +508,10 @@ public final class ForumsClient {
             }
 
             try backgroundContext.save()
-            return threads
+            return threads.map(\.objectID)
         }
         return await mainContext.perform {
-            backgroundThreads.compactMap { mainContext.object(with: $0.objectID) as? AwfulThread }
+            threadIDs.compactMap { mainContext.object(with: $0) as? AwfulThread }
         }
     }
 
@@ -529,7 +529,7 @@ public final class ForumsClient {
         ])
         let (document, url) = try parseHTML(data: data, response: response)
         let result = try ThreadListScrapeResult(document, url: url)
-        let backgroundThreads = try await backgroundContext.perform {
+        let threadIDs = try await backgroundContext.perform {
             let threads = try result.upsert(into: backgroundContext)
             _ = try result.upsertAnnouncements(into: backgroundContext)
 
@@ -543,10 +543,10 @@ public final class ForumsClient {
             }.forEach { $0.bookmarkListPage = 0 }
 
             try backgroundContext.save()
-            return threads
+            return threads.map(\.objectID)
         }
         return await mainContext.perform {
-            backgroundThreads.compactMap { mainContext.object(with: $0.objectID) as? AwfulThread }
+            threadIDs.compactMap { mainContext.object(with: $0) as? AwfulThread }
         }
     }
 
@@ -706,16 +706,16 @@ public final class ForumsClient {
         ])
         let (document, url) = try parseHTML(data: data, response: response)
         let result = try PostIconListScrapeResult(document, url: url)
-        let backgroundTags = try await backgroundContext.perform {
+        let tagIDs = try await backgroundContext.perform {
             let managed = try result.upsert(into: backgroundContext)
             try backgroundContext.save()
-            return (primary: managed.primary, secondary: managed.secondary)
+            return (primary: managed.primary.map(\.objectID), secondary: managed.secondary.map(\.objectID))
         }
 
         return await mainContext.perform {
             (
-                primary: backgroundTags.primary.compactMap { mainContext.object(with: $0.objectID) as? ThreadTag },
-                secondary: backgroundTags.secondary.compactMap { mainContext.object(with: $0.objectID) as? ThreadTag }
+                primary: tagIDs.primary.compactMap { mainContext.object(with: $0) as? ThreadTag },
+                secondary: tagIDs.secondary.compactMap { mainContext.object(with: $0) as? ThreadTag }
             )
         }
     }
@@ -750,15 +750,18 @@ public final class ForumsClient {
         try form.clearText(for: "message")
         try form.enter(text: bbcode, for: "message")
 
+        // `objectID` is safe to read from any thread, and the tags may belong to any context.
+        let threadTagObjectID = someThreadTag?.objectID
+        let secondaryTagObjectID = someSecondaryTag?.objectID
         let (tagImageName, secondaryTagImageName) = try await backgroundContext.perform {
             _ = try formData.postIcons.upsert(into: backgroundContext)
             try backgroundContext.save()
 
-            let tagImageName = someThreadTag
-                .flatMap { backgroundContext.object(with: $0.objectID) as? ThreadTag }
+            let tagImageName = threadTagObjectID
+                .flatMap { backgroundContext.object(with: $0) as? ThreadTag }
                 .flatMap(\.imageName)
-            let secondaryTagImageName = someSecondaryTag
-                .flatMap { backgroundContext.object(with: $0.objectID) as? ThreadTag }
+            let secondaryTagImageName = secondaryTagObjectID
+                .flatMap { backgroundContext.object(with: $0) as? ThreadTag }
                 .flatMap(\.imageName)
             return (tagImageName: tagImageName, secondaryTagImageName: secondaryTagImageName)
         }
