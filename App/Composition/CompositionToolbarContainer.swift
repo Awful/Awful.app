@@ -2,6 +2,7 @@
 //
 //  Copyright 2025 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import GameController
 import UIKit
 
 /// Container that stacks the modern BBcode toolbar above the existing BBcode bar
@@ -54,7 +55,7 @@ final class CompositionToolbarContainer: UIInputView {
 
     private let modernToolbar: ModernBBcodeToolbar
     private let existingToolbar: CompositionInputAccessoryView
-    private var keyboardFrameObserver: NSObjectProtocol?
+    private var observers: [NSObjectProtocol] = []
 
     // MARK: - Initialization
 
@@ -73,10 +74,21 @@ final class CompositionToolbarContainer: UIInputView {
 
         setupViews(modernHeight: modernHeight)
 
-        keyboardFrameObserver = NotificationCenter.default.addObserver(
+        let center = NotificationCenter.default
+        observers.append(center.addObserver(
+            forName: UIResponder.keyboardWillChangeFrameNotification, object: nil, queue: .main
+        ) { [weak self] note in
+            self?.keyboardWillChangeFrame(note)
+        })
+        observers.append(center.addObserver(
             forName: UIResponder.keyboardDidChangeFrameNotification, object: nil, queue: .main
         ) { [weak self] note in
             self?.keyboardDidChangeFrame(note)
+        })
+        for name in [Notification.Name.GCKeyboardDidConnect, .GCKeyboardDidDisconnect] {
+            observers.append(center.addObserver(forName: name, object: nil, queue: .main) { [weak self] _ in
+                self?.isHardwareKeyboardConnected = Self.hardwareKeyboardIsConnected
+            })
         }
     }
 
@@ -85,9 +97,7 @@ final class CompositionToolbarContainer: UIInputView {
     }
 
     deinit {
-        if let keyboardFrameObserver {
-            NotificationCenter.default.removeObserver(keyboardFrameObserver)
-        }
+        observers.forEach(NotificationCenter.default.removeObserver)
     }
 
     // MARK: - Setup
@@ -99,8 +109,18 @@ final class CompositionToolbarContainer: UIInputView {
             self?.onToolbarAction?(action)
         }
         modernToolbar.onToggleKeyboard = { [weak self] in
-            guard let self, let textView = self.textView, !self.isKeyboardMinimizedBySystem else { return }
-            textView.setKeyboardMinimized(!textView.isKeyboardMinimized)
+            guard let self, let textView = self.textView, self.canToggleKeyboard else { return }
+            if textView.isKeyboardMinimized {
+                textView.setKeyboardMinimized(false)
+            } else if self.isKeyboardMinimizedBySystem {
+                // The iPad keyboard's dismiss key collapses the keyboard without resigning the
+                // text view, so a tap in the text does nothing; a fresh first-responder cycle is
+                // what brings the keyboard back. With a real hardware keyboard it comes back
+                // collapsed and the frame notification keeps the glyph on "restore".
+                self.cycleFirstResponder()
+            } else {
+                textView.setKeyboardMinimized(true)
+            }
             self.syncKeyboardToggle()
         }
         addSubview(modernToolbar)
@@ -137,35 +157,163 @@ final class CompositionToolbarContainer: UIInputView {
         }
     }
 
-    /// With a hardware keyboard connected, iOS collapses the software keyboard to just this
-    /// accessory view on its own, and nothing public brings it back (the user has the keyboard's
-    /// Eject key for that). Spot that from the keyboard frame so the toggle can show the state
-    /// without pretending to change it.
+    /// With a hardware keyboard connected, the software keyboard is the keyboard's business: its
+    /// Eject key raises and lowers it, and iOS lowers it again whenever input views reload, so
+    /// the toggle sits out rather than promise a restore it can't deliver.
+    private var isHardwareKeyboardConnected = hardwareKeyboardIsConnected {
+        didSet {
+            if isHardwareKeyboardConnected != oldValue { syncKeyboardToggle() }
+        }
+    }
+
+    private static var hardwareKeyboardIsConnected: Bool {
+        #if targetEnvironment(simulator)
+        // The simulator's keyboard capture shows up as a GCKeyboard while iOS still runs the
+        // software keyboard normally, which would leave the toggle dimmed for no reason. The
+        // keyboard-frame check above still catches the simulated hardware keyboard.
+        return false
+        #else
+        return GCKeyboard.coalesced != nil
+        #endif
+    }
+
+    /// iOS collapses the software keyboard to just this accessory view on its own when a
+    /// hardware keyboard is connected, and when the iPad keyboard's dismiss key is pressed. Spot
+    /// that from the keyboard frame so the toggle shows the restore glyph and, when tapped, tries
+    /// a first-responder cycle rather than installing a second, redundant minimize.
     ///
     /// iOS describes that state two ways: a keyboard no taller than this accessory view, or (on
     /// first presentation) a zero-height frame parked at the bottom of the screen. Either way this
     /// accessory view is on screen, which is what tells it apart from a keyboard that's gone.
     private func keyboardDidChangeFrame(_ note: Notification) {
-        guard
-            let textView,
-            window != nil,
-            let endFrame = (note.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue
-            else { return }
-        if let isLocal = note.userInfo?[UIResponder.keyboardIsLocalUserInfoKey] as? Bool, !isLocal { return }
+        guard let textView, let endFrame = keyboardEndFrame(from: note) else { return }
 
         let safeAreaBottom = textView.window?.safeAreaInsets.bottom ?? 0
         let accessoryOnlyHeight = bounds.height + safeAreaBottom
         let minimizedByFrame = endFrame.height <= accessoryOnlyHeight + 1
         isKeyboardMinimizedBySystem = minimizedByFrame && !textView.isKeyboardMinimized
+
+        noteKeyboardEndFrame(endFrame)
+        isKeyboardAnimating = false
+        // This arrives once the keyboard has finished moving, so the host's layout is current on
+        // the next tick; the layout-pass check below is the slower safety net.
+        scheduleHealCheck(after: 0)
+    }
+
+    /// Records where the keyboard is heading before it starts moving. Layout passes during the
+    /// animation would otherwise compare this view's final frame against the previous
+    /// keyboard frame and, on a restore from minimized, mistake the rising keyboard for a
+    /// stranded accessory.
+    private func keyboardWillChangeFrame(_ note: Notification) {
+        guard let endFrame = keyboardEndFrame(from: note) else { return }
+        noteKeyboardEndFrame(endFrame)
+        isKeyboardAnimating = true
+        pendingHealCheck?.cancel()
+    }
+
+    private func keyboardEndFrame(from note: Notification) -> CGRect? {
+        guard
+            window != nil,
+            let endFrame = (note.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue
+            else { return nil }
+        if let isLocal = note.userInfo?[UIResponder.keyboardIsLocalUserInfoKey] as? Bool, !isLocal { return nil }
+        return endFrame
+    }
+
+    private func noteKeyboardEndFrame(_ endFrame: CGRect) {
+        lastKeyboardEndFrame = endFrame
+        if endFrame.height > bounds.height + 1 {
+            healsSinceLastFullKeyboard = 0
+        }
+    }
+
+    // MARK: - Stranded accessory
+
+    /// The keyboard end frame from the latest notification, in window coordinates.
+    private var lastKeyboardEndFrame: CGRect?
+    /// Set between the will- and did-change-frame notifications.
+    private var isKeyboardAnimating = false
+    private var pendingHealCheck: DispatchWorkItem?
+    private var isHealing = false
+    /// A collapse gets one heal at most; the count resets whenever a full keyboard shows.
+    private var healsSinceLastFullKeyboard = 0
+
+    /// How far above its reported position this view is sitting, or `nil` when the check doesn't
+    /// apply (keyboard not collapsed, not on screen, text view not first responder).
+    ///
+    /// On iPad, when the keyboard host last laid out the input views with the software keyboard
+    /// up and then collapses to accessory-only (hardware keyboard attached, or the keyboard's own
+    /// dismiss key), it keeps the shortcuts bar's slot reserved beneath this view. The keyboard
+    /// notification still reports the collapsed keyboard flush with the screen bottom, so the
+    /// only tell is this view's real window frame disagreeing with it.
+    private var strandedOffset: CGFloat? {
+        guard
+            let window,
+            let textView, textView.isFirstResponder,
+            let keyboardFrame = lastKeyboardEndFrame,
+            keyboardFrame.minY < window.bounds.maxY - 1,
+            keyboardFrame.height <= bounds.height + 1
+            else { return nil }
+        let actual = convert(bounds, to: nil)
+        return keyboardFrame.maxY - actual.maxY
+    }
+
+    private static let strandedThreshold: CGFloat = 24
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        // The did-change-frame notification runs its own check once the keyboard settles.
+        if !isKeyboardAnimating {
+            scheduleHealCheck(after: 0.15)
+        }
+    }
+
+    /// Keyboard animations pass through transient frames, so the check waits for the layout to
+    /// settle and re-reads the frame before acting.
+    private func scheduleHealCheck(after delay: TimeInterval) {
+        pendingHealCheck?.cancel()
+        let check = DispatchWorkItem { [weak self] in
+            guard let self, let offset = self.strandedOffset, offset > Self.strandedThreshold else { return }
+            self.healStrandedAccessory()
+        }
+        pendingHealCheck = check
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay, execute: check)
+    }
+
+    /// Re-docks a stranded accessory. Nothing public moves it in place (`reloadInputViews()`
+    /// included); presenting the keyboard afresh is what rebuilds the host without the reserved
+    /// slot. The keyboard stays hidden, as it should with a hardware keyboard attached.
+    private func healStrandedAccessory() {
+        guard !isHealing, healsSinceLastFullKeyboard == 0 else { return }
+        healsSinceLastFullKeyboard += 1
+        cycleFirstResponder()
+    }
+
+    /// Resigns and re-becomes first responder without losing the selection.
+    private func cycleFirstResponder() {
+        guard let textView, !isHealing else { return }
+        isHealing = true
+        let selection = textView.selectedTextRange
+        UIView.performWithoutAnimation {
+            textView.resignFirstResponder()
+            textView.becomeFirstResponder()
+            textView.selectedTextRange = selection
+        }
+        isHealing = false
+        syncKeyboardToggle()
     }
 
     /// Matches the toggle's glyph to the text view's actual state. The keyboard can change under
     /// us (the legacy smilie keyboard replaces the input view; the composer resets it when it
     /// disappears), and every such change reinstalls this accessory view.
+    private var canToggleKeyboard: Bool {
+        !isHardwareKeyboardConnected
+    }
+
     private func syncKeyboardToggle() {
         let minimizedByUs = textView?.isKeyboardMinimized ?? false
         modernToolbar.isKeyboardMinimized = minimizedByUs || isKeyboardMinimizedBySystem
-        modernToolbar.isKeyboardToggleEnabled = !isKeyboardMinimizedBySystem
+        modernToolbar.isKeyboardToggleEnabled = canToggleKeyboard
     }
 
     override func didMoveToWindow() {

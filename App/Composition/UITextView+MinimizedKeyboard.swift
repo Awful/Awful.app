@@ -7,10 +7,26 @@ import UIKit
 /// An input view with no height. Installing it collapses the keyboard down to just the input
 /// accessory toolbars, the way a connected hardware keyboard does, while the text view stays
 /// first responder so the caret, the toolbars, and hardware keys keep working.
+///
+/// On iPad the keyboard host also shows the input assistant bar (undo/redo, predictions, mic)
+/// and reserves keyboard space for it, which leaves the toolbars floating above a gap. The bar
+/// only goes away when it has nothing to show, so this view empties it for as long as it is
+/// installed and carries what it replaced so `restore(to:)` can put it back.
 final class MinimizedKeyboardInputView: UIView {
-    init() {
+    private let leadingBarButtonGroups: [UIBarButtonItemGroup]
+    private let trailingBarButtonGroups: [UIBarButtonItemGroup]
+    private let autocorrectionType: UITextAutocorrectionType
+
+    init(collapsing textView: UITextView) {
+        leadingBarButtonGroups = textView.inputAssistantItem.leadingBarButtonGroups
+        trailingBarButtonGroups = textView.inputAssistantItem.trailingBarButtonGroups
+        autocorrectionType = textView.autocorrectionType
         super.init(frame: .zero)
         autoresizingMask = [.flexibleWidth]
+
+        textView.inputAssistantItem.leadingBarButtonGroups = []
+        textView.inputAssistantItem.trailingBarButtonGroups = []
+        textView.autocorrectionType = .no
     }
 
     required init?(coder: NSCoder) {
@@ -19,6 +35,13 @@ final class MinimizedKeyboardInputView: UIView {
 
     override var intrinsicContentSize: CGSize {
         CGSize(width: UIView.noIntrinsicMetric, height: 0)
+    }
+
+    /// Puts back the input assistant bar contents and autocorrection this view took away.
+    func restore(to textView: UITextView) {
+        textView.inputAssistantItem.leadingBarButtonGroups = leadingBarButtonGroups
+        textView.inputAssistantItem.trailingBarButtonGroups = trailingBarButtonGroups
+        textView.autocorrectionType = autocorrectionType
     }
 }
 
@@ -35,9 +58,10 @@ extension UITextView {
     func setKeyboardMinimized(_ minimized: Bool) {
         if minimized {
             guard !isKeyboardMinimized else { return }
-            inputView = MinimizedKeyboardInputView()
+            inputView = MinimizedKeyboardInputView(collapsing: self)
         } else {
-            guard isKeyboardMinimized else { return }
+            guard let minimizedView = inputView as? MinimizedKeyboardInputView else { return }
+            minimizedView.restore(to: self)
             inputView = nil
         }
         reloadInputViews()
@@ -47,8 +71,8 @@ extension UITextView {
     /// about to go away anyway. The next time the text view becomes first responder, the
     /// keyboard comes up in full.
     func resetMinimizedKeyboard() {
-        if isKeyboardMinimized {
-            inputView = nil
-        }
+        guard let minimizedView = inputView as? MinimizedKeyboardInputView else { return }
+        minimizedView.restore(to: self)
+        inputView = nil
     }
 }

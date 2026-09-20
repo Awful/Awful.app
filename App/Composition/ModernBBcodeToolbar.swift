@@ -144,9 +144,13 @@ final class ModernBBcodeToolbar: UIView {
     }
 
     /// Whether a keyboard toggle button sits at the trailing end of the toolbar. The iPad keyboard
-    /// has its own dismiss key (and Catalyst has no soft keyboard), so it's only on iPhone, where
-    /// there is otherwise no way to get the keyboard out of the way short of dismissing the sheet.
-    private let showsKeyboardToggleButton = UIDevice.current.userInterfaceIdiom == .phone
+    /// has its own dismiss key, but that resigns the text view and takes the toolbars with it;
+    /// this toggle keeps them docked. Catalyst has no soft keyboard to minimize.
+    #if targetEnvironment(macCatalyst)
+    private let showsKeyboardToggleButton = false
+    #else
+    private let showsKeyboardToggleButton = true
+    #endif
 
     private lazy var keyboardToggleButton: UIButton = {
         let button = createToolbarButton(symbolName: Self.minimizeKeyboardSymbolName)
