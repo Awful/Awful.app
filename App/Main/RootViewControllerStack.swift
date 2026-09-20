@@ -79,8 +79,10 @@ final class RootViewControllerStack: NSObject, AwfulSplitViewControllerDelegate 
             // nothing reaches it (`displayModeButtonItem.hidesSharedBackground` has no effect). So
             // the sidebar nav controllers draw their own toggle, fed the display mode below, and
             // the system's is switched off the only way a classic-style split view allows
-            // (`displayModeButtonVisibility` raises here). The edge swipe this also drops was
-            // already covered by AwfulSplitViewController's own reveal pan.
+            // (`displayModeButtonVisibility` raises here). That also drops UIKit's toggle from
+            // the detail column, so the detail nav controller draws its own there too (see
+            // NavigationController.refreshDetailLeadingItems); and the edge swipe it drops
+            // is covered by AwfulSplitViewController's own reveal pan.
             splitViewController.presentsWithGesture = false
         }
 
@@ -157,7 +159,7 @@ final class RootViewControllerStack: NSObject, AwfulSplitViewControllerDelegate 
             tabBarController.selectedIndex = 0
         }
     }
-	
+    
     private func configureSplitViewControllerDisplayMode() {
         let svc = splitViewController
         guard svc.isViewLoaded else {
@@ -191,6 +193,25 @@ final class RootViewControllerStack: NSObject, AwfulSplitViewControllerDelegate 
         (tabBarController.viewControllers ?? []).compactMap { $0 as? NavigationController }
     }
 
+    /// Hands the split view's display mode to every nav controller that draws a sidebar toggle
+    /// of its own: the sidebar columns (a "hide" toggle while the sidebar is visible) and the
+    /// detail column (a "show" toggle on each of its screens while it isn't pinned). The live
+    /// `displayMode` lags a change until its animation ends, so callers pass the mode being
+    /// moved to where they know it.
+    private func propagateSidebarDisplayMode(_ displayMode: UISplitViewController.DisplayMode) {
+        for nav in sidebarNavigationControllers {
+            nav.sidebarDisplayMode = displayMode
+        }
+        (detailNavigationController as? NavigationController)?.sidebarDisplayMode = displayMode
+    }
+
+    /// Re-syncs the columns' toggles with the split view's current mode where no delegate
+    /// callback is coming: after appearing, foregrounding, or rotating.
+    private func refreshSidebarToggles() {
+        propagateSidebarDisplayMode(splitViewController.displayMode)
+        (detailNavigationController as? NavigationController)?.refreshDetailLeadingItems()
+    }
+
     func didAppear() {
         // Believe me, it occurs to me that this is highly suspicious and probably indicates misuse of the split view controller. I would happily welcome corrected impressions and/or simplification suggestions. This is ugly.
 
@@ -204,19 +225,7 @@ final class RootViewControllerStack: NSObject, AwfulSplitViewControllerDelegate 
                 splitViewController.preferredDisplayMode = .secondaryOnly
             }
         }
-        for nav in sidebarNavigationControllers {
-            nav.sidebarDisplayMode = splitViewController.displayMode
-        }
-
-        let updateLeftButtonItem = { [weak self] in
-            guard let self = self else { return }
-            if let detail = self.detailNavigationController?.viewControllers.first {
-                if self.splitViewController.displayMode != .oneBesideSecondary {
-                    detail.navigationItem.leftBarButtonItem = self.backBarButtonItem
-                }
-            }
-        }
-        updateLeftButtonItem()
+        refreshSidebarToggles()
 
         // Fix missing "show sidebar" button after backgrounding.
         // (When we enter the background, we can get sized to portrait and then landscape orientations for iOS to take snapshots. In the resulting calls to `viewWillTransitionToSize()`, we hide/show the "show sidebar" button. But when we come back to the foreground, we don't get a size transition, so the button's visibility is left in whichever state was the last snapshot we were sized for.)
@@ -224,8 +233,8 @@ final class RootViewControllerStack: NSObject, AwfulSplitViewControllerDelegate 
             NotificationCenter.default.addObserver(
                 forName: UIApplication.willEnterForegroundNotification,
                 object: UIApplication.shared,
-                queue: .main, using: { notification in
-                    updateLeftButtonItem()
+                queue: .main, using: { [weak self] _ in
+                    self?.refreshSidebarToggles()
             })
         ]
     }
@@ -325,9 +334,8 @@ extension RootViewControllerStack {
         kindaFixReallyAnnoyingSplitViewHideSidebarInLandscapeBehavior()
         
         let secondaryNavigationController = secondaryViewController as! UINavigationController
-        if let detail = secondaryNavigationController.viewControllers.first as UIViewController? {
-            detail.navigationItem.leftBarButtonItem = nil
-        }
+        // The detail's screens are about to join the primary stack, where there's no sidebar to toggle.
+        (secondaryNavigationController as? NavigationController)?.removeDetailLeadingItems()
         
         // We have no need for the empty view controller when collapsed.
         if secondaryViewController.firstDescendant(ofType: EmptyViewController.self) != nil {
@@ -373,10 +381,9 @@ extension RootViewControllerStack {
             }
         }
         
-        if let detail = secondaryNavigationController.viewControllers.first {
-            detail.navigationItem.leftBarButtonItem = backBarButtonItem
-        }
-        
+        // The new column's screens pick up their sidebar toggle from this mode as they first show.
+        (secondaryNavigationController as? NavigationController)?.sidebarDisplayMode = splitViewController.displayMode
+
         // TODO bring along the swipe-from-right-edge-to-unpop stack too
         return secondaryNavigationController
     }
@@ -392,9 +399,7 @@ extension RootViewControllerStack {
         _ svc: UISplitViewController,
         willChangeTo displayMode: UISplitViewController.DisplayMode
     ) {
-        for nav in sidebarNavigationControllers {
-            nav.sidebarDisplayMode = displayMode
-        }
+        propagateSidebarDisplayMode(displayMode)
         guard !svc.isCollapsed else { return }
         switch displayMode {
         case .secondaryOnly:
@@ -414,18 +419,13 @@ extension RootViewControllerStack {
 
         // When UIKit hides the sidebar itself (tap on the dimmed detail view, or the
         // system sidebar button), preferredDisplayMode can be left stuck at a visible
-        // mode. Restore it so a later show/rotation actually transitions. Also refresh
-        // the detail nav's sidebar-toggle button, which should exist exactly when the
-        // sidebar isn't pinned. Async so we don't mutate preferredDisplayMode
-        // reentrantly mid-transition.
+        // mode. Restore it so a later show/rotation actually transitions. Async so we
+        // don't mutate preferredDisplayMode reentrantly mid-transition.
         guard displayMode == .secondaryOnly else { return }
         DispatchQueue.main.async {
             guard svc.displayMode == .secondaryOnly else { return }
             if svc.preferredDisplayMode != .secondaryOnly {
                 svc.preferredDisplayMode = .secondaryOnly
-            }
-            if let root = self.detailNavigationController?.viewControllers.first {
-                root.navigationItem.leftBarButtonItem = self.backBarButtonItem
             }
         }
     }
@@ -438,10 +438,6 @@ extension RootViewControllerStack {
         if splitViewController.isCollapsed {
             primaryNavigationController.pushViewController(viewController, animated: true)
         } else {
-            if splitViewController.displayMode != .oneBesideSecondary {
-                viewController.navigationItem.leftBarButtonItem = backBarButtonItem
-            }
-            
             detailNavigationController!.setViewControllers([viewController], animated: false)
             
             // Laying out the split view now prevents it from getting caught up in the animation block that hides the primary view controller. Otherwise we get to see an ugly animated resizing of the new secondary view from a 0-rect up to full screen.
@@ -466,39 +462,14 @@ extension RootViewControllerStack {
             // overlay summoned in portrait becomes a pinned sidebar in landscape instead
             // of leaving preferredDisplayMode stuck at .oneOverSecondary.
             self.configureSplitViewControllerDisplayMode()
+            // (We used to misuse the delegate method `targetDisplayModeForAction(in:)` for this, but that sometimes resulted in an endless recursive call starting on iOS 13.)
+            self.refreshSidebarToggles()
             for nav in self.sidebarNavigationControllers {
-                nav.sidebarDisplayMode = self.splitViewController.displayMode
                 nav.refreshSidebarChrome()
-            }
-
-            // Make sure the "show sidebar" button item is in place after an interface rotation.
-            // (We used to misuse the delegate method `targetDisplayModeForAction(in:)` to do this, but that sometimes resulted in an endless recursive call starting on iOS 13.)
-            if
-                let detailNav = self.detailNavigationController,
-                let root = detailNav.viewControllers.first
-            {
-                let displayMode = self.splitViewController.displayMode
-                root.navigationItem.leftBarButtonItem = displayMode == .oneBesideSecondary ? nil : self.backBarButtonItem
             }
         })
     }
     
-    private var backBarButtonItem: UIBarButtonItem? {
-        guard !splitViewController.isCollapsed else {
-            return nil
-        }
-
-        // Don't set explicit tintColor — let Liquid Glass adapt the color
-        // dynamically based on the content behind the detail nav bar.
-        return UIBarButtonItem(image: UIImage(named: "back"), primaryAction: UIAction { [weak splitViewController] _ in
-            guard let svc = splitViewController else { return }
-            if svc.displayMode == .oneOverSecondary {
-                svc.hidePrimaryViewController()
-            } else {
-                svc.showPrimaryViewController()
-            }
-        })
-    }
 }
 
 protocol HasSplitViewPreference {

@@ -224,6 +224,12 @@
     "Strips tracking parameters (like utm_ and fbclid) from links pasted into the composer. A Use Original button appears after each cleaned paste." : {
 
     },
+    "Swipe right on the current page to open a hidden sidebar. Always on while Hide Sidebar in Landscape is on." : {
+
+    },
+    "Swipe to Reveal Sidebar" : {
+
+    },
     "Tabs" : {
 
     },

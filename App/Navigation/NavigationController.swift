@@ -285,6 +285,11 @@ final class GlassTextBarButton {
 /// A subclass only so the item can be recognised in `rightBarButtonItems` on repeat passes.
 private final class SidebarToggleBarButtonItem: UIBarButtonItem {}
 
+/// The app's own "show sidebar" item on the iPad detail column's bar, standing in for the system
+/// one on every screen in that column. A subclass only so the item can be recognised in
+/// `leftBarButtonItems` on repeat passes.
+private final class DetailSidebarToggleBarButtonItem: UIBarButtonItem {}
+
 // MARK: - Sidebar Title View
 
 /// A titleView that uses SwiftUI Text with `.glassEffect(.identity)` to bypass
@@ -1021,6 +1026,7 @@ final class NavigationController: UINavigationController, Themeable {
             if #available(iOS 26.0, *) {
                 applySidebarAppearanceIfNeeded(with: theme)
             }
+            refreshDetailLeadingItems()
         }
     }
 
@@ -1077,13 +1083,18 @@ final class NavigationController: UINavigationController, Themeable {
         guard transitionCoordinator == nil, let topVC = topViewController else { return }
         let toggleDropped = isSidebarNavigationController && wantsSidebarToggleItem
             && !(topVC.navigationItem.rightBarButtonItems ?? []).contains(where: { $0 is SidebarToggleBarButtonItem })
+        let detailItemsDropped = isDetailNavigationController
+            && !desiredDetailLeadingItems(for: topVC, wanted: nil).elementsEqual(topVC.navigationItem.leftBarButtonItems ?? [], by: ===)
         let hide = hidesSharedBarButtonBackground
         let backgroundOutOfStep = sharedBackgroundItems(of: topVC).contains { $0.hidesSharedBackground != hide }
-        guard toggleDropped || backgroundOutOfStep else { return }
+        guard toggleDropped || detailItemsDropped || backgroundOutOfStep else { return }
         DispatchQueue.main.async { [weak self, weak topVC] in
             guard let self, let topVC, topVC === self.topViewController, self.transitionCoordinator == nil else { return }
             if toggleDropped {
                 self.updateSidebarToggleItem(for: topVC)
+            }
+            if detailItemsDropped {
+                self.updateDetailLeadingItems(for: topVC)
             }
             self.updateSharedBackgroundVisibility(for: topVC)
         }
@@ -1095,6 +1106,89 @@ final class NavigationController: UINavigationController, Themeable {
         // Straight to the display mode rather than `hidePrimaryViewController()`, which only
         // dismisses an overlay: this also unpins a pinned sidebar, as the system toggle did.
         UIView.animate(withDuration: 0.25) { splitViewController.preferredDisplayMode = .secondaryOnly }
+    }
+
+    // MARK: Detail column leading items
+
+    /// True for the nav controller in the iPad split view's detail column (as opposed to a
+    /// sidebar column, which sits inside the tab bar controller, or a presented one, which has
+    /// no split view controller).
+    private var isDetailNavigationController: Bool {
+        UIDevice.current.userInterfaceIdiom == .pad && tabBarController == nil && splitViewController != nil
+    }
+
+    /// Whether the detail column's screens carry the app's sidebar toggle: only once UIKit has
+    /// stopped drawing its own (`presentsWithGesture` off, see RootViewControllerStack), and
+    /// only while the sidebar is hidden or an overlay. A pinned sidebar carries its own toggle.
+    private var wantsDetailSidebarToggleItem: Bool {
+        guard isDetailNavigationController, let splitViewController,
+              !splitViewController.isCollapsed, !splitViewController.presentsWithGesture
+        else { return false }
+        let mode = sidebarDisplayMode ?? splitViewController.displayMode
+        return mode != .oneBesideSecondary
+    }
+
+    /// Puts every screen's toggle in step with the split view. RootViewControllerStack calls
+    /// this on display-mode changes that don't push or pop anything; `willShow` covers screens
+    /// as they arrive.
+    func refreshDetailLeadingItems() {
+        guard isDetailNavigationController else { return }
+        for viewController in viewControllers {
+            updateDetailLeadingItems(for: viewController)
+        }
+    }
+
+    /// Strips the toggle from every screen, for a column about to collapse into the primary
+    /// navigation stack.
+    func removeDetailLeadingItems() {
+        for viewController in viewControllers {
+            updateDetailLeadingItems(for: viewController, wanted: false)
+        }
+    }
+
+    private func updateDetailLeadingItems(for viewController: UIViewController, wanted: Bool? = nil) {
+        let current = viewController.navigationItem.leftBarButtonItems ?? []
+        let desired = desiredDetailLeadingItems(for: viewController, wanted: wanted)
+        guard !desired.elementsEqual(current, by: ===) else { return }
+        // UIKit lays its back button out ahead of ours, so a pushed screen still pops.
+        viewController.navigationItem.leftItemsSupplementBackButton = true
+        viewController.navigationItem.leftBarButtonItems = desired.isEmpty ? nil : desired
+    }
+
+    /// The screen's left items as they should be: our toggle (the instance already there, if
+    /// any) ahead of whatever the screen put in itself.
+    private func desiredDetailLeadingItems(for viewController: UIViewController, wanted: Bool?) -> [UIBarButtonItem] {
+        let current = viewController.navigationItem.leftBarButtonItems ?? []
+        let others = current.filter { !($0 is DetailSidebarToggleBarButtonItem) }
+        guard wanted ?? wantsDetailSidebarToggleItem else { return others }
+        let toggle = current.first { $0 is DetailSidebarToggleBarButtonItem } ?? makeDetailSidebarToggleItem()
+        return [toggle] + others
+    }
+
+    private func makeDetailSidebarToggleItem() -> UIBarButtonItem {
+        let toggle = DetailSidebarToggleBarButtonItem(
+            image: UIImage(systemName: "sidebar.leading"),
+            style: .plain,
+            target: self,
+            action: #selector(showSidebarOnDetailToggleTap)
+        )
+        toggle.accessibilityLabel = NSLocalizedString("Show Sidebar", comment: "Detail pane sidebar toggle accessibility label")
+        if #available(iOS 26.0, *) {
+            // Flat under Reduce Liquid Glass like the app's other items; the detail bar is an
+            // ordinary glass bar otherwise, so the platter here is the one the system's had.
+            toggle.hidesSharedBackground = hidesSharedBarButtonBackground
+        }
+        return toggle
+    }
+
+    /// Summons a hidden sidebar, or dismisses one shown as an overlay.
+    @objc private func showSidebarOnDetailToggleTap() {
+        guard let splitViewController, !splitViewController.isCollapsed else { return }
+        if splitViewController.displayMode == .oneOverSecondary {
+            splitViewController.hidePrimaryViewController()
+        } else {
+            splitViewController.showPrimaryViewController()
+        }
     }
 
     /// On iPad sidebar, the nav bar is inside a glass panel so buttons get
@@ -1958,6 +2052,8 @@ extension NavigationController: UINavigationControllerDelegate {
             vcTheme = theme
             updateNavigationBarAppearance(with: vcTheme, for: viewController)
         }
+
+        updateDetailLeadingItems(for: viewController)
 
         // Apply sidebar glass bypass (titleView, button replacement) for
         // pushed VCs too, not just on tab switches.

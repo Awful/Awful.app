@@ -287,10 +287,21 @@ private struct ThreadsSection: View {
 
 private struct SidebarSection: View {
     @AppStorage(Settings.hideSidebarInLandscape) private var hideSidebarInLandscape
+    @AppStorage(Settings.swipeToRevealSidebar) private var swipeToRevealSidebar
 
     var body: some View {
         Section {
             Toggle("Hide Sidebar in Landscape", bundle: .module, isOn: $hideSidebarInLandscape)
+            // Shown as on and locked while the sidebar hides in landscape, when the swipe is
+            // always available; the stored choice is untouched so it comes back when that
+            // setting is turned off again.
+            Toggle(isOn: hideSidebarInLandscape ? .constant(true) : $swipeToRevealSidebar) {
+                CaptionedLabel(
+                    "Swipe to Reveal Sidebar",
+                    caption: "Swipe right on the current page to open a hidden sidebar. Always on while Hide Sidebar in Landscape is on."
+                )
+            }
+            .disabled(hideSidebarInLandscape)
         } header: {
             Text("Sidebar", bundle: .module)
                 .header()

@@ -149,6 +149,9 @@ public enum Settings {
     /// Badge the Forums tab whenever there's an unread announcement.
     public static let showUnreadAnnouncementsBadge = Setting(key: "show_unread_announcements_badge", default: true)
 
+    /// Swiping rightward on the detail pane summons a hidden sidebar even when `hideSidebarInLandscape` is off (which otherwise leaves only the toggle buttons).
+    public static let swipeToRevealSidebar = Setting(key: "swipe_to_reveal_sidebar", default: false)
+
     /// The default theme for threads in BYOB.
     public static let themeBYOB = Setting<BuiltInTheme>(key: "theme-268", default: .byob)
 

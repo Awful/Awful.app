@@ -180,6 +180,7 @@ extension SpecsReport {
         .init(Settings.showAvatars),
         .init(Settings.showThreadTags),
         .init(Settings.showUnreadAnnouncementsBadge),
+        .init(Settings.swipeToRevealSidebar),
         .init(Settings.themeBYOB),
         .init(Settings.themeFYAD),
         .init(Settings.themeGasChamber),
