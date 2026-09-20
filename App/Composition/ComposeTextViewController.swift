@@ -23,7 +23,6 @@ class ComposeTextViewController: ViewController, ModernToolbarActionHandling {
     
     deinit {
         endObservingTextChangeNotification()
-        endObservingKeyboardNotifications()
     }
     
     /// The composition text view. Set its text or attributedText property as appropriate.
@@ -166,43 +165,10 @@ class ComposeTextViewController: ViewController, ModernToolbarActionHandling {
     /// submit button.
     func bodyTextDidChange() {}
     
-    fileprivate func beginObservingKeyboardNotifications() {
-        guard keyboardWillChangeFrameObserver == nil else { return }
-        
-        keyboardWillChangeFrameObserver = NotificationCenter.default.addObserver(forName: UIResponder.keyboardWillChangeFrameNotification, object: nil, queue: .main, using: { [weak self] notification in
-            self?.keyboardWillChangeFrame(notification)
-        })
-    }
-    private func endObservingKeyboardNotifications() {
-        if let token = keyboardWillChangeFrameObserver {
-            NotificationCenter.default.removeObserver(token)
-            keyboardWillChangeFrameObserver = nil
-        }
-    }
-    private var keyboardWillChangeFrameObserver: NSObjectProtocol?
-    
-    private func keyboardWillChangeFrame(_ notification: Notification) {
-        guard
-            let userInfo = notification.userInfo,
-            let duration = userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as? TimeInterval,
-            let curve = userInfo[UIResponder.keyboardAnimationCurveUserInfoKey] as? UInt,
-            let keyboardEndScreenFrame = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue,
-            let window = view.window
-            else { return }
-        let keyboardEndWindowFrame = window.convert(keyboardEndScreenFrame, from: nil)
-        let keyboardEndTextViewFrame = textView.convert(keyboardEndWindowFrame, from: nil)
-        let overlap = keyboardEndTextViewFrame.intersection(textView.bounds)
-        
-        let options = UIView.AnimationOptions(rawValue: curve << 16)
-        
-        UIView.animate(withDuration: duration, delay: 0, options: options, animations: { 
-            self.textView.contentInset.bottom = overlap.height
-            self.textView.verticalScrollIndicatorInsets.bottom = overlap.height
-        }, completion: { _ in
-            self.textView.scrollCaretToVisible(animated: true)
-        })
-    }
-    
+    /// Keeps the text view's bottom inset clear of the keyboard. Shared with the reply composer
+    /// so new threads and private messages behave identically.
+    private var keyboardAvoider: ScrollViewKeyboardAvoider?
+
     fileprivate var imageUploadProgress: Progress?
     
     fileprivate func submit() {
@@ -363,6 +329,10 @@ class ComposeTextViewController: ViewController, ModernToolbarActionHandling {
         let textView = ComposeTextView()
         textView.font = UIFont.preferredFontForTextStyle(.body, sizeAdjustment: -0.5, weight: .regular)
         textView.delegate = self
+        // Dragging the text downward tucks the keyboard away. Always bounce so the pan gesture
+        // starts even when a short draft doesn't fill the sheet.
+        textView.keyboardDismissMode = .interactive
+        textView.alwaysBounceVertical = true
         textView.onURLsCleaned = { [weak self] notice in
             self?.showURLCleanedBanner(notice)
         }
@@ -393,6 +363,7 @@ class ComposeTextViewController: ViewController, ModernToolbarActionHandling {
         textView.keyboardAppearance = theme.keyboardAppearance
         toolbarContainer?.keyboardAppearance = theme.keyboardAppearance
         toolbarContainer?.fontName = theme["listFontName"]
+        toolbarContainer?.strokeColor = theme["listSecondaryTextColor"]
 
         // The bar stays opaque over the composition, so its glass circles read as the bar at
         // every offset (see NavigationBarScrollTransitioning).
@@ -403,6 +374,13 @@ class ComposeTextViewController: ViewController, ModernToolbarActionHandling {
         super.viewDidLoad()
         
         menuTree = CompositionMenuTree(textView: textView)
+
+        // Installed before viewWillAppear asks for the keyboard, so the first keyboard
+        // notification of every presentation is observed.
+        keyboardAvoider = ScrollViewKeyboardAvoider(textView)
+        keyboardAvoider?.onInsetsChanged = { [weak self] in
+            self?.textView.scrollCaretToVisible()
+        }
 
         // Replies get this toolbar from CompositionViewController; wire up the same thing here so
         // new threads and private messages aren't left with just the plain BBcode bar.
@@ -423,6 +401,10 @@ class ComposeTextViewController: ViewController, ModernToolbarActionHandling {
         super.viewDidLayoutSubviews()
 
         textView.relayoutNavigationBarPlatterBackdrop()
+
+        // The sheet may have moved since the keyboard notification computed the inset (see
+        // `ScrollViewKeyboardAvoider.reapply()`); this also covers rotation and sheet resizes.
+        keyboardAvoider?.reapply()
     }
 
     override func viewWillLayoutSubviews() {
@@ -448,19 +430,22 @@ class ComposeTextViewController: ViewController, ModernToolbarActionHandling {
         focusInitialFirstResponder()
         
         updateSubmitButtonItem()
-        
-        beginObservingKeyboardNotifications()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
+
+        // The keyboard was requested in viewWillAppear, while the sheet was still sliding in, so
+        // the inset it computed may be wrong. Now the hierarchy is at rest.
+        keyboardAvoider?.reapply()
         beginObservingTextChangeNotification()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        
+
+        // A minimized keyboard is a per-visit choice; come back to a full keyboard.
+        textView.resetMinimizedKeyboard()
         view.endEditing(true)
     }
 }

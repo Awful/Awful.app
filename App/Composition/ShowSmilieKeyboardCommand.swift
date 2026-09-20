@@ -39,10 +39,12 @@ final class ShowSmilieKeyboardCommand: NSObject {
     private func showLegacySmilieKeyboard() {
         showingSmilieKeyboard = !showingSmilieKeyboard
         
-        if showingSmilieKeyboard && textView.inputView == nil {
+        // A minimized keyboard (see `UITextView.setKeyboardMinimized`) is also a custom input
+        // view; the smilie keyboard takes its place and leaves the system keyboard on the way out.
+        if showingSmilieKeyboard && textView.inputView !== smilieKeyboard.view {
             textView.inputView = smilieKeyboard.view
             textView.reloadInputViews()
-        } else if !showingSmilieKeyboard && textView.inputView != nil {
+        } else if !showingSmilieKeyboard && textView.inputView === smilieKeyboard.view {
             textView.inputView = nil
             textView.reloadInputViews()
         }

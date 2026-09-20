@@ -84,7 +84,15 @@ final class ReportPostViewController: ViewController, UITextViewDelegate {
             commentTextView.font = commentFieldLabel.font
             commentTextView.layer.borderWidth = 1
             commentTextView.layer.cornerRadius = 4
+            commentTextView.keyboardDismissMode = .interactive
+            commentTextView.alwaysBounceVertical = true
             addSubview(commentTextView)
+
+            // There's no toolbar with a hide-keyboard button here, so tapping the form's
+            // instructions puts the keyboard away instead.
+            let tap = UITapGestureRecognizer(target: self, action: #selector(didTapBackground))
+            tap.cancelsTouchesInView = false
+            addGestureRecognizer(tap)
 
             errorTextView.isEditable = false
             errorTextView.isScrollEnabled = false
@@ -101,6 +109,13 @@ final class ReportPostViewController: ViewController, UITextViewDelegate {
 
         required init?(coder: NSCoder) {
             fatalError("init(coder:) has not been implemented")
+        }
+
+        @objc private func didTapBackground(_ recognizer: UITapGestureRecognizer) {
+            // Taps inside the switch or the text view are theirs.
+            let location = recognizer.location(in: self)
+            guard !nwsSwitch.frame.contains(location), !commentTextView.frame.contains(location) else { return }
+            endEditing(true)
         }
 
         override func layoutSubviews() {

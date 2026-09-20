@@ -26,6 +26,45 @@ final class ModernBBcodeToolbar: UIView {
 
     var onAction: ((ModernToolbarAction) -> Void)?
 
+    /// Called when the keyboard toggle button is tapped. The toolbar's owner collapses or restores
+    /// the keyboard and then sets `isKeyboardMinimized` so the glyph matches.
+    var onToggleKeyboard: (() -> Void)?
+
+    /// Whether the keyboard is collapsed to just the toolbars, which decides the toggle's glyph:
+    /// a chevron pointing down to minimize, or a keyboard to bring it back.
+    var isKeyboardMinimized = false {
+        didSet {
+            guard isKeyboardMinimized != oldValue, showsKeyboardToggleButton else { return }
+            let name = isKeyboardMinimized ? Self.restoreKeyboardSymbolName : Self.minimizeKeyboardSymbolName
+            if #available(iOS 26.0, *), let glass = keyboardToggleButton as? GlassToolbarButton {
+                glass.updateSymbol(name)
+            } else if let blur = keyboardToggleButton as? BlurToolbarButton {
+                blur.updateSymbol(name)
+            }
+            keyboardToggleButton.accessibilityLabel = isKeyboardMinimized ? "Show keyboard" : "Minimize keyboard"
+        }
+    }
+
+    /// Dims the keyboard toggle. Cleared while the system has collapsed the keyboard itself (a
+    /// hardware keyboard is connected): nothing public brings the software keyboard back then, so
+    /// the toggle shows the state but can't change it.
+    var isKeyboardToggleEnabled = true {
+        didSet {
+            guard showsKeyboardToggleButton else { return }
+            keyboardToggleButton.isEnabled = isKeyboardToggleEnabled
+        }
+    }
+
+    /// Outlines the blur buttons (pre-iOS 26, or Reduce Liquid Glass) so they read as buttons
+    /// against the keyboard, the way the banner toast outlines itself. Glass buttons have their
+    /// own edge and ignore this.
+    var strokeColor: UIColor? {
+        didSet { updateButtonStrokes() }
+    }
+
+    private static let minimizeKeyboardSymbolName = "keyboard.chevron.compact.down"
+    private static let restoreKeyboardSymbolName = "keyboard"
+
     var keyboardAppearance: UIKeyboardAppearance = .default {
         didSet {
             updateKeyboardAppearance()
@@ -75,6 +114,7 @@ final class ModernBBcodeToolbar: UIView {
         }
         updateKeyboardAppearance()
         updateButtonFonts()
+        updateButtonStrokes()
     }
 
     /// Marks the Poll button to show the thread already has a poll attached.
@@ -99,11 +139,24 @@ final class ModernBBcodeToolbar: UIView {
         var buttons = [urlButton, imageButton, formatButton, videoButton]
         if showsPollButton { buttons.append(pollButton) }
         if showsSpecsButton { buttons.append(specsButton) }
+        if showsKeyboardToggleButton { buttons.append(keyboardToggleButton) }
         return buttons
     }
 
+    /// Whether a keyboard toggle button sits at the trailing end of the toolbar. The iPad keyboard
+    /// has its own dismiss key (and Catalyst has no soft keyboard), so it's only on iPhone, where
+    /// there is otherwise no way to get the keyboard out of the way short of dismissing the sheet.
+    private let showsKeyboardToggleButton = UIDevice.current.userInterfaceIdiom == .phone
+
+    private lazy var keyboardToggleButton: UIButton = {
+        let button = createToolbarButton(symbolName: Self.minimizeKeyboardSymbolName)
+        button.addTarget(self, action: #selector(didTapKeyboardToggle), for: .primaryActionTriggered)
+        button.accessibilityLabel = "Minimize keyboard"
+        return button
+    }()
+
     private lazy var stackView: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [urlButton, imageButton, formatButton, videoButton])
+        let stack = UIStackView(arrangedSubviews: [urlButton, imageButton, videoButton, formatButton])
         stack.distribution = .fillEqually
         stack.spacing = 8
         stack.translatesAutoresizingMaskIntoConstraints = false
@@ -175,7 +228,6 @@ final class ModernBBcodeToolbar: UIView {
         NSLayoutConstraint.activate([
             stackView.topAnchor.constraint(equalTo: topAnchor, constant: 6),
             stackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12),
-            stackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12),
             stackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -4),
 
             urlButton.heightAnchor.constraint(equalToConstant: buttonHeight),
@@ -183,6 +235,21 @@ final class ModernBBcodeToolbar: UIView {
             formatButton.heightAnchor.constraint(equalToConstant: buttonHeight),
             videoButton.heightAnchor.constraint(equalToConstant: buttonHeight)
         ])
+
+        // The keyboard toggle is a square sibling of the stack, not an arranged subview, so the
+        // stack's fillEqually distribution stays among the text buttons.
+        if showsKeyboardToggleButton {
+            addSubview(keyboardToggleButton)
+            NSLayoutConstraint.activate([
+                keyboardToggleButton.widthAnchor.constraint(equalToConstant: buttonHeight),
+                keyboardToggleButton.heightAnchor.constraint(equalToConstant: buttonHeight),
+                keyboardToggleButton.centerYAnchor.constraint(equalTo: stackView.centerYAnchor),
+                keyboardToggleButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12),
+                stackView.trailingAnchor.constraint(equalTo: keyboardToggleButton.leadingAnchor, constant: -8),
+            ])
+        } else {
+            stackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12).isActive = true
+        }
     }
 
     // MARK: - Button Factory
@@ -192,6 +259,14 @@ final class ModernBBcodeToolbar: UIView {
             return GlassToolbarButton(title: title)
         } else {
             return BlurToolbarButton(title: title)
+        }
+    }
+
+    private func createToolbarButton(symbolName: String) -> UIButton {
+        if #available(iOS 26.0, *), LiquidGlass.isEnabled {
+            return GlassToolbarButton(symbolName: symbolName)
+        } else {
+            return BlurToolbarButton(symbolName: symbolName)
         }
     }
 
@@ -234,6 +309,11 @@ final class ModernBBcodeToolbar: UIView {
         onAction?(.specs)
     }
 
+    @objc private func didTapKeyboardToggle() {
+        triggerHaptic()
+        onToggleKeyboard?()
+    }
+
     private func triggerHaptic() {
         if enableHaptics {
             UIImpactFeedbackGenerator(style: .light).impactOccurred()
@@ -262,6 +342,14 @@ final class ModernBBcodeToolbar: UIView {
         }
     }
 
+    private func updateButtonStrokes() {
+        for button in allButtons {
+            if let blurButton = button as? BlurToolbarButton {
+                blurButton.updateStroke(strokeColor)
+            }
+        }
+    }
+
     private func updateButtonFonts() {
         let font = UIFont.preferredFontForTextStyle(.footnote, fontName: fontName, sizeAdjustment: 0, weight: .medium)
         for button in allButtons {
@@ -277,15 +365,56 @@ final class ModernBBcodeToolbar: UIView {
     }
 }
 
+// MARK: - Button content
+
+/// What a toolbar button shows: a BBcode-ish title, or an SF Symbol for the icon-only buttons.
+private enum ToolbarButtonContent {
+    case title(String)
+    case symbol(String)
+
+    /// The view to centre in the button's glass or blur backdrop.
+    func makeView() -> UIView {
+        switch self {
+        case .title(let title):
+            let label = UILabel()
+            label.font = UIFont.preferredFontForTextStyle(.footnote, sizeAdjustment: 0, weight: .medium)
+            label.text = title
+            label.textAlignment = .center
+            // A fifth button (Poll or Specs) makes each one narrower; shrink rather than truncate "[video]".
+            label.adjustsFontSizeToFitWidth = true
+            label.minimumScaleFactor = 0.75
+            return label
+        case .symbol(let name):
+            let imageView = UIImageView(image: Self.symbolImage(named: name))
+            imageView.contentMode = .center
+            return imageView
+        }
+    }
+
+    static func symbolImage(named name: String) -> UIImage? {
+        let config = UIImage.SymbolConfiguration(textStyle: .footnote, scale: .medium)
+        return UIImage(systemName: name, withConfiguration: config)
+    }
+}
+
 // MARK: - iOS 26+ Glass Button
 
 @available(iOS 26.0, *)
 private final class GlassToolbarButton: UIButton {
 
     private let glassView: UIVisualEffectView
-    private let titleLabelView: UILabel
+    private let content: UIView
+    private var titleLabelView: UILabel? { content as? UILabel }
 
-    init(title: String) {
+    convenience init(title: String) {
+        self.init(content: .title(title))
+    }
+
+    convenience init(symbolName: String) {
+        self.init(content: .symbol(symbolName))
+    }
+
+    private init(content spec: ToolbarButtonContent) {
         let glassEffect = UIGlassEffect()
         glassView = UIVisualEffectView(effect: glassEffect)
         glassView.translatesAutoresizingMaskIntoConstraints = false
@@ -294,15 +423,10 @@ private final class GlassToolbarButton: UIButton {
         glassView.layer.masksToBounds = true
         glassView.layer.cornerCurve = .continuous
 
-        titleLabelView = UILabel()
-        titleLabelView.translatesAutoresizingMaskIntoConstraints = false
-        titleLabelView.font = UIFont.preferredFontForTextStyle(.footnote, sizeAdjustment: 0, weight: .medium)
-        titleLabelView.text = title
-        titleLabelView.textAlignment = .center
-        titleLabelView.isUserInteractionEnabled = false
-        // A fifth button (Poll or Specs) makes each one narrower; shrink rather than truncate "[video]".
-        titleLabelView.adjustsFontSizeToFitWidth = true
-        titleLabelView.minimumScaleFactor = 0.75
+        content = spec.makeView()
+        content.translatesAutoresizingMaskIntoConstraints = false
+        content.isUserInteractionEnabled = false
+        content.tintColor = .label
 
         super.init(frame: .zero)
 
@@ -310,7 +434,7 @@ private final class GlassToolbarButton: UIButton {
         backgroundColor = .clear
 
         insertSubview(glassView, at: 0)
-        glassView.contentView.addSubview(titleLabelView)
+        glassView.contentView.addSubview(content)
 
         NSLayoutConstraint.activate([
             glassView.leadingAnchor.constraint(equalTo: leadingAnchor),
@@ -318,9 +442,9 @@ private final class GlassToolbarButton: UIButton {
             glassView.topAnchor.constraint(equalTo: topAnchor),
             glassView.bottomAnchor.constraint(equalTo: bottomAnchor),
 
-            titleLabelView.leadingAnchor.constraint(equalTo: glassView.contentView.leadingAnchor, constant: 8),
-            titleLabelView.trailingAnchor.constraint(equalTo: glassView.contentView.trailingAnchor, constant: -8),
-            titleLabelView.centerYAnchor.constraint(equalTo: glassView.contentView.centerYAnchor)
+            content.leadingAnchor.constraint(equalTo: glassView.contentView.leadingAnchor, constant: 8),
+            content.trailingAnchor.constraint(equalTo: glassView.contentView.trailingAnchor, constant: -8),
+            content.centerYAnchor.constraint(equalTo: glassView.contentView.centerYAnchor)
         ])
     }
 
@@ -329,19 +453,30 @@ private final class GlassToolbarButton: UIButton {
     }
 
     override var isHighlighted: Bool {
-        didSet {
-            UIView.animate(withDuration: 0.1) {
-                self.alpha = self.isHighlighted ? 0.6 : 1.0
-            }
+        didSet { updateAlpha(animated: true) }
+    }
+
+    override var isEnabled: Bool {
+        didSet { updateAlpha(animated: false) }
+    }
+
+    private func updateAlpha(animated: Bool) {
+        let alpha: CGFloat = isHighlighted ? 0.6 : (isEnabled ? 1.0 : 0.4)
+        UIView.animate(withDuration: animated ? 0.1 : 0) {
+            self.alpha = alpha
         }
     }
 
     func updateFont(_ font: UIFont) {
-        titleLabelView.font = font
+        titleLabelView?.font = font
     }
 
     func updateTitle(_ title: String) {
-        titleLabelView.text = title
+        titleLabelView?.text = title
+    }
+
+    func updateSymbol(_ name: String) {
+        (content as? UIImageView)?.image = ToolbarButtonContent.symbolImage(named: name)
     }
 }
 
@@ -350,7 +485,8 @@ private final class GlassToolbarButton: UIButton {
 private final class BlurToolbarButton: UIButton {
 
     private let blurView: UIVisualEffectView
-    private let titleLabelView: UILabel
+    private let content: UIView
+    private var titleLabelView: UILabel? { content as? UILabel }
 
     var keyboardAppearance: UIKeyboardAppearance = .default {
         didSet {
@@ -358,7 +494,15 @@ private final class BlurToolbarButton: UIButton {
         }
     }
 
-    init(title: String) {
+    convenience init(title: String) {
+        self.init(content: .title(title))
+    }
+
+    convenience init(symbolName: String) {
+        self.init(content: .symbol(symbolName))
+    }
+
+    private init(content spec: ToolbarButtonContent) {
         blurView = UIVisualEffectView(effect: UIBlurEffect(style: .systemMaterial))
         blurView.translatesAutoresizingMaskIntoConstraints = false
         blurView.isUserInteractionEnabled = false
@@ -366,15 +510,9 @@ private final class BlurToolbarButton: UIButton {
         blurView.layer.masksToBounds = true
         blurView.layer.cornerCurve = .continuous
 
-        titleLabelView = UILabel()
-        titleLabelView.translatesAutoresizingMaskIntoConstraints = false
-        titleLabelView.font = UIFont.preferredFontForTextStyle(.footnote, sizeAdjustment: 0, weight: .medium)
-        titleLabelView.text = title
-        titleLabelView.textAlignment = .center
-        titleLabelView.isUserInteractionEnabled = false
-        // A fifth button (Poll or Specs) makes each one narrower; shrink rather than truncate "[video]".
-        titleLabelView.adjustsFontSizeToFitWidth = true
-        titleLabelView.minimumScaleFactor = 0.75
+        content = spec.makeView()
+        content.translatesAutoresizingMaskIntoConstraints = false
+        content.isUserInteractionEnabled = false
 
         super.init(frame: .zero)
 
@@ -382,7 +520,7 @@ private final class BlurToolbarButton: UIButton {
         backgroundColor = .clear
 
         insertSubview(blurView, at: 0)
-        blurView.contentView.addSubview(titleLabelView)
+        blurView.contentView.addSubview(content)
 
         NSLayoutConstraint.activate([
             blurView.leadingAnchor.constraint(equalTo: leadingAnchor),
@@ -390,9 +528,9 @@ private final class BlurToolbarButton: UIButton {
             blurView.topAnchor.constraint(equalTo: topAnchor),
             blurView.bottomAnchor.constraint(equalTo: bottomAnchor),
 
-            titleLabelView.leadingAnchor.constraint(equalTo: blurView.contentView.leadingAnchor, constant: 8),
-            titleLabelView.trailingAnchor.constraint(equalTo: blurView.contentView.trailingAnchor, constant: -8),
-            titleLabelView.centerYAnchor.constraint(equalTo: blurView.contentView.centerYAnchor)
+            content.leadingAnchor.constraint(equalTo: blurView.contentView.leadingAnchor, constant: 8),
+            content.trailingAnchor.constraint(equalTo: blurView.contentView.trailingAnchor, constant: -8),
+            content.centerYAnchor.constraint(equalTo: blurView.contentView.centerYAnchor)
         ])
 
         updateAppearance()
@@ -405,22 +543,40 @@ private final class BlurToolbarButton: UIButton {
     private func updateAppearance() {
         let isDark = keyboardAppearance == .dark
         blurView.effect = UIBlurEffect(style: isDark ? .systemMaterialDark : .systemMaterial)
-        titleLabelView.textColor = isDark ? .white : .label
+        let foreground: UIColor = isDark ? .white : .label
+        titleLabelView?.textColor = foreground
+        content.tintColor = foreground
     }
 
     override var isHighlighted: Bool {
-        didSet {
-            UIView.animate(withDuration: 0.1) {
-                self.alpha = self.isHighlighted ? 0.6 : 1.0
-            }
+        didSet { updateAlpha(animated: true) }
+    }
+
+    override var isEnabled: Bool {
+        didSet { updateAlpha(animated: false) }
+    }
+
+    private func updateAlpha(animated: Bool) {
+        let alpha: CGFloat = isHighlighted ? 0.6 : (isEnabled ? 1.0 : 0.4)
+        UIView.animate(withDuration: animated ? 0.1 : 0) {
+            self.alpha = alpha
         }
     }
 
     func updateFont(_ font: UIFont) {
-        titleLabelView.font = font
+        titleLabelView?.font = font
     }
 
     func updateTitle(_ title: String) {
-        titleLabelView.text = title
+        titleLabelView?.text = title
+    }
+
+    func updateSymbol(_ name: String) {
+        (content as? UIImageView)?.image = ToolbarButtonContent.symbolImage(named: name)
+    }
+
+    func updateStroke(_ color: UIColor?) {
+        blurView.layer.borderWidth = color == nil ? 0 : 1
+        blurView.layer.borderColor = color?.cgColor
     }
 }

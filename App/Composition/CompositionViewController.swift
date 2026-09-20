@@ -67,6 +67,10 @@ final class CompositionViewController: ViewController, ModernToolbarActionHandli
 
         _textView = CompositionTextView()
         _textView.translatesAutoresizingMaskIntoConstraints = false
+        // Dragging the text downward tucks the keyboard away. Always bounce so the pan gesture
+        // starts even when a short draft doesn't fill the sheet.
+        _textView.keyboardDismissMode = .interactive
+        _textView.alwaysBounceVertical = true
         _textView.onURLsCleaned = { [weak self] notice in
             self?.showURLCleanedBanner(notice)
         }
@@ -314,6 +318,10 @@ final class CompositionViewController: ViewController, ModernToolbarActionHandli
         super.viewDidLayoutSubviews()
 
         view.sendSubviewToBack(barBackdrop)
+
+        // The sheet may have moved since the keyboard notification computed the inset (see
+        // `ScrollViewKeyboardAvoider.reapply()`); this also covers rotation and sheet resizes.
+        keyboardAvoider?.reapply()
     }
 
     override func themeDidChange() {
@@ -327,6 +335,7 @@ final class CompositionViewController: ViewController, ModernToolbarActionHandli
         textView.keyboardAppearance = theme.keyboardAppearance
         toolbarContainer?.keyboardAppearance = theme.keyboardAppearance
         toolbarContainer?.fontName = theme["listFontName"]
+        toolbarContainer?.strokeColor = theme["listSecondaryTextColor"]
 
         // Theme the attachment cards
         let listTextColor: UIColor? = theme["listTextColor"]
@@ -356,13 +365,18 @@ final class CompositionViewController: ViewController, ModernToolbarActionHandli
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
+
+        // The keyboard was requested in viewWillAppear, while the sheet was still sliding in, so
+        // the inset it computed may be wrong. Now the hierarchy is at rest.
+        keyboardAvoider?.reapply()
         textView.flashScrollIndicators()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        
+
+        // A minimized keyboard is a per-visit choice; come back to a full keyboard.
+        textView.resetMinimizedKeyboard()
         view.endEditing(true)
     }
     
