@@ -327,6 +327,14 @@ final class PostsPageView: UIView {
             toolbar: toolbar,
             topBarContainer: topBarContainer
         )
+        // The bars snapping the rest of the way (end of a drag, a page change) can move the
+        // status bar over the content with no scroll event to start or stop the sampling, and
+        // the status bar has to restyle even before a sample has landed.
+        immersiveModeManager.statusBarOverContentDidChange = { [weak self] in
+            guard let self, #available(iOS 26.0, *) else { return }
+            syncNavigationBarScrollProgress()
+            postsPageViewController?.contentContrastDidChange()
+        }
 
         tiltScrollManager.configure(scrollView: renderView.scrollView)
 
@@ -467,7 +475,7 @@ final class PostsPageView: UIView {
 
         topBar.themeDidChange(Theme.defaultTheme())
 
-        if #available(iOS 26.0, *), LiquidGlass.isEnabled {
+        if #available(iOS 26.0, *) {
             immersiveModeManager.safeAreaGradientView.themeDidChange()
         }
     }
@@ -927,14 +935,19 @@ extension PostsPageView: ScrollViewDelegateExtras {
 
         // Over the content the title and the status bar take the colour sampled from the page
         // beneath them; the samplers answer asynchronously, so the theme's mode colour covers
-        // the first frame.
+        // the first frame. The bar only goes transparent under Liquid Glass, but immersive mode
+        // slides it away whatever the setting, leaving the status bar over the page either way.
         let sampler = viewController.titleContrastSampler
         let statusBarSampler = viewController.statusBarContrastSampler
-        if LiquidGlass.isEnabled, progress > 0.99 {
+        let isBarTransparent = LiquidGlass.isEnabled && progress > 0.99
+        if isBarTransparent {
             sampler.sampleIfNeeded()
-            statusBarSampler.sampleIfNeeded()
         } else {
             sampler.reset()
+        }
+        if isBarTransparent || immersiveModeManager.isStatusBarOverContent {
+            statusBarSampler.sampleIfNeeded()
+        } else {
             statusBarSampler.reset()
         }
         viewController.navigationItem.updateTitleLabelTextColor(

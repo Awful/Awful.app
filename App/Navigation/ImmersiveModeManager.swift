@@ -2,7 +2,6 @@
 //
 //  Copyright 2025 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-import AwfulTheming
 import Combine
 import Foundation
 import UIKit
@@ -66,6 +65,7 @@ final class ImmersiveModeManager: NSObject {
                     resetAllTransforms()
                     restoreBarAlphas()
                     safeAreaGradientView.alpha = 0.0
+                    updateStatusBarOverContent()
                     postsView?.setNeedsLayout()
                 }
             }
@@ -125,6 +125,36 @@ final class ImmersiveModeManager: NSObject {
         return view
     }()
 
+    /// True once the bars have mostly left the screen (slid more than halfway, or faded below
+    /// half in bottom fade mode), so the status bar sits over the page rather than the bar.
+    /// The posts page samples the page beneath the status bar while this is set and the
+    /// navigation controller styles the status bar from the result; the gradient above tracks
+    /// the same colour. Under Reduce Liquid Glass this is the only time that happens, since the
+    /// bar never goes transparent on scroll.
+    private(set) var isStatusBarOverContent = false {
+        didSet {
+            guard isStatusBarOverContent != oldValue else { return }
+            statusBarOverContentDidChange?()
+        }
+    }
+
+    /// Told after every change to `isStatusBarOverContent`.
+    var statusBarOverContentDidChange: (() -> Void)?
+
+    /// Re-derives `isStatusBarOverContent` from the current bar state; call after every change
+    /// to the transforms or alphas.
+    private func updateStatusBarOverContent() {
+        guard immersiveModeEnabled else {
+            isStatusBarOverContent = false
+            return
+        }
+        if isInBottomFadeMode {
+            isStatusBarOverContent = bottomFadeProgress < 0.5
+        } else {
+            isStatusBarOverContent = immersiveProgress > 0.5
+        }
+    }
+
     // MARK: - Computed Properties
 
     private var totalBarTravelDistance: CGFloat {
@@ -183,7 +213,10 @@ final class ImmersiveModeManager: NSObject {
             restoreBarAlphas()
         }
 
-        guard immersiveProgress > 0 else { return }
+        guard immersiveProgress > 0 else {
+            updateStatusBarOverContent()
+            return
+        }
         immersiveProgress = 0.0
     }
 
@@ -213,7 +246,7 @@ final class ImmersiveModeManager: NSObject {
     }
 
     func updateGradientLayout(in containerView: UIView) {
-        guard #available(iOS 26.0, *), LiquidGlass.isEnabled else { return }
+        guard #available(iOS 26.0, *) else { return }
 
         let gradientHeight: CGFloat = containerView.window?.safeAreaInsets.top ?? containerView.safeAreaInsets.top
         safeAreaGradientView.frame = CGRect(
@@ -398,6 +431,7 @@ final class ImmersiveModeManager: NSObject {
         CATransaction.begin()
         CATransaction.setDisableActions(true)
         defer { CATransaction.commit() }
+        defer { updateStatusBarOverContent() }
 
         guard immersiveModeEnabled && immersiveProgress > 0 else {
             safeAreaGradientView.alpha = 0.0
@@ -405,11 +439,10 @@ final class ImmersiveModeManager: NSObject {
             return
         }
 
-        if #available(iOS 26.0, *), LiquidGlass.isEnabled {
-            safeAreaGradientView.alpha = immersiveProgress
-        } else {
-            safeAreaGradientView.alpha = 0.0
-        }
+        // Shown whatever the Reduce Liquid Glass setting: once the bar slides away this is the
+        // only thing under the status bar (the system scroll-edge effect is hidden for the
+        // posts page, see NavigationController.applyGlassRestingState).
+        safeAreaGradientView.alpha = immersiveProgress
 
         let navBarTransform = calculateNavigationBarTransform()
         if let navBar = findNavigationBar() {
@@ -446,6 +479,7 @@ final class ImmersiveModeManager: NSObject {
         syncPlatterBackdropWithNavigationBar()
         safeAreaGradientView.alpha = 0.0
         CATransaction.commit()
+        updateStatusBarOverContent()
 
         // `isFadingIntoBottom` blocks concurrent `updateBarsForBottomFade`
         // calls (e.g. from `didEndDecelerating`) that would otherwise snap
@@ -502,6 +536,7 @@ final class ImmersiveModeManager: NSObject {
 
         // Gradient is only shown when bars are hidden via slide.
         safeAreaGradientView.alpha = 0.0
+        updateStatusBarOverContent()
     }
 
     /// Leaves bottom fade mode and hands visibility back to the slide transforms.

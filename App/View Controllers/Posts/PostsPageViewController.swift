@@ -2848,6 +2848,8 @@ extension PostsPageViewController: NavigationBarScrollTransitioning {
 
     var statusBarContentColor: UIColor? { statusBarContrastSampler.color }
 
+    var isStatusBarOverContent: Bool { postsView.immersiveModeManager.isStatusBarOverContent }
+
     var navigationBarContentColor: UIColor? { titleContrastSampler.color }
 
     var usesNavigationBarContentBlur: Bool { true }

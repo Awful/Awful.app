@@ -30,6 +30,12 @@ public protocol NavigationBarScrollTransitioning: AnyObject {
     /// the screen doesn't sample. The navigation controller derives the status bar style from it.
     var statusBarContentColor: UIColor? { get }
 
+    /// True while the screen has moved the bar out from under the status bar itself (immersive
+    /// mode), so the status bar sits over the content whatever the bar's scroll state. The
+    /// navigation controller then styles it from `statusBarContentColor` as it does once the
+    /// glass bar has gone transparent. Call `contentContrastDidChange()` when this changes.
+    var isStatusBarOverContent: Bool { get }
+
     /// Likewise for the content beneath the navigation bar (what the title is coloured for); the
     /// navigation controller points the content blur's trait at it. Call
     /// `contentContrastDidChange()` when either colour changes.
@@ -45,6 +51,8 @@ public extension NavigationBarScrollTransitioning {
     func updateGlassBarButtonGlyphs(color: UIColor?) {}
 
     var statusBarContentColor: UIColor? { nil }
+
+    var isStatusBarOverContent: Bool { false }
 
     var navigationBarContentColor: UIColor? { nil }
 
