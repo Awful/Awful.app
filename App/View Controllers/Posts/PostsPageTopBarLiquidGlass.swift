@@ -12,7 +12,7 @@ final class PostsPageTopBarLiquidGlass: UIView, PostsPageTopBarProtocol {
     private lazy var stackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [parentForumButton, previousPostsButton, scrollToEndButton])
         stackView.distribution = .fillEqually
-        stackView.spacing = 12
+        stackView.spacing = 8
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
@@ -52,8 +52,8 @@ final class PostsPageTopBarLiquidGlass: UIView, PostsPageTopBarProtocol {
         
         NSLayoutConstraint.activate([
             stackView.topAnchor.constraint(equalTo: topAnchor, constant: 8),
-            stackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            stackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
+            stackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12),
+            stackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12),
             stackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8),
 
             parentForumButton.heightAnchor.constraint(greaterThanOrEqualToConstant: 32),
@@ -88,10 +88,10 @@ final class PostsPageTopBarLiquidGlass: UIView, PostsPageTopBarProtocol {
 
             label = UILabel()
             label.translatesAutoresizingMaskIntoConstraints = false
-            label.font = UIFont.preferredFontForTextStyle(.footnote, sizeAdjustment: 0, weight: .medium)
+            label.font = UIFont.preferredFontForTextStyle(.footnote, sizeAdjustment: -0.5, weight: .medium)
             label.numberOfLines = 1
             label.adjustsFontSizeToFitWidth = true
-            label.minimumScaleFactor = 0.85
+            label.minimumScaleFactor = 0.75
             label.lineBreakMode = .byTruncatingTail
             label.textAlignment = .center
             label.isUserInteractionEnabled = false
@@ -109,8 +109,8 @@ final class PostsPageTopBarLiquidGlass: UIView, PostsPageTopBarProtocol {
                 glassView.topAnchor.constraint(equalTo: topAnchor),
                 glassView.bottomAnchor.constraint(equalTo: bottomAnchor),
 
-                label.leadingAnchor.constraint(equalTo: glassView.contentView.leadingAnchor, constant: 12),
-                label.trailingAnchor.constraint(equalTo: glassView.contentView.trailingAnchor, constant: -12),
+                label.leadingAnchor.constraint(equalTo: glassView.contentView.leadingAnchor, constant: 10),
+                label.trailingAnchor.constraint(equalTo: glassView.contentView.trailingAnchor, constant: -10),
                 label.topAnchor.constraint(equalTo: glassView.contentView.topAnchor, constant: 6),
                 label.bottomAnchor.constraint(equalTo: glassView.contentView.bottomAnchor, constant: -6),
 
