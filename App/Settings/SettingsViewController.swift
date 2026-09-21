@@ -288,9 +288,12 @@ struct SettingsContainerView: View {
             //
             // Under the transparent bar, the automatic edge effect resolved to the soft fade on
             // iOS 26 but to the hard cutoff on iOS 27 (as NavigationController.applyGlassRestingState
-            // handles for UIKit scroll views); ask for the fade.
+            // handles for UIKit scroll views); ask for the fade. The iPad sidebar bar is always
+            // opaque, so there is nothing to fade into: hide the effect there (as
+            // NavigationController.applySidebarAppearanceIfNeeded does for UIKit scroll views).
             core
                 .scrollEdgeEffectStyle(.soft, for: .top)
+                .scrollEdgeEffectHidden(isPad, for: .top)
                 .onScrollGeometryChange(for: CGFloat.self) { geometry in
                     geometry.contentOffset.y + geometry.contentInsets.top
                 } action: { _, offsetFromTop in

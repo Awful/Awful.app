@@ -1356,6 +1356,14 @@ final class NavigationController: UINavigationController, Themeable {
         view.tintColor = textColor
 
         if let topVC = topViewController {
+            // The sidebar bar is always opaque, so the system scroll-edge fade beneath it (the
+            // soft blur applyGlassRestingState asks for under the glass bar) has nothing to
+            // blend into; it just reads as a blurred band below the bar. Hide it. Don't force the
+            // view to load for it: the viewDidAppear pass catches a screen that isn't loaded yet.
+            if topVC.isViewLoaded {
+                (topVC as? NavigationBarScrollTransitioning)?.navigationBarScrollView?.topEdgeEffect.isHidden = true
+            }
+
             // Replace system bar button items with custom-view equivalents
             // that bypass the glass panel's vibrancy compositing.
             replaceSidebarBarButtonItems(for: topVC)
