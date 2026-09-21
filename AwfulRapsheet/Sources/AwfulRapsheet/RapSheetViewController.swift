@@ -244,6 +244,13 @@ public final class RapSheetViewController: ViewController {
                 item.hidesSharedBackground = !LiquidGlass.isEnabled
             }
         }
+        if #available(iOS 27.0, *) {
+            // iOS 27 evicts standard-priority items into an overflow menu when space is tight;
+            // keep the paging controls on the bar.
+            for item in [backItem, currentPageItem, forwardItem] {
+                item.visibilityPriority = .high
+            }
+        }
         updateToolbar()
         updateRightBarButtons()
 

@@ -876,7 +876,7 @@ final class PostsPageViewController: ViewController {
                 pageNumberView.totalPages = numberOfPages
             } else {
                 currentPageItem.title = "\(pageNumber) / \(numberOfPages)"
-                currentPageItem.setTitleTextAttributes([.font: UIFont.preferredFontForTextStyle(.body, weight: .regular, maximumPointSize: PageNumberView.maximumFontPointSize)], for: .normal)
+                currentPageItem.setTitleTextAttributes([.font: PageNumberView.font()], for: .normal)
             }
             currentPageItem.accessibilityLabel = "Page \(pageNumber) of \(numberOfPages)"
         } else {
@@ -1043,6 +1043,13 @@ final class PostsPageViewController: ViewController {
             let hide = !LiquidGlass.isEnabled
             for item in buttonItems {
                 item.hidesSharedBackground = hide
+            }
+        }
+        if #available(iOS 27.0, *) {
+            // iOS 27 evicts standard-priority items into an overflow menu when space is tight.
+            // Keep the paging controls on the bar; they share one implicit group, which inherits this.
+            for item in [backItem, currentPageItem, forwardItem] {
+                item.visibilityPriority = .high
             }
         }
     }

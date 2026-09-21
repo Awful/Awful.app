@@ -342,6 +342,13 @@ public final class SearchResultsViewController: HostingController<AnyView> {
                 item.hidesSharedBackground = !LiquidGlass.isEnabled
             }
         }
+        if #available(iOS 27.0, *) {
+            // iOS 27 evicts standard-priority items into an overflow menu when space is tight;
+            // keep the paging controls on the bar.
+            for item in [backItem, currentPageItem, forwardItem] {
+                item.visibilityPriority = .high
+            }
+        }
 
         // No `.receive(on:)` needed — the model is main-actor.
         Publishers.CombineLatest3(model.$currentPage, model.$totalPages, model.$isRestoring)

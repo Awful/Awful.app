@@ -12,9 +12,20 @@ final class PageNumberView: UIView {
     private static let heightModern: CGFloat = 39  // iOS 26+
     private static let heightLegacy: CGFloat = 44  // iOS < 26
 
-    /// Caps Dynamic Type growth so the label can't push the neighboring toolbar
-    /// buttons off-screen; the large content viewer covers accessibility sizes.
-    static let maximumFontPointSize: CGFloat = 22
+    /// The page count deliberately ignores Dynamic Type: at larger text sizes it grows wide
+    /// enough that iOS 27 evicts the neighbouring toolbar buttons into an overflow menu. This
+    /// is the default body size, so nothing changes at the default text setting; the large
+    /// content viewer (long-press) covers accessibility sizes.
+    static let fontPointSize: CGFloat = 17
+
+    /// The fixed-size font shared by the pill and the plain-title page item, in the theme's
+    /// rounded design when it asks for one (matching `UIFont.preferredFontForTextStyle`).
+    static func font() -> UIFont {
+        let font = UIFont.systemFont(ofSize: fontPointSize, weight: .regular)
+        guard Theme.defaultTheme().roundedFonts,
+              let rounded = font.fontDescriptor.withDesign(.rounded) else { return font }
+        return UIFont(descriptor: rounded, size: fontPointSize)
+    }
 
     private static let currentHeight: CGFloat = {
         if #available(iOS 26.0, *) {
@@ -28,7 +39,7 @@ final class PageNumberView: UIView {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textAlignment = .center
-        label.adjustsFontForContentSizeCategory = true
+        label.adjustsFontForContentSizeCategory = false
         label.adjustsFontSizeToFitWidth = true
         label.minimumScaleFactor = 0.7
         return label
@@ -91,7 +102,7 @@ final class PageNumberView: UIView {
     }
 
     private func applyFont() {
-        pageLabel.font = UIFont.preferredFontForTextStyle(.body, weight: .regular, maximumPointSize: Self.maximumFontPointSize)
+        pageLabel.font = Self.font()
     }
 
     @objc private func handleTap() {
@@ -139,14 +150,5 @@ final class PageNumberView: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
         invalidateIntrinsicContentSize()
-    }
-
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-
-        if traitCollection.preferredContentSizeCategory != previousTraitCollection?.preferredContentSizeCategory {
-            applyFont()
-            invalidateIntrinsicContentSize()
-        }
     }
 }
