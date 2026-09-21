@@ -75,7 +75,7 @@
           },
           "image-name" : "cute bg.svg",
           "name" : "cute bg",
-          "opacity" : 0.2,
+          "opacity" : 0.5,
           "position" : {
             "scale" : 1.02,
             "translation-in-points" : [

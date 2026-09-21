@@ -1,16 +1,17 @@
 {
   "images" : [
     {
+      "filename" : "search-thread@1x.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "view-in-thread@2x.png",
+      "filename" : "search-thread@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "view-in-thread@3x.png",
+      "filename" : "search-thread@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
