@@ -51,9 +51,12 @@ final class SidebarAlignmentTests: XCTestCase {
     /// used to tell the sidebar nav bar from the detail pane's.
     private static let sidebarMaxWidth: CGFloat = 350
     /// A title that couldn't be centred must sit no further than this from
-    /// the cluster it was slid up against: SidebarTitleView's 8pt cluster gap,
-    /// with a little room for measurement.
-    private static let pinnedGapMax: CGFloat = 12
+    /// the cluster it was slid up against. SidebarTitleView keeps its 8pt
+    /// cluster gap from the item's 44pt bar slot, while the frames measured
+    /// here are the 20pt glyphs centred in those slots, 12pt in from the slot
+    /// edge — so a pinned (or truncated, filling-the-span) title reads 20pt
+    /// from the nearest glyph, plus a little room for measurement.
+    private static let pinnedGapMax: CGFloat = 24
 
     private var app: XCUIApplication!
     private var measurements: [Measurement] = []
@@ -184,7 +187,55 @@ final class SidebarAlignmentTests: XCTestCase {
                     }
                 }
             }
+
+            // A second thread list with a short forum name, so the bar is
+            // measured with a title that fits untruncated as well as with the
+            // long one above.
+            if popToForums(), let cell = forumCell(containing: Self.shortForumName) {
+                cell.tap()
+                _ = app.navigationBars.firstMatch.waitForExistence(timeout: 5)
+                measureScreen("Thread list short (\(variant))", expectedTitleHints: [])
+            } else {
+                record("Thread list short (\(variant))", pane: "-", metric: "push",
+                       detail: "no forum containing \"\(Self.shortForumName)\" found; skipped", value: nil, ok: true)
+            }
         }
+    }
+
+    /// A forum with a short name, for the untruncated-title thread list. A
+    /// top-level forum, so it is in the list without expanding a category.
+    private static let shortForumName = "C-SPAM"
+
+    /// Pops the sidebar (or the iPhone's stack) back to the Forums root by
+    /// tapping Back until the bar's title is "Forums".
+    private func popToForums() -> Bool {
+        for _ in 0..<4 {
+            if titleElement(in: sidebarNavigationBar() ?? app.navigationBars.firstMatch, hints: ["Forums"])?.label == "Forums" {
+                return true
+            }
+            let bar = sidebarNavigationBar() ?? app.navigationBars.firstMatch
+            let back = bar.buttons.matching(NSPredicate(format: "label == 'Back' OR identifier == 'BackButton'")).firstMatch
+            guard back.waitForExistence(timeout: 2) else { return false }
+            back.tap()
+            usleep(600_000)
+        }
+        return false
+    }
+
+    /// The forum row whose name text contains `name` (the rows are custom
+    /// cells; the name is a static text inside), paging the list down to find
+    /// it (lists only expose rows on screen). Tapping the text taps the row.
+    private func forumCell(containing name: String) -> XCUIElement? {
+        let query = app.staticTexts.matching(NSPredicate(format: "label CONTAINS[c] %@", name))
+        for _ in 0..<8 {
+            let cell = query.firstMatch
+            if cell.exists, cell.isHittable { return cell }
+            let list = sidebarScrollableElement()
+                ?? [app.collectionViews, app.tables].map(\.firstMatch).first { $0.exists }
+            guard let list else { return nil }
+            list.swipeUp()
+        }
+        return nil
     }
 
     // MARK: Navigation
@@ -454,6 +505,7 @@ final class SidebarAlignmentTests: XCTestCase {
         // both still fail. Detail titles are the system's: same rule.
         let centers = panes.map(\.midX)
         var paneCenter = centers.min { abs(titleFrame.midX - $0) < abs(titleFrame.midX - $1) } ?? barFrame.midX
+        var pinnedNote = ""
         if abs(titleFrame.midX - paneCenter) > Self.horizontalTolerance {
             let leadEdge = buttons.filter { $0.frame.midX < paneCenter }.map(\.frame.maxX).max() ?? barFrame.minX
             let trailEdge = buttons.filter { $0.frame.midX > paneCenter }.map(\.frame.minX).min() ?? barFrame.maxX
@@ -464,6 +516,8 @@ final class SidebarAlignmentTests: XCTestCase {
                    value: nil, ok: true)
             if pinnedTrailing || pinnedLeading {
                 paneCenter = titleFrame.midX
+                pinnedNote = pinnedTrailing && pinnedLeading ? " (fills the span; truncated)"
+                    : pinnedTrailing ? " (pinned to trailing cluster)" : " (pinned to leading cluster)"
             }
         }
         // The pane whose center the verdict effectively used — margins and
@@ -473,7 +527,7 @@ final class SidebarAlignmentTests: XCTestCase {
         let chosenPane = panes.min { abs($0.midX - paneCenter) < abs($1.midX - paneCenter) } ?? barFrame
         let hOffset = titleFrame.midX - paneCenter
         let hOK = abs(hOffset) <= Self.horizontalTolerance
-        record(screen, pane: pane, metric: "title-h", detail: "\"\(title.label.prefix(30))\" center offset", value: hOffset, ok: hOK)
+        record(screen, pane: pane, metric: "title-h", detail: "\"\(title.label.prefix(30))\" center offset\(pinnedNote)", value: hOffset, ok: hOK)
         XCTAssertEqual(titleFrame.midX, paneCenter, accuracy: Self.horizontalTolerance,
                        "\(screen) \(pane): title horizontally off-center by \(fmt(hOffset))pt")
 
