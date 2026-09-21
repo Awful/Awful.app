@@ -337,6 +337,9 @@ final class PostsPageView: UIView {
         }
 
         tiltScrollManager.configure(scrollView: renderView.scrollView)
+        tiltScrollManager.didTiltScroll = { [weak self] in
+            self?.postsPageViewController?.noteScrollSinceRender()
+        }
 
         scrollViewDelegateMux = ScrollViewDelegateMultiplexer(scrollView: renderView.scrollView)
         scrollViewDelegateMux?.addDelegate(self)
@@ -712,6 +715,7 @@ extension PostsPageView: ScrollViewDelegateExtras {
 
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         willBeginDraggingContentOffset = scrollView.contentOffset
+        postsPageViewController?.noteScrollSinceRender()
 
         // The user is taking over: stop any restoration re-anchoring so it can't yank the
         // viewport back as embeds finish loading further down the page.
@@ -924,12 +928,19 @@ extension PostsPageView: ScrollViewDelegateExtras {
 
     @available(iOS 26.0, *)
     private func updateNavigationBarForScrollProgress(_ scrollView: UIScrollView) {
-        let progress = scrollView.navigationBarScrollProgress
-
         guard let viewController = postsPageViewController,
               let navController = viewController.navigationController as? NavigationController else {
             return
         }
+
+        // An empty or still-loading web view sits at offset 0 under the top inset we set ourselves
+        // (inset adjustment is `.never`), which the progress formula reads as fully scrolled and
+        // would flip the bar clear over the loading view; WebKit keeps nudging the offset for a
+        // few frames after the load finishes, too. Until someone or something scrolls the page,
+        // it is at the top.
+        let progress: CGFloat = viewController.navigationBarRestsAtTop
+            ? 0
+            : scrollView.navigationBarScrollProgress
 
         navController.updateNavigationBarTintForScrollProgress(NSNumber(value: Float(progress)))
 

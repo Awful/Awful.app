@@ -26,6 +26,11 @@ public extension UIScrollView {
         let deadZone: CGFloat = 4
         let transitionDistance: CGFloat = 30
 
+        // Nothing to scroll (e.g. a web view before its document loads) means nobody has scrolled.
+        if contentSize.height <= 0 {
+            return 0
+        }
+
         // Resting at the top means an offset of -adjustedContentInset.top.
         let distanceFromTop = contentOffset.y + adjustedContentInset.top
         if distanceFromTop <= deadZone {

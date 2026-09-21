@@ -108,6 +108,26 @@ final class PostsPageViewController: ViewController {
     let thread: AwfulThread
     private var webViewDidLoadOnce = false
 
+    /// True from the start of a render until the document has loaded and the loading view is gone.
+    /// While loading, the empty web view (offset 0 under a manually set top inset) reads as fully
+    /// scrolled, so the nav bar treats the page as resting at the top until this clears.
+    var isAwaitingRenderedContent: Bool { postsView.loadingView != nil || !webViewDidLoadOnce }
+
+    /// Whether anything has scrolled the page since the current document was rendered: the user
+    /// (drag, tilt), a keyboard or toolbar command, or a jump/restore we asked for. WebKit still
+    /// shuffles the offset for a few frames after `didFinish`, and those reads can look scrolled,
+    /// so until something really scrolls the bar stays at its opaque resting state.
+    private var hasScrolledSinceRender = false
+
+    /// The nav bar rests opaque at the top until the page has content and something has scrolled it.
+    var navigationBarRestsAtTop: Bool { isAwaitingRenderedContent || !hasScrolledSinceRender }
+
+    /// Marks that the page has been (or is about to be) scrolled on purpose. Call before any
+    /// programmatic scroll so the bar follows the offset it lands on.
+    func noteScrollSinceRender() {
+        hasScrolledSinceRender = true
+    }
+
     func threadActionsMenu() -> UIMenu {
         var children: [UIMenuElement] = [
             // Bookmark
@@ -561,6 +581,7 @@ final class PostsPageViewController: ViewController {
 
     private func renderPosts() {
         webViewDidLoadOnce = false
+        hasScrolledSinceRender = false
 
         var context: [String: Any] = [:]
 
@@ -1060,6 +1081,7 @@ final class PostsPageViewController: ViewController {
         loadingHoldTask?.cancel()
         loadingHoldTask = nil
         postsView.loadingView = nil
+        resyncNavigationBarScrollProgress()
     }
 
     /// Dismisses the loading view after a render or image-load completes, but if the first
@@ -1273,15 +1295,18 @@ final class PostsPageViewController: ViewController {
     }
 
     @objc private func scrollToBottom(_ sender: UIKeyCommand?) {
+        noteScrollSinceRender()
         let scrollView = postsView.renderView.scrollView
         scrollView.scrollRectToVisible(CGRect(x: 0, y: scrollView.contentSize.height - 1, width: 1, height: 1), animated: true)
     }
 
     @objc private func scrollToTop(_ sender: UIKeyCommand?) {
+        noteScrollSinceRender()
         postsView.renderView.scrollView.scrollRectToVisible(CGRect(x: 0, y: 0, width: 1, height: 1), animated: true)
     }
 
     @objc private func scrollUp(_ sender: UIKeyCommand) {
+        noteScrollSinceRender()
         let scrollView = postsView.renderView.scrollView
         let proposedOffset = max(scrollView.contentOffset.y - 80, 0)
         if proposedOffset > 0 {
@@ -1293,6 +1318,7 @@ final class PostsPageViewController: ViewController {
     }
 
     @objc private func scrollDown(_ sender: UIKeyCommand) {
+        noteScrollSinceRender()
         let scrollView = postsView.renderView.scrollView
         let proposedOffset = scrollView.contentOffset.y + 80
         if proposedOffset > scrollView.contentSize.height - scrollView.bounds.height {
@@ -1304,6 +1330,7 @@ final class PostsPageViewController: ViewController {
     }
 
     @objc private func pageUp(_ sender: UIKeyCommand) {
+        noteScrollSinceRender()
         let scrollView = postsView.renderView.scrollView
         let proposedOffset = scrollView.contentOffset.y - (scrollView.bounds.height - 80)
         let newOffset = CGPoint(x: scrollView.contentOffset.x, y: max(proposedOffset, 0))
@@ -1311,6 +1338,7 @@ final class PostsPageViewController: ViewController {
     }
 
     @objc private func pageDown(_ sender: UIKeyCommand) {
+        noteScrollSinceRender()
         let scrollView = postsView.renderView.scrollView
         let proposedOffset = scrollView.contentOffset.y + (scrollView.bounds.height - 80)
         if proposedOffset > scrollView.contentSize.height - scrollView.bounds.height {
@@ -2765,24 +2793,33 @@ extension PostsPageViewController: RenderViewDelegate {
         }
 
         if let postID = jumpToPostIDAfterLoading {
+            noteScrollSinceRender()
             postsView.renderView.jumpToPost(identifiedBy: postID, topOffset: postsView.topInsetForPostFraming)
         } else if let anchorID = anchorPostIDAfterLoading,
                   posts.contains(where: { $0.postID == anchorID })
         {
             // (chrome - deltaY) reproduces the saved scroll position. Staged values stay
             // set so the tweet-loaded callback can re-apply after layout shifts.
+            noteScrollSinceRender()
             let delta = anchorDeltaAfterLoading ?? 0
             postsView.renderView.jumpToPost(
                 identifiedBy: anchorID,
                 topOffset: postsView.topInsetForPostFraming - delta
             )
         } else if let newFractionalOffset = scrollToFractionAfterLoading {
+            if newFractionalOffset > 0 {
+                noteScrollSinceRender()
+            }
             var fractionalOffset = postsView.renderView.scrollView.fractionalContentOffset
             fractionalOffset.y = newFractionalOffset
             postsView.renderView.scrollToFractionalOffset(fractionalOffset)
         }
 
         dismissLoadingViewAfterRender()
+
+        // The bar sat at the opaque resting state while loading; if a restore is in flight,
+        // follow the offset it lands on.
+        resyncNavigationBarScrollProgress()
 
         // Capture an initial anchor so backgrounding before any scroll still produces an anchored save.
         refreshRestorationAnchor()
@@ -2800,6 +2837,7 @@ extension PostsPageViewController: RenderViewDelegate {
 
         case is RenderView.BuiltInMessage.DidFinishLoadingTweets:
             if let postID = jumpToPostIDAfterLoading {
+                noteScrollSinceRender()
                 postsView.renderView.jumpToPost(identifiedBy: postID, topOffset: postsView.topInsetForPostFraming)
             } else if let anchorID = anchorPostIDAfterLoading,
                       posts.contains(where: { $0.postID == anchorID })
@@ -2810,12 +2848,14 @@ extension PostsPageViewController: RenderViewDelegate {
                 // don't fall through to the drifting fraction fallback below. The staged
                 // target is abandoned in `cancelPendingScrollRestoration()` once the user
                 // begins dragging, so this never fights a user scroll.
+                noteScrollSinceRender()
                 let delta = anchorDeltaAfterLoading ?? 0
                 postsView.renderView.jumpToPost(
                     identifiedBy: anchorID,
                     topOffset: postsView.topInsetForPostFraming - delta
                 )
             } else if let fraction = scrollToFractionAfterLoading, fraction > 0 {
+                noteScrollSinceRender()
                 var offset = postsView.renderView.scrollView.fractionalContentOffset
                 offset.y = fraction
                 postsView.renderView.scrollToFractionalOffset(offset)
@@ -2858,6 +2898,7 @@ extension PostsPageViewController: RenderViewDelegate {
                 if i < hiddenPosts {
                     showHiddenSeenPosts()
                 }
+                noteScrollSinceRender()
                 postsView.renderView.jumpToPost(identifiedBy: postID, animated: true, topOffset: postsView.topInsetForPostFraming)
             } else {
                 AppDelegate.instance.open(route: route)

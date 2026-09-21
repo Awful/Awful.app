@@ -47,6 +47,10 @@ public final class TiltScrollManager: NSObject {
 
     private weak var scrollView: UIScrollView?
 
+    /// Called whenever tilt moves the scroll view. Tilt scrolls without a drag, so hosts that
+    /// distinguish user scrolling from layout-driven offset changes need this to know.
+    public var didTiltScroll: (() -> Void)?
+
     public func configure(scrollView: UIScrollView) {
         self.scrollView = scrollView
     }
@@ -261,6 +265,7 @@ public final class TiltScrollManager: NSObject {
         let newY = (scrollView.contentOffset.y + velocity * CGFloat(dt)).clamp(minY...maxY)
         guard newY != scrollView.contentOffset.y else { return }
         scrollView.contentOffset = CGPoint(x: scrollView.contentOffset.x, y: newY)
+        didTiltScroll?()
     }
 }
 
