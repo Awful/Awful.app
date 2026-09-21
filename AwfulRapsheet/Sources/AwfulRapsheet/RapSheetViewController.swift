@@ -14,7 +14,7 @@ private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: 
 
 /// Displays a list of probations and bans, rendered in a web view (like the posts page). Serves as both the
 /// Leper's Colony tab (`user == nil`) and a single user's Rap Sheet (`user != nil`).
-public final class RapSheetViewController: ViewController {
+public final class RapSheetViewController: ViewController, ContentRefreshable {
 
     private let user: User?
 
@@ -352,6 +352,10 @@ public final class RapSheetViewController: ViewController {
         guard !isLoading else { return }
         pageCache.removeAll()
         Task { await load(max(page, 1)) }
+    }
+
+    public func refreshContent() {
+        refresh()
     }
 
     private func load(_ pageToLoad: Int, showsLoadingOverlay: Bool = true) async {

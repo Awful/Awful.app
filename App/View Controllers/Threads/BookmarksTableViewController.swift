@@ -584,6 +584,7 @@ final class BookmarksTableViewController: HostedCollectionViewController {
     private var dataSource: ThreadListDataSource?
     @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
     @FoilDefaultStorage(Settings.handoffEnabled) private var handoffEnabled
+    private var isRefreshing = false
     private var latestPage = 0
     private var loadMoreFooter: LoadMoreCollectionFooter?
     private let managedObjectContext: NSManagedObjectContext
@@ -978,6 +979,7 @@ final class BookmarksTableViewController: HostedCollectionViewController {
                 RefreshMinder.sharedMinder.didRefresh(.announcements)
 
                 await MainActor.run {
+                    isRefreshing = false
                     stopAnimatingPullToRefresh()
 
                     if threads.count >= 40 {
@@ -994,6 +996,7 @@ final class BookmarksTableViewController: HostedCollectionViewController {
                         let alert = UIAlertController(networkError: error)
                         present(alert, animated: true)
                     }
+                    isRefreshing = false
                     stopAnimatingPullToRefresh()
                     loadMoreFooter?.didFinish()
                 }
@@ -1161,6 +1164,9 @@ final class BookmarksTableViewController: HostedCollectionViewController {
     // MARK: Actions
 
     private func refresh() {
+        // A tab shortcut can ask at the same moment `viewDidAppear` decides the list is stale.
+        guard !isRefreshing else { return }
+        isRefreshing = true
         startAnimatingPullToRefresh()
         loadPage(page: 1)
     }
@@ -1242,6 +1248,12 @@ extension BookmarksTableViewController {
             configuration.preferredMenuElementOrder = .fixed
         }
         return configuration
+    }
+}
+
+extension BookmarksTableViewController: ContentRefreshable {
+    func refreshContent() {
+        refresh()
     }
 }
 

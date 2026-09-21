@@ -11,6 +11,9 @@ final class RootTabBarController: UITabBarController, UITabBarControllerDelegate
 
     @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
 
+    /// Called when the user taps the tab that's already selected. UIKit pops that tab to its root; the stack then scrolls the root's list back to the top.
+    var onReselectTab: ((UIViewController) -> Void)?
+
     /// Returns a tab bar controller whose tab bar is an instance of `TabBar_FixiOS11iPadLayout`.
     static func makeWithTabBarFixedForiOS11iPadLayout() -> RootTabBarController {
         let storyboard = UIStoryboard(name: "RootTabBarController", bundle: Bundle(for: RootTabBarController.self))
@@ -67,6 +70,16 @@ final class RootTabBarController: UITabBarController, UITabBarControllerDelegate
     @available(iOS 26.0, *)
     private func updateTabBarBackplate() {
         tabBar.setLegacyOpaqueBackground(color: LiquidGlass.isEnabled ? nil : theme["tabBarBackgroundColor"])
+    }
+
+    func tabBarController(
+        _ tabBarController: UITabBarController,
+        shouldSelect viewController: UIViewController
+    ) -> Bool {
+        if viewController === tabBarController.selectedViewController {
+            onReselectTab?(viewController)
+        }
+        return true
     }
 
     // called whenever a tab button is tapped

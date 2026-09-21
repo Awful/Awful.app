@@ -402,7 +402,7 @@ final class CompositionViewController: ViewController, ModernToolbarActionHandli
 
     override var keyCommands: [UIKeyCommand]? {
         return [
-            UIKeyCommand(action: #selector(cancel(_:)), input: UIKeyCommand.inputEscape, discoverabilityTitle: "Cancel"),
+            KeyboardShortcut.cancelComposition.makeKeyCommand(action: #selector(cancel(_:))),
         ]
     }
 }

@@ -16,7 +16,7 @@ import SwiftUI
 
 private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "ForumsTableViewController")
 
-final class ForumsTableViewController: CollectionViewController {
+final class ForumsTableViewController: CollectionViewController, ContentRefreshable {
 
     private var cancellables: Set<AnyCancellable> = []
     @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
@@ -238,6 +238,10 @@ final class ForumsTableViewController: CollectionViewController {
         if !listDataSource.hasForums || RefreshMinder.sharedMinder.shouldRefresh(.forumList) {
             refresh()
         }
+    }
+
+    func refreshContent() {
+        refresh()
     }
 
     private func refresh() {

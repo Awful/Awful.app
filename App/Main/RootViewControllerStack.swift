@@ -87,6 +87,8 @@ final class RootViewControllerStack: NSObject, AwfulSplitViewControllerDelegate 
         }
 
         updateMessagesTabPresence()
+
+        (tabBarController as? RootTabBarController)?.onReselectTab = { [weak self] in self?.scrollTabToTop($0) }
         
         $hideSidebarInLandscape
             .dropFirst()
@@ -403,6 +405,11 @@ extension RootViewControllerStack {
         guard !svc.isCollapsed else { return }
         switch displayMode {
         case .secondaryOnly:
+            // The sidebar's lists claim first responder as they appear (for undo) and let it go
+            // as they leave, which would strand the thread's own key commands until the web view
+            // is tapped. Hand first responder to the thread as the sidebar goes.
+            topPostsPageViewController?.becomeFirstResponder()
+
             // Outside a size transition, only the user's sidebar button dismisses a
             // *pinned* sidebar: remember that choice — including across backgrounding —
             // until they summon the sidebar again.
@@ -470,6 +477,112 @@ extension RootViewControllerStack {
         })
     }
     
+}
+
+// MARK: - Keyboard shortcuts and tab bar actions
+
+extension RootViewControllerStack {
+
+    /// App-wide key commands stay out of the way of anything presented over the root: a composer, a popover, the shortcuts sheet itself.
+    var canHandleKeyCommands: Bool {
+        rootViewController.presentedViewController == nil
+    }
+
+    /// Titles for the ⌘1…⌘n tab shortcuts, in tab order.
+    var sidebarTabTitles: [String] {
+        (tabBarController.viewControllers ?? []).enumerated().map { index, tab in
+            let root = (tab as? UINavigationController)?.viewControllers.first ?? tab
+            return root.title ?? root.tabBarItem.title ?? "Tab \(index + 1)"
+        }
+    }
+
+    var hasSettingsTab: Bool {
+        settingsTab != nil
+    }
+
+    private var settingsTab: UIViewController? {
+        tabBarController.viewControllers?.first {
+            ($0 as? UINavigationController)?.viewControllers.first is SettingsViewController
+        }
+    }
+
+    var canToggleSidebar: Bool {
+        !splitViewController.isCollapsed
+    }
+
+    var isSidebarVisible: Bool {
+        [.oneBesideSecondary, .oneOverSecondary].contains(splitViewController.displayMode)
+    }
+
+    /// Refreshes what the user is reading: the detail column's thread or message when it has one, otherwise the top of the sidebar's stack.
+    func refreshFocusedContent() {
+        if !splitViewController.isCollapsed,
+           let detail = detailNavigationController?.topViewController as? ContentRefreshable
+        {
+            detail.refreshContent()
+        } else if let top = primaryNavigationController.topViewController as? ContentRefreshable {
+            top.refreshContent()
+        }
+    }
+
+    /// Refreshes the list showing in the selected sidebar tab, skipping a thread or message pushed above it in a collapsed stack.
+    func refreshSidebar() {
+        refreshList(in: primaryNavigationController)
+    }
+
+    /// Selects a tab as tapping it would, brings the sidebar on screen, and refreshes the tab's list.
+    func selectSidebarTab(at index: Int) {
+        guard let tabs = tabBarController.viewControllers, tabs.indices.contains(index) else { return }
+        let tab = tabs[index]
+        tabBarController.selectedViewController = tab
+        splitViewController.showPrimaryViewController()
+        if let nav = tab as? UINavigationController {
+            refreshList(in: nav)
+        }
+    }
+
+    func selectSettingsTab() {
+        guard let settingsTab else { return }
+        tabBarController.selectedViewController = settingsTab
+        splitViewController.showPrimaryViewController()
+    }
+
+    /// Mirrors the sidebar toggle buttons: dismisses an overlay, unpins a pinned sidebar (the split view delegate remembers that), or summons a hidden one.
+    func toggleSidebar() {
+        let svc = splitViewController
+        guard !svc.isCollapsed else { return }
+        switch svc.displayMode {
+        case .oneOverSecondary:
+            svc.hidePrimaryViewController()
+        case .oneBesideSecondary:
+            UIView.animate(withDuration: 0.25) { svc.preferredDisplayMode = .secondaryOnly }
+        default:
+            svc.showPrimaryViewController()
+        }
+    }
+
+    func presentKeyboardShortcuts() {
+        guard rootViewController.presentedViewController == nil else { return }
+        rootViewController.present(KeyboardShortcutsViewController.makeSheet(), animated: true)
+    }
+
+    /// Re-tapping the selected tab: UIKit pops the tab to its root, and the root's list goes back to the top.
+    func scrollTabToTop(_ tab: UIViewController) {
+        let root = (tab as? UINavigationController)?.viewControllers.first ?? tab
+        DispatchQueue.main.async {
+            (root as? ScrollableToTop)?.scrollToTop(animated: true)
+        }
+    }
+
+    private func refreshList(in navigationController: UINavigationController) {
+        for viewController in navigationController.viewControllers.reversed() {
+            if viewController is HasSplitViewPreference { continue }
+            if let refreshable = viewController as? ContentRefreshable {
+                refreshable.refreshContent()
+                return
+            }
+        }
+    }
 }
 
 protocol HasSplitViewPreference {

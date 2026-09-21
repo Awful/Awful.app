@@ -13,16 +13,31 @@ final class PostsPageSettingsViewController: HostingController<PostsPageSettings
     /// tilt scroll manager adopts the device's current pose as neutral.
     var tiltScrollRecalibrate: (() -> Void)?
 
-    init() {
+    /// Set by the presenter; called once the popover has closed after the user taps
+    /// "Keyboard Shortcuts…", so the presenter can put up the reference sheet.
+    var showKeyboardShortcuts: (() -> Void)?
+
+    /// - Parameter showsKeyboardShortcuts: Whether to offer the "Keyboard Shortcuts…" row at all.
+    init(showsKeyboardShortcuts: Bool = false) {
         // Allows indirect passing of `self` into root view actions before super.init().
         class UnownedBox {
             unowned var contents: PostsPageSettingsViewController!
         }
         let box = UnownedBox()
 
+        var showKeyboardShortcutsAction: (() -> Void)?
+        if showsKeyboardShortcuts {
+            showKeyboardShortcutsAction = {
+                // Grab the handler first: this controller is gone by the time the dismissal completes.
+                let handler = box.contents.showKeyboardShortcuts
+                box.contents.dismiss(animated: true, completion: handler)
+            }
+        }
+
         super.init(rootView: PostsPageSettingsView(
             dismiss: { box.contents.dismiss(animated: true) },
-            recalibrateTiltScroll: { box.contents.tiltScrollRecalibrate?() }
+            recalibrateTiltScroll: { box.contents.tiltScrollRecalibrate?() },
+            showKeyboardShortcuts: showKeyboardShortcutsAction
         ))
         box.contents = self
 

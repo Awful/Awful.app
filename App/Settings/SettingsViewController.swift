@@ -40,6 +40,7 @@ final class SettingsViewController: HostingController<SettingsContainerView> {
             hasRegularSizeClassInLandscape: UIDevice.current.userInterfaceIdiom == .pad || UIScreen.main.scale > 2,
             isMac: ProcessInfo.processInfo.isMacCatalystApp,
             isPad: UIDevice.current.userInterfaceIdiom == .pad,
+            keyboardShortcutSections: KeyboardShortcut.referenceSections,
             logOut: { AppDelegate.instance.logOut() },
             managedObjectContext: managedObjectContext,
             onScrollOffsetFromTop: { box.contents.updateNavigationBarForScrollOffset($0) },
@@ -80,6 +81,7 @@ final class SettingsViewController: HostingController<SettingsContainerView> {
             hasRegularSizeClassInLandscape: rootView.hasRegularSizeClassInLandscape,
             isMac: rootView.isMac,
             isPad: rootView.isPad,
+            keyboardShortcutSections: rootView.keyboardShortcutSections,
             logOut: rootView.logOut,
             managedObjectContext: rootView.managedObjectContext,
             onScrollOffsetFromTop: rootView.onScrollOffsetFromTop,
@@ -270,6 +272,7 @@ struct SettingsContainerView: View {
     let hasRegularSizeClassInLandscape: Bool
     let isMac: Bool
     let isPad: Bool
+    let keyboardShortcutSections: [KeyboardShortcutSection]
     let logOut: () -> Void
     let managedObjectContext: NSManagedObjectContext
     let onScrollOffsetFromTop: (CGFloat) -> Void
@@ -311,6 +314,7 @@ struct SettingsContainerView: View {
             hasRegularSizeClassInLandscape: hasRegularSizeClassInLandscape,
             isMac: isMac,
             isPad: isPad,
+            keyboardShortcutSections: keyboardShortcutSections,
             logOut: logOut,
             resetSettings: resetSettings
         )

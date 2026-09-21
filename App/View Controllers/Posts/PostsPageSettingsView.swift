@@ -21,8 +21,11 @@ struct PostsPageSettingsView: View {
     /// Called when the user taps "Set Zero Point" so the tilt scroll manager adopts the device's current pose as neutral.
     let recalibrateTiltScroll: () -> Void
 
+    /// Called when the user taps "Keyboard Shortcuts…"; nil leaves the row out (iPhone).
+    let showKeyboardShortcuts: (() -> Void)?
+
     var body: some View {
-        PostsPageSettingsForm(dismiss: dismiss, recalibrateTiltScroll: recalibrateTiltScroll)
+        PostsPageSettingsForm(dismiss: dismiss, recalibrateTiltScroll: recalibrateTiltScroll, showKeyboardShortcuts: showKeyboardShortcuts)
             .themed()
     }
 }
@@ -34,6 +37,7 @@ private struct PostsPageSettingsForm: View {
 
     let dismiss: () -> Void
     let recalibrateTiltScroll: () -> Void
+    let showKeyboardShortcuts: (() -> Void)?
 
     @AppStorage(Settings.autoDarkTheme) private var automaticDarkMode
     @AppStorage(Settings.darkMode) private var darkMode
@@ -88,6 +92,17 @@ private struct PostsPageSettingsForm: View {
                     performHapticFeedback()
                     recalibrateTiltScroll()
                 })
+
+                if let showKeyboardShortcuts {
+                    // The hosting controller closes the popover before the shortcuts sheet comes up.
+                    Button {
+                        performHapticFeedback()
+                        showKeyboardShortcuts()
+                    } label: {
+                        Text("Keyboard Shortcuts…")
+                            .frame(maxWidth: .infinity, minHeight: 44)
+                    }
+                }
             }
             .tint(theme[color: "settingsSwitchColor"])
             .padding(.horizontal, 16)

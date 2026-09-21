@@ -27,6 +27,7 @@ public struct SettingsView: View {
     let hasRegularSizeClassInLandscape: Bool
     let isMac: Bool
     let isPad: Bool
+    let keyboardShortcutSections: [KeyboardShortcutSection]
     let logOut: () -> Void
     let resetSettings: () -> Void
     @Environment(\.theme) var theme
@@ -43,6 +44,7 @@ public struct SettingsView: View {
         hasRegularSizeClassInLandscape: Bool,
         isMac: Bool,
         isPad: Bool,
+        keyboardShortcutSections: [KeyboardShortcutSection],
         logOut: @escaping () -> Void,
         resetSettings: @escaping () -> Void
     ) {
@@ -60,6 +62,7 @@ public struct SettingsView: View {
         self.hasRegularSizeClassInLandscape = hasRegularSizeClassInLandscape
         self.isMac = isMac
         self.isPad = isPad
+        self.keyboardShortcutSections = keyboardShortcutSections
         self.logOut = logOut
         self.resetSettings = resetSettings
     }
@@ -85,6 +88,9 @@ public struct SettingsView: View {
             }
             TabsSection()
             DataManagementSection(cacheSizeText: cacheSizeText, emptyCache: emptyCache, resetSettings: resetSettings)
+            if isPad || isMac {
+                KeyboardShortcutsSection(sections: keyboardShortcutSections)
+            }
             AcknowledgementsSection()
         }
         .backport.fontDesign(theme.roundedFonts ? .rounded : nil)
@@ -524,6 +530,25 @@ private struct DataManagementSection: View {
     }
 }
 
+private struct KeyboardShortcutsSection: View {
+    let sections: [KeyboardShortcutSection]
+    @Environment(\.theme) private var theme
+
+    var body: some View {
+        Section {
+            NavigationLink("Keyboard Shortcuts", bundle: .module) {
+                KeyboardShortcutsView(sections: sections)
+                    .navigationTitle("Keyboard Shortcuts", bundle: .module)
+                    .environment(\.theme, theme) // Not inherited?
+            }
+        } header: {
+            Text("Keyboard", bundle: .module)
+                .header()
+        }
+        .section()
+    }
+}
+
 private struct AcknowledgementsSection: View {
     @Environment(\.theme) private var theme
 
@@ -604,6 +629,11 @@ private struct SectionModifier: ViewModifier {
             hasRegularSizeClassInLandscape: true,
             isMac: false,
             isPad: true,
+            keyboardShortcutSections: [
+                KeyboardShortcutSection(title: "General", shortcuts: [
+                    KeyboardShortcutRow(title: "Refresh the detail pane", keys: "⌘R"),
+                ]),
+            ],
             logOut: { print("logging out") },
             resetSettings: { print("resetting settings") }
         )

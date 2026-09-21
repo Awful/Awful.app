@@ -25,6 +25,9 @@
 		1C16FBA81CB5C62C00C88BD1 /* TextAttachment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBA71CB5C62C00C88BD1 /* TextAttachment.swift */; };
 		1C16FBAA1CB5D38700C88BD1 /* CompositionInputAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBA91CB5D38700C88BD1 /* CompositionInputAccessoryView.swift */; };
 		1C16FBAC1CB8578C00C88BD1 /* RefreshMinder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBAB1CB8578C00C88BD1 /* RefreshMinder.swift */; };
+		ACF0FEB1000000000000FE02 /* KeyboardShortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACF0FEB1000000000000FE01 /* KeyboardShortcuts.swift */; };
+		ACF0FEB1000000000000FE04 /* KeyboardShortcutsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACF0FEB1000000000000FE03 /* KeyboardShortcutsViewController.swift */; };
+		ACF0FEB1000000000000FE06 /* AppDelegate+KeyCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACF0FEB1000000000000FE05 /* AppDelegate+KeyCommands.swift */; };
 		1C16FBB21CB86ACD00C88BD1 /* EmptyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBB11CB86ACD00C88BD1 /* EmptyViewController.swift */; };
 		1C16FBB41CB88CFE00C88BD1 /* NewPrivateMessageFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBB31CB88CFE00C88BD1 /* NewPrivateMessageFieldView.swift */; };
 		1C16FBBA1CB8961F00C88BD1 /* ImageURLProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBB91CB8961F00C88BD1 /* ImageURLProtocol.swift */; };
@@ -371,6 +374,9 @@
 		1C16FBA71CB5C62C00C88BD1 /* TextAttachment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextAttachment.swift; sourceTree = "<group>"; };
 		1C16FBA91CB5D38700C88BD1 /* CompositionInputAccessoryView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompositionInputAccessoryView.swift; sourceTree = "<group>"; };
 		1C16FBAB1CB8578C00C88BD1 /* RefreshMinder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RefreshMinder.swift; sourceTree = "<group>"; };
+		ACF0FEB1000000000000FE01 /* KeyboardShortcuts.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyboardShortcuts.swift; sourceTree = "<group>"; };
+		ACF0FEB1000000000000FE03 /* KeyboardShortcutsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyboardShortcutsViewController.swift; sourceTree = "<group>"; };
+		ACF0FEB1000000000000FE05 /* AppDelegate+KeyCommands.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AppDelegate+KeyCommands.swift"; sourceTree = "<group>"; };
 		1C16FBB11CB86ACD00C88BD1 /* EmptyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmptyViewController.swift; sourceTree = "<group>"; };
 		1C16FBB31CB88CFE00C88BD1 /* NewPrivateMessageFieldView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewPrivateMessageFieldView.swift; sourceTree = "<group>"; };
 		1C16FBB91CB8961F00C88BD1 /* ImageURLProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageURLProtocol.swift; sourceTree = "<group>"; };
@@ -731,6 +737,7 @@
 				2D3D25F82F85E50500862513 /* RestorableLocation.swift */,
 				2D3D25FA2F85E50500862514 /* SceneDelegate.swift */,
 				1C2C1F131CEE90D900CD27DD /* AppDelegate.swift */,
+				ACF0FEB1000000000000FE05 /* AppDelegate+KeyCommands.swift */,
 				1CBE1B1119CAAFA200510187 /* AwfulSplitViewController.swift */,
 				1C220E3C2B815AFC00DA92B0 /* Bundle+.swift */,
 				1C4506C31A2BAB3800767306 /* Handoff.swift */,
@@ -826,6 +833,8 @@
 				1C25AC441F5377B100977D6F /* ManagedObjectObserver.swift */,
 				1CDC53D921FCF38F0086BD2B /* OpenCopiedURLController.swift */,
 				1C3E1818224EF97D00BD88E5 /* PostedSmilie.swift */,
+				ACF0FEB1000000000000FE01 /* KeyboardShortcuts.swift */,
+				ACF0FEB1000000000000FE03 /* KeyboardShortcutsViewController.swift */,
 				1C16FBAB1CB8578C00C88BD1 /* RefreshMinder.swift */,
 				1C453F45233849C2007AC6CD /* SafariActivity.swift */,
 				1C8F67F3222105E4007E61ED /* StencilEnvironment.swift */,
@@ -1808,6 +1817,7 @@
 				1C2C1F101CE4131000CD27DD /* UploadImageAttachments.swift in Sources */,
 				1C16FBBE1CB94D5100C88BD1 /* ThreadTagPickerLayout.swift in Sources */,
 				1C2C1F141CEE90D900CD27DD /* AppDelegate.swift in Sources */,
+				ACF0FEB1000000000000FE06 /* AppDelegate+KeyCommands.swift in Sources */,
 				1CF6786B201E751D009A9640 /* MessageListDataSource.swift in Sources */,
 				1C5C81BF22DA336A00EFD8A9 /* ChromeActivity.swift in Sources */,
 				2DDCCE9F2F77A73E0011BCA2 /* CompositionToolbarContainer.swift in Sources */,
@@ -1906,6 +1916,8 @@
 				1C16FBB41CB88CFE00C88BD1 /* NewPrivateMessageFieldView.swift in Sources */,
 				1C0D7FFC1CF0A7A3003EE2D1 /* AwfulURLRouter.swift in Sources */,
 				1C16FBAC1CB8578C00C88BD1 /* RefreshMinder.swift in Sources */,
+				ACF0FEB1000000000000FE02 /* KeyboardShortcuts.swift in Sources */,
+				ACF0FEB1000000000000FE04 /* KeyboardShortcutsViewController.swift in Sources */,
 				1C8F6809222B7940007E61ED /* SecondaryThreadTagPickerCell.swift in Sources */,
 				1C16FBA81CB5C62C00C88BD1 /* TextAttachment.swift in Sources */,
 				1C453EDE2336B694007AC6CD /* UITextView+Selections.swift in Sources */,

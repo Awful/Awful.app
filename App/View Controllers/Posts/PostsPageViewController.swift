@@ -784,9 +784,12 @@ final class PostsPageViewController: ViewController {
         let item = UIBarButtonItem(primaryAction: UIAction(
             image: UIImage(named: "page-settings"),
             handler: { [unowned self] action in
-                let settings = PostsPageSettingsViewController()
+                let settings = PostsPageSettingsViewController(showsKeyboardShortcuts: Self.advertisesKeyboardShortcuts)
                 settings.tiltScrollRecalibrate = { [weak self] in
                     self?.postsView.tiltScrollManager.recalibrate()
+                }
+                settings.showKeyboardShortcuts = { [weak self] in
+                    self?.present(KeyboardShortcutsViewController.makeSheet(), animated: true)
                 }
                 self.present(settings, animated: true)
 
@@ -801,6 +804,9 @@ final class PostsPageViewController: ViewController {
         }
         return item
     }()
+
+    /// Where the Keyboard Shortcuts link is worth the room in the settings popover: hardware keyboards are the norm on Mac and common on iPad. (The shortcuts themselves work anywhere a keyboard is attached.)
+    private static let advertisesKeyboardShortcuts = UIDevice.current.userInterfaceIdiom == .pad || ProcessInfo.processInfo.isMacCatalystApp
 
     private lazy var backItem: UIBarButtonItem = {
         let item = UIBarButtonItem(primaryAction: UIAction(
@@ -830,13 +836,7 @@ final class PostsPageViewController: ViewController {
 
     private lazy var currentPageItem: UIBarButtonItem = {
         let item = UIBarButtonItem(primaryAction: UIAction { [unowned self] action in
-            guard self.postsView.loadingView == nil else { return }
-            let selectotron = Selectotron(postsViewController: self)
-            self.present(selectotron, animated: true)
-
-            if let popover = selectotron.popoverPresentationController {
-                popover.barButtonItem = action.sender as? UIBarButtonItem
-            }
+            self.showPagePicker(anchoredTo: action.sender as? UIBarButtonItem ?? self.currentPageItem)
         })
 
         item.accessibilityHint = "Opens page picker"
@@ -1230,6 +1230,43 @@ final class PostsPageViewController: ViewController {
         loadPage(.specific(pageNumber + 1), updatingCache: true, updatingLastReadPost: true)
     }
 
+    @objc private func loadFirstPage(_ sender: UIKeyCommand) {
+        if enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
+        guard case .specific(let pageNumber)? = page, pageNumber > 1 else { return }
+        loadPage(.first, updatingCache: true, updatingLastReadPost: true)
+    }
+
+    @objc private func loadLastPage(_ sender: UIKeyCommand) {
+        if enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
+        guard case .specific(let pageNumber)? = page, pageNumber < numberOfPages else { return }
+        loadPage(.last, updatingCache: true, updatingLastReadPost: true)
+    }
+
+    @objc private func showPagePicker(_ sender: UIKeyCommand) {
+        // A popover may already be up (the responder chain still reaches here through the web view).
+        guard presentedViewController == nil else { return }
+        // Endless scrolling hides the page counter, so the picker hangs off the settings button instead.
+        showPagePicker(anchoredTo: endlessScrollPosts ? settingsItem : currentPageItem)
+    }
+
+    private func showPagePicker(anchoredTo item: UIBarButtonItem) {
+        guard postsView.loadingView == nil else { return }
+        let selectotron = Selectotron(postsViewController: self)
+        present(selectotron, animated: true)
+
+        if let popover = selectotron.popoverPresentationController {
+            popover.barButtonItem = item
+        }
+    }
+
+    @objc private func toggleBookmark(_ sender: UIKeyCommand) {
+        performBookmarkToggle()
+    }
+
     private func showHiddenSeenPosts() {
         // Defensive: if `posts` was replaced out from under a nonzero `hiddenPosts`, reveal
         // what's actually there rather than trap.
@@ -1607,6 +1644,10 @@ final class PostsPageViewController: ViewController {
     }
 
     private func bookmark(action: UIAction) {
+        performBookmarkToggle()
+    }
+
+    private func performBookmarkToggle() {
         if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
@@ -2637,6 +2678,11 @@ final class PostsPageViewController: ViewController {
         configureUserActivityIfPossible()
         postsView.tiltScrollManager.viewDidAppear()
 
+        // Claim first responder so this screen's key commands work without a tap on the web
+        // view. (The sidebar lists claim it as they appear, for undo, which otherwise leaves
+        // the thread out of the responder chain.)
+        becomeFirstResponder()
+
         // Surface any saved reply draft for this thread as a minimized draft banner, so drafts are
         // discoverable instead of silently waiting behind the reply button. Done here rather than
         // `viewDidLoad` so the banner's toolbar-clearing inset is measured from real layout.
@@ -2659,6 +2705,7 @@ final class PostsPageViewController: ViewController {
         super.viewWillDisappear(animated)
         postsView.immersiveModeManager.exitImmersiveMode()
         postsView.tiltScrollManager.viewWillDisappear()
+        resignFirstResponder()
 
         // `navigationController` is nil by `viewDidDisappear`, so grab it now for the
         // leaving-with-a-draft prompt.
@@ -2840,27 +2887,44 @@ extension PostsPageViewController: UIGestureRecognizerDelegate {
 
 extension PostsPageViewController: RestorableLocation {}
 
+extension PostsPageViewController: ContentRefreshable {
+    /// Reloads the page being read (⌘R), unlike pull-to-refresh, which advances to the next page when there is one.
+    func refreshContent() {
+        guard let page else { return }
+        loadPage(page, updatingCache: true, updatingLastReadPost: true)
+    }
+}
+
 extension PostsPageViewController {
+    /// This screen's own shortcuts. App-wide ones (refresh, tabs, sidebar) live on `AppDelegate`; see `KeyboardShortcut` for the whole set.
     override var keyCommands: [UIKeyCommand]? {
         var keyCommands: [UIKeyCommand] = [
-            UIKeyCommand(action: #selector(scrollUp), input: UIKeyCommand.inputUpArrow, discoverabilityTitle: "Up"),
-            UIKeyCommand(action: #selector(scrollDown), input: UIKeyCommand.inputDownArrow, discoverabilityTitle: "Down"),
-            UIKeyCommand(action: #selector(pageUp), input: " ", modifierFlags: .shift, discoverabilityTitle: "Page Up"),
-            UIKeyCommand(action: #selector(pageDown), input: " ", discoverabilityTitle: "Page Down"),
-            UIKeyCommand(action: #selector(scrollToTop), input: UIKeyCommand.inputUpArrow, modifierFlags: .command, discoverabilityTitle: "Scroll to Top"),
-            UIKeyCommand(action: #selector(scrollToBottom(_:)), input: UIKeyCommand.inputDownArrow, modifierFlags: .command, discoverabilityTitle: "Scroll to Bottom"),
+            KeyboardShortcut.scrollUp.makeKeyCommand(action: #selector(scrollUp)),
+            KeyboardShortcut.scrollDown.makeKeyCommand(action: #selector(scrollDown)),
+            KeyboardShortcut.pageUp.makeKeyCommand(action: #selector(pageUp)),
+            KeyboardShortcut.pageDown.makeKeyCommand(action: #selector(pageDown)),
+            KeyboardShortcut.scrollToTop.makeKeyCommand(action: #selector(scrollToTop)),
+            KeyboardShortcut.scrollToBottom.makeKeyCommand(action: #selector(scrollToBottom(_:))),
         ]
 
         if case .specific(let pageNumber)? = page, pageNumber > 1 {
-            keyCommands.append(UIKeyCommand(action: #selector(loadPreviousPage), input: "[", modifierFlags: .command, discoverabilityTitle: "Previous Page"))
+            keyCommands.append(KeyboardShortcut.previousPage.makeKeyCommand(action: #selector(loadPreviousPage)))
+            keyCommands.append(KeyboardShortcut.firstPage.makeKeyCommand(action: #selector(loadFirstPage)))
         }
 
         if case .specific(let pageNumber)? = page, pageNumber < numberOfPages {
-            keyCommands.append(UIKeyCommand(action: #selector(loadNextPage), input: "]", modifierFlags: .command, discoverabilityTitle: "Next Page"))
+            keyCommands.append(KeyboardShortcut.nextPage.makeKeyCommand(action: #selector(loadNextPage)))
+            keyCommands.append(KeyboardShortcut.lastPage.makeKeyCommand(action: #selector(loadLastPage)))
         }
 
+        keyCommands.append(KeyboardShortcut.goToPage.makeKeyCommand(action: #selector(showPagePicker(_:))))
+        keyCommands.append(KeyboardShortcut.toggleBookmark.makeKeyCommand(
+            action: #selector(toggleBookmark(_:)),
+            title: thread.bookmarked ? "Remove Bookmark" : "Bookmark Thread"
+        ))
+
         if !thread.closed && !isArchivesMode {
-            keyCommands.append(UIKeyCommand(action: #selector(newReply), input: "N", modifierFlags: .command, discoverabilityTitle: "New Reply"))
+            keyCommands.append(KeyboardShortcut.newReply.makeKeyCommand(action: #selector(newReply)))
         }
 
         return keyCommands

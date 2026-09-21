@@ -22,7 +22,7 @@ private enum UserDefaultsKey {
 }
 
 @objc(MessageListViewController)
-final class MessageListViewController: CollectionViewController {
+final class MessageListViewController: CollectionViewController, ContentRefreshable {
 
     @FoilDefaultStorage(Settings.canSendPrivateMessages) private var canSendPrivateMessages
     private var dataSource: MessageListDataSource?
@@ -33,6 +33,7 @@ final class MessageListViewController: CollectionViewController {
     private var folderPicker: MessageFolderPickerView?
     private var currentFolder: PrivateMessageFolder?
     private var allFolders: [PrivateMessageFolder] = []
+    private var isRefreshing = false
     private var editToolbar: UIToolbar?
     private var headerRegistration: UICollectionView.SupplementaryRegistration<UICollectionReusableView>!
     private lazy var editBarButton = EditBarButton(for: self)
@@ -177,7 +178,14 @@ final class MessageListViewController: CollectionViewController {
         }
     }
 
+    func refreshContent() {
+        refresh()
+    }
+
     @objc private func refresh() {
+        // A tab shortcut can ask at the same moment `viewDidAppear` decides the list is stale.
+        guard !isRefreshing else { return }
+        isRefreshing = true
         startAnimatingPullToRefresh()
 
         Task {
@@ -196,6 +204,7 @@ final class MessageListViewController: CollectionViewController {
                     present(alert, animated: true)
                 }
             }
+            isRefreshing = false
             stopAnimatingPullToRefresh()
         }
     }

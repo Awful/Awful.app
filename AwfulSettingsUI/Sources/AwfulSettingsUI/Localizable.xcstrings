@@ -146,6 +146,12 @@
     "It can't be disabled completely, but we can revert our custom components to the original flat style and apply whatever settings available wherever possible to get rid of most of it. The back button and tab selector cannot be de-glassed. If turning this setting on, quit and relaunch the app for the best experience." : {
 
     },
+    "Keyboard" : {
+
+    },
+    "Keyboard Shortcuts" : {
+
+    },
     "Links" : {
 
     },
@@ -198,6 +204,9 @@
 
     },
     "Scale Text %@%%" : {
+
+    },
+    "Shortcuts need a hardware keyboard. On iPad, hold ⌘ to see the shortcuts for the screen you're on." : {
 
     },
     "Show Avatars" : {

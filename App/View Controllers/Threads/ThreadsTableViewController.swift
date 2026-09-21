@@ -15,7 +15,7 @@ import UIKit
 
 private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "ThreadsTableViewController")
 
-final class ThreadsTableViewController: CollectionViewController, ComposeTextViewControllerDelegate, ThreadTagPickerViewControllerDelegate {
+final class ThreadsTableViewController: CollectionViewController, ComposeTextViewControllerDelegate, ContentRefreshable, ThreadTagPickerViewControllerDelegate {
 
     private var cancellables: Set<AnyCancellable> = []
     private var dataSource: ThreadListDataSource?
@@ -23,6 +23,7 @@ final class ThreadsTableViewController: CollectionViewController, ComposeTextVie
     private var filterThreadTag: ThreadTag?
     let forum: Forum
     @FoilDefaultStorage(Settings.handoffEnabled) private var handoffEnabled
+    private var isRefreshing = false
     private var latestPage = 0
     private var loadMoreFooter: LoadMoreCollectionFooter?
     private let managedObjectContext: NSManagedObjectContext
@@ -156,6 +157,7 @@ final class ThreadsTableViewController: CollectionViewController, ComposeTextVie
                 present(alert, animated: true)
             }
 
+            isRefreshing = false
             stopAnimatingPullToRefresh()
             loadMoreFooter?.didFinish()
         }
@@ -261,9 +263,16 @@ final class ThreadsTableViewController: CollectionViewController, ComposeTextVie
     // MARK: Actions
 
     private func refresh() {
+        // A tab shortcut can ask at the same moment `viewDidAppear` decides the list is stale.
+        guard !isRefreshing else { return }
+        isRefreshing = true
         startAnimatingPullToRefresh()
 
         loadPage(1)
+    }
+
+    func refreshContent() {
+        refresh()
     }
 
     // MARK: Composition

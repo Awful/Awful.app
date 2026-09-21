@@ -15,13 +15,14 @@ import UIKit
 private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "MessageViewController")
 
 /// Displays a single private message.
-final class MessageViewController: ViewController {
+final class MessageViewController: ViewController, ContentRefreshable {
     
     @FoilDefaultStorage(Settings.autoplayGIFs) private var autoplayGIFs
     private var cancellables: Set<AnyCancellable> = []
     private var composeVC: MessageComposeViewController?
     private var didLoadOnce = false
     private var didRender = false
+    private var isFetchingMessage = false
     @FoilDefaultStorage(Settings.embedBlueskyPosts) private var embedBlueskyPosts
     @FoilDefaultStorage(Settings.embedTweets) private var embedTweets
     @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
@@ -284,27 +285,43 @@ final class MessageViewController: ViewController {
             self.loadingView = loadingView
             view.addSubview(loadingView)
 
-            Task {
-                do {
-                    let message = try await ForumsClient.shared.readPrivateMessage(identifiedBy: privateMessage.objectKey)
-                    title = message.subject
-
-                    if message.seen == false {
-                        message.seen = true
-                        let context = message.managedObjectContext
-                        try await context?.perform {
-                            try context?.save()
-                        }
-                    }
-                } catch {
-                    title = ""
-                }
-
-                renderMessage()
-                userActivity?.needsSave = true
-            }
+            fetchMessage(isInitialLoad: true)
         } else {
             renderMessage()
+        }
+    }
+
+    /// Re-downloads the message and re-renders it, for the Refresh shortcut. (The initial fetch in `viewDidLoad` only happens when nothing is cached.)
+    func refreshContent() {
+        fetchMessage(isInitialLoad: false)
+    }
+
+    private func fetchMessage(isInitialLoad: Bool) {
+        guard !isFetchingMessage else { return }
+        isFetchingMessage = true
+
+        Task {
+            do {
+                let message = try await ForumsClient.shared.readPrivateMessage(identifiedBy: privateMessage.objectKey)
+                title = message.subject
+
+                if message.seen == false {
+                    message.seen = true
+                    let context = message.managedObjectContext
+                    try await context?.perform {
+                        try context?.save()
+                    }
+                }
+            } catch {
+                // A failed refresh keeps showing what we had; a failed first load has nothing to title.
+                if isInitialLoad {
+                    title = ""
+                }
+            }
+
+            isFetchingMessage = false
+            renderMessage()
+            userActivity?.needsSave = true
         }
     }
     
