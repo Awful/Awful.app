@@ -135,18 +135,18 @@ final class SidebarAlignmentTests: XCTestCase {
         let variant = reduceLiquidGlass ? "\(orientationName), reduced glass" : orientationName
 
         // Tab roots first (Forums last so the push flows continue from it).
-        // (name, tab-button labels to try, nav title hints)
-        let tabs: [(String, [String], [String])] = [
-            ("Bookmarks", ["Bookmarks"], ["Bookmarks"]),
+        // (name, tab-button labels to try, tab icon image identifier, nav title hints)
+        let tabs: [(String, [String], String, [String])] = [
+            ("Bookmarks", ["Bookmarks"], "bookmarks", ["Bookmarks"]),
             // The tab item's accessibilityLabel is "Private messages"
             // (MessageListViewController); the nav title is "Messages".
-            ("Messages", ["Private messages", "Messages"], ["Messages"]),
-            ("Lepers", ["Lepers"], ["Leper’s Colony"]),
-            ("Settings", ["Settings"], ["Settings"]),
-            ("Forums", ["Forums"], ["Forums"]),
+            ("Messages", ["Private messages", "Messages"], "pm-icon", ["Messages"]),
+            ("Lepers", ["Lepers"], "lepers", ["Leper’s Colony"]),
+            ("Settings", ["Settings"], "cog", ["Settings"]),
+            ("Forums", ["Forums"], "forum-list", ["Forums"]),
         ]
-        for (name, labels, hints) in tabs {
-            guard selectTab(name, labels: labels) else { continue }
+        for (name, labels, icon, hints) in tabs {
+            guard selectTab(name, labels: labels, icon: icon) else { continue }
             revealSidebarIfHidden()
             measureScreen("\(name) (\(variant))", expectedTitleHints: hints)
             if name == "Settings" {
@@ -164,6 +164,25 @@ final class SidebarAlignmentTests: XCTestCase {
                 // measure but the layout settles with the page.
                 _ = app.webViews.firstMatch.waitForExistence(timeout: 10)
                 measureScreen("Posts (\(variant))", expectedTitleHints: [], detailOnly: true)
+
+                // The sidebar's thread-list bar again, now that opening a thread
+                // has re-laid the split view out: its title must not have moved
+                // (it used to slide right on the first open, the bar's later
+                // layout correcting a placement made against half-sized items).
+                if !isPhone {
+                    let before = "Thread list (\(variant))"
+                    let after = "Thread list after open (\(variant))"
+                    measureScreen(after, expectedTitleHints: [])
+                    let offset = { (screen: String) in
+                        self.measurements.first { $0.screen == screen && $0.pane == "sidebar" && $0.metric == "title-h" }?.value
+                    }
+                    if let a = offset(before), let b = offset(after) {
+                        let shift = b - a
+                        let ok = abs(shift) <= 1
+                        record(after, pane: "sidebar", metric: "title-shift", detail: "vs before the thread opened", value: shift, ok: ok, asserted: true)
+                        XCTAssertEqual(b, a, accuracy: 1, "\(after): title moved \(fmt(shift))pt when the thread opened")
+                    }
+                }
             }
         }
     }
@@ -231,17 +250,41 @@ final class SidebarAlignmentTests: XCTestCase {
     }
 
     @discardableResult
-    private func selectTab(_ name: String, labels: [String]) -> Bool {
+    private func selectTab(_ name: String, labels: [String], icon: String) -> Bool {
         // The Messages tab only exists when the account can send PMs.
+        let tabBarFrame = app.tabBars.firstMatch.frame
+        // The iPhone's iOS 26 tab bar buttons carry no label (only Messages
+        // sets one), just their icon image with its asset name as identifier.
+        let iconImage = app.tabBars.images[icon]
+        if iconImage.waitForExistence(timeout: 2) {
+            iconImage.tap()
+            _ = app.navigationBars.firstMatch.waitForExistence(timeout: 5)
+            return true
+        }
         for label in labels {
-            let button = app.tabBars.buttons[label]
-            if button.waitForExistence(timeout: 5) {
+            // The iPad sidebar exposes its tabs as the tab bar's buttons. The
+            // iPhone's iOS 26 tab bar reports only its explicitly labelled
+            // items (Messages) under `tabBars`; the rest surface as plain
+            // buttons elsewhere in the tree, told apart by sitting inside the
+            // tab bar's frame.
+            let inTabBar = app.tabBars.buttons[label]
+            let byPrefix = app.descendants(matching: .any)
+                .matching(NSPredicate(format: "label BEGINSWITH[c] %@ OR identifier BEGINSWITH[c] %@", label, label))
+                .allElementsBoundByIndex
+                .first { $0.exists && !tabBarFrame.isEmpty && tabBarFrame.intersects($0.frame) && $0.frame.width < tabBarFrame.width }
+            let button = inTabBar.waitForExistence(timeout: 2) ? inTabBar : byPrefix
+            if let button, button.exists {
                 button.tap()
                 _ = app.navigationBars.firstMatch.waitForExistence(timeout: 5)
                 return true
             }
         }
         record("\(name)", pane: "-", metric: "tab", detail: "tab button not found; skipped", value: nil, ok: true)
+        // The hierarchy explains how this tab bar exposes its items.
+        let hierarchy = XCTAttachment(string: app.debugDescription)
+        hierarchy.name = "tab-lookup-\(name)"
+        hierarchy.lifetime = .keepAlways
+        add(hierarchy)
         return false
     }
 
@@ -564,11 +607,14 @@ final class SidebarAlignmentTests: XCTestCase {
         // pane's show-sidebar button) has no trailing button to measure.
         if trailingIsButton, let last = components.last, last.frame.midX > paneRect.midX {
             let gap = paneRect.maxX - last.frame.maxX
-            let ok = Self.edgeGapRange.contains(gap)
-            record(screen, pane: pane, metric: "edge-trail", detail: "\(last.name) → pane edge", value: gap, ok: ok, asserted: true)
+            // Sidebar only, like the leading edge: an iPhone bar in landscape
+            // insets its items from the Dynamic Island side by ~40pt.
+            let asserted = pane == "sidebar"
+            let ok = !asserted || Self.edgeGapRange.contains(gap)
+            record(screen, pane: pane, metric: "edge-trail", detail: "\(last.name) → pane edge", value: gap, ok: ok, asserted: asserted)
             XCTAssertTrue(ok, "\(screen) \(pane): trailing gap after \(last.name) is \(fmt(gap))pt, expected \(Self.edgeGapRange)")
             overlays.append(.hline(y: lineY, fromX: last.frame.maxX, toX: paneRect.maxX,
-                                   color: verdictColor(asserted: true, ok: ok), label: "\(fmt(gap))pt"))
+                                   color: verdictColor(asserted: asserted, ok: ok), label: "\(fmt(gap))pt"))
         } else if trailingIsButton {
             record(screen, pane: pane, metric: "edge-trail", detail: "no trailing-side buttons", value: nil, ok: true)
         }
@@ -659,10 +705,10 @@ final class SidebarAlignmentTests: XCTestCase {
             s.count >= width ? s : s + String(repeating: " ", count: width - s.count)
         }
         var lines = ["", "=== Alignment report ==="]
-        lines.append(pad("screen", 40) + pad("pane", 9) + pad("metric", 11) + pad("points", 9) + pad("ok", 6) + "detail")
+        lines.append(pad("screen", 40) + pad("pane", 9) + pad("metric", 12) + pad("points", 9) + pad("ok", 6) + "detail")
         for m in measurements {
             let value = m.value.map { fmt($0) } ?? "-"
-            lines.append(pad(m.screen, 40) + pad(m.pane, 9) + pad(m.metric, 11) + pad(value, 9)
+            lines.append(pad(m.screen, 40) + pad(m.pane, 9) + pad(m.metric, 12) + pad(value, 9)
                          + pad(m.ok ? "OK" : "FAIL", 6) + m.detail)
         }
         lines.append("========================")

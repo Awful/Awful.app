@@ -451,6 +451,11 @@ final class SidebarTitleView: UIView {
     /// granted this view stops well short of the items — that padding is what the text is
     /// allowed to run into — and stands in for a side that has no items at all, so a missing
     /// cluster is never mistaken for free space.
+    ///
+    /// Each item is measured by its slot (`itemSlotView`), not its custom view: the bar grows a
+    /// custom view into its 44pt slot over several layout passes, and a placement read off the
+    /// half-grown view drifted the title until the next unrelated bar layout (the first thread
+    /// open, typically) put it right.
     private func allowedTextRange(in bar: UINavigationBar) -> ClosedRange<CGFloat> {
         var minX: CGFloat?
         var maxX: CGFloat?
@@ -459,6 +464,7 @@ final class SidebarTitleView: UIView {
             let views = ((item.leftBarButtonItems ?? []) + (item.rightBarButtonItems ?? []))
                 .compactMap(\.customView)
                 .filter { $0.window != nil && !$0.isHidden }
+                .map { itemSlotView(for: $0, in: bar) }
             for view in views {
                 let frame = convert(view.bounds, from: view)
                 if frame.midX < midX {
@@ -472,6 +478,21 @@ final class SidebarTitleView: UIView {
         let upper = maxX ?? bounds.width
         return lower <= upper ? lower...upper : bounds.midX...bounds.midX
     }
+
+    /// The slot the bar laid a custom-view item out in: the wrapper the bar puts directly around
+    /// the custom view, which has its final width from the bar's first pass while the custom
+    /// view inside it is still being resized. No higher: the bar's group containers above the
+    /// wrapper can be wider than the item and would pull the title off centre.
+    private func itemSlotView(for customView: UIView, in bar: UINavigationBar) -> UIView {
+        guard let wrapper = customView.superview, wrapper !== bar, !isDescendant(of: wrapper) else {
+            return customView
+        }
+        return wrapper
+    }
+
+    /// The range the last placement used; a change schedules one more pass so the placement
+    /// converges on the items' settled frames (see `layoutSubviews`).
+    private var lastPlacedRange: ClosedRange<CGFloat>?
 
     /// Places the text: centred on the bar when the whole text fits there within
     /// `allowedTextRange`, else slid toward the bar's centre until it meets the range's edge,
@@ -499,6 +520,13 @@ final class SidebarTitleView: UIView {
         guard abs(barCenterX - bounds.midX) <= bar.bounds.width / 2 else { return }
 
         let range = allowedTextRange(in: bar)
+        // The items' frames can still be moving in the pass that placed the text (the bar sizes
+        // its item views across passes). Re-check on the next turn whenever the range moved;
+        // once two passes agree, nothing is scheduled, so this settles rather than loops.
+        if lastPlacedRange != range {
+            lastPlacedRange = range
+            DispatchQueue.main.async { [weak self] in self?.setNeedsLayout() }
+        }
         let textWidth = min(naturalTextWidth, range.upperBound - range.lowerBound)
         let half = textWidth / 2
         let centerX = min(max(barCenterX, range.lowerBound + half), range.upperBound - half)
