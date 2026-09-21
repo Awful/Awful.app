@@ -67,33 +67,9 @@ public final class RapSheetViewController: ViewController {
         return formatter
     }()
 
-    /// The page's content varies (avatars, ban images), so once the iOS 26 glass bar is
-    /// transparent the title takes its colour from what is beneath it, like the posts page and a
-    /// message do. The title is therefore `navigationItem.titleLabel` rather than the system's.
-    private lazy var titleContrastSampler = ContentContrastSampler(
-        sourceView: renderView.view,
-        sample: sampleLuminance,
-        titleLabel: { [weak self] in self?.navigationItem.titleView as? UILabel },
-        backdrop: { [weak self] in self?.theme[uicolor: "backgroundColor"] },
-        titleOf: self
-    )
-
-    /// Likewise decides the status bar's light/dark from the page beneath it.
-    private lazy var statusBarContrastSampler = ContentContrastSampler(
-        sourceView: renderView.view,
-        sample: sampleLuminance,
-        backdrop: { [weak self] in self?.theme[uicolor: "backgroundColor"] },
-        statusBarOf: self
-    )
-
-    /// Both samplers measure through the renderer.
-    private var sampleLuminance: ContentContrastSampler.Sample {
-        { [weak self] rect, backdrop, completion in
-            guard let self else { return completion(nil) }
-            self.renderView.sampleLuminance(in: rect, over: backdrop, completion: completion)
-        }
-    }
-
+    /// The title is `navigationItem.titleLabel` rather than the system's, coloured through
+    /// `updateTitleLabelTextColor` as the iOS 26 glass bar goes transparent, like the posts page
+    /// and a message.
     public override var title: String? {
         didSet {
             // Sized to the text (rather than stretched between the bar items, as the posts page's
@@ -322,10 +298,7 @@ public final class RapSheetViewController: ViewController {
         guard isViewLoaded else { return }
 
         // The navigation controller puts the bar back at its opaque resting state on a theme
-        // change, so the title takes the bar's text colour to match, and the sampled colours are
-        // dropped because the page background they were measured against has just changed.
-        titleContrastSampler.reset()
-        statusBarContrastSampler.reset()
+        // change, so the title takes the bar's text colour to match.
         navigationItem.updateTitleLabelTextColor(forScrollProgress: 0, theme: theme)
 
         toolbar.tintColor = theme["toolbarTextColor"]
@@ -882,12 +855,6 @@ public final class RapSheetViewController: ViewController {
 extension RapSheetViewController: NavigationBarScrollTransitioning {
     public var navigationBarScrollView: UIScrollView? { renderView.scrollView }
 
-    public var statusBarContentColor: UIColor? { statusBarContrastSampler.color }
-
-    public var navigationBarContentColor: UIColor? { titleContrastSampler.color }
-
-    public var usesNavigationBarContentBlur: Bool { true }
-
     public func updateGlassBarButtonGlyphs(color: UIColor?) {
         glassGlyphColor = color
         updateButtonColors()
@@ -914,21 +881,7 @@ extension RapSheetViewController: UIScrollViewDelegate {
             let transitionDistance: CGFloat = 30.0
             let progress = max(0, min(1, (scrollView.contentOffset.y - topPosition) / transitionDistance))
             updateNavigationBarTint(progress: progress)
-
-            // Over the content the title takes the colour sampled from the page beneath it; the
-            // sampler answers asynchronously, so the theme's mode colour covers the first frame.
-            if LiquidGlass.isEnabled, progress > 0.99 {
-                titleContrastSampler.sampleIfNeeded()
-                statusBarContrastSampler.sampleIfNeeded()
-            } else {
-                titleContrastSampler.reset()
-                statusBarContrastSampler.reset()
-            }
-            navigationItem.updateTitleLabelTextColor(
-                forScrollProgress: progress,
-                theme: theme,
-                contentColor: titleContrastSampler.color
-            )
+            navigationItem.updateTitleLabelTextColor(forScrollProgress: progress, theme: theme)
         }
 
         // Ask for the next page when nearing the bottom. (`appendNextPageIfNeeded` does all its own gating, so this is cheap.)

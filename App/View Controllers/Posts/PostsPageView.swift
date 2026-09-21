@@ -933,19 +933,24 @@ extension PostsPageView: ScrollViewDelegateExtras {
 
         navController.updateNavigationBarTintForScrollProgress(NSNumber(value: Float(progress)))
 
-        // Over the content the title and the status bar take the colour sampled from the page
-        // beneath them; the samplers answer asynchronously, so the theme's mode colour covers
-        // the first frame. The bar only goes transparent under Liquid Glass, but immersive mode
-        // slides it away whatever the setting, leaving the status bar over the page either way.
+        // In immersive mode the title and the status bar sit over the bare page (the bar's own
+        // blur under the transparent bar is faint, and the bar slides away altogether), so they
+        // take the colour sampled from the page beneath them; the samplers answer
+        // asynchronously, so the theme's mode colour covers the first frame. The bar only goes
+        // transparent under Liquid Glass, but immersive mode slides it away whatever the
+        // setting, leaving the status bar over the page either way. With immersive mode off the
+        // system edge effect blurs the page under both, and the theme's mode colour reads fine
+        // over it, as on the lists.
         let sampler = viewController.titleContrastSampler
         let statusBarSampler = viewController.statusBarContrastSampler
+        let samplesContent = immersiveModeManager.isImmersiveModeEnabled
         let isBarTransparent = LiquidGlass.isEnabled && progress > 0.99
-        if isBarTransparent {
+        if samplesContent, isBarTransparent {
             sampler.sampleIfNeeded()
         } else {
             sampler.reset()
         }
-        if isBarTransparent || immersiveModeManager.isStatusBarOverContent {
+        if samplesContent, isBarTransparent || immersiveModeManager.isStatusBarOverContent {
             statusBarSampler.sampleIfNeeded()
         } else {
             statusBarSampler.reset()

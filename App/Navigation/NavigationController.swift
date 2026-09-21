@@ -803,10 +803,12 @@ final class NavigationController: UINavigationController, Themeable {
 
         // Under the transparent bar, the automatic edge effect resolved to the soft fade on
         // iOS 26 but to the hard cutoff on iOS 27 (lists and web views alike); ask for the fade.
-        // Screens that bring their own top treatment hide it whatever the setting: the bar's
-        // content blur under Liquid Glass (see NavigationBar.contentBlurAlpha), the immersive
-        // mode's safe-area gradient under Reduce. The effect belongs to the scroll view, so
-        // immersive mode can't slide it away with the bar, and it spans the whole top inset.
+        // A screen that slides the bar away (the posts page in immersive mode) hides it whatever
+        // the setting and brings its own top treatment: the bar's content blur under Liquid Glass
+        // (see NavigationBar.contentBlurAlpha), the immersive mode's safe-area gradient under
+        // Reduce. The effect belongs to the scroll view, so immersive mode can't slide it away
+        // with the bar, and it spans the whole top inset. Otherwise the web views keep it, like
+        // the lists.
         if let scrollView = screen?.navigationBarScrollView {
             scrollView.topEdgeEffect.style = .soft
             scrollView.topEdgeEffect.isHidden = screen?.usesNavigationBarContentBlur == true
@@ -1767,9 +1769,10 @@ final class NavigationController: UINavigationController, Themeable {
         }
     }
 
-    /// Whether `screen` gets the bar's content blur in place of the system edge effect. Reduce
-    /// Liquid Glass never lets the bar go transparent, so the blur stays off under it (the
-    /// system edge effect is hidden for these screens either way; see applyGlassRestingState).
+    /// Whether `screen` gets the bar's content blur in place of the system edge effect (the posts
+    /// page in immersive mode). Reduce Liquid Glass never lets the bar go transparent, so the blur
+    /// stays off under it (the system edge effect is hidden for such a screen either way; see
+    /// applyGlassRestingState).
     private func usesContentBlur(_ screen: NavigationBarScrollTransitioning?) -> Bool {
         LiquidGlass.isEnabled && screen?.usesNavigationBarContentBlur == true
     }
@@ -1866,8 +1869,9 @@ final class NavigationController: UINavigationController, Themeable {
     @available(iOS 26.0, *)
     private func configureTitleAndButtons(for appearance: UINavigationBarAppearance, progress: CGFloat) {
         // The system title follows the theme: bar text colour at the top, mode colour once the bar
-        // is transparent. Screens that sample the page instead (posts, a message, the rap sheet)
-        // use their own title label; see `ContentContrastSampler`.
+        // is transparent. The web-content screens (posts, a message, the rap sheet) use their own
+        // title label, coloured the same way (and, on the posts page in immersive mode, from the
+        // page beneath it; see `ContentContrastSampler`).
         let textColor: UIColor
         if progress > ScrollProgress.fullyScrolled {
             textColor = theme.glassContentTextColor

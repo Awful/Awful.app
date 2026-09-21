@@ -5,10 +5,10 @@
 import UIKit
 
 public extension UINavigationItem {
-    /// A replacement label for the title that shows two lines on iPhone. Screens whose title
-    /// colour follows the page beneath the iOS 26 glass bar (posts, a message, the rap sheet)
-    /// colour it through `updateTitleLabelTextColor`; the system title is coloured by the
-    /// navigation controller's appearance instead.
+    /// A replacement label for the title that shows two lines on iPhone. The web-content
+    /// screens (posts, a message, the rap sheet) colour it through `updateTitleLabelTextColor`
+    /// as the iOS 26 glass bar goes transparent; the system title is coloured by the navigation
+    /// controller's appearance instead.
     var titleLabel: UILabel {
         let label: UILabel = (titleView as? UILabel) ?? {
             let theme = Theme.defaultTheme()
@@ -42,9 +42,9 @@ public extension UINavigationItem {
     /// background (at the top) to transparent (once scrolled), matching the bar buttons.
     /// Thresholds rather than exact 0/1 avoid flicker from tiny offset adjustments.
     ///
-    /// `contentColor` is the colour `ContentContrastSampler` measured beneath the
-    /// title (the system won't adapt a title the way it does its glass bar buttons — see that
-    /// class); nil falls back to the theme's mode colour.
+    /// `contentColor` is the colour `ContentContrastSampler` measured beneath the title (the
+    /// posts page in immersive mode; the system won't adapt a title the way it does its glass
+    /// bar buttons — see that class); nil falls back to the theme's mode colour.
     func updateTitleLabelTextColor(forScrollProgress progress: CGFloat, theme: Theme, contentColor: UIColor? = nil) {
         // Reduce Liquid Glass keeps the bar solid at every offset, so the title keeps the
         // theme's bar text colour rather than following the scroll into the content's.

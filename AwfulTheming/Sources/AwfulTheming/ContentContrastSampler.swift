@@ -5,8 +5,8 @@
 import UIKit
 
 /// Decides black or white from the page beneath a region of the screen once the iOS 26 glass
-/// bar has gone transparent, the way the system colours its glass bar buttons. The web-content
-/// screens use one for the navigation bar title and one for the status bar.
+/// bar has gone transparent, the way the system colours its glass bar buttons. The posts page
+/// uses one for the navigation bar title and one for the status bar while immersive mode is on.
 ///
 /// The system can't do this for a title, or for the status bar. Bar buttons adapt because their
 /// glass platter samples the pixels under it, whereas a title (or any platter-less bar item)
@@ -21,8 +21,10 @@ import UIKit
 /// moves back meanwhile, so the colour changes at about the pace the system's bar buttons do
 /// rather than snapping ahead of them.
 ///
-/// Only the web-content screens use this (posts, a message, the rap sheet); list screens keep
-/// the theme's colours via the navigation controller's appearance.
+/// Only the posts page in immersive mode uses this: there the title and status bar sit over the
+/// bare page (the bar's own blur is faint, and the bar slides away altogether). Elsewhere the
+/// system's soft edge effect blurs the page under the transparent bar, and the theme's mode
+/// colour reads fine over it, so the other screens keep the theme's colours.
 ///
 /// Call `sampleIfNeeded()` from scroll events while the bar is transparent and `reset()`
 /// otherwise. `onColorChange` is told each time `color` changes, including back to nil on

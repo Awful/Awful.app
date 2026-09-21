@@ -42,6 +42,9 @@ final class ImmersiveModeManager: NSObject {
 
     @FoilDefaultStorage(Settings.immersiveModeEnabled) private var immersiveModeEnabled
     private var cancellables: Set<AnyCancellable> = []
+
+    /// Whether the user has immersive mode on (the setting, not whether the bars are hidden now).
+    var isImmersiveModeEnabled: Bool { immersiveModeEnabled }
     private var lastImmersiveModeEnabled: Bool = false
 
     override init() {
@@ -127,10 +130,10 @@ final class ImmersiveModeManager: NSObject {
 
     /// True once the bars have mostly left the screen (slid more than halfway, or faded below
     /// half in bottom fade mode), so the status bar sits over the page rather than the bar.
-    /// The posts page samples the page beneath the status bar while this is set and the
-    /// navigation controller styles the status bar from the result; the gradient above tracks
-    /// the same colour. Under Reduce Liquid Glass this is the only time that happens, since the
-    /// bar never goes transparent on scroll.
+    /// The posts page samples the page beneath the status bar while this is set (immersive mode
+    /// is the only time it samples) and the navigation controller styles the status bar from the
+    /// result; the gradient above tracks the same colour. Under Reduce Liquid Glass this is the
+    /// only time the status bar is over the content, since the bar never goes transparent on scroll.
     private(set) var isStatusBarOverContent = false {
         didSet {
             guard isStatusBarOverContent != oldValue else { return }
@@ -441,7 +444,7 @@ final class ImmersiveModeManager: NSObject {
 
         // Shown whatever the Reduce Liquid Glass setting: once the bar slides away this is the
         // only thing under the status bar (the system scroll-edge effect is hidden for the
-        // posts page, see NavigationController.applyGlassRestingState).
+        // posts page while immersive mode is on, see NavigationController.applyGlassRestingState).
         safeAreaGradientView.alpha = immersiveProgress
 
         let navBarTransform = calculateNavigationBarTransform()

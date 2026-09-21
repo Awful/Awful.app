@@ -133,12 +133,13 @@ final class NavigationBar: UINavigationBar {
     }
 }
 
-/// A blur that fades out towards its bottom edge: what the transparent iOS 26 bar sits on over
-/// the web-content screens instead of the system's soft edge effect.
+/// A blur that fades out towards its bottom edge: what the transparent iOS 26 bar sits on when a
+/// screen slides the bar away (the posts page in immersive mode) instead of the system's soft edge
+/// effect, which belongs to the scroll view and would stay behind when the bar goes.
 ///
-/// The system effect can't be toned: on iOS 27 it washes the content in the bar's light or dark
-/// regardless of what's beneath, so a light theme puts a white haze over a dark image while the
-/// sampled title and status bar have gone white. A blur's own wash is much milder, and the bar
+/// The system effect can't be toned either: on iOS 27 it washes the content in the bar's light or
+/// dark regardless of what's beneath, so a light theme puts a white haze over a dark image while
+/// the sampled title and status bar have gone white. A blur's own wash is much milder, and the bar
 /// points this view's trait at the sampled content (`NavigationBar.contentBlurUserInterfaceStyle`)
 /// so what little there is always matches.
 final class NavigationBarContentBlurView: UIView {

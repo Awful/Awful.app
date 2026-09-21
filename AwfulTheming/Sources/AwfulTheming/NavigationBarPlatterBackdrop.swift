@@ -41,9 +41,10 @@ public protocol NavigationBarScrollTransitioning: AnyObject {
     /// `contentContrastDidChange()` when either colour changes.
     var navigationBarContentColor: UIColor? { get }
 
-    /// True to put a blur that fades out under the transparent bar in place of the system's soft
-    /// edge effect, whose light/dark wash on iOS 27 follows the bar rather than the content. For
-    /// screens whose content varies beneath the bar (the web views); lists keep the system effect.
+    /// True while the screen moves the bar out from under the status bar itself (the posts page in
+    /// immersive mode): the system's soft edge effect belongs to the scroll view and can't slide
+    /// away with the bar, so the bar puts its own fading blur under the transparent bar instead.
+    /// False keeps the system effect, the blurred fade the lists show as they scroll under the bar.
     var usesNavigationBarContentBlur: Bool { get }
 }
 
