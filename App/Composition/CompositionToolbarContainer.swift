@@ -188,13 +188,12 @@ final class CompositionToolbarContainer: UIInputView {
     private func keyboardDidChangeFrame(_ note: Notification) {
         guard let textView, let endFrame = keyboardEndFrame(from: note) else { return }
 
-        let safeAreaBottom = textView.window?.safeAreaInsets.bottom ?? 0
-        let accessoryOnlyHeight = bounds.height + safeAreaBottom
-        let minimizedByFrame = endFrame.height <= accessoryOnlyHeight + 1
-        isKeyboardMinimizedBySystem = minimizedByFrame && !textView.isKeyboardMinimized
+        isKeyboardMinimizedBySystem = isCollapsedKeyboardFrame(endFrame) && !textView.isKeyboardMinimized
 
         noteKeyboardEndFrame(endFrame)
         isKeyboardAnimating = false
+        // A heal's own first-responder cycle ends with this notification.
+        finishHealing()
         // This arrives once the keyboard has finished moving, so the host's layout is current on
         // the next tick; the layout-pass check below is the slower safety net.
         scheduleHealCheck(after: 0)
@@ -220,41 +219,82 @@ final class CompositionToolbarContainer: UIInputView {
         return endFrame
     }
 
+    /// How tall the keyboard frame reports when it's collapsed to just this accessory view: this
+    /// view plus the safe-area padding the keyboard host adds beneath it on home-indicator devices.
+    private var accessoryOnlyHeight: CGFloat {
+        bounds.height + (textView?.window?.safeAreaInsets.bottom ?? 0)
+    }
+
+    private func isCollapsedKeyboardFrame(_ frame: CGRect) -> Bool {
+        frame.height <= accessoryOnlyHeight + 1
+    }
+
+    /// Only a real software keyboard re-arms the heal. The frame is measured on screen, so the
+    /// hide notification (parked below the screen) doesn't count, and a collapsed keyboard that
+    /// happens to be taller than this view (the input assistant bar a hardware keyboard shows,
+    /// safe-area padding) doesn't either. Frames produced by a heal's own cycle are ignored, or
+    /// the heal would re-arm itself.
     private func noteKeyboardEndFrame(_ endFrame: CGRect) {
         lastKeyboardEndFrame = endFrame
-        if endFrame.height > bounds.height + 1 {
+        guard !isHealing, let window else { return }
+        let onScreenHeight = endFrame.intersection(window.screen.bounds).height
+        if onScreenHeight > accessoryOnlyHeight + Self.fullKeyboardAllowance {
             healsSinceLastFullKeyboard = 0
         }
     }
 
+    /// A collapsed keyboard is at most this much taller than this view (input assistant bar, safe
+    /// area); anything taller on screen is the software keyboard proper.
+    private static let fullKeyboardAllowance: CGFloat = 100
+
     // MARK: - Stranded accessory
 
-    /// The keyboard end frame from the latest notification, in window coordinates.
+    /// The keyboard end frame from the latest notification, in screen coordinates.
     private var lastKeyboardEndFrame: CGRect?
     /// Set between the will- and did-change-frame notifications.
     private var isKeyboardAnimating = false
     private var pendingHealCheck: DispatchWorkItem?
+    /// Set for the duration of a first-responder cycle, including the keyboard notifications it
+    /// produces afterwards; see `cycleFirstResponder()`.
     private var isHealing = false
+    private var healingTimeout: DispatchWorkItem?
     /// A collapse gets one heal at most; the count resets whenever a full keyboard shows.
     private var healsSinceLastFullKeyboard = 0
+    /// Belt and braces against a frame sequence the gate above doesn't anticipate: heals never
+    /// run back to back, and a burst of them trips the breaker below for good.
+    private var lastHealDate = Date.distantPast
+    private static let minimumHealInterval: TimeInterval = 1
+    /// When the recent heals happened. A user pressing the dismiss key heals once every few
+    /// seconds at most; anything denser is the heal chasing its own tail (a TestFlight tester saw
+    /// the toolbars flash and the composer resize in a loop with a hardware keyboard attached to
+    /// an iPad Pro). Once tripped, this accessory view stops healing for the rest of its life;
+    /// the worst case is the gap the heal exists to close.
+    private var recentHealDates: [Date] = []
+    private var isHealBreakerTripped = false
+    private static let healBreakerLimit = 3
+    private static let healBreakerWindow: TimeInterval = 15
 
     /// How far above its reported position this view is sitting, or `nil` when the check doesn't
     /// apply (keyboard not collapsed, not on screen, text view not first responder).
     ///
     /// On iPad, when the keyboard host last laid out the input views with the software keyboard
-    /// up and then collapses to accessory-only (hardware keyboard attached, or the keyboard's own
-    /// dismiss key), it keeps the shortcuts bar's slot reserved beneath this view. The keyboard
-    /// notification still reports the collapsed keyboard flush with the screen bottom, so the
-    /// only tell is this view's real window frame disagreeing with it.
+    /// up and then collapses to accessory-only (the keyboard's own dismiss key), it keeps the
+    /// shortcuts bar's slot reserved beneath this view. The keyboard notification still reports
+    /// the collapsed keyboard flush with the screen bottom, so the only tell is this view's real
+    /// window frame disagreeing with it.
+    ///
+    /// Both frames are compared in screen coordinates: the keyboard notification reports in
+    /// screen space, and this view's window only coincides with the screen when the app fills it
+    /// (not in Stage Manager or Split View).
     private var strandedOffset: CGFloat? {
         guard
             let window,
             let textView, textView.isFirstResponder,
             let keyboardFrame = lastKeyboardEndFrame,
-            keyboardFrame.minY < window.bounds.maxY - 1,
-            keyboardFrame.height <= bounds.height + 1
+            keyboardFrame.minY < window.screen.bounds.maxY - 1,
+            isCollapsedKeyboardFrame(keyboardFrame)
             else { return nil }
-        let actual = convert(bounds, to: nil)
+        let actual = window.convert(convert(bounds, to: nil), to: window.screen.coordinateSpace)
         return keyboardFrame.maxY - actual.maxY
     }
 
@@ -273,7 +313,10 @@ final class CompositionToolbarContainer: UIInputView {
     private func scheduleHealCheck(after delay: TimeInterval) {
         pendingHealCheck?.cancel()
         let check = DispatchWorkItem { [weak self] in
-            guard let self, let offset = self.strandedOffset, offset > Self.strandedThreshold else { return }
+            guard
+                let self, !self.isHealing,
+                let offset = self.strandedOffset, offset > Self.strandedThreshold
+                else { return }
             self.healStrandedAccessory()
         }
         pendingHealCheck = check
@@ -282,14 +325,39 @@ final class CompositionToolbarContainer: UIInputView {
 
     /// Re-docks a stranded accessory. Nothing public moves it in place (`reloadInputViews()`
     /// included); presenting the keyboard afresh is what rebuilds the host without the reserved
-    /// slot. The keyboard stays hidden, as it should with a hardware keyboard attached.
+    /// slot.
+    ///
+    /// With a hardware keyboard connected there's nothing to heal: the collapsed keyboard, input
+    /// assistant bar included, is the steady state, and cycling the first responder just makes
+    /// the toolbars flash and the composer resize, over and over.
     private func healStrandedAccessory() {
-        guard !isHealing, healsSinceLastFullKeyboard == 0 else { return }
+        guard
+            !isHealing,
+            !isHealBreakerTripped,
+            !isHardwareKeyboardConnected,
+            healsSinceLastFullKeyboard == 0,
+            Date().timeIntervalSince(lastHealDate) > Self.minimumHealInterval
+            else { return }
+
+        let now = Date()
+        recentHealDates = recentHealDates.filter { now.timeIntervalSince($0) < Self.healBreakerWindow }
+        recentHealDates.append(now)
+        if recentHealDates.count >= Self.healBreakerLimit {
+            isHealBreakerTripped = true
+            return
+        }
+
         healsSinceLastFullKeyboard += 1
+        lastHealDate = now
         cycleFirstResponder()
     }
 
     /// Resigns and re-becomes first responder without losing the selection.
+    ///
+    /// The keyboard notifications this produces land asynchronously, so the healing state stays
+    /// on until the show notification settles (`keyboardDidChangeFrame`) or, if that never
+    /// reaches this view, shortly after. Otherwise the cycle's own frames would count as a fresh
+    /// collapse and schedule another heal.
     private func cycleFirstResponder() {
         guard let textView, !isHealing else { return }
         isHealing = true
@@ -299,8 +367,19 @@ final class CompositionToolbarContainer: UIInputView {
             textView.becomeFirstResponder()
             textView.selectedTextRange = selection
         }
-        isHealing = false
         syncKeyboardToggle()
+
+        healingTimeout?.cancel()
+        let timeout = DispatchWorkItem { [weak self] in self?.finishHealing() }
+        healingTimeout = timeout
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: timeout)
+    }
+
+    private func finishHealing() {
+        guard isHealing else { return }
+        healingTimeout?.cancel()
+        healingTimeout = nil
+        isHealing = false
     }
 
     /// Matches the toggle's glyph to the text view's actual state. The keyboard can change under
