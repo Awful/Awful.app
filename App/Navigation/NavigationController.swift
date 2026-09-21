@@ -281,9 +281,18 @@ final class GlassTextBarButton {
 
 // MARK: - Sidebar Toggle
 
-/// The app's own "hide sidebar" item on the iPad sidebar's bar, standing in for the system one.
-/// A subclass only so the item can be recognised in `rightBarButtonItems` on repeat passes.
-private final class SidebarToggleBarButtonItem: UIBarButtonItem {}
+/// The iPad sidebar bar's trailing cluster: the screen's own trailing custom views and the app's
+/// "hide sidebar" glyph (standing in for the system toggle), laid out as one custom view so
+/// every neighbouring pair is `NavigationController.sidebarClusterSpacing` apart. Keeps what it
+/// took from the screen so the cluster can be taken apart again when the toggle goes away, and
+/// is a subclass so it can be recognised in `rightBarButtonItems` on repeat passes.
+private final class SidebarTrailingClusterBarButtonItem: UIBarButtonItem {
+    /// The screen's right items as they were before clustering, in their original order.
+    var originalItems: [UIBarButtonItem] = []
+    /// Screens that had already packed icons into a horizontal stack: the stack and the views
+    /// lifted out of it, to be put back on unclustering.
+    var flattenedStacks: [(stack: UIStackView, views: [UIView])] = []
+}
 
 /// The app's own "show sidebar" item on the iPad detail column's bar, standing in for the system
 /// one on every screen in that column. A subclass only so the item can be recognised in
@@ -1043,33 +1052,101 @@ final class NavigationController: UINavigationController, Themeable {
         return mode == .oneBesideSecondary || mode == .oneOverSecondary
     }
 
-    /// Adds or removes the app's sidebar toggle at the trailing end of the screen's right items
-    /// to match `wantsSidebarToggleItem`.
+    /// Spacing between neighbouring glyphs in the iPad sidebar's trailing cluster, the sidebar
+    /// toggle included. The one number that decides how the trailing icons sit relative to each
+    /// other: nothing is positioned by offset, so it holds on every column width.
+    static let sidebarClusterSpacing: CGFloat = 12
+
+    /// The narrowest slot UINavigationBar gives a bar item on iOS 26 (measured; not exposed by
+    /// UIKit). A lone 20pt toggle sits centred in such a slot, and the cluster keeps that same
+    /// inset from its trailing edge so the toggle stays exactly where the system-sized slot put it.
+    private static let barItemMinimumWidth: CGFloat = 44
+
+    /// Adds or removes the app's sidebar toggle to match `wantsSidebarToggleItem`.
+    ///
+    /// UINavigationBar lays out custom-view items in 44pt slots 12pt apart, so a toggle added as
+    /// its own item sat 24–36pt from the screen's icons however tightly the screen had packed
+    /// them. Instead the screen's trailing custom views and the toggle are gathered into one
+    /// horizontal stack (`SidebarTrailingClusterBarButtonItem`) with `sidebarClusterSpacing`
+    /// between every pair; a screen's own icon stack is flattened into it so its pairs get the
+    /// same spacing. Removing the toggle restores the screen's items exactly as they were. A
+    /// screen with a system (non-custom-view) trailing item can't be clustered and gets the
+    /// toggle as a separate item, as before.
     @available(iOS 26.0, *)
     private func updateSidebarToggleItem(for viewController: UIViewController) {
-        var items = viewController.navigationItem.rightBarButtonItems ?? []
-        let existingIndex = items.firstIndex { $0 is SidebarToggleBarButtonItem }
-        switch (wantsSidebarToggleItem, existingIndex) {
+        let items = viewController.navigationItem.rightBarButtonItems ?? []
+        let existing = items.first { $0 is SidebarTrailingClusterBarButtonItem } as? SidebarTrailingClusterBarButtonItem
+        switch (wantsSidebarToggleItem, existing) {
         case (true, .some), (false, .none):
             return
-        case (false, .some(let index)):
-            items.remove(at: index)
+
+        case (false, .some(let cluster)):
+            if let stack = cluster.customView as? UIStackView {
+                for view in stack.arrangedSubviews {
+                    stack.removeArrangedSubview(view)
+                    view.removeFromSuperview()
+                }
+            }
+            for (stack, views) in cluster.flattenedStacks {
+                views.forEach(stack.addArrangedSubview)
+            }
+            viewController.navigationItem.rightBarButtonItems = cluster.originalItems
+
         case (true, .none):
             guard let image = UIImage(systemName: "sidebar.leading") else { return }
-            let hosting = Self.makeSidebarImageHostingView(
+            let togglePointSize: CGFloat = 20
+            let toggleView = Self.makeSidebarImageHostingView(
                 image: image,
                 accessibilityLabel: NSLocalizedString("Hide Sidebar", comment: "Sidebar toggle accessibility label"),
+                pointSize: togglePointSize,
                 target: self,
                 action: #selector(hideSidebarOnToggleTap)
             )
-            // An ordinary bar item, laid out by the bar's own margins and spacing like any other
-            // — nothing here positions it. Right items run right-to-left, so index 0 is the
-            // trailing edge, where the system's toggle went.
-            let toggle = SidebarToggleBarButtonItem(customView: hosting)
-            items.insert(toggle, at: 0)
-            toggle.hidesSharedBackground = true
+
+            // Right items run trailing-first (index 0 is the trailing edge), so the cluster's
+            // leading-to-trailing order is the reverse, with the toggle last.
+            var arranged: [UIView] = []
+            var flattened: [(stack: UIStackView, views: [UIView])] = []
+            for item in items.reversed() {
+                guard let view = item.customView else {
+                    // Can't be clustered: fall back to a separate toggle item at the trailing edge.
+                    let toggle = SidebarTrailingClusterBarButtonItem(customView: toggleView)
+                    toggle.originalItems = items
+                    toggle.hidesSharedBackground = true
+                    viewController.navigationItem.rightBarButtonItems = [toggle] + items
+                    return
+                }
+                if let stack = view as? UIStackView, stack.axis == .horizontal {
+                    let views = stack.arrangedSubviews
+                    for inner in views {
+                        stack.removeArrangedSubview(inner)
+                        inner.removeFromSuperview()
+                    }
+                    arranged += views
+                    flattened.append((stack, views))
+                } else {
+                    arranged.append(view)
+                }
+            }
+            arranged.append(toggleView)
+
+            let stack = UIStackView(arrangedSubviews: arranged)
+            stack.axis = .horizontal
+            stack.alignment = .center
+            stack.spacing = Self.sidebarClusterSpacing
+            // Keep the toggle where a system-sized slot centres a lone glyph.
+            stack.isLayoutMarginsRelativeArrangement = true
+            stack.directionalLayoutMargins = NSDirectionalEdgeInsets(
+                top: 0, leading: 0, bottom: 0,
+                trailing: (Self.barItemMinimumWidth - togglePointSize) / 2
+            )
+
+            let cluster = SidebarTrailingClusterBarButtonItem(customView: stack)
+            cluster.originalItems = items
+            cluster.flattenedStacks = flattened
+            cluster.hidesSharedBackground = true
+            viewController.navigationItem.rightBarButtonItems = [cluster]
         }
-        viewController.navigationItem.rightBarButtonItems = items
     }
 
     /// Screens rebuild their bar items at runtime: Forums swaps its Edit item in and out as the
@@ -1084,7 +1161,7 @@ final class NavigationController: UINavigationController, Themeable {
     private func repairBarButtonItemsAfterLayout() {
         guard transitionCoordinator == nil, let topVC = topViewController else { return }
         let toggleDropped = isSidebarNavigationController && wantsSidebarToggleItem
-            && !(topVC.navigationItem.rightBarButtonItems ?? []).contains(where: { $0 is SidebarToggleBarButtonItem })
+            && !(topVC.navigationItem.rightBarButtonItems ?? []).contains(where: { $0 is SidebarTrailingClusterBarButtonItem })
         let detailItemsDropped = isDetailNavigationController
             && !desiredDetailLeadingItems(for: topVC, wanted: nil).elementsEqual(topVC.navigationItem.leftBarButtonItems ?? [], by: ===)
         let hide = hidesSharedBarButtonBackground

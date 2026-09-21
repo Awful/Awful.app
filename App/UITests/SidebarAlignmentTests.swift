@@ -18,7 +18,11 @@ import XCTest
 /// centering and button treatment must hold in both states.
 ///
 /// Requires a logged-in simulator; the test skips loudly otherwise. Buttons
-/// are measured, never tapped — no compose screen is ever opened.
+/// are measured, never tapped — no compose screen is ever opened. For every
+/// bar button the report carries its size, its gap to the pane edge on its
+/// own side (outermost buttons only), and its gap to whatever sits beside it
+/// — the neighbouring button or the title — so a button that drifts, grows,
+/// or crowds its neighbour shows up as a number, not just in the screenshot.
 ///
 /// The title contract (SidebarTitleView): centred on its pane whenever the
 /// whole text fits there clear of the item clusters; otherwise slid toward
@@ -32,9 +36,16 @@ final class SidebarAlignmentTests: XCTestCase {
     private static let horizontalTolerance: CGFloat = 4
     /// Title's vertical center vs. each bar button's vertical center.
     private static let verticalTolerance: CGFloat = 2
-    /// Acceptable range for the gap between the trailing bar button and the
-    /// pane's trailing edge. Negative means the button overhangs the pane.
-    private static let trailingGapRange: ClosedRange<CGFloat> = 4...24
+    /// Acceptable range for the gap between an outermost bar button and the
+    /// pane edge on its side. Negative means the button overhangs the pane.
+    private static let edgeGapRange: ClosedRange<CGFloat> = 4...24
+    /// Spacing between neighbouring buttons on the sidebar's trailing side, the
+    /// toggle included: `NavigationController.sidebarClusterSpacing`, which
+    /// lays the trailing icons out as one evenly spaced cluster.
+    private static let clusterSpacing: CGFloat = 12
+    /// Slack on `clusterSpacing`: the measured frames are the glyph boxes, and
+    /// a symbol drawn at 17pt in a 20pt box sits 1.5pt in from its edges.
+    private static let clusterSpacingTolerance: CGFloat = 2
 
     /// The split view's maximumPrimaryColumnWidth (RootViewControllerStack),
     /// used to tell the sidebar nav bar from the detail pane's.
@@ -46,6 +57,10 @@ final class SidebarAlignmentTests: XCTestCase {
 
     private var app: XCUIApplication!
     private var measurements: [Measurement] = []
+    /// On iPhone there is no split view: the one nav bar is measured as pane
+    /// "bar", the sidebar-summoning helpers stand down, and the sidebar-only
+    /// assertions (cluster spacing, leading edge) are recorded, not enforced.
+    private var isPhone: Bool { UIDevice.current.userInterfaceIdiom == .phone }
     private var overlays: [Overlay] = []
 
     /// Drawing primitives collected while measuring, rendered onto the
@@ -63,6 +78,8 @@ final class SidebarAlignmentTests: XCTestCase {
         var detail: String
         var value: CGFloat?
         var ok: Bool
+        /// Whether `ok` was enforced by an assertion, or only recorded.
+        var asserted: Bool = false
     }
 
     override func setUpWithError() throws {
@@ -231,7 +248,7 @@ final class SidebarAlignmentTests: XCTestCase {
     /// In portrait the sidebar hides (.secondaryOnly / overlay); summon it via
     /// the system toggle so its nav bar exists to measure.
     private func revealSidebarIfHidden() {
-        if sidebarNavigationBar() != nil { return }
+        if isPhone || sidebarNavigationBar() != nil { return }
 
         // System toggle / the app's own show-sidebar button, by name.
         let candidates = [
@@ -287,7 +304,8 @@ final class SidebarAlignmentTests: XCTestCase {
     /// The nav bar belonging to the sidebar column: leftmost bar no wider than
     /// the split view's maximum primary column width.
     private func sidebarNavigationBar() -> XCUIElement? {
-        navigationBars().first { $0.frame.width <= Self.sidebarMaxWidth + 1 && $0.frame.minX < 50 }
+        if isPhone { return navigationBars().first }
+        return navigationBars().first { $0.frame.width <= Self.sidebarMaxWidth + 1 && $0.frame.minX < 50 }
     }
 
     /// The detail pane's nav bar: whichever visible bar isn't the sidebar's.
@@ -297,7 +315,8 @@ final class SidebarAlignmentTests: XCTestCase {
     /// at the sidebar's trailing edge in pinned mode, and in portrait
     /// overlay it's the only candidate anyway.
     private func detailNavigationBar() -> XCUIElement? {
-        navigationBars()
+        if isPhone { return nil }
+        return navigationBars()
             .filter { $0.frame.width > Self.sidebarMaxWidth + 1 || $0.frame.minX >= 50 }
             .max { $0.frame.minX < $1.frame.minX }
     }
@@ -315,6 +334,17 @@ final class SidebarAlignmentTests: XCTestCase {
             // what was measured; overlays are drawn on afterward.
             let shot = XCUIScreen.main.screenshot().image
             overlays = []
+            if isPhone {
+                // One bar for everything; only the Posts screen (detailOnly)
+                // must have a title, as on the iPad detail pane.
+                if let bar = navigationBars().first {
+                    measureBar(bar, pane: "bar", screen: screen, titleHints: expectedTitleHints, requireTitle: detailOnly)
+                } else {
+                    record(screen, pane: "bar", metric: "bar", detail: "no nav bar on screen", value: nil, ok: true)
+                }
+                attachAnnotated(shot, name: screen)
+                return
+            }
             if !detailOnly, let bar = sidebarNavigationBar() {
                 measureBar(bar, pane: "sidebar", screen: screen, titleHints: expectedTitleHints)
             } else if !detailOnly {
@@ -367,7 +397,7 @@ final class SidebarAlignmentTests: XCTestCase {
             } else {
                 record(screen, pane: pane, metric: "title", detail: "no title (empty pane); skipped", value: nil, ok: true)
             }
-            measureButtons(buttons, barFrame: barFrame, titleFrame: nil, screen: screen, pane: pane)
+            measureButtons(buttons, paneRect: barFrame, titleFrame: nil, screen: screen, pane: pane)
             return
         }
         let titleFrame = title.frame
@@ -411,19 +441,30 @@ final class SidebarAlignmentTests: XCTestCase {
         overlays.append(.vline(x: paneCenter, fromY: chosenPane.minY, toY: chosenPane.maxY + 24, color: .systemRed, dashed: true))
         overlays.append(.box(titleFrame, hOK ? .systemGreen : .systemRed,
                              label: "Δ\(fmt(hOffset))pt" + (hOK ? "" : " OFF-CENTER")))
+        // title-span: the wider container the text sits in, when there is
+        // one. The text box above is the accessibility frame of the rendered
+        // label, which for a truncated title can run a few points short of
+        // the glyphs; the span shows how much room the title view was
+        // actually granted, so the two together explain a pinned title.
+        if let container = titleContainer(in: bar, matching: title) {
+            let span = container.frame
+            record(screen, pane: pane, metric: "title-span",
+                   detail: "container \(fmt(span.minX))–\(fmt(span.maxX)), text \(fmt(titleFrame.minX))–\(fmt(titleFrame.maxX))",
+                   value: span.width, ok: true)
+            overlays.append(.box(span.insetBy(dx: -1, dy: -1), .systemGray, label: nil))
+        }
         overlays.append(.hline(y: titleFrame.midY, fromX: chosenPane.minX, toX: titleFrame.minX,
                                color: .systemRed, label: "\(fmt(titleFrame.minX - chosenPane.minX))pt"))
         overlays.append(.hline(y: titleFrame.midY, fromX: titleFrame.maxX, toX: chosenPane.maxX,
                                color: .systemRed, label: "\(fmt(chosenPane.maxX - titleFrame.maxX))pt"))
-        for button in buttons {
-            overlays.append(.box(button.frame, .systemBlue, label: nil))
-        }
+        // Button boxes are drawn after measureButtons has judged them (see the
+        // end of this method), so a box can carry its verdict colour.
 
         // title-v: title center vs each button center.
         for button in buttons {
             let vOffset = titleFrame.midY - button.frame.midY
             let vOK = abs(vOffset) <= Self.verticalTolerance
-            record(screen, pane: pane, metric: "title-v", detail: "vs \(buttonName(button))", value: vOffset, ok: vOK)
+            record(screen, pane: pane, metric: "title-v", detail: "vs \(buttonName(button))", value: vOffset, ok: vOK, asserted: true)
             XCTAssertEqual(titleFrame.midY, button.frame.midY, accuracy: Self.verticalTolerance,
                            "\(screen) \(pane): title vertically misaligned with \(buttonName(button)) by \(fmt(vOffset))pt")
         }
@@ -442,29 +483,132 @@ final class SidebarAlignmentTests: XCTestCase {
             record(screen, pane: pane, metric: "overlap", detail: "none", value: 0, ok: true)
         }
 
-        measureButtons(buttons, barFrame: barFrame, titleFrame: titleFrame, screen: screen, pane: pane)
+        measureButtons(buttons, paneRect: chosenPane, titleFrame: titleFrame, screen: screen, pane: pane)
     }
 
-    private func measureButtons(_ buttons: [XCUIElement], barFrame: CGRect, titleFrame: CGRect?, screen: String, pane: String) {
-        // btn-gap: trailing button's edge to the pane's trailing edge.
-        // Only buttons actually on the trailing side count — an empty detail
-        // pane's lone leading (show-sidebar) button would otherwise measure
-        // a meaningless several-hundred-point "gap".
-        let trailingSide = buttons.filter { $0.frame.midX > barFrame.midX }
-        if let trailing = trailingSide.max(by: { $0.frame.maxX < $1.frame.maxX }) {
-            let gap = barFrame.maxX - trailing.frame.maxX
-            let ok = Self.trailingGapRange.contains(gap)
-            record(screen, pane: pane, metric: "btn-gap", detail: buttonName(trailing), value: gap, ok: ok)
-            XCTAssertTrue(ok, "\(screen) \(pane): trailing gap after \(buttonName(trailing)) is \(fmt(gap))pt, expected \(Self.trailingGapRange)")
-        } else if !buttons.isEmpty {
-            record(screen, pane: pane, metric: "btn-gap", detail: "no trailing-side buttons", value: nil, ok: true)
+    /// Outlines each button in its verdict colour: green when every asserted
+    /// measurement that names it passed, red when one failed, blue when none
+    /// was asserted. Called from measureButtons once the verdicts are in.
+    private func drawButtonBoxes(_ buttons: [XCUIElement], screen: String, pane: String) {
+        for button in buttons {
+            let name = buttonName(button)
+            let judged = measurements.filter {
+                $0.screen == screen && $0.pane == pane && $0.asserted && $0.detail.contains(name)
+            }
+            let color: UIColor = judged.isEmpty ? .systemBlue : (judged.allSatisfy(\.ok) ? .systemGreen : .systemRed)
+            overlays.append(.box(button.frame, color, label: nil))
+        }
+    }
+
+    /// Button geometry. Components (buttons plus the title, when there is
+    /// one) are walked leading to trailing so each gap is measured once,
+    /// between neighbours; the outermost buttons are also measured against
+    /// the pane edge on their side. Every gap is drawn on the screenshot
+    /// just under the buttons' baseline so the lines don't sit on the
+    /// title's own margin lines.
+    ///
+    /// Metrics: `btn-size` (width, detail holds w×h), `edge-lead` /
+    /// `edge-trail` (outermost button to its pane edge, asserted against
+    /// `edgeGapRange` on the sidebar; recorded only on the detail pane, whose
+    /// leading edge can be covered by the sidebar), `gap` (between
+    /// neighbouring components; fails only when they overlap), and
+    /// `contained` (a button escaping the bar).
+    /// Colour for a drawn button measurement: green or red when the value was
+    /// asserted (pass/fail), blue when it was only recorded.
+    private func verdictColor(asserted: Bool, ok: Bool) -> UIColor {
+        asserted ? (ok ? .systemGreen : .systemRed) : .systemBlue
+    }
+
+    private func measureButtons(_ buttons: [XCUIElement], paneRect: CGRect, titleFrame: CGRect?, screen: String, pane: String) {
+        guard !buttons.isEmpty else {
+            record(screen, pane: pane, metric: "btn-size", detail: "no buttons", value: nil, ok: true)
+            return
+        }
+
+        // btn-size: each button's platter, leading to trailing.
+        let sorted = buttons.sorted { $0.frame.minX < $1.frame.minX }
+        for button in sorted {
+            let f = button.frame
+            record(screen, pane: pane, metric: "btn-size",
+                   detail: "\(buttonName(button)) \(fmt(f.width))×\(fmt(f.height)) at x \(fmt(f.minX))",
+                   value: f.width, ok: true)
+        }
+
+        // Components in bar order: buttons and the title. Name + frame.
+        var components: [(name: String, frame: CGRect)] = sorted.map { (buttonName($0), $0.frame) }
+        if let titleFrame, titleFrame.width > 0 {
+            components.append(("title", titleFrame))
+            components.sort { $0.frame.minX < $1.frame.minX }
+        }
+        let lineY = (sorted.map(\.frame.maxY).max() ?? paneRect.maxY) - 3
+
+        // edge-lead / edge-trail: outermost button to its own pane edge.
+        // Only when a button really is the outermost component on that side,
+        // so a leading-only bar (an empty detail pane's show-sidebar button)
+        // never reports a several-hundred-point "trailing gap".
+        let leadingIsButton = components.first?.name != "title"
+        let trailingIsButton = components.last?.name != "title"
+        if leadingIsButton, let first = components.first {
+            let gap = first.frame.minX - paneRect.minX
+            // A detail bar in portrait overlay starts under the sidebar; its
+            // leading button then sits well inside the judged pane. Assert on
+            // the sidebar, record elsewhere.
+            let asserted = pane == "sidebar"
+            let ok = !asserted || Self.edgeGapRange.contains(gap)
+            record(screen, pane: pane, metric: "edge-lead", detail: "pane edge → \(first.name)", value: gap, ok: ok, asserted: asserted)
+            XCTAssertTrue(ok, "\(screen) \(pane): leading gap before \(first.name) is \(fmt(gap))pt, expected \(Self.edgeGapRange)")
+            overlays.append(.hline(y: lineY, fromX: paneRect.minX, toX: first.frame.minX,
+                                   color: verdictColor(asserted: asserted, ok: ok), label: "\(fmt(gap))pt"))
+        }
+        // A bar whose only button sits on the leading half (an empty detail
+        // pane's show-sidebar button) has no trailing button to measure.
+        if trailingIsButton, let last = components.last, last.frame.midX > paneRect.midX {
+            let gap = paneRect.maxX - last.frame.maxX
+            let ok = Self.edgeGapRange.contains(gap)
+            record(screen, pane: pane, metric: "edge-trail", detail: "\(last.name) → pane edge", value: gap, ok: ok, asserted: true)
+            XCTAssertTrue(ok, "\(screen) \(pane): trailing gap after \(last.name) is \(fmt(gap))pt, expected \(Self.edgeGapRange)")
+            overlays.append(.hline(y: lineY, fromX: last.frame.maxX, toX: paneRect.maxX,
+                                   color: verdictColor(asserted: true, ok: ok), label: "\(fmt(gap))pt"))
+        } else if trailingIsButton {
+            record(screen, pane: pane, metric: "edge-trail", detail: "no trailing-side buttons", value: nil, ok: true)
+        }
+
+        // gap: between each pair of neighbouring components. Two buttons on
+        // the sidebar's trailing side must sit `clusterSpacing` apart (the
+        // evenly spaced cluster, toggle included); any other button pair
+        // fails only when it overlaps. Title/button gaps are recorded, not
+        // judged — the title's placement is measureBar's business.
+        for (lhs, rhs) in zip(components, components.dropFirst()) {
+            let gap = rhs.frame.minX - lhs.frame.maxX
+            let bothButtons = lhs.name != "title" && rhs.name != "title"
+            let trailingPair = bothButtons && pane == "sidebar"
+                && lhs.frame.midX > paneRect.midX && rhs.frame.midX > paneRect.midX
+            let ok: Bool
+            if trailingPair {
+                ok = abs(gap - Self.clusterSpacing) <= Self.clusterSpacingTolerance
+            } else {
+                ok = gap >= -0.5 || !bothButtons
+            }
+            record(screen, pane: pane, metric: "gap", detail: "\(lhs.name) → \(rhs.name)", value: gap, ok: ok, asserted: trailingPair || !ok)
+            if trailingPair {
+                XCTAssertEqual(gap, Self.clusterSpacing, accuracy: Self.clusterSpacingTolerance,
+                               "\(screen) \(pane): \(lhs.name) → \(rhs.name) gap is \(fmt(gap))pt, expected \(fmt(Self.clusterSpacing))pt")
+            } else if !ok {
+                XCTFail("\(screen) \(pane): \(lhs.name) overlaps \(rhs.name) by \(fmt(-gap))pt")
+            }
+            if gap > 0.5 {
+                overlays.append(.hline(y: lineY, fromX: lhs.frame.maxX, toX: rhs.frame.minX,
+                                       color: verdictColor(asserted: trailingPair, ok: ok), label: "\(fmt(gap))pt"))
+            }
         }
 
         // contained: every button inside the pane.
-        for button in buttons where !barFrame.insetBy(dx: -1, dy: -1).contains(button.frame) {
-            record(screen, pane: pane, metric: "contained", detail: buttonName(button), value: nil, ok: false)
-            XCTFail("\(screen) \(pane): \(buttonName(button)) escapes the nav bar: \(button.frame) vs \(barFrame)")
+        for button in buttons where !paneRect.insetBy(dx: -1, dy: -1).contains(button.frame) {
+            record(screen, pane: pane, metric: "contained", detail: buttonName(button), value: nil, ok: false, asserted: true)
+            XCTFail("\(screen) \(pane): \(buttonName(button)) escapes the nav bar: \(button.frame) vs \(paneRect)")
         }
+
+        drawButtonBoxes(buttons, screen: screen, pane: pane)
     }
 
     private func titleTexts(in bar: XCUIElement) -> [XCUIElement] {
@@ -487,7 +631,15 @@ final class SidebarAlignmentTests: XCTestCase {
     }
 
     /// The widest same-label element enclosing the title text — the granted
-    /// title-view span when the title exposes a container/text pair.
+    /// title-view span when the title exposes a container/text pair. Nil
+    /// when the title is a single element (nothing wider than itself).
+    private func titleContainer(in bar: XCUIElement, matching title: XCUIElement) -> XCUIElement? {
+        let widest = titleTexts(in: bar).filter { $0.label == title.label }
+            .max { $0.frame.width < $1.frame.width }
+        guard let widest, widest.frame.width > title.frame.width + 0.5 else { return nil }
+        return widest
+    }
+
     private func buttonName(_ button: XCUIElement) -> String {
         let id = button.identifier
         if !id.isEmpty { return id }
@@ -497,8 +649,8 @@ final class SidebarAlignmentTests: XCTestCase {
 
     // MARK: Reporting
 
-    private func record(_ screen: String, pane: String, metric: String, detail: String, value: CGFloat?, ok: Bool) {
-        measurements.append(Measurement(screen: screen, pane: pane, metric: metric, detail: detail, value: value, ok: ok))
+    private func record(_ screen: String, pane: String, metric: String, detail: String, value: CGFloat?, ok: Bool, asserted: Bool = false) {
+        measurements.append(Measurement(screen: screen, pane: pane, metric: metric, detail: detail, value: value, ok: ok, asserted: asserted))
     }
 
     private func printReport() {

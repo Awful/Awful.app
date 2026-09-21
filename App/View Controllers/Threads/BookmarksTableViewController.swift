@@ -654,9 +654,11 @@ final class BookmarksTableViewController: HostedCollectionViewController {
             // UINavigationBar's inter-item spacing doesn't apply between
             // them — they end up crowded together with only the HStack
             // spacing in between, giving the title more room.
+            // The spacing matches the sidebar's trailing cluster, which
+            // absorbs this stack when the toggle is shown.
             let stack = UIStackView(arrangedSubviews: [searchHosting, filterHosting])
             stack.axis = .horizontal
-            stack.spacing = 4
+            stack.spacing = NavigationController.sidebarClusterSpacing
             stack.alignment = .center
             navigationItem.rightBarButtonItems = [UIBarButtonItem(customView: stack)]
             navigationItem.leftBarButtonItems = [editBarButton.item]

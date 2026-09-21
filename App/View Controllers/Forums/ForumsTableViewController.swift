@@ -420,15 +420,16 @@ final class ForumsTableViewController: CollectionViewController, ContentRefresha
         if #available(iOS 26.0, *), LiquidGlass.affectsPadSidebar,
            let moreImage = UIImage(systemName: "ellipsis") {
             // 17pt like Lepers' symbols: the hosting view scales the glyph to fill its box, so an
-            // SF symbol at the 20pt default reads heavier than the 20pt Search asset beside it. A
-            // 28pt tap target (rather than the 44pt default) keeps the pair packed about as
-            // tightly as a plain button would. The menu is rebuilt with the buttons whenever the
-            // settings driving them change, so a one-shot menu is fine.
+            // SF symbol at the 20pt default reads heavier than the 20pt Search asset beside it.
+            // The tap target matches the 20pt box of the icons beside it, so the sidebar's
+            // cluster spacing (which separates the views) reads as glyph-to-glyph spacing. The
+            // menu is rebuilt with the buttons whenever the settings driving them change, so a
+            // one-shot menu is fine.
             let moreButton = NavigationController.makeSidebarMenuButtonView(
                 image: moreImage,
                 accessibilityLabel: "More",
                 pointSize: 17,
-                tapTargetSize: 28,
+                tapTargetSize: 20,
                 menu: moreMenu()
             )
 
@@ -445,7 +446,9 @@ final class ForumsTableViewController: CollectionViewController, ContentRefresha
             arranged.append(moreButton)
             let stack = UIStackView(arrangedSubviews: arranged)
             stack.axis = .horizontal
-            stack.spacing = 4
+            // Matches the sidebar's trailing cluster, which absorbs this stack when the toggle
+            // is shown, so the pair is spaced the same with or without it.
+            stack.spacing = NavigationController.sidebarClusterSpacing
             stack.alignment = .center
             navigationItem.setRightBarButtonItems([UIBarButtonItem(customView: stack)], animated: false)
             // This path tints itself (both icons via the `.themed()` SwiftUI hosting views), so
