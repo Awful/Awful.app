@@ -910,33 +910,29 @@ final class PostsPageViewController: ViewController {
         return item
     }()
 
-    private func actionsItem() -> UIBarButtonItem {
-        // Use primaryAction like the other toolbar buttons
-        let item = UIBarButtonItem(primaryAction: UIAction(
-            image: UIImage(named: "steamed-ham"),
-            handler: { [unowned self] action in
-                if self.enableHaptics {
-                    UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-                }
-
-                // Get the sender and find its frame
-                if let barButtonItem = action.sender as? UIBarButtonItem,
-                   let view = barButtonItem.value(forKey: "view") as? UIView {
-                    let buttonFrameInView = view.convert(view.bounds, to: self.view)
-                    self.hiddenMenuButton.show(menu: self.threadActionsMenu(), from: buttonFrameInView)
-                } else {
-                    // Fallback position
-                    let frame = CGRect(x: self.view.bounds.width - 60, y: self.view.bounds.height - 100, width: 44, height: 44)
-                    self.hiddenMenuButton.show(menu: self.threadActionsMenu(), from: frame)
-                }
+    /// The steamed-ham "Thread actions" button. The menu lives on the bar item itself so UIKit
+    /// anchors and animates it from the real button; the previous approach (moving an invisible
+    /// `HiddenMenuButton` over a frame read via private KVC) could fire before the toolbar had
+    /// laid out, which on iPad made the menu fly in from the screen's origin.
+    /// The menu is rebuilt each time it opens so it reflects current state (bookmarked, poll, …).
+    private lazy var actionsItem: UIBarButtonItem = {
+        let deferred = UIDeferredMenuElement.uncached { [unowned self] completion in
+            if self.enableHaptics {
+                UIImpactFeedbackGenerator(style: .medium).impactOccurred()
             }
-        ))
+            // Pass the whole `.displayInline` menu so its thread-title header survives.
+            completion([self.threadActionsMenu()])
+        }
+        let item = UIBarButtonItem(image: UIImage(named: "steamed-ham"), menu: UIMenu(children: [deferred]))
+        if #available(iOS 16.0, *) {
+            item.preferredMenuElementOrder = .fixed
+        }
         item.accessibilityLabel = "Thread actions"
         if !LiquidGlass.isEnabled {
             item.tintColor = theme["toolbarTextColor"]
         }
         return item
-    }
+    }()
 
     private func refetchPosts() {
         guard case .specific(let pageNumber)? = page else {
@@ -1029,14 +1025,13 @@ final class PostsPageViewController: ViewController {
         syncCurrentPageItemStyle()
         updateCurrentPageItemDisplay()
 
-        let actions = actionsItem()
         let buttonItems: [UIBarButtonItem]
         if endlessScrollPosts {
-            buttonItems = [settingsItem, actions]
-            postsView.toolbarItems = [settingsItem, .flexibleSpace(), actions]
+            buttonItems = [settingsItem, actionsItem]
+            postsView.toolbarItems = [settingsItem, .flexibleSpace(), actionsItem]
         } else {
-            buttonItems = [settingsItem, backItem, currentPageItem, forwardItem, actions]
-            postsView.toolbarItems = [settingsItem, .flexibleSpace(), backItem, currentPageItem, forwardItem, .flexibleSpace(), actions]
+            buttonItems = [settingsItem, backItem, currentPageItem, forwardItem, actionsItem]
+            postsView.toolbarItems = [settingsItem, .flexibleSpace(), backItem, currentPageItem, forwardItem, .flexibleSpace(), actionsItem]
         }
 
         if #available(iOS 26.0, *) {
@@ -1768,7 +1763,7 @@ final class PostsPageViewController: ViewController {
             present(actionSheet, animated: false)
 
             if let popover = actionSheet.popoverPresentationController {
-                popover.barButtonItem = actionsItem()
+                popover.barButtonItem = actionsItem
             }
         }
     }

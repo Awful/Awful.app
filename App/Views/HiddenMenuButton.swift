@@ -9,6 +9,8 @@ import UIKit
  An invisible button that we misuse to show a proper iOS context menu on tap (as opposed to long-press).
 
  Add it to the view that hosts the content the menu is about (a `RenderView`, say), then call `show(menu:from:)` with the rect the menu should anchor to. The button moves itself over that rect and fires its primary action, which is the menu.
+
+ This is only for menus anchored to web content, where there is no real control to attach a menu to. For toolbar or navigation bar buttons, put the `UIMenu` on the `UIBarButtonItem` itself (see `PostsPageViewController.actionsItem`): reading a bar item's frame before the bar has laid out anchors the menu at the wrong place.
  */
 final class HiddenMenuButton: UIButton {
     init() {
