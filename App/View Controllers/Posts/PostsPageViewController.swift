@@ -126,6 +126,16 @@ final class PostsPageViewController: ViewController {
     let thread: AwfulThread
     private var webViewDidLoadOnce = false
 
+    /// Counts calls to `renderPosts()`, so work deferred past one render can tell when a newer one has superseded it.
+    private var renderGeneration = 0
+
+    /// Set while the render view is hidden until a restored scroll position is on screen, so the reader never sees the page open at the top and then jump. Doubles as a backstop that reveals anyway if that never happens.
+    private var revealTimeoutTask: Task<Void, Never>?
+    private static let revealTimeout: TimeInterval = 4
+    /// A still of the previous render, covering a re-render of a page that was already on screen.
+    private var revealCover: UIView?
+    private var isAwaitingReveal: Bool { revealTimeoutTask != nil }
+
     /// True from the start of a render until the document has loaded and the loading view is gone.
     /// While loading, the empty web view (offset 0 under a manually set top inset) reads as fully
     /// scrolled, so the nav bar treats the page as resting at the top until this clears.
@@ -388,6 +398,8 @@ final class PostsPageViewController: ViewController {
         // fresh loading view we're about to show.
         loadingHoldTask?.cancel()
         loadingHoldTask = nil
+        // Restoration re-arms this after loading; any other load shows its render as usual.
+        revealRenderView()
 
         // Stage restoration after the resets above and before any render below, so a page
         // rendered straight from the cache already opens at the restored position.
@@ -594,6 +606,37 @@ final class PostsPageViewController: ViewController {
         } else {
             refreshRestoredPage(updatingLastReadPost: updateLastReadPost)
         }
+        hideRenderViewUntilScrolledIntoPlace()
+    }
+
+    /// Keeps the next render off screen until `didFinishRenderingHTML` has scrolled it to its staged position.
+    private func hideRenderViewUntilScrolledIntoPlace() {
+        let renderView = postsView.renderView
+        if webViewDidLoadOnce, revealCover == nil, renderView.alpha > 0,
+           let cover = renderView.snapshotView(afterScreenUpdates: false)
+        {
+            // Already showing posts: hold a still of them rather than blanking the page.
+            cover.frame = renderView.frame
+            renderView.superview?.insertSubview(cover, aboveSubview: renderView)
+            revealCover = cover
+        } else if revealCover == nil {
+            renderView.alpha = 0
+        }
+        revealTimeoutTask?.cancel()
+        revealTimeoutTask = Task { [weak self] in
+            try? await Task.sleep(timeInterval: Self.revealTimeout)
+            guard !Task.isCancelled else { return }
+            self?.revealRenderView()
+        }
+    }
+
+    private func revealRenderView() {
+        revealTimeoutTask?.cancel()
+        revealTimeoutTask = nil
+        guard isViewLoaded else { return }
+        postsView.renderView.alpha = 1
+        revealCover?.removeFromSuperview()
+        revealCover = nil
     }
 
     /// Fetches the page a restoration rendered from cache. Only re-renders when the posts would look different (new replies, edits), and then keeps the reader on the post they're looking at.
@@ -645,6 +688,7 @@ final class PostsPageViewController: ViewController {
                     self.scrollToFractionAfterLoading = self.postsView.renderView.scrollView.fractionalContentOffset.y
                 }
             }
+            self.hideRenderViewUntilScrolledIntoPlace()
             self.renderPosts()
         }
     }
@@ -706,6 +750,7 @@ final class PostsPageViewController: ViewController {
     private func renderPosts() {
         webViewDidLoadOnce = false
         hasScrolledSinceRender = false
+        renderGeneration += 1
         renderedPostsFingerprint = RenderedPostsFingerprint(posts.dropFirst(hiddenPosts))
 
         var context: [String: Any] = [:]
@@ -2452,6 +2497,7 @@ final class PostsPageViewController: ViewController {
         anchorPostIDAfterLoading = nil
         anchorDeltaAfterLoading = nil
         scrollToFractionAfterLoading = nil
+        revealRenderView()
     }
 
     private func configureUserActivityIfPossible() {
@@ -2913,29 +2959,51 @@ extension PostsPageViewController: RenderViewDelegate {
             }
         }
 
+        let renderView = postsView.renderView
+        let scrollIntoPlace: (() async -> Void)?
         if let postID = jumpToPostIDAfterLoading {
             noteScrollSinceRender()
-            postsView.renderView.jumpToPost(identifiedBy: postID, topOffset: postsView.topInsetForPostFraming)
+            let topOffset = postsView.topInsetForPostFraming
+            scrollIntoPlace = { await renderView.jumpToPostThenWaitForPaint(identifiedBy: postID, topOffset: topOffset) }
         } else if let anchorID = anchorPostIDAfterLoading,
                   posts.contains(where: { $0.postID == anchorID })
         {
             // (chrome - deltaY) reproduces the saved scroll position. Staged values stay
             // set so the tweet-loaded callback can re-apply after layout shifts.
             noteScrollSinceRender()
-            let delta = anchorDeltaAfterLoading ?? 0
-            postsView.renderView.jumpToPost(
-                identifiedBy: anchorID,
-                topOffset: postsView.topInsetForPostFraming - delta
-            )
+            let topOffset = postsView.topInsetForPostFraming - (anchorDeltaAfterLoading ?? 0)
+            scrollIntoPlace = { await renderView.jumpToPostThenWaitForPaint(identifiedBy: anchorID, topOffset: topOffset) }
         } else if let newFractionalOffset = scrollToFractionAfterLoading {
             if newFractionalOffset > 0 {
                 noteScrollSinceRender()
             }
-            var fractionalOffset = postsView.renderView.scrollView.fractionalContentOffset
+            var fractionalOffset = renderView.scrollView.fractionalContentOffset
             fractionalOffset.y = newFractionalOffset
-            postsView.renderView.scrollToFractionalOffset(fractionalOffset)
+            scrollIntoPlace = { await renderView.scrollToFractionalOffsetThenWaitForPaint(fractionalOffset) }
+        } else {
+            scrollIntoPlace = nil
         }
 
+        guard isAwaitingReveal else {
+            if let scrollIntoPlace {
+                Task { await scrollIntoPlace() }
+            }
+            finishRendering()
+            return
+        }
+
+        // Hidden for restoration: show the page only once it's where the reader left it.
+        let generation = renderGeneration
+        Task { [weak self] in
+            await scrollIntoPlace?()
+            guard let self, self.renderGeneration == generation else { return }
+            self.revealRenderView()
+            self.finishRendering()
+        }
+    }
+
+    /// The rest of `didFinishRenderingHTML`, once the render is scrolled into place.
+    private func finishRendering() {
         dismissLoadingViewAfterRender()
 
         // The bar sat at the opaque resting state while loading; if a restore is in flight,

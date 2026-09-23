@@ -153,15 +153,43 @@ final class RenderView: UIView {
      */
     func scrollToFractionalOffset(_ fractionalOffset: CGPoint) {
         Task {
-            do {
-                try await webView.eval("""
-                    window.scrollTo(
-                        document.body.scrollWidth * \(fractionalOffset.x),
-                        document.body.scrollHeight * \(fractionalOffset.y));
-                    """)
-            } catch {
-                logger.error("error attempting to scroll: \(error)")
+            await scrollToFractionalOffsetThenWaitForPaint(fractionalOffset, waitingForPaint: false)
+        }
+    }
+
+    /// Like `scrollToFractionalOffset(_:)`, but returns once the new offset has been painted.
+    func scrollToFractionalOffsetThenWaitForPaint(_ fractionalOffset: CGPoint, waitingForPaint: Bool = true) async {
+        do {
+            try await webView.eval("""
+                window.scrollTo(
+                    document.body.scrollWidth * \(fractionalOffset.x),
+                    document.body.scrollHeight * \(fractionalOffset.y));
+                """)
+        } catch {
+            logger.error("error attempting to scroll: \(error)")
+        }
+        if waitingForPaint {
+            await waitForNextPaint()
+        }
+    }
+
+    /// Returns once the web content has painted a frame, so an offset set just before is what's on screen. Gives up after `timeout`, in case WebKit is throttling animation frames.
+    func waitForNextPaint(timeout: TimeInterval = 0.25) async {
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+            var resumed = false
+            let resume = {
+                guard !resumed else { return }
+                resumed = true
+                continuation.resume()
             }
+            // Two frames: the first rAF callback runs before its frame is painted.
+            webView.callAsyncJavaScript(
+                "await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)))",
+                arguments: [:],
+                in: nil,
+                in: .page
+            ) { _ in resume() }
+            DispatchQueue.main.asyncAfter(deadline: .now() + timeout) { resume() }
         }
     }
     
@@ -652,6 +680,13 @@ extension RenderView {
     
     /// Scrolls so the identified post sits below `topOffset` points of chrome at the top of the viewport. Set `animated` to true for a smooth scroll.
     func jumpToPost(identifiedBy postID: String, animated: Bool = false, topOffset: CGFloat) {
+        Task {
+            await jumpToPostThenWaitForPaint(identifiedBy: postID, animated: animated, topOffset: topOffset, waitingForPaint: false)
+        }
+    }
+
+    /// Like `jumpToPost(identifiedBy:animated:topOffset:)`, but returns once the new offset has been painted.
+    func jumpToPostThenWaitForPaint(identifiedBy postID: String, animated: Bool = false, topOffset: CGFloat, waitingForPaint: Bool = true) async {
         let escapedPostID: String
         do {
             escapedPostID = try escapeForEval(postID)
@@ -659,12 +694,13 @@ extension RenderView {
             logger.warning("could not JSON-escape the post ID: \(error)")
             return
         }
-        Task {
-            do {
-                try await webView.eval("if (window.Awful) Awful.jumpToPostWithID(\(escapedPostID), \(animated), \(topOffset))")
-            } catch {
-                self.mentionError(error, explanation: "could not evaluate jumpToPostWithID")
-            }
+        do {
+            try await webView.eval("if (window.Awful) Awful.jumpToPostWithID(\(escapedPostID), \(animated), \(topOffset))")
+        } catch {
+            mentionError(error, explanation: "could not evaluate jumpToPostWithID")
+        }
+        if waitingForPaint {
+            await waitForNextPaint()
         }
     }
 
