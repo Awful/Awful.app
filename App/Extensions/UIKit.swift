@@ -114,18 +114,26 @@ extension UISplitViewController {
         return (isLandscape && !hideInLandscape) ? .oneBesideSecondary : .oneOverSecondary
     }
 
-    /// Animates the primary view controller into view if it is not already visible.
-    func showPrimaryViewController() {
+    /// Brings the primary view controller into view if it is not already visible.
+    func showPrimaryViewController(animated: Bool = true) {
         // The docs say that displayMode is "ignored" when we're collapsed. I'm not really sure what that means so let's bail early.
         guard !isCollapsed, displayMode == .secondaryOnly else { return }
-        UIView.animate(withDuration: 0.25) { self.preferredDisplayMode = self.sidebarSummonedDisplayMode }
+        setPreferredDisplayMode(sidebarSummonedDisplayMode, animated: animated)
     }
 
-    /// Animates the primary view controller out of view if it is currently visible in an overlay.
-    func hidePrimaryViewController() {
+    /// Takes the primary view controller out of view if it is currently visible in an overlay.
+    func hidePrimaryViewController(animated: Bool = true) {
         // The docs say that displayMode is "ignored" when we're collapsed. I'm not really sure what that means so let's bail early.
         guard !isCollapsed, displayMode == .oneOverSecondary else { return }
-        UIView.animate(withDuration: 0.25) { self.preferredDisplayMode = .secondaryOnly }
+        setPreferredDisplayMode(.secondaryOnly, animated: animated)
+    }
+
+    private func setPreferredDisplayMode(_ mode: DisplayMode, animated: Bool) {
+        if animated {
+            UIView.animate(withDuration: 0.25) { self.preferredDisplayMode = mode }
+        } else {
+            UIView.performWithoutAnimation { self.preferredDisplayMode = mode }
+        }
     }
 }
 

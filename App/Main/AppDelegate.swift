@@ -266,23 +266,16 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         return size
     }
 
-    func open(route: AwfulRoute) {
-        urlRouter?.route(route)
-    }
-
-    /// Overload that threads scene-restoration payloads through to the router so a
-    /// freshly-constructed `PostsPageViewController` / `MessageViewController` can stage
-    /// its restored scroll fraction (and hidden-posts count) before its first render.
-    func open(
-        route: AwfulRoute,
-        pendingPostsRestoration: PendingPostsRestoration? = nil,
-        pendingMessageRestoration: PendingMessageRestoration? = nil
-    ) {
-        urlRouter?.route(
-            route,
-            pendingPostsRestoration: pendingPostsRestoration,
-            pendingMessageRestoration: pendingMessageRestoration
-        )
+    /// - parameter restoration: Pass when replaying scene restoration: the route is shown without animation, and any staged payload lets a freshly-constructed `PostsPageViewController` / `MessageViewController` apply its restored scroll position (and hidden-posts count) before its first render. User-initiated navigation leaves this nil so it keeps its animations.
+    func open(route: AwfulRoute, restoration: RouteRestoration? = nil) {
+        guard let urlRouter else { return }
+        if let restoration, let stack = rootViewControllerStackIfLoaded {
+            stack.performRestorationReplay {
+                urlRouter.route(route, restoration: restoration)
+            }
+        } else {
+            urlRouter.route(route, restoration: restoration)
+        }
     }
     
     private func updateShortcutItems() {

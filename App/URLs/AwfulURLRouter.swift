@@ -28,6 +28,15 @@ struct PendingMessageRestoration {
     let scrollFraction: CGFloat
 }
 
+/// Marks a route as part of scene-restoration replay on launch, carrying any per-screen state
+/// to stage on the screen it builds. Replay should be invisible: the user expects to be back
+/// where they were, not to watch the app navigate itself there. So a replayed route pushes,
+/// pops and summons the sidebar without animation, and skips haptics.
+struct RouteRestoration {
+    var posts: PendingPostsRestoration?
+    var message: PendingMessageRestoration?
+}
+
 /// Translates URLs with the scheme "awful" into an appropriate shown screen.
 struct AwfulURLRouter {
 
@@ -45,28 +54,30 @@ struct AwfulURLRouter {
     }
     
     /// Show the screen appropriate for an "awful" URL.
+    ///
+    /// - parameter restoration: Non-nil when replaying scene restoration, which shows the screen without animation or haptics.
     @discardableResult
     func route(
         _ route: AwfulRoute,
-        pendingPostsRestoration: PendingPostsRestoration? = nil,
-        pendingMessageRestoration: PendingMessageRestoration? = nil
+        restoration: RouteRestoration? = nil
     ) -> Bool {
+        let animated = restoration == nil
 
-        if enableHaptics {
+        if enableHaptics, animated {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
 
         switch route {
         case .bookmarks:
-            return selectTopmostViewController(containingViewControllerOfClass: BookmarksTableViewController.self) != nil
+            return selectTopmostViewController(containingViewControllerOfClass: BookmarksTableViewController.self, animated: animated) != nil
 
         case let .forum(id: forumID):
             let key = ForumKey(forumID: forumID)
             guard let forum = Forum.existingObjectForKey(objectKey: key, in: managedObjectContext) else { return false }
-            return jumpToForum(forum)
+            return jumpToForum(forum, animated: animated)
 
         case .forumList:
-            return selectTopmostViewController(containingViewControllerOfClass: ForumsTableViewController.self) != nil
+            return selectTopmostViewController(containingViewControllerOfClass: ForumsTableViewController.self, animated: animated) != nil
 
         case .lepersColony:
             // The Leper's Colony is a tab, so select it like `.forumList`/`.bookmarks` rather than
@@ -74,6 +85,7 @@ struct AwfulURLRouter {
             // route on launch — slide the colony over another tab in a sheet.)
             if selectTopmostViewController(
                 containingViewControllerOfClass: RapSheetViewController.self,
+                animated: animated,
                 matching: \.isLepersColony
             ) != nil {
                 return true
@@ -81,16 +93,16 @@ struct AwfulURLRouter {
 
             // Fall back to presenting modally if the tab isn't in the hierarchy.
             let rapSheetVC = RapSheetViewController(handlers: .awful)
-            rootViewController.present(rapSheetVC.enclosingNavigationController, animated: true)
+            rootViewController.present(rapSheetVC.enclosingNavigationController, animated: animated)
             return true
 
         case let .message(id: messageID):
-            guard let inbox = selectTopmostViewController(containingViewControllerOfClass: MessageListViewController.self) else { return false }
+            guard let inbox = selectTopmostViewController(containingViewControllerOfClass: MessageListViewController.self, animated: animated) else { return false }
             _ = inbox.navigationController?.popToViewController(inbox, animated: false)
 
             let key = PrivateMessageKey(messageID: messageID)
             if let message = PrivateMessage.existingObjectForKey(objectKey: key, in: managedObjectContext) {
-                inbox.showMessage(message, pendingRestoration: pendingMessageRestoration)
+                inbox.showMessage(message, pendingRestoration: restoration?.message, playsHaptic: animated)
                 return true
             }
 
@@ -102,7 +114,7 @@ struct AwfulURLRouter {
                 do {
                     let message = try await ForumsClient.shared.readPrivateMessage(identifiedBy: key)
                     overlay.dismiss(true, completion: {
-                        inbox.showMessage(message, pendingRestoration: pendingMessageRestoration)
+                        inbox.showMessage(message, pendingRestoration: restoration?.message, playsHaptic: animated)
                     })
                 } catch {
                     overlay.titleLabelText = "Message Not Found"
@@ -114,7 +126,7 @@ struct AwfulURLRouter {
             return true
 
         case .messagesList:
-            return selectTopmostViewController(containingViewControllerOfClass: MessageListViewController.self) != nil
+            return selectTopmostViewController(containingViewControllerOfClass: MessageListViewController.self, animated: animated) != nil
 
         case let .post(id: postID, updateSeen):
             var updateLastRead: Bool {
@@ -127,7 +139,7 @@ struct AwfulURLRouter {
             if let postsVC = PostLocator.cachedPostsPageViewController(
                 postID: postID, updateLastReadPost: updateLastRead, in: managedObjectContext)
             {
-                return showPostsViewController(postsVC)
+                return showPostsViewController(postsVC, animated: animated)
             }
 
             guard let rootView = rootViewController.view else { return false }
@@ -138,7 +150,7 @@ struct AwfulURLRouter {
                         postID: postID, updateLastReadPost: updateLastRead)
                 }
                 if let postsVC {
-                    _ = self.showPostsViewController(postsVC)
+                    _ = self.showPostsViewController(postsVC, animated: animated)
                 }
             }
             return true
@@ -170,31 +182,31 @@ struct AwfulURLRouter {
             return true
 
         case .settings:
-            return selectTopmostViewController(containingViewControllerOfClass: SettingsViewController.self) != nil
+            return selectTopmostViewController(containingViewControllerOfClass: SettingsViewController.self, animated: animated) != nil
 
         case let .threadPage(threadID: threadID, page: page, updateSeen):
-            return showThread(threadID, page: page, updateSeen: updateSeen, pendingRestoration: pendingPostsRestoration)
+            return showThread(threadID, page: page, updateSeen: updateSeen, restoration: restoration)
 
         case let .threadPageSingleUser(threadID: threadID, userID: userID, page: page, updateSeen):
-            return showThread(threadID, page: page, justPostsByUser: userID, updateSeen: updateSeen, pendingRestoration: pendingPostsRestoration)
+            return showThread(threadID, page: page, justPostsByUser: userID, updateSeen: updateSeen, restoration: restoration)
         }
     }
     
-    private func jumpToForum(_ forum: Forum) -> Bool {
-        if enableHaptics {
+    private func jumpToForum(_ forum: Forum, animated: Bool) -> Bool {
+        if enableHaptics, animated {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         if let threadsVC = rootViewController.firstDescendant(ofType: ThreadsTableViewController.self),
            threadsVC.forum === forum
         {
-            _ = threadsVC.navigationController?.popToViewController(threadsVC, animated: true)
-            return selectTopmostViewController(containingViewControllerOfClass: ThreadsTableViewController.self) != nil
+            _ = threadsVC.navigationController?.popToViewController(threadsVC, animated: animated)
+            return selectTopmostViewController(containingViewControllerOfClass: ThreadsTableViewController.self, animated: animated) != nil
         }
         
         if let forumsVC = rootViewController.firstDescendant(ofType: ForumsTableViewController.self) {
             _ = forumsVC.navigationController?.popToViewController(forumsVC, animated: false)
-            forumsVC.openForum(forum, animated: false)
-            return selectTopmostViewController(containingViewControllerOfClass: ForumsTableViewController.self) != nil
+            forumsVC.openForum(forum, animated: false, playsHaptic: animated)
+            return selectTopmostViewController(containingViewControllerOfClass: ForumsTableViewController.self, animated: animated) != nil
         }
         
         return false
@@ -204,9 +216,10 @@ struct AwfulURLRouter {
     ///   `RapSheetViewController` is both the Leper's Colony tab root and a single user's rap sheet.
     private func selectTopmostViewController<VC: UIViewController>(
         containingViewControllerOfClass klass: VC.Type,
+        animated: Bool,
         matching predicate: (VC) -> Bool = { _ in true }
     ) -> VC? {
-        if enableHaptics {
+        if enableHaptics, animated {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         guard let
@@ -216,7 +229,7 @@ struct AwfulURLRouter {
         for topmost in tabBarVC.viewControllers ?? [] {
             guard let match = topmost.subtree.lazy.compactMap({ $0 as? VC }).first(where: predicate) else { continue }
             tabBarVC.selectedViewController = topmost
-            splitVC.showPrimaryViewController()
+            splitVC.showPrimaryViewController(animated: animated)
             return match
         }
         return nil
@@ -227,7 +240,7 @@ struct AwfulURLRouter {
         page: ThreadPage,
         justPostsByUser userID: String? = nil,
         updateSeen: AwfulRoute.UpdateSeen,
-        pendingRestoration: PendingPostsRestoration? = nil
+        restoration: RouteRestoration?
     ) -> Bool {
         let threadKey = ThreadKey(threadID: threadID)
         let thread = AwfulThread.objectForKey(objectKey: threadKey, in: managedObjectContext)
@@ -255,7 +268,7 @@ struct AwfulURLRouter {
         // callbacks on a subsequent main-queue tick) sees the staged values. Doing this
         // here instead of after `open(route:)` returns closes the iPad race where
         // `didFinishRenderingHTML` could fire with `scrollToFractionAfterLoading == nil`.
-        if let pending = pendingRestoration {
+        if let pending = restoration?.posts {
             postsVC.prepareForRestoration(
                 scrollFraction: pending.scrollFraction,
                 hiddenPosts: pending.hiddenPosts,
@@ -264,10 +277,10 @@ struct AwfulURLRouter {
             )
         }
 
-        return showPostsViewController(postsVC)
+        return showPostsViewController(postsVC, animated: restoration == nil)
     }
     
-    private func showPostsViewController(_ postsVC: PostsPageViewController) -> Bool {
+    private func showPostsViewController(_ postsVC: PostsPageViewController, animated: Bool) -> Bool {
         // Showing a posts view controller as a result of opening a URL is not the same as simply showing a detail view controller. We want to push it on to an existing navigation stack. Which one depends on how the split view is currently configured.
         let targetNav: UINavigationController
         guard let splitVC = rootViewController.children.first as? UISplitViewController else { return false }
@@ -289,7 +302,7 @@ struct AwfulURLRouter {
             postsVC.hidesBottomBarWhenPushed = false
         }
         
-        targetNav.pushViewController(postsVC, animated: true)
+        targetNav.pushViewController(postsVC, animated: animated)
         return true
     }
     

@@ -236,7 +236,7 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             if !restoreLastThreadOnLaunch {
                 DispatchQueue.main.async {
                     if let savedTabRoute {
-                        AppDelegate.instance.open(route: savedTabRoute)
+                        AppDelegate.instance.open(route: savedTabRoute, restoration: RouteRestoration())
                     }
                 }
                 return
@@ -250,7 +250,7 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 // route — .message — switches tabs itself; its case below re-asserts the
                 // saved tab afterwards.)
                 if let tabRoute = savedTabRoute, tabRoute.httpURL != route.httpURL {
-                    AppDelegate.instance.open(route: tabRoute)
+                    AppDelegate.instance.open(route: tabRoute, restoration: RouteRestoration())
                 }
                 // Then rebuild the mid-stack primary navigation depth (e.g. the specific
                 // forum's thread list the user had drilled into) BEFORE pushing the detail
@@ -261,7 +261,7 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                    primaryDeepRoute.httpURL != route.httpURL,
                    primaryDeepRoute.httpURL != savedTabRoute?.httpURL
                 {
-                    AppDelegate.instance.open(route: primaryDeepRoute)
+                    AppDelegate.instance.open(route: primaryDeepRoute, restoration: RouteRestoration())
                 }
                 // Stage any scroll-fraction / hidden-posts payload through the router so
                 // the freshly-constructed `PostsPageViewController` / `MessageViewController`
@@ -272,17 +272,17 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 case .threadPage, .threadPageSingleUser:
                     AppDelegate.instance.open(
                         route: route,
-                        pendingPostsRestoration: PendingPostsRestoration(
+                        restoration: RouteRestoration(posts: PendingPostsRestoration(
                             scrollFraction: savedFraction,
                             hiddenPosts: savedHiddenPosts,
                             anchorPostID: savedAnchorPostID,
                             anchorDelta: savedAnchorDelta
-                        )
+                        ))
                     )
                 case .message:
                     AppDelegate.instance.open(
                         route: route,
-                        pendingMessageRestoration: savedFraction.map { PendingMessageRestoration(scrollFraction: $0) }
+                        restoration: RouteRestoration(message: savedFraction.map { PendingMessageRestoration(scrollFraction: $0) })
                     )
                     // The .message route selects the Messages tab as a side effect (the
                     // router has to find the inbox), so it's the one detail route that can
@@ -293,10 +293,10 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                     // are untouched. (Collapsed iPhone: the saved tab here is necessarily
                     // .messagesList, making this a no-op.)
                     if let tabRoute = savedTabRoute {
-                        AppDelegate.instance.open(route: tabRoute)
+                        AppDelegate.instance.open(route: tabRoute, restoration: RouteRestoration())
                     }
                 default:
-                    AppDelegate.instance.open(route: route)
+                    AppDelegate.instance.open(route: route, restoration: RouteRestoration())
                 }
                 guard let stack = AppDelegate.instance.rootViewControllerStackIfLoaded else { return }
                 if !savedUnpopRoutes.isEmpty, let primaryNav = stack.currentPrimaryNavigationController {

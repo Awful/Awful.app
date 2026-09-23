@@ -237,8 +237,8 @@ final class MessageListViewController: CollectionViewController, ContentRefresha
         UserDefaults.standard.set(folder.folderID, forKey: UserDefaultsKey.lastFolderID)
     }
 
-    func showMessage(_ message: PrivateMessage, pendingRestoration: PendingMessageRestoration? = nil) {
-        if enableHaptics {
+    func showMessage(_ message: PrivateMessage, pendingRestoration: PendingMessageRestoration? = nil, playsHaptic: Bool = true) {
+        if enableHaptics, playsHaptic {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         let viewController = MessageViewController(privateMessage: message)

@@ -27,6 +27,17 @@ final class RootViewControllerStack: NSObject, AwfulSplitViewControllerDelegate 
     /// snapshot resizes iOS performs on backgrounding), when display-mode changes are
     /// UIKit's doing rather than the user's.
     private var isTransitioningSize = false
+
+    /// True while `performRestorationReplay` runs, so detail shows (which reach us through a
+    /// delegate method with no `animated` parameter) happen without animation.
+    private(set) var isReplayingRestoration = false
+
+    /// Runs `body` with detail-column transitions unanimated, for scene-restoration replay.
+    func performRestorationReplay(_ body: () -> Void) {
+        isReplayingRestoration = true
+        defer { isReplayingRestoration = false }
+        body()
+    }
     
     lazy private(set) var rootViewController: UIViewController = {
         // This was a fun one! If you change the app icon (using `UIApplication.setAlternateIconName(…)`), the alert it presents causes `UISplitViewController` to dismiss its primary view controller. Even on a phone when there is no secondary view controller. The fix? It seems like the alert is presented on the current `rootViewController`, so if that isn't the split view controller then we're all set!
@@ -443,14 +454,14 @@ extension RootViewControllerStack {
         sender: Any?
     ) -> Bool {
         if splitViewController.isCollapsed {
-            primaryNavigationController.pushViewController(viewController, animated: true)
+            primaryNavigationController.pushViewController(viewController, animated: !isReplayingRestoration)
         } else {
             detailNavigationController!.setViewControllers([viewController], animated: false)
             
             // Laying out the split view now prevents it from getting caught up in the animation block that hides the primary view controller. Otherwise we get to see an ugly animated resizing of the new secondary view from a 0-rect up to full screen.
             splitViewController.view.layoutIfNeeded()
             
-            splitViewController.hidePrimaryViewController()
+            splitViewController.hidePrimaryViewController(animated: !isReplayingRestoration)
         }
         
         return true

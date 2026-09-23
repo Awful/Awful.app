@@ -309,8 +309,8 @@ final class ForumsTableViewController: CollectionViewController, ContentRefresha
         }
     }
 
-    func openForum(_ forum: Forum, animated: Bool) {
-        if enableHaptics {
+    func openForum(_ forum: Forum, animated: Bool, playsHaptic: Bool = true) {
+        if enableHaptics, playsHaptic {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         let threadList = ThreadsTableViewController(forum: forum)
