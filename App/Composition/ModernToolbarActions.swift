@@ -166,11 +166,10 @@ extension ModernToolbarActionHandling {
             })
         }
 
-        // New threads and private messages have no reply draft, so imgur is their only destination.
-        let canAttachInEdit = (toolbarMenuTree?.draft as? EditReplyDraft)?.canAddAttachment ?? false
+        // Private messages can't carry a forum attachment, so imgur is their only destination.
         let hasDestination: Bool = {
             guard let menuTree = toolbarMenuTree else { return false }
-            return menuTree.imgurUploadsEnabled || menuTree.draft is NewReplyDraft || canAttachInEdit
+            return menuTree.imgurUploadsEnabled || menuTree.forumAttachmentsEnabled
         }()
 
         if UIPasteboard.general.hasImages && hasDestination {

@@ -49,6 +49,19 @@ final class ThreadComposeViewController: ComposeTextViewController {
     private let draft: NewThreadDraft
     private var autoSaveWorkItem: DispatchWorkItem?
 
+    private enum AttachmentPreviewLayout {
+        static let height: CGFloat = 84
+        static let spacing: CGFloat = 8
+        static let sideInset: CGFloat = 12
+    }
+    private let attachmentPreviewView = AttachmentPreviewView()
+    /// How much of `textView.textContainerInset.top` currently makes room for the attachment preview.
+    private var attachmentPreviewInset: CGFloat = 0
+    /// True while a picked image is being resized into an attachment.
+    private var isProcessingAttachment = false {
+        didSet { updateSubmitButtonItem() }
+    }
+
     /// - parameter forum: The forum in which the new thread is posted. Loads any saved draft for
     ///   this forum from `DraftStore` so the in-progress thread is recovered across launches.
     init(forum: Forum) {
@@ -81,10 +94,40 @@ final class ThreadComposeViewController: ComposeTextViewController {
         fieldView.threadTagButton.addTarget(self, action: #selector(didTapThreadTagButton), for: .touchUpInside)
         fieldView.subjectField.textField.addTarget(self, action: #selector(subjectFieldDidChange), for: .editingChanged)
         customView = fieldView
+
+        attachmentPreviewView.translatesAutoresizingMaskIntoConstraints = false
+        attachmentPreviewView.isHidden = true
+        attachmentPreviewView.onRemove = { [weak self] in
+            guard let self else { return }
+            draft.forumAttachment = nil
+            updateAttachmentPreview()
+            scheduleDraftAutoSave()
+        }
+        textView.addSubview(attachmentPreviewView)
+        NSLayoutConstraint.activate([
+            attachmentPreviewView.topAnchor.constraint(equalTo: fieldView.bottomAnchor, constant: AttachmentPreviewLayout.spacing),
+            attachmentPreviewView.leadingAnchor.constraint(equalTo: fieldView.leadingAnchor, constant: AttachmentPreviewLayout.sideInset),
+            attachmentPreviewView.trailingAnchor.constraint(equalTo: fieldView.trailingAnchor, constant: -AttachmentPreviewLayout.sideInset),
+            attachmentPreviewView.heightAnchor.constraint(equalToConstant: AttachmentPreviewLayout.height),
+        ])
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        toolbarMenuTree?.draft = draft
+        toolbarMenuTree?.onAttachmentChanged = { [weak self] in
+            guard let self else { return }
+            isProcessingAttachment = false
+            updateAttachmentPreview()
+            scheduleDraftAutoSave()
+        }
+        toolbarMenuTree?.onResizingStarted = { [weak self] in
+            guard let self else { return }
+            isProcessingAttachment = true
+            attachmentPreviewView.showResizingPlaceholder()
+            setAttachmentPreviewVisible(true)
+        }
 
         updateTweaks()
         threadTag = draft.threadTag
@@ -101,6 +144,24 @@ final class ThreadComposeViewController: ComposeTextViewController {
             textView.attributedText = savedText
             updateSubmitButtonItem()
         }
+        updateAttachmentPreview()
+    }
+
+    private func updateAttachmentPreview() {
+        if let attachment = draft.forumAttachment {
+            attachmentPreviewView.configure(with: attachment)
+            setAttachmentPreviewVisible(true)
+        } else {
+            setAttachmentPreviewVisible(false)
+        }
+    }
+
+    /// Shows or hides the attachment preview below the subject field, pushing the text down to make room.
+    private func setAttachmentPreviewVisible(_ visible: Bool) {
+        attachmentPreviewView.isHidden = !visible
+        let inset = visible ? AttachmentPreviewLayout.height + 2 * AttachmentPreviewLayout.spacing : 0
+        textView.textContainerInset.top += inset - attachmentPreviewInset
+        attachmentPreviewInset = inset
     }
     
     override var theme: Theme {
@@ -117,6 +178,11 @@ final class ThreadComposeViewController: ComposeTextViewController {
         let themedString = NSAttributedString(string: "Subject", attributes: attributes)
         fieldView.subjectField.textField.attributedPlaceholder = themedString
         updateThreadTagButtonImage()
+
+        attachmentPreviewView.backgroundColor = theme["backgroundColor"]
+        attachmentPreviewView.layer.borderColor = (theme["listSecondaryTextColor"] as UIColor?)?.cgColor
+        attachmentPreviewView.layer.borderWidth = 1
+        attachmentPreviewView.updateTextColor(theme["listTextColor"])
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -258,6 +324,7 @@ final class ThreadComposeViewController: ComposeTextViewController {
             && draft.secondaryThreadTag == nil
             && (draft.text?.length ?? 0) == 0
             && draft.poll == nil
+            && draft.forumAttachment == nil
         {
             DraftStore.sharedStore().deleteDraft(draft)
         } else {
@@ -310,6 +377,7 @@ final class ThreadComposeViewController: ComposeTextViewController {
     
     override var canSubmitComposition: Bool {
         guard super.canSubmitComposition else { return false }
+        guard !isProcessingAttachment else { return false }
         guard fieldView.subjectField.textField.text?.isEmpty == false else { return false }
         return threadTag != nil
     }
@@ -343,6 +411,20 @@ final class ThreadComposeViewController: ComposeTextViewController {
 
         let poll = self.poll.map(\.normalized).flatMap { $0.isValid ? $0 : nil }
 
+        if let forumAttachment = draft.forumAttachment {
+            let limits = formData.attachmentLimits
+                ?? (maxFileSize: ForumAttachment.maxFileSize, maxDimension: ForumAttachment.maxDimension)
+            if let validationError = forumAttachment.validate(maxFileSize: limits.maxFileSize, maxDimension: limits.maxDimension) {
+                let alert = UIAlertController(
+                    title: "Invalid Attachment",
+                    message: validationError.localizedDescription,
+                    alertActions: [.ok { completion(false) }]
+                )
+                present(alert, animated: true)
+                return
+            }
+        }
+
         Task {
             let result: ForumsClient.PostNewThreadResult
             do {
@@ -352,7 +434,8 @@ final class ThreadComposeViewController: ComposeTextViewController {
                     threadTag: threadTag,
                     secondaryTag: secondaryThreadTag,
                     bbcode: composition,
-                    pollOptionCount: poll?.options.count
+                    pollOptionCount: poll?.options.count,
+                    attachment: try draft.forumAttachment?.imageData()
                 )
             } catch {
                 let alert = UIAlertController(title: "Network Error", error: error, handler: {

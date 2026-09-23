@@ -462,7 +462,10 @@ extension ComposeTextViewController: NavigationBarScrollTransitioning {
 // For benefit of subclasses.
 extension ComposeTextViewController: UITextViewDelegate {}
 
-protocol ComposeCustomView {
+/// Class-bound so that setting `enabled` mutates the view in place. Otherwise, writing through
+/// the `customView` property would reassign it, rerunning its observers and re-adding the view's
+/// height to the text container inset every time the compose screen enables or disables it.
+protocol ComposeCustomView: AnyObject {
     var enabled: Bool { get set }
     
     /// Returns a responder that should be the initial first responder when the AwfulComposeTextViewController first appears, instead of its textView. The default is nil, meaning the textView becomes first responder as usual.

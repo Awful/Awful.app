@@ -8,13 +8,14 @@ import Foundation
 /// On-disk draft for an in-progress new thread, recovered when the user re-opens the compose
 /// flow on the same forum.
 @objc(NewThreadDraft)
-final class NewThreadDraft: NSObject, NSCoding, StorableDraft {
+final class NewThreadDraft: NSObject, NSCoding, StorableDraft, ForumAttachmentDraft {
     let forum: Forum
     var subject: String
     var threadTag: ThreadTag?
     var secondaryThreadTag: ThreadTag?
     var text: NSAttributedString?
     var poll: PollSubmission?
+    var forumAttachment: ForumAttachment?
 
     init(forum: Forum) {
         self.forum = forum
@@ -33,6 +34,7 @@ final class NewThreadDraft: NSObject, NSCoding, StorableDraft {
         static let secondaryThreadTagKey = "secondaryThreadTagKey"
         static let text = "text"
         static let poll = "poll"
+        static let forumAttachment = "forumAttachment"
     }
 
     convenience init?(coder: NSCoder) {
@@ -54,6 +56,7 @@ final class NewThreadDraft: NSObject, NSCoding, StorableDraft {
         // throw: `init?(coder:)` returning nil throws away the whole draft, poll or not.
         self.poll = (coder.decodeObject(forKey: Keys.poll) as? Data)
             .flatMap { try? JSONDecoder().decode(PollSubmission.self, from: $0) }
+        self.forumAttachment = coder.decodeObject(of: ForumAttachment.self, forKey: Keys.forumAttachment)
     }
 
     func encode(with coder: NSCoder) {
@@ -64,6 +67,9 @@ final class NewThreadDraft: NSObject, NSCoding, StorableDraft {
         coder.encode(text, forKey: Keys.text)
         if let poll, let data = try? JSONEncoder().encode(poll) {
             coder.encode(data, forKey: Keys.poll)
+        }
+        if let forumAttachment {
+            coder.encode(forumAttachment, forKey: Keys.forumAttachment)
         }
     }
 }

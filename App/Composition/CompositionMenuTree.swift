@@ -16,14 +16,29 @@ private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: 
 
 /// Can take over UIMenuController to show a tree of composition-related items on behalf of a text view.
 final class CompositionMenuTree: NSObject {
+    @FoilDefaultStorage(Settings.hasPlatinum) private var hasPlatinum
     @FoilDefaultStorage(Settings.imgurUploadMode) private var imgurUploadMode
 
     var imgurUploadsEnabled: Bool {
         return imgurUploadMode != .off
     }
 
+    /// Forum attachments need Platinum, and a draft that can carry one: new replies, new threads,
+    /// or edits where the server's form accepts an attachment. Private messages never can.
+    var forumAttachmentsEnabled: Bool {
+        guard hasPlatinum else { return false }
+        switch draft {
+        case is NewReplyDraft, is NewThreadDraft:
+            return true
+        case let editDraft as EditReplyDraft:
+            return editDraft.canAddAttachment
+        default:
+            return false
+        }
+    }
+
     let textView: UITextView
-    weak var draft: (NSObject & ReplyDraft)?
+    weak var draft: (NSObject & ForumAttachmentDraft)?
     var onAttachmentChanged: (() -> Void)?
     var onResizingStarted: (() -> Void)?
     var onShowURLPrompt: (() -> Void)?
@@ -63,7 +78,7 @@ final class CompositionMenuTree: NSObject {
     }
 
     /// The textView's class will have some responder chain methods swizzled.
-    init(textView: UITextView, draft: (NSObject & ReplyDraft)? = nil) {
+    init(textView: UITextView, draft: (NSObject & ForumAttachmentDraft)? = nil) {
         self.textView = textView
         self.draft = draft
         super.init()
@@ -358,7 +373,9 @@ extension CompositionMenuTree: UIImagePickerControllerDelegate, UINavigationCont
         switch destinations.count {
         case 0:
             clearPendingImage()
-        case 1:
+        case 1 where !forumAttachmentsEnabled:
+            // Only the image host is available, so there's no choice to make. When attachments
+            // are available we always show the choice, so the option is visible.
             destinations[0].action(self)
         default:
             showSubmenu(destinations)
@@ -585,16 +602,7 @@ fileprivate func imageDestinationItems(tree: CompositionMenuTree) -> [MenuItem] 
         items.append(MenuItem(title: "Image Host", action: { $0.useImageHostForPendingImage() }))
     }
 
-    // Show Forum Attachment for new replies, or for edits where the server supports it
-    let canAttach: Bool
-    if tree.draft is NewReplyDraft {
-        canAttach = true
-    } else if let editDraft = tree.draft as? EditReplyDraft {
-        canAttach = editDraft.canAddAttachment
-    } else {
-        canAttach = false
-    }
-    if canAttach {
+    if tree.forumAttachmentsEnabled {
         items.append(MenuItem(title: "Forum Attachment", action: { $0.useForumAttachmentForPendingImage() }))
     }
 

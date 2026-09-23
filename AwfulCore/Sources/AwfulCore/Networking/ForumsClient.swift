@@ -724,6 +724,7 @@ public final class ForumsClient {
      - Parameter pollOptionCount: How many options the poll should start with, or nil for no poll.
        Note that asking for a poll makes the forums serve up a second form (see `pollForm` on the
        result); the thread itself is live either way.
+     - Parameter attachment: Optional attachment data including the file data, filename, and MIME type.
      */
     public func postThread(
         using formData: PostNewThreadFormData,
@@ -731,7 +732,8 @@ public final class ForumsClient {
         threadTag someThreadTag: ThreadTag?,
         secondaryTag someSecondaryTag: ThreadTag?,
         bbcode: String,
-        pollOptionCount: Int? = nil
+        pollOptionCount: Int? = nil,
+        attachment: (data: Data, filename: String, mimeType: String)? = nil
     ) async throws -> PostNewThreadResult {
         guard let backgroundContext = backgroundManagedObjectContext,
               let mainContext = managedObjectContext
@@ -805,7 +807,12 @@ public final class ForumsClient {
                 params.append((key: "polloptions", value: "\(clampedPollOptionCount)"))
             }
         }
-        let (data, response) = try await fetch(method: .post, urlString: "newthread.php", parameters: params)
+        let (data, response): (Data, URLResponse)
+        if let attachment {
+            (data, response) = try await submitMultipart(to: "newthread.php", formParams: params, attachment: attachment)
+        } else {
+            (data, response) = try await fetch(method: .post, urlString: "newthread.php", parameters: params)
+        }
         let (document, url) = try parseHTML(data: data, response: response)
 
         // Only worth looking when we asked for a poll: the response to an ordinary thread post has
@@ -820,8 +827,19 @@ public final class ForumsClient {
         ) else {
             throw AwfulCoreError.parseError(description: "The new thread could not be located. Maybe it didn't actually get made. Double-check if your thread has appeared, then try again.")
         }
+        // Save the new thread before handing it out. An unsaved object inserted into the main
+        // context would be a separate record from the one that loading its posts page upserts
+        // (in the background context), so it would never get a title or page count.
+        let threadObjectID = try await backgroundContext.perform {
+            let thread = AwfulThread.objectForKey(objectKey: ThreadKey(threadID: threadID), in: backgroundContext)
+            if thread.title == nil {
+                thread.title = subject
+            }
+            try backgroundContext.save()
+            return thread.objectID
+        }
         let thread = await mainContext.perform {
-            AwfulThread.objectForKey(objectKey: ThreadKey(threadID: threadID), in: mainContext)
+            mainContext.object(with: threadObjectID) as! AwfulThread
         }
         return PostNewThreadResult(thread: thread, pollForm: pollForm)
     }
@@ -1076,6 +1094,8 @@ public final class ForumsClient {
     public struct PostNewThreadFormData: Sendable {
         fileprivate let form: Form
         fileprivate let postIcons: PostIconListScrapeResult
+        /// The attachment size and dimension limits from the new thread form, if they could be parsed.
+        public let attachmentLimits: (maxFileSize: Int, maxDimension: Int)?
     }
 
     /// - Returns: The promise of the previewed post's HTML.
@@ -1126,7 +1146,11 @@ public final class ForumsClient {
             let htmlForm = try document.requiredNode(matchingSelector: "form[name = 'vbform']")
             let form = try Form(htmlForm, url: url)
             let postIcons = try PostIconListScrapeResult(htmlForm, url: url)
-            let postData = PostNewThreadFormData(form: form, postIcons: postIcons)
+            let postData = PostNewThreadFormData(
+                form: form,
+                postIcons: postIcons,
+                attachmentLimits: parseAttachmentLimits(from: document)
+            )
             return (previewHTML: postbody.innerHTML, formData: postData)
         }
     }
@@ -1380,7 +1404,8 @@ public final class ForumsClient {
         let (data, response): (Data, URLResponse)
 
         if let attachment = attachment {
-            (data, response) = try await submitReplyWithAttachment(
+            (data, response) = try await submitMultipart(
+                to: "newreply.php",
                 formParams: formParams,
                 attachment: attachment
             )
@@ -1391,15 +1416,16 @@ public final class ForumsClient {
         return try parseReplyResponse(data: data, response: response)
     }
 
-    /// Submits reply with multipart form data for attachment
-    private func submitReplyWithAttachment(
+    /// Submits a reply or new thread form as multipart form data, with an attachment.
+    private func submitMultipart(
+        to urlString: String,
         formParams: [KeyValuePairs<String, Any>.Element],
         attachment: (data: Data, filename: String, mimeType: String)
     ) async throws -> (Data, URLResponse) {
         guard let urlSession else {
             throw Error.missingURLSession
         }
-        guard let url = URL(string: "newreply.php", relativeTo: baseURL) else {
+        guard let url = URL(string: urlString, relativeTo: baseURL) else {
             throw Error.invalidBaseURL
         }
 

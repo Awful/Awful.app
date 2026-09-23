@@ -527,11 +527,15 @@ extension ReplyWorkspace: UIAdaptivePresentationControllerDelegate {
     }
 }
 
-@objc protocol ReplyDraft: StorableDraft, SubmittableDraft, ReplyUI {
+/// A draft that can carry a forum attachment (replies, edits, and new threads).
+@objc protocol ForumAttachmentDraft {
+    var forumAttachment: ForumAttachment? { get set }
+}
+
+@objc protocol ReplyDraft: StorableDraft, SubmittableDraft, ReplyUI, ForumAttachmentDraft {
     var thread: AwfulThread { get }
     var text: NSAttributedString? { get set }
     var title: String { get }
-    var forumAttachment: ForumAttachment? { get set }
 }
 
 @objc protocol SubmittableDraft {
