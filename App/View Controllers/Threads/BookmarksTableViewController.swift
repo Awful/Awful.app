@@ -587,6 +587,7 @@ final class BookmarksTableViewController: HostedCollectionViewController {
     private var isRefreshing = false
     private var latestPage = 0
     private var loadMoreFooter: LoadMoreCollectionFooter?
+    private var loadTask: Task<Void, Never>?
     private let managedObjectContext: NSManagedObjectContext
     @FoilDefaultStorage(Settings.showThreadTags) private var showThreadTags
     @FoilDefaultStorage(Settings.bookmarksSortedUnread) private var sortUnreadToTop
@@ -973,9 +974,13 @@ final class BookmarksTableViewController: HostedCollectionViewController {
         if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
-        Task {
+        // Loading a page drops cached bookmarks from later pages, so a load finishing out of
+        // order would remove rows another load just added. Only the newest load gets to finish.
+        loadTask?.cancel()
+        loadTask = Task {
             do {
                 let threads = try await ForumsClient.shared.listBookmarkedThreads(page: page)
+                guard !Task.isCancelled else { return }
                 latestPage = page
                 RefreshMinder.sharedMinder.didRefresh(.bookmarks)
                 RefreshMinder.sharedMinder.didRefresh(.announcements)
@@ -993,6 +998,7 @@ final class BookmarksTableViewController: HostedCollectionViewController {
                     loadMoreFooter?.didFinish()
                 }
             } catch {
+                guard !Task.isCancelled else { return }
                 await MainActor.run {
                     if visible {
                         let alert = UIAlertController(networkError: error)
@@ -1011,8 +1017,19 @@ final class BookmarksTableViewController: HostedCollectionViewController {
 
         loadMoreFooter = LoadMoreCollectionFooter(collectionView: collectionView, multiplexer: multiplexer, loadMore: { [weak self] _ in
             guard let self = self else { return }
+            // The in-flight refresh stops the footer's spinner when it finishes.
+            guard !self.isRefreshing else { return }
             self.loadPage(page: self.latestPage + 1)
         })
+    }
+
+    /// The last bookmarks page already cached, so load-more after a relaunch continues from there
+    /// instead of refetching page 1, which would drop every later page out from under the user.
+    private func lastCachedPage() -> Int {
+        let request = AwfulThread.bookmarksFetchRequest(false)
+        request.sortDescriptors = [NSSortDescriptor(key: #keyPath(AwfulThread.bookmarkListPage), ascending: false)]
+        request.fetchLimit = 1
+        return (try? managedObjectContext.fetch(request))?.first.map { Int($0.bookmarkListPage) } ?? 0
     }
 
     private func disableLoadMore() {
@@ -1142,6 +1159,9 @@ final class BookmarksTableViewController: HostedCollectionViewController {
         prepareUserActivity()
 
         if collectionView.numberOfSections > 0, collectionView.numberOfItems(inSection: 0) > 0 {
+            if latestPage == 0 {
+                latestPage = lastCachedPage()
+            }
             enableLoadMore()
         }
 

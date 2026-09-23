@@ -26,6 +26,7 @@ final class ThreadsTableViewController: CollectionViewController, ComposeTextVie
     private var isRefreshing = false
     private var latestPage = 0
     private var loadMoreFooter: LoadMoreCollectionFooter?
+    private var loadTask: Task<Void, Never>?
     private let managedObjectContext: NSManagedObjectContext
     @FoilDefaultStorage(Settings.showThreadTags) private var showThreadTags
     @FoilDefaultStorage(Settings.forumThreadsSortedUnread) private var sortUnreadThreadsToTop
@@ -131,9 +132,13 @@ final class ThreadsTableViewController: CollectionViewController, ComposeTextVie
     }
 
     private func loadPage(_ page: Int) {
-        Task {
+        // Loading page 1 drops cached threads from later pages, so a load finishing out of
+        // order would remove rows another load just added. Only the newest load gets to finish.
+        loadTask?.cancel()
+        loadTask = Task {
             do {
                 _ = try await ForumsClient.shared.listThreads(in: forum, tagged: filterThreadTag, page: page)
+                guard !Task.isCancelled else { return }
 
                 latestPage = page
 
@@ -153,6 +158,7 @@ final class ThreadsTableViewController: CollectionViewController, ComposeTextVie
                 // The load just refreshed ForumsClient's archives mirror; reflect it in the banner.
                 refreshArchivesBanner()
             } catch {
+                guard !Task.isCancelled else { return }
                 let alert = UIAlertController(networkError: error)
                 present(alert, animated: true)
             }
@@ -168,8 +174,19 @@ final class ThreadsTableViewController: CollectionViewController, ComposeTextVie
 
         loadMoreFooter = LoadMoreCollectionFooter(collectionView: collectionView, multiplexer: multiplexer, loadMore: { [weak self] _ in
             guard let self = self else { return }
+            // The in-flight refresh stops the footer's spinner when it finishes.
+            guard !self.isRefreshing else { return }
             self.loadPage(self.latestPage + 1)
         })
+    }
+
+    /// The last page of this forum already cached, so load-more on a cached list continues from
+    /// there instead of refetching page 1, which would drop every later page out from under the user.
+    private func lastCachedPage() -> Int {
+        let request = AwfulThread.threadsFetchRequest(forum, sortedByUnread: false, filterThreadTag: filterThreadTag)
+        request.sortDescriptors = [NSSortDescriptor(key: #keyPath(AwfulThread.threadListPage), ascending: false)]
+        request.fetchLimit = 1
+        return (try? managedObjectContext.fetch(request))?.first.map { Int($0.threadListPage) } ?? 0
     }
 
     // MARK: View lifecycle
@@ -241,6 +258,9 @@ final class ThreadsTableViewController: CollectionViewController, ComposeTextVie
         super.viewDidAppear(animated)
 
         if collectionView.numberOfSections > 0, collectionView.numberOfItems(inSection: 0) > 0 {
+            if latestPage == 0 {
+                latestPage = lastCachedPage()
+            }
             enableLoadMore()
             updateFilterButton()
         }
