@@ -229,7 +229,12 @@ struct AwfulURLRouter {
         for topmost in tabBarVC.viewControllers ?? [] {
             guard let match = topmost.subtree.lazy.compactMap({ $0 as? VC }).first(where: predicate) else { continue }
             tabBarVC.selectedViewController = topmost
-            splitVC.showPrimaryViewController(animated: animated)
+            // Restoration selects the tab without summoning the sidebar: when a restored thread
+            // follows, the display mode hasn't settled by the time it would hide the sidebar
+            // again, so the overlay would flash up over the thread on launch.
+            if animated {
+                splitVC.showPrimaryViewController()
+            }
             return match
         }
         return nil

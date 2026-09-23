@@ -201,6 +201,16 @@ final class RootViewControllerStack: NSObject, AwfulSplitViewControllerDelegate 
         UIView.animate(withDuration: 0.25) { svc.preferredDisplayMode = target }
     }
 
+    /// Scene restoration is about to show a thread or message. Where showing it hides the
+    /// sidebar anyway (portrait, or "Hide sidebar in landscape"), start hidden: otherwise the
+    /// first layout resolves to the sidebar overlay, and it's on screen for the launch's first
+    /// frames before the restored detail's hide takes effect.
+    func hideSidebarForRestoredDetail(in size: CGSize) {
+        let isLandscape = size.width > size.height
+        guard !isLandscape || hideSidebarInLandscape else { return }
+        splitViewController.preferredDisplayMode = .secondaryOnly
+    }
+
     /// The tab roots' nav controllers, which draw the sidebar's own toggle on iOS 26+.
     private var sidebarNavigationControllers: [NavigationController] {
         (tabBarController.viewControllers ?? []).compactMap { $0 as? NavigationController }

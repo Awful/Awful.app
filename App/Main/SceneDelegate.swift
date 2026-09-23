@@ -164,6 +164,9 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             // where they left off rather than a frame or two of the default tab. Laying out
             // first settles the split view's collapsed/expanded state, which decides where
             // the router puts the restored screens.
+            if restoreLastThreadOnLaunch, restoredRoute(from: restorationActivity)?.isDetail == true {
+                appDelegate.rootViewControllerStackIfLoaded?.hideSidebarForRestoredDetail(in: window.bounds.size)
+            }
             window.layoutIfNeeded()
             replayRestoration(restorationActivity)
         }
@@ -464,6 +467,16 @@ private func restoredRoute(from activity: NSUserActivity) -> AwfulRoute? {
         return route
     }
     return activity.route
+}
+
+private extension AwfulRoute {
+    /// Whether the route shows a detail-column screen (a thread or private message).
+    var isDetail: Bool {
+        switch self {
+        case .threadPage, .threadPageSingleUser, .message: return true
+        default: return false
+        }
+    }
 }
 
 /// Builds a fresh view controller for a route from the swipe-to-unpop restoration stack. Returns
