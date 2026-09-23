@@ -282,6 +282,9 @@ final class RootViewControllerStack: NSObject, AwfulSplitViewControllerDelegate 
         guard stack.count > 1 else { return nil }
         for vc in stack.reversed() {
             if vc === stack.first { break }
+            // When collapsed, the detail screens (thread, message) sit on this stack too. Skip
+            // them: they're the primary route, and the depth to rebuild is what's beneath them.
+            if (vc as? HasSplitViewPreference)?.prefersSecondaryViewController == true { continue }
             if let route = (vc as? RestorableLocation)?.restorationRoute {
                 return route
             }
