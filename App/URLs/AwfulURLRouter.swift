@@ -261,20 +261,14 @@ struct AwfulURLRouter {
             case .seen: return true
             }
         }
-        postsVC.loadPage(page, updatingCache: true, updatingLastReadPost: updateLastRead)
-
-        // Stage the restored scroll fraction / hiddenPosts inside the same synchronous
-        // run-loop turn as `loadPage`, so the cached-render path (which fires WKWebView
-        // callbacks on a subsequent main-queue tick) sees the staged values. Doing this
-        // here instead of after `open(route:)` returns closes the iPad race where
-        // `didFinishRenderingHTML` could fire with `scrollToFractionAfterLoading == nil`.
         if let pending = restoration?.posts {
-            postsVC.prepareForRestoration(
-                scrollFraction: pending.scrollFraction,
-                hiddenPosts: pending.hiddenPosts,
-                anchorPostID: pending.anchorPostID,
-                anchorDelta: pending.anchorDelta
-            )
+            // Cache first, like the pre-UIScene restoration: the restored page is usually
+            // already in Core Data, and waiting on the network is what made relaunch feel slow.
+            // Restoration state is staged before the first render, so the page opens where the
+            // user left it instead of at the top.
+            postsVC.restorePage(page, updatingLastReadPost: updateLastRead, restoration: pending)
+        } else {
+            postsVC.loadPage(page, updatingCache: true, updatingLastReadPost: updateLastRead)
         }
 
         return showPostsViewController(postsVC, animated: restoration == nil)

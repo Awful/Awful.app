@@ -21,6 +21,25 @@ import WebKit
 
 private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "PostsPageViewController")
 
+/// The content of the posts a page has on screen, for deciding whether freshly fetched posts need
+/// a re-render. Seen-state styling is deliberately left out: fetching a page is itself what marks
+/// its posts seen, so including it would force a re-render on nearly every refresh.
+struct RenderedPostsFingerprint: Equatable {
+    struct Entry: Equatable {
+        let postID: String
+        let innerHTML: String?
+        let ignored: Bool
+    }
+
+    let entries: [Entry]
+}
+
+extension RenderedPostsFingerprint {
+    init<Posts: Sequence>(_ posts: Posts) where Posts.Element == Post {
+        entries = posts.map { Entry(postID: $0.postID, innerHTML: $0.innerHTML, ignored: $0.ignored) }
+    }
+}
+
 /// Shows a list of posts in a thread.
 final class PostsPageViewController: ViewController {
     var selectedPost: Post? = nil
@@ -77,11 +96,10 @@ final class PostsPageViewController: ViewController {
         }
     }
     private var scrollToFractionAfterLoading: CGFloat?
-    /// When true, the next `loadPage` network completion skips its usual "save current scroll
-    /// offset so we land in the same place after re-render" step. Set by `prepareForRestoration`
-    /// so a freshly restored scroll fraction isn't clobbered by the in-flight fetch that the URL
-    /// router kicked off before `SceneDelegate` could stage the restored value.
-    private var suppressNextScrollFractionPreservation = false
+
+    /// Snapshot of what the last `renderPosts()` put on screen. A snapshot, not a comparison
+    /// against `posts` later, because fetching updates those same managed objects in place.
+    private var renderedPostsFingerprint: RenderedPostsFingerprint?
 
     /// Topmost-visible post, refreshed asynchronously on scroll-stop. Read synchronously
     /// when iOS asks for a state-restoration activity; survives content growth and rotation,
@@ -336,11 +354,13 @@ final class PostsPageViewController: ViewController {
         - parameter page: The page to load.
         - parameter updateCache: Whether to fetch posts from the client, or simply render any posts that are cached.
         - parameter updateLastReadPost: Whether to advance the "last-read post" marker on the Forums.
+        - parameter restoration: Scene-restoration state (scroll position, hidden posts) to apply to this page's first render.
      */
     func loadPage(
         _ newPage: ThreadPage,
         updatingCache: Bool,
-        updatingLastReadPost updateLastReadPost: Bool
+        updatingLastReadPost updateLastReadPost: Bool,
+        restoring restoration: PendingPostsRestoration? = nil
     ) {
         flagRequest?.cancel()
         flagRequest = nil
@@ -369,6 +389,17 @@ final class PostsPageViewController: ViewController {
         loadingHoldTask?.cancel()
         loadingHoldTask = nil
 
+        // Stage restoration after the resets above and before any render below, so a page
+        // rendered straight from the cache already opens at the restored position.
+        if let restoration {
+            prepareForRestoration(
+                scrollFraction: restoration.scrollFraction,
+                hiddenPosts: restoration.hiddenPosts,
+                anchorPostID: restoration.anchorPostID,
+                anchorDelta: restoration.anchorDelta
+            )
+        }
+
         // SA: When filtering the thread by a single user, the "goto=lastpost" redirect ignores the user filter, so we'll do our best to guess.
         var newPage = newPage
         if let author = author, case .last? = page {
@@ -392,6 +423,8 @@ final class PostsPageViewController: ViewController {
             refetchPosts()
 
             if !posts.isEmpty {
+                discardStagedRestorationIfAnchorMissing()
+                applyStagedHiddenPosts()
                 renderPosts()
             }
         }
@@ -409,17 +442,7 @@ final class PostsPageViewController: ViewController {
 
         let initialTheme = theme
 
-        struct FetchResult: @unchecked Sendable {
-            let posts: [Post]
-            let firstUnreadPost: Int?
-            let advertisementHTML: String
-            let poll: ThreadPoll?
-        }
-        let fetch = Task {
-            let result = try await ForumsClient.shared.listPosts(in: thread, writtenBy: author, page: newPage, updateLastReadPost: updateLastReadPost)
-            return FetchResult(posts: result.posts, firstUnreadPost: result.firstUnreadPost, advertisementHTML: result.advertisementHTML, poll: result.poll)
-        }
-        cancelNetworkOperation = { fetch.cancel() }
+        let fetch = startFetch(newPage, updatingLastReadPost: updateLastReadPost)
         Task { [weak self] in
             do {
                 let fetchResult = try await fetch.value
@@ -469,28 +492,9 @@ final class PostsPageViewController: ViewController {
                 // If the staged anchor isn't on the loaded page (rolled over, filter
                 // excludes, deleted), drop everything so the first-unread fallback below
                 // takes over.
-                let stagedAnchorIndex = self.anchorPostIDAfterLoading.flatMap { anchorID in
-                    self.posts.firstIndex(where: { $0.postID == anchorID })
-                }
-                if self.anchorPostIDAfterLoading != nil, stagedAnchorIndex == nil {
-                    self.scrollToFractionAfterLoading = nil
-                    self.hiddenPostsAfterLoading = nil
-                    self.anchorPostIDAfterLoading = nil
-                    self.anchorDeltaAfterLoading = nil
-                }
+                self.discardStagedRestorationIfAnchorMissing()
 
-                if let pendingHidden = self.hiddenPostsAfterLoading {
-                    // A count that would hide every post, or hide the (by definition visible)
-                    // anchor, came from an inconsistent payload — e.g. an older build's snapshot
-                    // taken mid-endless-scroll — so show everything rather than an empty document.
-                    let anchorWouldBeHidden = stagedAnchorIndex.map { $0 < pendingHidden } ?? false
-                    if pendingHidden <= 0 || pendingHidden >= self.posts.count || anchorWouldBeHidden {
-                        self.hiddenPosts = 0
-                    } else {
-                        self.hiddenPosts = pendingHidden
-                    }
-                    self.hiddenPostsAfterLoading = nil
-                } else if self.hiddenPosts == 0, let firstUnreadPost = firstUnreadPost, firstUnreadPost > 0 {
+                if !self.applyStagedHiddenPosts(), self.hiddenPosts == 0, let firstUnreadPost = firstUnreadPost, firstUnreadPost > 0 {
                     let pendingTargetOnPage: Bool
                     if let pendingPostID = self.jumpToPostIDAfterLoading {
                         pendingTargetOnPage = self.posts.contains(where: { $0.postID == pendingPostID })
@@ -502,9 +506,12 @@ final class PostsPageViewController: ViewController {
                     }
                 }
 
-                if self.suppressNextScrollFractionPreservation {
-                    self.suppressNextScrollFractionPreservation = false
-                } else if reloadingSamePage || renderedCachedPosts {
+                // Keep the reader in place across the re-render, unless a scroll target is
+                // already staged (e.g. by restoration), which must win.
+                if reloadingSamePage || renderedCachedPosts,
+                   self.scrollToFractionAfterLoading == nil,
+                   self.anchorPostIDAfterLoading == nil
+                {
                     self.scrollToFractionAfterLoading = self.postsView.renderView.scrollView.fractionalContentOffset.y
                 }
 
@@ -556,6 +563,123 @@ final class PostsPageViewController: ViewController {
         }
     }
 
+    private struct FetchResult: @unchecked Sendable {
+        let posts: [Post]
+        let firstUnreadPost: Int?
+        let advertisementHTML: String
+        let poll: ThreadPoll?
+    }
+
+    /// Fetches `page` from the Forums, cancellable via `cancelNetworkOperation` (so a later page load supersedes it).
+    private func startFetch(_ page: ThreadPage, updatingLastReadPost updateLastReadPost: Bool) -> Task<FetchResult, Error> {
+        let thread = thread
+        let author = author
+        let fetch = Task {
+            let result = try await ForumsClient.shared.listPosts(in: thread, writtenBy: author, page: page, updateLastReadPost: updateLastReadPost)
+            return FetchResult(posts: result.posts, firstUnreadPost: result.firstUnreadPost, advertisementHTML: result.advertisementHTML, poll: result.poll)
+        }
+        cancelNetworkOperation = { fetch.cancel() }
+        return fetch
+    }
+
+    /// Scene restoration's way in. Renders the page straight from the cache, at the restored position, then brings it up to date in the background without disturbing the reader. Only a page with nothing cached waits on the network, keeping the restored position for when it arrives.
+    func restorePage(
+        _ page: ThreadPage,
+        updatingLastReadPost updateLastReadPost: Bool,
+        restoration: PendingPostsRestoration
+    ) {
+        loadPage(page, updatingCache: false, updatingLastReadPost: updateLastReadPost, restoring: restoration)
+        if posts.isEmpty {
+            loadPage(page, updatingCache: true, updatingLastReadPost: updateLastReadPost, restoring: restoration)
+        } else {
+            refreshRestoredPage(updatingLastReadPost: updateLastReadPost)
+        }
+    }
+
+    /// Fetches the page a restoration rendered from cache. Only re-renders when the posts would look different (new replies, edits), and then keeps the reader on the post they're looking at.
+    private func refreshRestoredPage(updatingLastReadPost updateLastReadPost: Bool) {
+        guard let page else { return }
+        let fetch = startFetch(page, updatingLastReadPost: updateLastReadPost)
+        Task { [weak self] in
+            // The cached posts are already on screen, so a failed refresh isn't worth an alert.
+            guard let result = try? await fetch.value,
+                  let self,
+                  self.page == page,
+                  !self.endlessScrollDidAppend,
+                  self.appendTask == nil,
+                  !result.posts.isEmpty
+            else { return }
+
+            if let poll = result.poll {
+                self.poll = poll
+            }
+            self.posts = result.posts
+            self.configureUserActivityIfPossible()
+            if let lastPost = self.posts.last, updateLastReadPost, self.thread.seenPosts < lastPost.threadIndex {
+                self.thread.seenPosts = lastPost.threadIndex
+            }
+            // Clamp first: a shorter fetched page could leave `hiddenPosts` past the end.
+            if self.hiddenPosts >= self.posts.count {
+                self.hiddenPosts = 0
+            }
+            self.updateUserInterface()
+
+            guard RenderedPostsFingerprint(self.posts.dropFirst(self.hiddenPosts)) != self.renderedPostsFingerprint else { return }
+            // Re-render where the reader is now, which may not be where restoration left them.
+            // Before the cached render has landed (a cold web content process can take longer
+            // than the fetch), the staged restoration target still says where that is.
+            if self.webViewDidLoadOnce {
+                let anchor = await self.postsView.renderView.topVisiblePost()
+                guard self.page == page, !self.endlessScrollDidAppend else { return }
+                self.jumpToPostIDAfterLoading = nil
+                self.scrollToFractionAfterLoading = nil
+                if let anchor, let index = self.posts.firstIndex(where: { $0.postID == anchor.postID }) {
+                    self.anchorPostIDAfterLoading = anchor.postID
+                    self.anchorDeltaAfterLoading = anchor.deltaY
+                    if index < self.hiddenPosts {
+                        self.hiddenPosts = 0
+                    }
+                } else {
+                    self.anchorPostIDAfterLoading = nil
+                    self.anchorDeltaAfterLoading = nil
+                    self.scrollToFractionAfterLoading = self.postsView.renderView.scrollView.fractionalContentOffset.y
+                }
+            }
+            self.renderPosts()
+        }
+    }
+
+    /// Drops all staged restoration state when its anchor post isn't among the loaded posts (the page rolled over, a filter excludes it, it was deleted), so the usual first-unread behaviour takes over.
+    private func discardStagedRestorationIfAnchorMissing() {
+        guard let anchorID = anchorPostIDAfterLoading,
+              !posts.contains(where: { $0.postID == anchorID })
+        else { return }
+        scrollToFractionAfterLoading = nil
+        hiddenPostsAfterLoading = nil
+        anchorPostIDAfterLoading = nil
+        anchorDeltaAfterLoading = nil
+    }
+
+    /// Applies a restored hidden-posts count to the loaded posts. Returns false if none was staged.
+    @discardableResult
+    private func applyStagedHiddenPosts() -> Bool {
+        guard let pendingHidden = hiddenPostsAfterLoading else { return false }
+        hiddenPostsAfterLoading = nil
+        // A count that would hide every post, or hide the (by definition visible) anchor, came
+        // from an inconsistent payload — e.g. an older build's snapshot taken mid-endless-scroll
+        // — so show everything rather than an empty document.
+        let anchorIndex = anchorPostIDAfterLoading.flatMap { anchorID in
+            posts.firstIndex(where: { $0.postID == anchorID })
+        }
+        let anchorWouldBeHidden = anchorIndex.map { $0 < pendingHidden } ?? false
+        if pendingHidden <= 0 || pendingHidden >= posts.count || anchorWouldBeHidden {
+            hiddenPosts = 0
+        } else {
+            hiddenPosts = pendingHidden
+        }
+        return true
+    }
+
     /// Scroll the posts view so that a particular post is visible (if the post is on the current(ly loading) page).
     func scrollPostToVisible(_ post: Post) {
         let i = posts.firstIndex(of: post)
@@ -582,6 +706,7 @@ final class PostsPageViewController: ViewController {
     private func renderPosts() {
         webViewDidLoadOnce = false
         hasScrolledSinceRender = false
+        renderedPostsFingerprint = RenderedPostsFingerprint(posts.dropFirst(hiddenPosts))
 
         var context: [String: Any] = [:]
 
@@ -2301,7 +2426,7 @@ final class PostsPageViewController: ViewController {
 
     /// Stages restoration state to apply once the WKWebView finishes rendering. The anchor
     /// is preferred over `scrollFraction` (kept as fallback for activities from older builds).
-    func prepareForRestoration(
+    private func prepareForRestoration(
         scrollFraction: CGFloat?,
         hiddenPosts: Int?,
         anchorPostID: String? = nil,
@@ -2313,10 +2438,6 @@ final class PostsPageViewController: ViewController {
         }
         if let scrollFraction = scrollFraction {
             scrollToFractionAfterLoading = scrollFraction
-            // The URL router already kicked off `loadPage(updatingCache: true)`, which renders
-            // cached posts immediately and then re-renders when the network fetch completes —
-            // and that completion would otherwise overwrite the scroll fraction we just staged.
-            suppressNextScrollFractionPreservation = true
         }
         if let hiddenPosts = hiddenPosts {
             hiddenPostsAfterLoading = hiddenPosts
