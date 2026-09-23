@@ -143,6 +143,9 @@ final class RootViewControllerStack: NSObject, AwfulSplitViewControllerDelegate 
     }
 
     private func updateMessagesTabPresence() {
+        // The menu bar's ⌘1…⌘n tab items are built from the tabs; this runs when the stack is created, too, so the first build (before there were any tabs) gets redone.
+        defer { UIMenuSystem.main.setNeedsRebuild() }
+
         guard var roots = tabBarController.viewControllers else { return }
         let selected = tabBarController.selectedViewController
         let messagesTabIndex = roots.firstIndex {
@@ -528,6 +531,16 @@ extension RootViewControllerStack {
         tabBarController.viewControllers?.first {
             ($0 as? UINavigationController)?.viewControllers.first is SettingsViewController
         }
+    }
+
+    /// The thread on screen, which may not be in the responder chain when focus is in the sidebar.
+    var visiblePostsPageViewController: PostsPageViewController? {
+        if !splitViewController.isCollapsed,
+           let detail = detailNavigationController?.topViewController as? PostsPageViewController
+        {
+            return detail
+        }
+        return primaryNavigationController.topViewController as? PostsPageViewController
     }
 
     var canToggleSidebar: Bool {

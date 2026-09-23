@@ -8,9 +8,13 @@ import UIKit
 /// Every keyboard shortcut the app offers, in one place.
 ///
 /// Key commands are built from here (`makeKeyCommand`) so the Keyboard Shortcuts reference
-/// screen (`referenceSections`) can't drift from what the app actually responds to. Which
-/// commands are live at any moment is still each responder's call: the app-wide ones come from
-/// `AppDelegate.keyCommands`, the thread ones from `PostsPageViewController.keyCommands`.
+/// screen (`referenceSections`) can't drift from what the app actually responds to.
+///
+/// Where a command is registered depends on the platform. On iPad and Mac, modified shortcuts
+/// (`isInMainMenu`) go in the menu bar (`AppDelegate.buildMenu(with:)`), and each responder decides
+/// whether they're enabled with `canPerformAction(_:withSender:)`. Everything else, and everything
+/// on iPhone, comes from `keyCommands`: the app-wide ones on `AppDelegate`, the thread ones on
+/// `PostsPageViewController`.
 enum KeyboardShortcut: CaseIterable {
 
     // General
@@ -105,6 +109,16 @@ enum KeyboardShortcut: CaseIterable {
             return []
         }
     }
+
+    /// Whether the menu bar carries this shortcut (when there is one; see `usesMainMenu`).
+    ///
+    /// Unmodified keys stay out of it: a menu item bound to Space or an arrow would take that key from text fields on the Mac.
+    var isInMainMenu: Bool {
+        !modifierFlags.intersection([.command, .control]).isEmpty
+    }
+
+    /// iPad and Mac get a menu bar built from `UIMenuBuilder` (and on iPadOS 15+, the ⌘-hold overlay is built from it too), so shortcuts that are in it aren't also returned from `keyCommands`.
+    static let usesMainMenu = UIDevice.current.userInterfaceIdiom == .pad || ProcessInfo.processInfo.isMacCatalystApp
 
     /// The default discoverability title. State-dependent commands (bookmarking, the sidebar toggle) pass a live title to `makeKeyCommand`.
     var title: String {

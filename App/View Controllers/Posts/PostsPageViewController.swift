@@ -3121,38 +3121,92 @@ extension PostsPageViewController: ContentRefreshable {
 }
 
 extension PostsPageViewController {
-    /// This screen's own shortcuts. App-wide ones (refresh, tabs, sidebar) live on `AppDelegate`; see `KeyboardShortcut` for the whole set.
+    /// This screen's own shortcuts, in menu order; each group is a section of the Thread menu. App-wide ones (refresh, tabs, sidebar) live on `AppDelegate`; see `KeyboardShortcut` for the whole set.
+    private static let shortcutGroups: [[(shortcut: KeyboardShortcut, action: Selector)]] = [
+        [
+            (.scrollUp, #selector(scrollUp(_:))),
+            (.scrollDown, #selector(scrollDown(_:))),
+            (.pageUp, #selector(pageUp(_:))),
+            (.pageDown, #selector(pageDown(_:))),
+            (.scrollToTop, #selector(scrollToTop(_:))),
+            (.scrollToBottom, #selector(scrollToBottom(_:))),
+        ],
+        [
+            (.previousPage, #selector(loadPreviousPage(_:))),
+            (.nextPage, #selector(loadNextPage(_:))),
+            (.firstPage, #selector(loadFirstPage(_:))),
+            (.lastPage, #selector(loadLastPage(_:))),
+            (.goToPage, #selector(showPagePicker(_:))),
+        ],
+        [
+            (.toggleBookmark, #selector(toggleBookmark(_:))),
+        ],
+        [
+            (.newReply, #selector(newReply(_:))),
+        ],
+    ]
+
+    /// The Thread menu's contents. Whether each item is enabled, and the bookmark item's title, come from whichever posts page is in the responder chain (`canPerformAction(_:withSender:)`, `validate(_:)`).
+    static var mainMenuCommands: [UIMenuElement] {
+        shortcutGroups.compactMap { group in
+            let commands = group
+                .filter { $0.shortcut.isInMainMenu }
+                .map { $0.shortcut.makeKeyCommand(action: $0.action) }
+            return commands.isEmpty ? nil : UIMenu(options: .displayInline, children: commands)
+        }
+    }
+
+    /// Whether `action` is one of this screen's shortcuts, so the app delegate can hand it on when focus is outside the thread.
+    static func isShortcutAction(_ action: Selector) -> Bool {
+        shortcutGroups.joined().contains { $0.action == action }
+    }
+
+    /// Shortcuts the menu bar doesn't carry: the unmodified keys everywhere, and all of them on iPhone.
     override var keyCommands: [UIKeyCommand]? {
-        var keyCommands: [UIKeyCommand] = [
-            KeyboardShortcut.scrollUp.makeKeyCommand(action: #selector(scrollUp)),
-            KeyboardShortcut.scrollDown.makeKeyCommand(action: #selector(scrollDown)),
-            KeyboardShortcut.pageUp.makeKeyCommand(action: #selector(pageUp)),
-            KeyboardShortcut.pageDown.makeKeyCommand(action: #selector(pageDown)),
-            KeyboardShortcut.scrollToTop.makeKeyCommand(action: #selector(scrollToTop)),
-            KeyboardShortcut.scrollToBottom.makeKeyCommand(action: #selector(scrollToBottom(_:))),
-        ]
+        Self.shortcutGroups.joined()
+            .filter { !(KeyboardShortcut.usesMainMenu && $0.shortcut.isInMainMenu) && isAvailable($0.shortcut) }
+            .map { $0.shortcut.makeKeyCommand(action: $0.action, title: liveTitle(for: $0.shortcut)) }
+    }
 
-        if case .specific(let pageNumber)? = page, pageNumber > 1 {
-            keyCommands.append(KeyboardShortcut.previousPage.makeKeyCommand(action: #selector(loadPreviousPage)))
-            keyCommands.append(KeyboardShortcut.firstPage.makeKeyCommand(action: #selector(loadFirstPage)))
+    override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
+        if let entry = Self.shortcutGroups.joined().first(where: { $0.action == action }) {
+            return isAvailable(entry.shortcut)
         }
+        return super.canPerformAction(action, withSender: sender)
+    }
 
-        if case .specific(let pageNumber)? = page, pageNumber < numberOfPages {
-            keyCommands.append(KeyboardShortcut.nextPage.makeKeyCommand(action: #selector(loadNextPage)))
-            keyCommands.append(KeyboardShortcut.lastPage.makeKeyCommand(action: #selector(loadLastPage)))
+    override func validate(_ command: UICommand) {
+        super.validate(command)
+        if command.action == #selector(toggleBookmark(_:)), let title = liveTitle(for: .toggleBookmark) {
+            command.title = title
+            command.discoverabilityTitle = title
         }
+    }
 
-        keyCommands.append(KeyboardShortcut.goToPage.makeKeyCommand(action: #selector(showPagePicker(_:))))
-        keyCommands.append(KeyboardShortcut.toggleBookmark.makeKeyCommand(
-            action: #selector(toggleBookmark(_:)),
-            title: thread.bookmarked ? "Remove Bookmark" : "Bookmark Thread"
-        ))
-
-        if !thread.closed && !isArchivesMode {
-            keyCommands.append(KeyboardShortcut.newReply.makeKeyCommand(action: #selector(newReply)))
+    private func isAvailable(_ shortcut: KeyboardShortcut) -> Bool {
+        switch shortcut {
+        case .previousPage, .firstPage:
+            guard case .specific(let pageNumber)? = page else { return false }
+            return pageNumber > 1
+        case .nextPage, .lastPage:
+            guard case .specific(let pageNumber)? = page else { return false }
+            return pageNumber < numberOfPages
+        case .goToPage:
+            return presentedViewController == nil
+        case .newReply:
+            return !thread.closed && !isArchivesMode
+        default:
+            return true
         }
+    }
 
-        return keyCommands
+    private func liveTitle(for shortcut: KeyboardShortcut) -> String? {
+        switch shortcut {
+        case .toggleBookmark:
+            return thread.bookmarked ? "Remove Bookmark" : "Bookmark Thread"
+        default:
+            return nil
+        }
     }
 }
 
