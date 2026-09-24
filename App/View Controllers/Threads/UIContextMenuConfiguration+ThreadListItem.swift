@@ -12,6 +12,27 @@ import UIKit
 
 private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "ThreadPeekPopController")
 
+@MainActor private var lastThreadListOpen: (threadID: String, time: TimeInterval)?
+
+extension UIViewController {
+    /// Opens `thread` from a thread list at its first unread post (or first page if never seen).
+    /// A repeat open of the same thread within a moment is ignored: the first request already advanced the Forums' last-read marker, so a second "next unread" request would land on the following page instead of the post the user was after.
+    @discardableResult
+    func showThreadFromList(_ thread: AwfulThread) -> Bool {
+        let now = ProcessInfo.processInfo.systemUptime
+        if let last = lastThreadListOpen, last.threadID == thread.threadID, now - last.time < 0.5 {
+            return false
+        }
+        lastThreadListOpen = (thread.threadID, now)
+        let postsViewController = PostsPageViewController(thread: thread)
+        // SA: For an unread thread, the Forums will interpret "next unread page" to mean "last page", which is not very helpful.
+        let targetPage = thread.beenSeen ? ThreadPage.nextUnread : .first
+        postsViewController.loadPage(targetPage, updatingCache: true, updatingLastReadPost: true)
+        showDetailViewController(postsViewController, sender: self)
+        return true
+    }
+}
+
 extension UIContextMenuConfiguration {
     static func makeFromThreadList(
         for thread: AwfulThread,
