@@ -20,7 +20,8 @@
 {% fontScaleStyle %}
 
 <body
-    class="{{ userInterfaceIdiom|htmlEscape }}">
+    class="{{ userInterfaceIdiom|htmlEscape }}"
+    data-tweet-theme="{{ tweetTheme|htmlEscape }}">
     <post
         id="{{ messageID }}"
         class="private-message

@@ -432,35 +432,73 @@ var waitingOEmbedResponses = {};
 
 
 /**
+ Loads Bluesky's embed.js once per document.
+
+ Every oEmbed response carries its own `<script src=".../embed.js">`, but embed.js declares top-level `const`s, so running it a second time in the same document throws before it can scan. Loading it once and calling `window.bluesky.scan()` ourselves upgrades embeds that arrive after the first one.
+
+ @returns A promise that resolves once `window.bluesky.scan` is available.
+ */
+Awful.loadBlueskyEmbedScript = function() {
+  if (window.bluesky?.scan) {
+    return Promise.resolve();
+  }
+  if (!Awful.blueskyEmbedScriptPromise) {
+    Awful.blueskyEmbedScriptPromise = new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.async = true;
+      script.charset = 'utf-8';
+      script.src = 'https://embed.bsky.app/static/embed.js';
+      script.addEventListener('load', () => resolve());
+      script.addEventListener('error', () => {
+        // Allow a later call to try again.
+        Awful.blueskyEmbedScriptPromise = null;
+        script.remove();
+        reject(new Error('could not load Bluesky embed.js'));
+      });
+      document.head.appendChild(script);
+    });
+  }
+  return Awful.blueskyEmbedScriptPromise;
+};
+
+/**
  Turns apparent links to Bluesky posts into actual embedded Bluesky posts.
  */
 Awful.embedBlueskyPosts = function() {
   for (const a of document.querySelectorAll('a[data-bluesky-post]')) {
+    // This gets called again after appending posts or toggling the setting; don't refetch links that are still in flight.
+    if (a.dataset.blueskyPending !== undefined) {
+      continue;
+    }
+    a.dataset.blueskyPending = '';
+
     (async function() {
       const search = new URLSearchParams();
       search.set('url', a.href);
       const url = `https://embed.bsky.app/oembed?${search}`;
       try {
         const oembed = await Awful.fetchOEmbed(url);
-        if (!oembed.html) {
+        if (!oembed.html || !a.isConnected) {
+          delete a.dataset.blueskyPending;
           return;
         }
         const div = document.createElement('div');
         div.classList.add('bluesky-post');
         div.innerHTML = oembed.html;
-        a.parentNode.replaceChild(div, a);
-        // <script> inserted via innerHTML won't execute, but we want whatever Bluesky script to run so it fetches the post content, so clone all <script>s.
+        // We load embed.js ourselves, exactly once; see loadBlueskyEmbedScript.
         for (const scriptNode of div.querySelectorAll('script')) {
-          const newScript = document.createElement('script');
-          newScript.text = scriptNode.innerHTML;
-          const attributes = scriptNode.attributes;
-          for (let i = 0, len = attributes.length; i < len; i++) {
-            newScript.setAttribute(attributes[i].name, attributes[i].value);
-          }
-          scriptNode.parentNode.replaceChild(newScript, scriptNode);
+          scriptNode.remove();
         }
+        // embed.js passes this attribute along to the embed iframe as `?colorMode=`. Set it before inserting, as embed.js scans the whole document when it first loads.
+        for (const blockquote of div.querySelectorAll('blockquote[data-bluesky-uri]')) {
+          blockquote.dataset.blueskyEmbedColorMode = Awful.blueskyColorMode();
+        }
+        a.parentNode.replaceChild(div, a);
+        await Awful.loadBlueskyEmbedScript();
+        window.bluesky.scan(div);
       } catch (error) {
-        console.error(`Could not fetch OEmbed from ${url}: ${error}`);
+        delete a.dataset.blueskyPending;
+        console.error(`Could not embed Bluesky post from ${url}: ${error}`);
       }
     })();
   }
@@ -931,7 +969,64 @@ Awful.tweetTheme = function() {
 
 Awful.setTweetTheme = function(newTheme) {
   document.body.dataset.tweetTheme = newTheme;
+  Awful.updateEmbeddedTweetThemes();
+  Awful.updateBlueskyColorMode();
 }
+
+/**
+ Reloads any embedded tweets whose theme doesn't match the current tweet theme.
+ */
+Awful.updateEmbeddedTweetThemes = function() {
+  const theme = Awful.tweetTheme() === 'dark' ? 'dark' : 'light';
+  // Tweets that widgets.js hasn't rendered yet take their theme from this attribute.
+  for (const blockquote of document.querySelectorAll('blockquote.twitter-tweet')) {
+    blockquote.dataset.theme = theme;
+  }
+  for (const iframe of document.querySelectorAll('iframe[data-tweet-id]')) {
+    let src;
+    try {
+      src = new URL(iframe.src);
+    } catch (error) {
+      continue;
+    }
+    if (src.searchParams.get('theme') === theme) {
+      continue;
+    }
+    src.searchParams.set('theme', theme);
+    iframe.src = src.toString();
+  }
+};
+
+/**
+ The Bluesky embed color mode (`light` or `dark`) matching the theme's tweet theme.
+ */
+Awful.blueskyColorMode = function() {
+  return Awful.tweetTheme() === 'dark' ? 'dark' : 'light';
+};
+
+/**
+ Reloads any embedded Bluesky posts whose color mode doesn't match the current theme.
+ */
+Awful.updateBlueskyColorMode = function() {
+  const colorMode = Awful.blueskyColorMode();
+  // Embeds that embed.js hasn't scanned yet.
+  for (const blockquote of document.querySelectorAll('blockquote[data-bluesky-uri]')) {
+    blockquote.dataset.blueskyEmbedColorMode = colorMode;
+  }
+  for (const iframe of document.querySelectorAll('iframe[data-bluesky-id]')) {
+    let src;
+    try {
+      src = new URL(iframe.src);
+    } catch (error) {
+      continue;
+    }
+    if (src.searchParams.get('colorMode') === colorMode) {
+      continue;
+    }
+    src.searchParams.set('colorMode', colorMode);
+    iframe.src = src.toString();
+  }
+};
 
 
 /**

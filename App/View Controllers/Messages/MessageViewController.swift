@@ -63,7 +63,7 @@ final class MessageViewController: ViewController, ContentRefreshable {
     
     private func renderMessage() {
         do {
-            let model = RenderModel(message: privateMessage, stylesheet: theme["postsViewCSS"])
+            let model = RenderModel(message: privateMessage, stylesheet: theme["postsViewCSS"], tweetTheme: theme[string: "postsTweetTheme"] ?? "light")
             let rendering = try StencilEnvironment.shared.renderTemplate(.privateMessage, context: model)
             renderView.render(html: rendering, baseURL: ForumsClient.shared.baseURL)
         } catch {
@@ -331,6 +331,9 @@ final class MessageViewController: ViewController, ContentRefreshable {
         if didRender, let css = theme[string: "postsViewCSS"] {
             renderView.setThemeStylesheet(css)
         }
+        if didRender {
+            renderView.setTweetTheme(theme[string: "postsTweetTheme"] ?? "light")
+        }
         
         loadingView?.tintColor = theme["backgroundColor"]
 
@@ -529,7 +532,7 @@ extension MessageViewController: RestorableLocation {}
 private struct RenderModel: StencilContextConvertible {
     let context: [String: Any]
     
-    init(message: PrivateMessage, stylesheet: String?) {
+    init(message: PrivateMessage, stylesheet: String?, tweetTheme: String) {
         let showAvatars = FoilDefaultStorage(Settings.showAvatars).wrappedValue
         let hiddenAvataruRL = showAvatars ? nil : message.from?.avatarURL
         var htmlContents: String? {
@@ -564,6 +567,7 @@ private struct RenderModel: StencilContextConvertible {
             "sentDateRaw": message.sentDateRaw as Any,
             "showAvatars": showAvatars,
             "stylesheet": stylesheet as Any,
+            "tweetTheme": tweetTheme,
             "visibleAvatarURL": visibleAvatarURL as Any]
     }
 }

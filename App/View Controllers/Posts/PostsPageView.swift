@@ -463,6 +463,7 @@ final class PostsPageView: UIView {
         refreshControlContainer.tintColor = theme["postsPullForNextColor"]
         renderView.scrollView.indicatorStyle = theme.scrollIndicatorStyle
         renderView.setThemeStylesheet(theme["postsViewCSS"] ?? "")
+        renderView.setTweetTheme(theme[string: "postsTweetTheme"] ?? "light")
 
         // The trait flip is what makes the system rebuild the toolbar's rendering when
         // the theme switches while this screen is up.
