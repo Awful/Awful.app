@@ -3,10 +3,15 @@
 //  Copyright © 2025 Awful Contributors. All rights reserved.
 //
 
-import AwfulTheming
 import UIKit
 
-final class PageNumberView: UIView {
+/// The "current / total" page counter shown between the paging arrows of a bottom toolbar.
+///
+/// On iOS 26+ it's the bar item's custom view whether or not Liquid Glass is on: a plain-title
+/// `UIBarButtonItem` is sized by UIKit, which grows it with Dynamic Type until iOS 27 evicts the
+/// neighbouring toolbar buttons into an overflow menu. This view keeps a fixed-size font, so its
+/// width stays ours. With Reduce Liquid Glass the item's `hidesSharedBackground` leaves it flat.
+public final class PageNumberView: UIView {
 
     private static let minWidth: CGFloat = 60
     private static let heightModern: CGFloat = 39  // iOS 26+
@@ -16,11 +21,11 @@ final class PageNumberView: UIView {
     /// enough that iOS 27 evicts the neighbouring toolbar buttons into an overflow menu. This
     /// is the default body size, so nothing changes at the default text setting; the large
     /// content viewer (long-press) covers accessibility sizes.
-    static let fontPointSize: CGFloat = 17
+    public static let fontPointSize: CGFloat = 17
 
     /// The fixed-size font shared by the pill and the plain-title page item, in the theme's
     /// rounded design when it asks for one (matching `UIFont.preferredFontForTextStyle`).
-    static func font() -> UIFont {
+    public static func font() -> UIFont {
         let font = UIFont.systemFont(ofSize: fontPointSize, weight: .regular)
         guard Theme.defaultTheme().roundedFonts,
               let rounded = font.fontDescriptor.withDesign(.rounded) else { return font }
@@ -45,41 +50,72 @@ final class PageNumberView: UIView {
         return label
     }()
 
-    var currentPage: Int = 1 {
+    public var currentPage: Int = 1 {
         didSet {
             updateDisplay()
         }
     }
 
-    var totalPages: Int = 1 {
+    public var totalPages: Int = 1 {
         didSet {
             updateDisplay()
         }
     }
 
-    var textColor: UIColor = .label {
+    public var textColor: UIColor = .label {
         didSet {
             updateColors()
         }
     }
 
-    var onTap: (() -> Void)?
+    /// Stands in for the bar item's `isEnabled`, which a custom view doesn't pick up: dims the
+    /// label and ignores taps.
+    public var isEnabled: Bool = true {
+        didSet {
+            guard isEnabled != oldValue else { return }
+            updateColors()
+            if isEnabled {
+                accessibilityTraits.remove(.notEnabled)
+            } else {
+                accessibilityTraits.insert(.notEnabled)
+            }
+        }
+    }
 
-    override init(frame: CGRect) {
+    public var onTap: (() -> Void)?
+
+    public override init(frame: CGRect) {
         super.init(frame: frame)
         setupViews()
         updateDisplay()
     }
 
-    required init?(coder: NSCoder) {
+    public required init?(coder: NSCoder) {
         super.init(coder: coder)
         setupViews()
         updateDisplay()
     }
 
+    /// Wraps the view for use as a `UIBarButtonItem.customView`, with a point of breathing room
+    /// on each side so the item's platter doesn't clip it.
+    public func makeBarButtonItemContainer() -> UIView {
+        let containerView = UIView()
+        containerView.addSubview(self)
+        translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
+            centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
+            containerView.widthAnchor.constraint(equalTo: widthAnchor, constant: 2),
+            containerView.heightAnchor.constraint(equalTo: heightAnchor, constant: 2)
+        ])
+        return containerView
+    }
+
     private func setupViews() {
         addSubview(pageLabel)
         isUserInteractionEnabled = true
+        isAccessibilityElement = true
+        accessibilityTraits = .button
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap))
         addGestureRecognizer(tapGesture)
 
@@ -106,6 +142,7 @@ final class PageNumberView: UIView {
     }
 
     @objc private func handleTap() {
+        guard isEnabled else { return }
         onTap?()
     }
 
@@ -135,19 +172,20 @@ final class PageNumberView: UIView {
     }
 
     private func updateColors() {
-        pageLabel.textColor = textColor
+        // Matches the dimming UIKit gives a disabled bar button item's title.
+        pageLabel.textColor = isEnabled ? textColor : textColor.withAlphaComponent(0.35)
     }
 
-    func updateTheme() {
+    public func updateTheme() {
         applyFont()
     }
-    
-    override var intrinsicContentSize: CGSize {
+
+    public override var intrinsicContentSize: CGSize {
         let labelSize = pageLabel.intrinsicContentSize
         return CGSize(width: max(labelSize.width, Self.minWidth), height: Self.currentHeight)
     }
 
-    override func layoutSubviews() {
+    public override func layoutSubviews() {
         super.layoutSubviews()
         invalidateIntrinsicContentSize()
     }

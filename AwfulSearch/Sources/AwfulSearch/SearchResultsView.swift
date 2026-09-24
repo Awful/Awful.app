@@ -279,6 +279,18 @@ public final class SearchResultsViewController: HostingController<AnyView> {
         return item
     }()
 
+    /// The page counter on iOS 26+, installed as `currentPageItem`'s custom view: its fixed-size
+    /// font keeps Dynamic Type from widening the item until iOS 27 evicts the paging controls
+    /// into an overflow menu. Before iOS 26 the item shows a plain title instead.
+    private lazy var pageNumberView: PageNumberView = {
+        let view = PageNumberView()
+        view.onTap = { [weak self] in
+            guard let self else { return }
+            self.showPagePicker(from: self.currentPageItem)
+        }
+        return view
+    }()
+
     private lazy var forwardItem: UIBarButtonItem = {
         let item = UIBarButtonItem(primaryAction: UIAction(image: UIImage(named: "arrowright")) { [weak self] _ in
             guard let self, self.currentPage < self.totalPages else { return }
@@ -336,6 +348,8 @@ public final class SearchResultsViewController: HostingController<AnyView> {
         ])
         toolbar.items = [.flexibleSpace(), backItem, currentPageItem, forwardItem, .flexibleSpace()]
         if #available(iOS 26.0, *) {
+            currentPageItem.customView = pageNumberView.makeBarButtonItemContainer()
+
             // Only the real buttons: touching the flexible spaces makes them join the shared
             // glass background, merging every platter into one full-width pill.
             for item in [backItem, currentPageItem, forwardItem] {
@@ -379,6 +393,8 @@ public final class SearchResultsViewController: HostingController<AnyView> {
         super.themeDidChange()
         guard isViewLoaded else { return }
         toolbar.tintColor = theme["toolbarTextColor"]
+        pageNumberView.textColor = theme["toolbarTextColor"] ?? UIColor.systemBlue
+        pageNumberView.updateTheme()
         configureToolbarAppearance()
     }
 
@@ -433,7 +449,13 @@ public final class SearchResultsViewController: HostingController<AnyView> {
         toolbar.isHidden = isRestoring
         let current = max(currentPage, 1)
         let total = max(totalPages, current)
-        currentPageItem.title = "\(current) / \(total)"
+        if currentPageItem.customView != nil {
+            pageNumberView.currentPage = current
+            pageNumberView.totalPages = total
+            pageNumberView.isEnabled = total > 1 && !isNavigating
+        } else {
+            currentPageItem.title = "\(current) / \(total)"
+        }
         currentPageItem.accessibilityLabel = "Page \(current) of \(total)"
         currentPageItem.isEnabled = total > 1 && !isNavigating
         backItem.isEnabled = current > 1 && !isNavigating

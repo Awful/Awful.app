@@ -144,6 +144,18 @@ public final class RapSheetViewController: ViewController, ContentRefreshable {
         return item
     }()
 
+    /// The page counter on iOS 26+, installed as `currentPageItem`'s custom view: its fixed-size
+    /// font keeps Dynamic Type from widening the item until iOS 27 evicts the paging controls
+    /// into an overflow menu. Before iOS 26 the item shows a plain title instead.
+    private lazy var pageNumberView: PageNumberView = {
+        let view = PageNumberView()
+        view.onTap = { [weak self] in
+            guard let self else { return }
+            self.showPagePicker(from: self.currentPageItem)
+        }
+        return view
+    }()
+
     private lazy var forwardItem: UIBarButtonItem = {
         let item = UIBarButtonItem(primaryAction: UIAction(image: UIImage(named: "arrowright")) { [weak self] _ in
             guard let self, self.page < self.pageCount, !self.isLoading else { return }
@@ -213,6 +225,8 @@ public final class RapSheetViewController: ViewController, ContentRefreshable {
 
         toolbar.items = makeToolbarItems()
         if #available(iOS 26.0, *) {
+            currentPageItem.customView = pageNumberView.makeBarButtonItemContainer()
+
             // Without their shared glass platters, the items sit flat on the painted legacy
             // background. Skip fixed/flexible spaces: touching them makes them join the shared
             // background, merging every platter into one full-width pill.
@@ -302,6 +316,8 @@ public final class RapSheetViewController: ViewController, ContentRefreshable {
         navigationItem.updateTitleLabelTextColor(forScrollProgress: 0, theme: theme)
 
         toolbar.tintColor = theme["toolbarTextColor"]
+        pageNumberView.textColor = theme["toolbarTextColor"] ?? UIColor.systemBlue
+        pageNumberView.updateTheme()
         configureToolbarAppearance()
         updateButtonColors()
         pullToRefresh.themeDidChange(theme)
@@ -610,7 +626,13 @@ public final class RapSheetViewController: ViewController, ContentRefreshable {
         toolbar.isHidden = isEndlessScrolling
         let current = max(page, 1)
         let total = max(pageCount, current)
-        currentPageItem.title = "\(current) / \(total)"
+        if currentPageItem.customView != nil {
+            pageNumberView.currentPage = current
+            pageNumberView.totalPages = total
+            pageNumberView.isEnabled = total > 1
+        } else {
+            currentPageItem.title = "\(current) / \(total)"
+        }
         currentPageItem.accessibilityLabel = "Page \(current) of \(total)"
         currentPageItem.isEnabled = total > 1
         backItem.isEnabled = current > 1 && !isLoading

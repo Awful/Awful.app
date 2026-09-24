@@ -487,7 +487,7 @@ final class PostsPageViewController: ViewController {
                 switch newPage {
                 case .last where self.posts.isEmpty,
                      .nextUnread where self.posts.isEmpty:
-                    if LiquidGlass.isEnabled {
+                    if self.usesPageNumberView {
                         self.pageNumberView.currentPage = 0
                         self.pageNumberView.totalPages = self.numberOfPages > 0 ? self.numberOfPages : 0
                     } else {
@@ -560,7 +560,7 @@ final class PostsPageViewController: ViewController {
                 switch newPage {
                 case .last where self.posts.isEmpty,
                      .nextUnread where self.posts.isEmpty:
-                    if LiquidGlass.isEnabled {
+                    if self.usesPageNumberView {
                         self.pageNumberView.currentPage = 0
                         self.pageNumberView.totalPages = self.numberOfPages > 0 ? self.numberOfPages : 0
                     } else {
@@ -1034,22 +1034,22 @@ final class PostsPageViewController: ViewController {
         return item
     }()
 
-    /// Keeps `currentPageItem`'s representation in sync with the Reduce Liquid Glass setting:
-    /// the glass `PageNumberView` pill when glass is on, a plain text title otherwise. Safe to
-    /// call repeatedly; only rebuilds when the representation actually changes.
+    /// Whether `currentPageItem` shows the `PageNumberView` rather than a plain title. Always on
+    /// iOS 26+, glass or not: UIKit sizes a plain title itself and grows it with Dynamic Type until
+    /// iOS 27 evicts the neighbouring buttons into an overflow menu. With Reduce Liquid Glass the
+    /// item's hidden shared background leaves the view flat.
+    private var usesPageNumberView: Bool {
+        if #available(iOS 26.0, *) { return true }
+        return false
+    }
+
+    /// Keeps `currentPageItem`'s representation in sync: the `PageNumberView` on iOS 26+ (a glass
+    /// pill, or flat text under Reduce Liquid Glass), a plain text title before. Safe to call
+    /// repeatedly; only rebuilds when the representation actually changes.
     private func syncCurrentPageItemStyle() {
-        if LiquidGlass.isEnabled {
+        if usesPageNumberView {
             if currentPageItem.customView == nil {
-                let containerView = UIView()
-                containerView.addSubview(pageNumberView)
-                pageNumberView.translatesAutoresizingMaskIntoConstraints = false
-                NSLayoutConstraint.activate([
-                    pageNumberView.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
-                    pageNumberView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
-                    containerView.widthAnchor.constraint(equalTo: pageNumberView.widthAnchor, constant: 2),
-                    containerView.heightAnchor.constraint(equalTo: pageNumberView.heightAnchor, constant: 2)
-                ])
-                currentPageItem.customView = containerView
+                currentPageItem.customView = pageNumberView.makeBarButtonItemContainer()
                 currentPageItem.title = nil
             }
         } else {
@@ -1064,7 +1064,7 @@ final class PostsPageViewController: ViewController {
     /// Pushes the current page state into whichever representation `currentPageItem` is using.
     private func updateCurrentPageItemDisplay() {
         if case .specific(let pageNumber)? = page, numberOfPages > 0 {
-            if LiquidGlass.isEnabled {
+            if usesPageNumberView {
                 pageNumberView.currentPage = pageNumber
                 pageNumberView.totalPages = numberOfPages
             } else {
@@ -1073,7 +1073,7 @@ final class PostsPageViewController: ViewController {
             }
             currentPageItem.accessibilityLabel = "Page \(pageNumber) of \(numberOfPages)"
         } else {
-            if LiquidGlass.isEnabled {
+            if usesPageNumberView {
                 pageNumberView.currentPage = 0
                 pageNumberView.totalPages = 0
             } else {
@@ -2607,6 +2607,9 @@ final class PostsPageViewController: ViewController {
             forwardItem.tintColor = theme["toolbarTextColor"]
             settingsItem.tintColor = theme["toolbarTextColor"]
             pageNumberView.textColor = theme["toolbarTextColor"] ?? UIColor.systemBlue
+        } else {
+            // The glass pill's default; resets the colour above when glass is turned back on.
+            pageNumberView.textColor = .label
         }
 
         pageNumberView.updateTheme()
