@@ -6,7 +6,7 @@ import UIKit
 
 /// Sets a scroll view's bottom insets to avoid the keyboard.
 final class ScrollViewKeyboardAvoider {
-    private var observer: NSObjectProtocol?
+    private var observers: [NSObjectProtocol] = []
     private weak var scrollView: UIScrollView?
 
     /// The most recent keyboard end frame, in screen coordinates, so `reapply()` can recompute the
@@ -23,30 +23,86 @@ final class ScrollViewKeyboardAvoider {
 
     init(_ scrollView: UIScrollView) {
         self.scrollView = scrollView
-        observer = NotificationCenter.default.addObserver(forName: UIResponder.keyboardWillChangeFrameNotification, object: nil, queue: OperationQueue.main) { [unowned self] note in
+        let center = NotificationCenter.default
+        observers.append(center.addObserver(forName: UIResponder.keyboardWillChangeFrameNotification, object: nil, queue: OperationQueue.main) { [unowned self] note in
             self.keyboardWillChangeFrame(note)
-        }
+        })
+        observers.append(center.addObserver(forName: UIResponder.keyboardDidChangeFrameNotification, object: nil, queue: OperationQueue.main) { [unowned self] note in
+            self.keyboardDidChangeFrame(note)
+        })
     }
 
     deinit {
-        if let observer = observer {
-            NotificationCenter.default.removeObserver(observer)
-        }
+        observers.forEach(NotificationCenter.default.removeObserver)
     }
 
     private func keyboardWillChangeFrame(_ note: Notification) {
         guard
             let userInfo = note.userInfo,
-            let screenFrame = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue,
+            var screenFrame = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue,
             let duration = userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as? TimeInterval,
             let rawCurve = userInfo[UIResponder.keyboardAnimationCurveUserInfoKey] as? Int
             else { return }
         // Another window's keyboard (iPad multitasking) says nothing about ours.
         if let isLocal = userInfo[UIResponder.keyboardIsLocalUserInfoKey] as? Bool, !isLocal { return }
+        if isSceneInBackground { return }
+
+        // Coming back from the background, iOS posts the right keyboard frame and then one that
+        // leaves out the input accessory view, though the accessory toolbars stay on screen on
+        // top of it. That frame starts exactly where the accessory ends. Count the accessory back
+        // in, or the inset drops by the toolbars' height (hiding the caret line behind them) and
+        // the text jumps when it's corrected.
+        if let accessory = dockedAccessoryScreenFrame(keyboardScreenFrame: screenFrame),
+           abs(screenFrame.minY - accessory.maxY) < 1
+        {
+            screenFrame = CGRect(x: screenFrame.minX, y: accessory.minY, width: screenFrame.width, height: screenFrame.maxY - accessory.minY)
+        }
 
         lastKeyboardScreenFrame = screenFrame
         let options = UIView.AnimationOptions(rawValue: UInt(rawCurve) << 16)
         apply(keyboardScreenFrame: screenFrame, duration: duration, options: options, attempt: 0)
+    }
+
+    /// A safety net for a frame that leaves out the input accessory view in some way the check in
+    /// `keyboardWillChangeFrame` doesn't recognize. Once the keyboard has settled, the accessory
+    /// view's real position is the tiebreaker: the keyboard can't start below it.
+    private func keyboardDidChangeFrame(_ note: Notification) {
+        if let isLocal = note.userInfo?[UIResponder.keyboardIsLocalUserInfoKey] as? Bool, !isLocal { return }
+        if isSceneInBackground { return }
+        guard
+            let reported = lastKeyboardScreenFrame,
+            let accessory = dockedAccessoryScreenFrame(keyboardScreenFrame: reported),
+            accessory.minY < reported.minY - 0.5
+            else { return }
+
+        lastKeyboardScreenFrame = CGRect(x: reported.minX, y: accessory.minY, width: reported.width, height: reported.maxY - accessory.minY)
+        reapply()
+    }
+
+    /// In the background the keyboard reports frames, and lays out the accessory view, for the app
+    /// switcher snapshot (scaled down, or a different height). Nothing is on screen to keep clear,
+    /// and acting on them scrolls the text, which then visibly jumps back on return, when iOS
+    /// reports the real frame again.
+    private var isSceneInBackground: Bool {
+        scrollView?.window?.windowScene?.activationState == .background
+    }
+
+    /// The scroll view's input accessory view in screen coordinates, when the scroll view is first
+    /// responder and `keyboardScreenFrame` is a keyboard docked to the bottom of the screen. A
+    /// floating or undocked iPad keyboard reports something else entirely, and a hidden one is
+    /// off screen, so neither says anything about where the accessory should be.
+    private func dockedAccessoryScreenFrame(keyboardScreenFrame: CGRect) -> CGRect? {
+        guard
+            let scrollView, scrollView.isFirstResponder,
+            let accessory = scrollView.inputAccessoryView,
+            let window = accessory.window
+            else { return nil }
+        let screenBounds = window.screen.bounds
+        guard keyboardScreenFrame.height > 0, abs(keyboardScreenFrame.maxY - screenBounds.maxY) < 1 else { return nil }
+
+        let accessoryFrame = window.convert(accessory.convert(accessory.bounds, to: window), to: window.screen.coordinateSpace)
+        guard accessoryFrame.height > 0, accessoryFrame.minY >= screenBounds.minY else { return nil }
+        return accessoryFrame
     }
 
     /// Recomputes the inset for the last known keyboard frame, without animating. Safe to call
