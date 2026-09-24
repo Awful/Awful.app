@@ -239,9 +239,13 @@ struct SearchResultCard_Previews: PreviewProvider {
 /// items are liquid-glass pills on iOS 26 (clear bar background) and an opaque themed bar earlier.
 /// The app's `NavigationController` doesn't manage a bottom toolbar — `PostsPageView` and
 /// `RapSheetViewController` each carry their own — so this screen does too.
-public final class SearchResultsViewController: HostingController<AnyView> {
+///
+/// The SwiftUI content lives in a child `UIHostingController` rather than this being one: UIKit
+/// doesn't support adding subviews (the toolbar) to a hosting controller's own view.
+public final class SearchResultsViewController: ViewController {
 
     private let model: SearchPageViewModel
+    private let hostingController: UIHostingController<AnyView>
     private var cancellables: Set<AnyCancellable> = []
 
     // Mirrors of the model's published paging state. `@Published` emits on `willSet`, so reading
@@ -328,15 +332,16 @@ public final class SearchResultsViewController: HostingController<AnyView> {
         self.model = model
         // `open` can't be referenced before super.init, so route through a box the view can call.
         let opener = ResultOpener()
-        super.init(rootView: AnyView(
+        hostingController = UIHostingController(rootView: AnyView(
             SearchResultsView(model: model, onSelect: { opener.open?($0) }).themed()
         ))
+        super.init(nibName: nil, bundle: nil)
         opener.open = { [weak self] in self?.open($0) }
 
         title = String(localized: "Search Results", bundle: .module)
     }
 
-    @MainActor public required dynamic init?(coder aDecoder: NSCoder) {
+    public required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
@@ -344,6 +349,21 @@ public final class SearchResultsViewController: HostingController<AnyView> {
 
     public override func viewDidLoad() {
         super.viewDidLoad()
+
+        // The results fill the whole view; the toolbar floats above them as a sibling. Our
+        // `additionalSafeAreaInsets` flow down to the child, so its `ScrollView` still insets clear
+        // of the bar.
+        addChild(hostingController)
+        let hostedView = hostingController.view!
+        hostedView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(hostedView)
+        NSLayoutConstraint.activate([
+            hostedView.topAnchor.constraint(equalTo: view.topAnchor),
+            hostedView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            hostedView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            hostedView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+        ])
+        hostingController.didMove(toParent: self)
 
         toolbar.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(toolbar)
