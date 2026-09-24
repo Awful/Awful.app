@@ -22,9 +22,18 @@ final class SearchPageViewModel: ObservableObject {
     @Published private(set) var isRestoring = false
     @Published private(set) var currentPage: Int = 1
     @Published private(set) var totalPages: Int = 1
-    
+    /// Bumped by ``resetSearch()`` so the form can put the cursor back in the search field.
+    @Published private(set) var focusSearchFieldRequest = 0
+
     private var searchQueryID: String?
     let threadID: String?
+
+    /// Bumped by ``resetSearch()``, so a search or page load that lands after a reset knows to
+    /// throw its results away rather than bring back what the user just cleared.
+    private var searchGeneration = 0
+
+    /// The forums the forums' own search form ticks by default, for ``resetSearch()`` to go back to.
+    private var defaultForumIDs: Set<String> = []
 
     /// True when this search was kicked off directly (no form), so the results screen can label
     /// its initial spinner accordingly.
@@ -168,6 +177,7 @@ final class SearchPageViewModel: ObservableObject {
                         parentIDs: parentIDs
                     )
                 }
+            defaultForumIDs = Set(forumSelectOptions.filter(\.isSelected).map(\.value))
         }
     }
     
@@ -372,12 +382,14 @@ final class SearchPageViewModel: ObservableObject {
             guard let threadID, !threadID.isEmpty else { return searchState.query }
             return "threadid:\(threadID) \(searchState.query)"
         }()
+        let generation = searchGeneration
 
         do {
             let (document, responseURL) = try await ForumsClient.shared.searchForums(
                 query: outgoingQuery,
                 forumIDs: forumIDs
             )
+            guard generation == searchGeneration else { return }
 
             // Reset pagination state before publishing the new document, so the results screen never
             // shows the previous search's rows against the new search's page count.
@@ -394,6 +406,7 @@ final class SearchPageViewModel: ObservableObject {
             await scrapeForumResultsPage(document)
 
         } catch {
+            guard generation == searchGeneration else { return }
             searchState.message = "Search failed: \(error.localizedDescription)"
             logger.error("search failed: \(error)")
         }
@@ -406,12 +419,14 @@ final class SearchPageViewModel: ObservableObject {
         }
 
         searchState.resultsMessage = ""
+        let generation = searchGeneration
 
         do {
             let document = try await ForumsClient.shared.searchForumsPage(
                 queryID: qid,
                 page: page
             )
+            guard generation == searchGeneration else { return }
 
             // A query ID that's aged out mid-browse comes back as something other than results.
             guard looksLikeResults(document) else {
@@ -422,6 +437,7 @@ final class SearchPageViewModel: ObservableObject {
             await scrapeForumResultsPage(document, requestedPage: page)
 
         } catch {
+            guard generation == searchGeneration else { return }
             searchState.resultsMessage = "Failed to load page: \(error.localizedDescription)"
             logger.error("could not load results page: \(error)")
         }
@@ -432,6 +448,7 @@ final class SearchPageViewModel: ObservableObject {
         // Show what was typed, not the `threadid:N ` the forums were actually sent.
         searchState.query = record.query
         restoredForumIDs = record.forumIDs
+        let generation = searchGeneration
 
         let document: HTMLDocument
         do {
@@ -440,10 +457,13 @@ final class SearchPageViewModel: ObservableObject {
                 page: record.page
             )
         } catch {
+            // Cleared while the restore was out; the reset already put things straight.
+            guard generation == searchGeneration else { return }
             logger.error("search restore failed: \(error)")
             await fallBackToSearchForm(document: nil, preservingForumIDs: record.forumIDs)
             return
         }
+        guard generation == searchGeneration else { return }
 
         guard looksLikeResults(document) else {
             await fallBackToSearchForm(document: document, preservingForumIDs: record.forumIDs)
@@ -460,7 +480,8 @@ final class SearchPageViewModel: ObservableObject {
         // The search form is only needed if the user backs out of the results, so it can trail in.
         Task { [weak self] in
             await self?.fetchAndParseSearchPage()
-            self?.applySelectedForumIDs(record.forumIDs)
+            guard let self, generation == self.searchGeneration else { return }
+            self.applySelectedForumIDs(record.forumIDs)
         }
     }
 
@@ -481,12 +502,15 @@ final class SearchPageViewModel: ObservableObject {
         // Whatever the user had ticked, or — restoring, where the form was never shown — whatever
         // they had ticked when the search was first run.
         let selectedForumIDs = preservingForumIDs ?? forumSelectOptions.filter(\.isSelected).map(\.value)
+        let generation = searchGeneration
 
         if let document, document.firstNode(matchingParsedSelector: .cached("form[action='query.php']")) != nil {
             await scrapeForumSelectOptions(from: document)
         } else {
             await fetchAndParseSearchPage()
         }
+        // Cleared while the form was loading: the user has already started over.
+        guard generation == searchGeneration else { return }
         applySelectedForumIDs(selectedForumIDs)
 
         isRestoring = false
@@ -499,6 +523,36 @@ final class SearchPageViewModel: ObservableObject {
         for i in forumSelectOptions.indices {
             forumSelectOptions[i].isSelected = selected.contains(forumSelectOptions[i].value)
         }
+    }
+
+    /// Whether there's anything for ``resetSearch()`` to throw away.
+    static func hasSomethingToClear(_ state: SearchState, results: [SearchResult]) -> Bool {
+        !state.query.isEmpty || !results.isEmpty || !state.resultInfo.isEmpty
+    }
+
+    /// Starts over with an empty search in the same scope, forgetting the last search so it isn't
+    /// restored next time search is opened.
+    func resetSearch() {
+        searchGeneration += 1
+        LastSearchStore.clear()
+
+        searchState = SearchState()
+        searchQueryID = nil
+        searchResults.removeAll()
+        currentPage = 1
+        totalPages = 1
+        restoredForumIDs = []
+        isRestoring = false
+
+        for i in forumSelectOptions.indices {
+            forumSelectOptions[i].isSelected = defaultForumIDs.contains(forumSelectOptions[i].value)
+        }
+        // A restore skips fetching the form until its results are in, so it may not be here yet.
+        if forumSelectOptions.isEmpty {
+            Task { [weak self] in await self?.fetchAndParseSearchPage() }
+        }
+
+        focusSearchFieldRequest += 1
     }
 
 }
@@ -550,7 +604,9 @@ struct SearchState {
  This deliberately lives outside `SearchPageViewModel`: the model goes away with the sheet, which is
  exactly the moment we need the query ID to survive.
 
- One slot, shared by forum-wide and thread-scoped searches — whichever ran last is what comes back.
+ One slot, shared by forum-wide and thread-scoped searches — whichever ran last is what a thread's
+ "Search results" shortcut brings back. The Forums tab's search only restores from
+ ``forumWideRecord``, so a thread search never leaves the forum-wide form stuck in that thread.
  In-memory only, since a query ID belongs to a login session and won't outlive one. Static state is
  shared across scenes, so on iPad both windows see the same last search; that's fine for what this
  is.
@@ -573,6 +629,9 @@ public enum LastSearchStore {
 
     public static var record: Record? { stored }
     public static var hasStoredResults: Bool { stored != nil }
+
+    /// The last search, but only if it searched the forums rather than one thread.
+    public static var forumWideRecord: Record? { stored?.threadID == nil ? stored : nil }
 
     static func save(_ record: Record) {
         stored = record

@@ -300,6 +300,18 @@ public final class SearchResultsViewController: HostingController<AnyView> {
         return item
     }()
 
+    /// Throws these results away and heads back to an empty search form.
+    ///
+    /// An icon rather than a title: a text button is wider than the back button opposite it, which
+    /// knocks the screen's title off centre.
+    private lazy var newSearchItem: UIBarButtonItem = {
+        let item = UIBarButtonItem(
+            image: UIImage(systemName: "plus.magnifyingglass"),
+            style: .plain, target: self, action: #selector(didTapNewSearch))
+        item.accessibilityLabel = String(localized: "New Search", bundle: .module)
+        return item
+    }()
+
     /// A results screen that runs `query` forum-wide immediately, skipping the search form
     /// entirely. Push it on its own — there's no form underneath, so backing out returns to
     /// wherever the search came from.
@@ -371,9 +383,12 @@ public final class SearchResultsViewController: HostingController<AnyView> {
                 self.currentPage = page
                 self.totalPages = total
                 self.isRestoring = restoring
+                self.newSearchItem.isEnabled = !restoring
                 self.updateToolbar()
             }
             .store(in: &cancellables)
+
+        navigationItem.rightBarButtonItem = newSearchItem
 
         // Re-apply the theme now that the toolbar is in the hierarchy.
         themeDidChange()
@@ -496,6 +511,29 @@ public final class SearchResultsViewController: HostingController<AnyView> {
         Task { @MainActor in
             await model.handlers.openPost(result.postID, self)
         }
+    }
+
+    // MARK: New search
+
+    @objc private func didTapNewSearch() {
+        model.resetSearch()
+        guard let navigationController else { return }
+
+        // Usually the form these results came from is right underneath.
+        if let form = navigationController.viewControllers.last(where: {
+            ($0 as? SearchFormViewController)?.model === model
+        }) {
+            navigationController.popToViewController(form, animated: true)
+            return
+        }
+
+        // An immediate search has no form underneath, so swap one in where these results were.
+        let form = SearchFormViewController(threadID: model.threadID, handlers: model.handlers)
+        var screens = navigationController.viewControllers
+        if let index = screens.firstIndex(of: self) {
+            screens.removeSubrange(index...)
+        }
+        navigationController.setViewControllers(screens + [form], animated: true)
     }
 }
 

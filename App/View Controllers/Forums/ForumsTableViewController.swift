@@ -515,9 +515,10 @@ final class ForumsTableViewController: CollectionViewController, ContentRefresha
 
     @objc private func searchForums() {
         guard let navigationController else { return }
-        // Picks up where the last search left off, when its results are still good.
+        // Picks up where the last search left off, when its results are still good. A search run in
+        // a thread stays with that thread, or this form would be stuck searching it.
         SearchFormViewController.push(
-            SearchFormViewController.makeStack(restoring: LastSearchStore.record, handlers: .awful),
+            SearchFormViewController.makeStack(restoring: LastSearchStore.forumWideRecord, handlers: .awful),
             onto: navigationController)
     }
 

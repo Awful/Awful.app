@@ -40,6 +40,9 @@ struct SearchFormView: View {
         .onTapGesture {
             isSearchFieldFocused = false
         }
+        .onChange(of: model.focusSearchFieldRequest) { _ in
+            isSearchFieldFocused = true
+        }
         .applyFontDesign(if: theme.roundedFonts)
     }
 
@@ -205,6 +208,19 @@ public final class SearchFormViewController: HostingController<AnyView> {
         return item
     }()
 
+    /// Starts a new search: empties the field, puts the forum ticks back, and forgets the last
+    /// search so reopening search doesn't bring it back.
+    ///
+    /// An icon rather than a title: a text button beside the search icon pushes the screen's title
+    /// off centre.
+    private lazy var clearItem: UIBarButtonItem = {
+        let item = UIBarButtonItem(
+            image: UIImage(systemName: "arrow.counterclockwise"),
+            style: .plain, target: self, action: #selector(didTapClear))
+        item.accessibilityLabel = String(localized: "Clear search", bundle: .module)
+        return item
+    }()
+
     /// - Parameter restoring: when set, the model goes straight to fetching these results. Pair it
     ///   with ``makeStack(threadID:restoring:handlers:)`` so the results screen is pushed to receive them.
     public init(
@@ -262,12 +278,19 @@ public final class SearchFormViewController: HostingController<AnyView> {
     public override func viewDidLoad() {
         super.viewDidLoad()
 
-        navigationItem.rightBarButtonItem = searchItem
+        navigationItem.rightBarButtonItems = [searchItem, clearItem]
 
         model.$searchState
             .map { !$0.query.isEmpty }
             .removeDuplicates()
             .assign(to: \.isEnabled, on: searchItem)
+            .store(in: &cancellables)
+
+        // `@Published` emits on `willSet`, so work from the emitted values rather than the model.
+        model.$searchState.combineLatest(model.$searchResults)
+            .map { SearchPageViewModel.hasSomethingToClear($0, results: $1) }
+            .removeDuplicates()
+            .assign(to: \.isEnabled, on: clearItem)
             .store(in: &cancellables)
     }
 
@@ -281,6 +304,10 @@ public final class SearchFormViewController: HostingController<AnyView> {
 
     @objc private func didTapSearch() {
         Task { await model.performSearch() }
+    }
+
+    @objc private func didTapClear() {
+        model.resetSearch()
     }
 
     /// Pushes the results screen, unless it's already up — a restore puts it there before the model
