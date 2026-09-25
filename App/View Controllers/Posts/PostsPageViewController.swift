@@ -313,7 +313,7 @@ final class PostsPageViewController: ViewController {
             theme: theme,
             message: "Resume draft",
             duration: nil,
-            bottomInset: pollToastBottomInset,
+            bottomInset: bannerBottomInset,
             onAction: { [weak self] in self?.showReplyWorkspace() }
         )
     }
@@ -2007,21 +2007,23 @@ final class PostsPageViewController: ViewController {
             message: "This thread has a poll",
             action: .link(text: "has a poll", actionName: "View poll"),
             duration: 6,
-            bottomInset: pollToastBottomInset
+            bottomInset: bannerBottomInset
         ) { [weak self] in
             self?.presentPollViewer()
         }
     }
 
-    /// How far up from the safe area the toast needs to sit to clear the posts toolbar, which lives
+    /// How far up from the safe area banners need to sit to clear the posts toolbar, which lives
     /// inside `postsView` and so contributes nothing to `view`'s safe area.
     ///
     /// This is the toolbar's overlap with the safe area specifically — the banner is pinned to the
     /// safe-area bottom, so measuring from the view's bottom edge instead would double-count the
-    /// home indicator. Read once, when the toast appears: if immersive mode later hides the toolbar
-    /// the banner just sits a little high, which is fine for the few seconds it's up.
-    private var pollToastBottomInset: CGFloat {
-        let toolbarTop = postsView.convert(postsView.toolbar.frame, to: view).minY
+    /// home indicator. It uses the toolbar's resting position, not its frame: immersive mode slides
+    /// the toolbar away with a transform, and a banner measured then would land where the toolbar
+    /// comes back. While the toolbar is hidden the banner just sits where it'll be.
+    private var bannerBottomInset: CGFloat {
+        let postsBottom = postsView.convert(CGPoint(x: 0, y: postsView.bounds.maxY), to: view).y
+        let toolbarTop = postsBottom - postsView.effectiveBottomInset - postsView.toolbar.bounds.height
         return max(0, view.safeAreaLayoutGuide.layoutFrame.maxY - toolbarTop)
     }
 
@@ -2761,6 +2763,8 @@ final class PostsPageViewController: ViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         updatePostsViewLayoutMargins()
+        // Rotation, Dynamic Type and the like can move the toolbar under a banner that's up.
+        BannerToastView.setBottomInset(bannerBottomInset, in: view)
     }
 
     override func viewSafeAreaInsetsDidChange() {

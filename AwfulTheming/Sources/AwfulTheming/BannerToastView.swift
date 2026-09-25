@@ -85,6 +85,16 @@ public final class BannerToastView: UIView {
         return banner
     }
 
+    /// Re-seats the banners showing in `hostView` for chrome that moved or resized since they were
+    /// shown, e.g. a toolbar whose height changed on rotation. Replaces each banner's `bottomInset`.
+    public static func setBottomInset(_ inset: CGFloat, in hostView: UIView) {
+        guard let stack = BannerToastStackView.existing(in: hostView) else { return }
+        for case let banner as BannerToastView in stack.arrangedSubviews {
+            banner.bottomInset = inset
+        }
+        stack.updateBottomInset()
+    }
+
     private let onAction: (() -> Void)?
     /// When the banner has an `onAction` but no styled `action`, a tap anywhere on it triggers the
     /// action rather than dismissing.
@@ -92,7 +102,7 @@ public final class BannerToastView: UIView {
     /// Whether the banner stays until the caller dismisses it.
     fileprivate let isPersistent: Bool
     /// How far above the safe area this banner asked to sit; the stack honours the largest.
-    fileprivate let bottomInset: CGFloat
+    fileprivate var bottomInset: CGFloat
     /// Set for good once `dismiss` starts, so a tap during the fade-out or an auto-dismiss landing
     /// mid-dismiss doesn't run the exit again.
     fileprivate private(set) var isDismissing = false
@@ -346,8 +356,12 @@ private final class BannerToastStackView: UIStackView {
     /// The safe-area constraints whose constant carries the bottom inset.
     private var insetConstraints: [NSLayoutConstraint] = []
 
+    static func existing(in hostView: UIView) -> BannerToastStackView? {
+        hostView.subviews.lazy.compactMap({ $0 as? BannerToastStackView }).first
+    }
+
     static func findOrMake(in hostView: UIView) -> BannerToastStackView {
-        if let existing = hostView.subviews.lazy.compactMap({ $0 as? BannerToastStackView }).first {
+        if let existing = existing(in: hostView) {
             return existing
         }
 
@@ -393,9 +407,10 @@ private final class BannerToastStackView: UIStackView {
 
     /// Lifts the stack by the largest inset among the live banners. With none left the current
     /// inset stands, so the last banner fades out in place instead of sliding down as it goes.
+    /// Leaves unchanged constraints alone, so calling this from a layout pass doesn't dirty layout.
     func updateBottomInset() {
         guard let inset = liveBanners.map(\.bottomInset).max() else { return }
-        for constraint in insetConstraints {
+        for constraint in insetConstraints where constraint.constant != -8 - inset {
             constraint.constant = -8 - inset
         }
     }
