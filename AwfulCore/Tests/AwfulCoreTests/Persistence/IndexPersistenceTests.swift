@@ -140,12 +140,13 @@ class IndexPersistentTests: XCTestCase {
 
     // MARK: Forums the site stops listing
 
-    /// Decodes the `index` fixture, optionally dropping or renaming forums (at any depth) by ID.
-    /// Deriving both scrapes from the one fixture guarantees they differ in exactly the forums
-    /// under test.
+    /// Decodes the `index` fixture, optionally dropping, renaming, or overriding raw fields of
+    /// forums (at any depth) by ID. Deriving both scrapes from the one fixture guarantees they
+    /// differ in exactly the forums under test.
     private func scrapeIndex(
         dropping droppedIDs: Set<Int> = [],
-        renaming renames: [Int: String] = [:]
+        renaming renames: [Int: String] = [:],
+        overriding overrides: [Int: [String: Any]] = [:]
     ) throws -> IndexScrapeResult {
         let url = Bundle.module.url(forResource: "index", withExtension: "json", subdirectory: "Fixtures")!
         var json = try JSONSerialization.jsonObject(with: try Data(contentsOf: url)) as! [String: Any]
@@ -157,6 +158,7 @@ class IndexPersistentTests: XCTestCase {
                 if let newTitle = renames[id] {
                     forum["title"] = newTitle
                 }
+                forum.merge(overrides[id] ?? [:]) { $1 }
                 if let subforums = forum["sub_forums"] as? [[String: Any]] {
                     forum["sub_forums"] = keeping(subforums)
                 }
@@ -267,5 +269,85 @@ class IndexPersistentTests: XCTestCase {
         try context.save()
 
         XCTAssertEqual(visibleForumCount(), visibleBefore)
+    }
+
+    // MARK: Malformed subforums
+
+    private func fetchForum(_ forumID: String) throws -> Forum {
+        try XCTUnwrap(Forum.findOrFetch(in: context, matching: .init("\(\Forum.forumID) = \(forumID)")))
+    }
+
+    /// 21 is "Comedy Goldmine", whose subforums in the fixture are 264, 115 and 176.
+    private func assertListedUnderGoldmine(_ forumIDs: [String], file: StaticString = #filePath, line: UInt = #line) throws {
+        for forumID in forumIDs {
+            let forum = try fetchForum(forumID)
+            XCTAssertGreaterThanOrEqual(forum.index, 0, "\(forumID) is listed", file: file, line: line)
+            XCTAssertEqual(forum.parentForum?.forumID, "21", "\(forumID) is under the Goldmine", file: file, line: line)
+        }
+    }
+
+    /// The site sent BYOB Goldmine's description as the number 5, which used to throw out every
+    /// Goldmine subforum along with it.
+    func testNumericDescriptionKeepsSubforums() throws {
+        try scrapeIndex(overriding: [176: ["description": 5]]).upsert(into: context)
+        try context.save()
+
+        try assertListedUnderGoldmine(["264", "115", "176"])
+    }
+
+    func testMalformedSubforumOnlyDropsItself() throws {
+        try scrapeIndex(overriding: [176: ["title": ["nope"]]]).upsert(into: context)
+        try context.save()
+
+        try assertListedUnderGoldmine(["264", "115"])
+        XCTAssertNil(Forum.findOrFetch(in: context, matching: .init("\(\Forum.forumID) = \("176")")))
+    }
+
+    /// Installs that already hid the Goldmine subforums get them back on the next refresh.
+    func testDelistedSubforumsReturnDespiteNumericDescription() throws {
+        try scrapeIndex().upsert(into: context)
+        try context.save()
+        try scrapeIndex(dropping: [264, 115, 176]).upsert(into: context)
+        try context.save()
+        XCTAssertEqual(try fetchForum("264").index, -1)
+
+        try scrapeIndex(overriding: [176: ["description": 5]]).upsert(into: context)
+        try context.save()
+
+        try assertListedUnderGoldmine(["264", "115", "176"])
+    }
+
+    /// A scrape that skipped something can't tell a forum the site dropped from one it couldn't
+    /// read, so it hides nothing.
+    func testSkippedForumsPauseDelisting() throws {
+        try scrapeIndex().upsert(into: context)
+        try context.save()
+
+        try scrapeIndex(dropping: [192], overriding: [176: ["title": ["nope"]]]).upsert(into: context)
+        try context.save()
+
+        XCTAssertGreaterThanOrEqual(try fetchForum("176").index, 0, "the unreadable forum stays put")
+        XCTAssertGreaterThanOrEqual(try fetchGadgets().index, 0, "no delisting while something was skipped")
+
+        try scrapeIndex(dropping: [192]).upsert(into: context)
+        try context.save()
+
+        XCTAssertEqual(try fetchGadgets().index, -1, "a clean scrape delists as usual")
+    }
+
+    func testMalformedGroupKeepsItsForums() throws {
+        try scrapeIndex().upsert(into: context)
+        try context.save()
+
+        let archives = try XCTUnwrap(ForumGroup.findOrFetch(in: context, matching: .init("\(\ForumGroup.groupID) = \("49")")))
+        let visibleBefore = visibleForumCount()
+
+        try scrapeIndex(overriding: [49: ["has_threads": "sometimes"]]).upsert(into: context)
+        try context.save()
+
+        XCTAssertGreaterThanOrEqual(archives.index, 0)
+        XCTAssertTrue(archives.forums.allSatisfy { $0.index >= 0 })
+        XCTAssertEqual(visibleForumCount(), visibleBefore)
+        XCTAssertGreaterThanOrEqual(try fetchGadgets().index, 0, "the other groups still update")
     }
 }

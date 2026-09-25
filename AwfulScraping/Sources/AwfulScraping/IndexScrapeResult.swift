@@ -11,8 +11,10 @@ import Foundation
  */
 public struct IndexScrapeResult: Decodable, Sendable {
     public let currentUser: ScrapedProfile
-    public let forums: [ScrapedForum]
-    public let stats: Stats?
+    /// Malformed entries are skipped rather than failing the whole index; see `skippedForumCount`.
+    @DefaultEmpty public private(set) var forums: [ScrapedForum]
+    /// Nothing needs these, so they're not worth failing the whole index over.
+    @Lenient public private(set) var stats: Stats?
 
     private enum CodingKeys: String, CodingKey {
         case currentUser = "user"
@@ -21,12 +23,13 @@ public struct IndexScrapeResult: Decodable, Sendable {
     }
 
     public struct ScrapedForum: Decodable, Sendable {
-        public let description: String?
-        public let hasThreads: Bool
-        @EmptyStringNil public private(set) var icon: URL?
+        /// Usually a string, but the site has been seen sending a bare number.
+        @CoerceIntToString public private(set) var description: String?
+        @BoolOrInt public private(set) var hasThreads: Bool
+        @Lenient public private(set) var icon: URL?
         @IntOrString public private(set) var id: String
         @DefaultEmpty public private(set) var moderators: [Moderator]
-        public let shortTitle: String?
+        @CoerceIntToString public private(set) var shortTitle: String?
         @DefaultEmpty public private(set) var subforums: [ScrapedForum]
         @DecodingEntities public private(set) var title: String
 
@@ -43,7 +46,7 @@ public struct IndexScrapeResult: Decodable, Sendable {
 
         public struct Moderator: Decodable, Sendable {
             @IntOrString public private(set) var userID: String
-            public let username: String
+            @IntOrString public private(set) var username: String
 
             private enum CodingKeys: String, CodingKey {
                 case userID = "userid"
@@ -58,19 +61,19 @@ public struct IndexScrapeResult: Decodable, Sendable {
         @IntToBool public private(set) var canReceivePrivateMessages: Bool?
         /// Probably a fragment of HTML
         @CoerceIntToString public private(set) var customTitle: String?
-        public let gender: Gender?
+        @Lenient public private(set) var gender: Gender?
         @CoerceIntToString public private(set) var homepage: String?
         @CoerceIntToString public private(set) var icq: String?
         @CoerceIntToString public private(set) var interests: String?
-        public let lastPostDate: Date?
+        @Lenient public private(set) var lastPostDate: Date?
         @CoerceIntToString public private(set) var location: String?
         @CoerceIntToString public private(set) var occupation: String?
-        public let picture: String?
-        public let postCount: Int?
-        public let postsPerDay: Double?
-        public let regdate: Date?
-        public let regdateRaw: String?
-        public let role: String?
+        @CoerceIntToString public private(set) var picture: String?
+        @Lenient public private(set) var postCount: Int?
+        @Lenient public private(set) var postsPerDay: Double?
+        @Lenient public private(set) var regdate: Date?
+        @CoerceIntToString public private(set) var regdateRaw: String?
+        @CoerceIntToString public private(set) var role: String?
         @IntOrString public private(set) var userID: String
         @IntOrString public private(set) var username: String
         @CoerceIntToString public private(set) var yahoo: String?
@@ -131,6 +134,11 @@ public struct IndexScrapeResult: Decodable, Sendable {
 }
 
 extension IndexScrapeResult {
+    /// How many forums and groups (counting each skipped subtree once) were too malformed to decode. When this isn't zero, a forum missing from the index might be one of the skipped ones rather than one the site stopped listing.
+    public var skippedForumCount: Int {
+        allForums.reduce($forums) { $0 + $1.node.$subforums }
+    }
+
     public var allForums: AnySequence<(node: ScrapedForum, depth: Int)> {
         AnySequence(ConcatSequence(
             forums.lazy.map { forum in

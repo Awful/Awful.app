@@ -102,7 +102,10 @@ extension IndexScrapeResult {
         // but we keep the row: threads, per-forum themes, and the favorite flag hang off it, and a
         // forum that reappears should come back with its favorite intact. A scrape with no forums
         // in it is nonsense (a mangled response, say) and acting on it would blank the whole list.
-        if !rawForums.isEmpty {
+        // Likewise, when some entries were too malformed to decode we can't tell a forum the site
+        // dropped from one we skipped, so we leave everything we already had where it was.
+        let canDelist = skippedForumCount == 0
+        if canDelist, !rawForums.isEmpty {
             let scrapedForumIDs = rawForums.map { $0.forum.id }
             let delisted = Forum.fetch(in: context) {
                 $0.predicate = .and(
@@ -126,7 +129,7 @@ extension IndexScrapeResult {
             }
         }
 
-        if !rawGroups.isEmpty {
+        if canDelist, !rawGroups.isEmpty {
             let scrapedGroupIDs = rawGroups.map { $0.id }
             let delisted = ForumGroup.fetch(in: context) {
                 $0.predicate = .and(
