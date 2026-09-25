@@ -159,7 +159,7 @@ final class CloudflareChallengeViewController: ViewController {
         let cookies = await webView.configuration.websiteDataStore.httpCookieStore.allCookies()
         let relevant = cookies.filter { CloudflareChallenge.isCloudflareCookie($0) && $0.domain.lowercased().hasSuffix("somethingawful.com") }
         for cookie in relevant {
-            HTTPCookieStorage.shared.setCookie(cookie)
+            HTTPCookieStorage.shared.setCookie(CloudflareChallenge.unpartitioned(cookie))
         }
         logger.info("copied Cloudflare cookies to shared storage: \(relevant.map(\.name).joined(separator: ","), privacy: .public)")
     }

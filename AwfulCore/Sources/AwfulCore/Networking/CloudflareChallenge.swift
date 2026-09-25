@@ -34,6 +34,21 @@ public struct CloudflareChallenge: Sendable, Equatable {
         return name == "cf_clearance" || name.hasPrefix("__cf") || name.hasPrefix("_cf")
     }
 
+    /**
+     A copy of `cookie` without its storage partition.
+
+     Cloudflare may set `cf_clearance` with the `Partitioned` attribute (it didn't always), and the web view then keys it to the top-level site (`https://somethingawful.com`). `HTTPCookieStorage` hides partitioned cookies from lookups and requests that don't name the same partition, which `ForumsClient`'s don't, so copied as-is the clearance is stored but never sent and every retry is challenged again. The partition is purely client-side bookkeeping, so an unpartitioned copy clears requests just the same.
+     */
+    public static func unpartitioned(_ cookie: HTTPCookie) -> HTTPCookie {
+        guard var properties = cookie.properties,
+              properties.removeValue(forKey: storagePartitionKey) != nil
+        else { return cookie }
+        return HTTPCookie(properties: properties) ?? cookie
+    }
+
+    /// Not public API, but it's the key `HTTPCookie.properties` reports a partitioned cookie's partition under.
+    private static let storagePartitionKey = HTTPCookiePropertyKey("StoragePartition")
+
     /// Status codes Cloudflare serves challenge pages with.
     private static let challengeStatusCodes: Set<Int> = [403, 503]
 

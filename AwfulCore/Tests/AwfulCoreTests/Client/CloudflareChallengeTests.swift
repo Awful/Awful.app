@@ -93,4 +93,27 @@ final class CloudflareChallengeTests: XCTestCase {
         XCTAssertFalse(CloudflareChallenge.isCloudflareCookie(try cookie("bbuserid")))
         XCTAssertFalse(CloudflareChallenge.isCloudflareCookie(try cookie("bbpassword")))
     }
+
+    /// Cloudflare sets `cf_clearance` with the `Partitioned` attribute, and a partitioned cookie is invisible to (and never sent by) a URLSession that doesn't name the same partition.
+    func testUnpartitionedClearanceIsSentToForums() throws {
+        let storage = HTTPCookieStorage.sharedCookieStorage(forGroupContainerIdentifier: "CloudflareChallengeTests.\(UUID())")
+        let expires = Date().addingTimeInterval(3600)
+        let partitioned = try XCTUnwrap(HTTPCookie(properties: [
+            .name: "cf_clearance",
+            .value: "x",
+            .domain: ".somethingawful.com",
+            .path: "/",
+            .secure: "TRUE",
+            .expires: expires,
+            HTTPCookiePropertyKey("StoragePartition"): "https://somethingawful.com",
+        ]))
+
+        storage.setCookie(CloudflareChallenge.unpartitioned(partitioned))
+
+        let sent = try XCTUnwrap(storage.cookies(for: url)?.first { $0.name == "cf_clearance" })
+        XCTAssertEqual(sent.value, "x")
+        XCTAssertEqual(sent.domain, ".somethingawful.com")
+        XCTAssertTrue(sent.isSecure)
+        XCTAssertEqual(try XCTUnwrap(sent.expiresDate).timeIntervalSince1970, expires.timeIntervalSince1970, accuracy: 1)
+    }
 }
