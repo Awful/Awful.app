@@ -70,4 +70,20 @@ final class IndexScrapeResultTests: XCTestCase {
         XCTAssertEqual(forumIDs(result), ["1", "3"])
         XCTAssertEqual(result.skippedForumCount, 1)
     }
+
+    /// Without a strategy, `JSONDecoder` counts from 2001 and puts these dates 31 years late.
+    func testDatesAreUnixTime() throws {
+        let result = try IndexScrapeResult(json: Data(index(
+            groups: [],
+            user: #"{"userid": 1, "username": "someone", "joindate": 1164525312, "lastpost": 1164525312}"#
+        ).utf8))
+
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+
+        XCTAssertEqual(result.currentUser.regdate.map(formatter.string(from:)), "2006-11-26 07:15:12")
+        XCTAssertEqual(result.currentUser.lastPostDate.map(formatter.string(from:)), "2006-11-26 07:15:12")
+    }
 }

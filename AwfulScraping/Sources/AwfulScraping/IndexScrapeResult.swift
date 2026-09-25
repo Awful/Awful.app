@@ -5,9 +5,9 @@
 import Foundation
 
 /**
- `index.php?format=json`
+ `index.php?json=1`
 
- Assumes a date decoding strategy of `.awful` (see `AwfulDateDecodingStrategy`).
+ Decode with `init(json:)`, which knows how the dates in here are sent.
  */
 public struct IndexScrapeResult: Decodable, Sendable {
     public let currentUser: ScrapedProfile
@@ -134,6 +134,14 @@ public struct IndexScrapeResult: Decodable, Sendable {
 }
 
 extension IndexScrapeResult {
+    /// Decodes the JSON from `index.php?json=1`.
+    public init(json data: Data) throws {
+        let decoder = JSONDecoder()
+        // Plain Unix time. A `lastpost` checked against a known post confirmed it: an earlier theory that these were counted from 1970 in Chicago time put that post six hours in the future.
+        decoder.dateDecodingStrategy = .secondsSince1970
+        self = try decoder.decode(IndexScrapeResult.self, from: data)
+    }
+
     /// How many forums and groups (counting each skipped subtree once) were too malformed to decode. When this isn't zero, a forum missing from the index might be one of the skipped ones rather than one the site stopped listing.
     public var skippedForumCount: Int {
         allForums.reduce($forums) { $0 + $1.node.$subforums }

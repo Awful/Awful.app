@@ -305,7 +305,7 @@ public final class ForumsClient {
         ])
         let result: IndexScrapeResult
         do {
-            result = try JSONDecoder().decode(IndexScrapeResult.self, from: data)
+            result = try IndexScrapeResult(json: data)
         } catch {
             // We can fail to decode JSON when the server responds with an error as HTML. We may actually be logged in despite the error (e.g. a banned user can "log in" but do basically nothing). However, subsequent launches will crash because we don't actually store the logged-in user's ID. We can avoid the crash by clearing cookies, so we seem logged out.
             removeForumsCookiesPreservingCloudflare()
@@ -340,7 +340,7 @@ public final class ForumsClient {
             throw Error.missingManagedObjectContext
         }
         let (data, _) = try await fetch(method: .get, urlString: "index.php?json=1", parameters: [])
-        let result = try JSONDecoder().decode(IndexScrapeResult.self, from: data)
+        let result = try IndexScrapeResult(json: data)
         try await context.perform {
             try result.upsert(into: context)
             try context.save()
