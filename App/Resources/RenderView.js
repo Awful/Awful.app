@@ -1874,6 +1874,24 @@ if (contact) {
   });
 }
 
+var profileActions = document.getElementById('actions');
+if (profileActions) {
+  profileActions.addEventListener('click', function(event) {
+    var button = event.target.closest('[data-action]');
+    if (!button) { return; }
+
+    if (button.dataset.action === "postHistory") {
+      webkit.messageHandlers.showPostHistory.postMessage({});
+      event.preventDefault();
+    } else if (button.dataset.action === "rapSheet") {
+      webkit.messageHandlers.showRapSheet.postMessage({});
+      event.preventDefault();
+    }
+  });
+  // Without a touch listener, iOS WebKit never applies :active, so the buttons wouldn't highlight when pressed.
+  profileActions.addEventListener('touchstart', function() {}, { passive: true });
+}
+
 
 if (document.body.classList.contains('forum-26')) {
   Awful.fyadFlag.startFetching();

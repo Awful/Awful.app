@@ -1752,6 +1752,18 @@ public final class ForumsClient {
         return (data: data, mimeType: response.mimeType)
     }
 
+    /// Fetches a user's profile picture (`userpic.php`) bytes plus the server-reported MIME type. Like attachments, it's only served to logged-in users.
+    public func fetchProfilePicture(userID: String) async throws -> (data: Data, mimeType: String?) {
+        guard let attachmentSession else { throw Error.missingURLSession }
+
+        guard let pictureURL = URL(string: "userpic.php?userid=\(userID)", relativeTo: baseURL) else {
+            throw Error.invalidBaseURL
+        }
+
+        let (data, response) = try await send(URLRequest(url: pictureURL), using: attachmentSession)
+        return (data: data, mimeType: response.mimeType)
+    }
+
     /// Fetches attachment image data directly by attachment ID.
     public func fetchAttachmentImageByID(attachmentID: String) async throws -> Data {
         guard let attachmentSession else { throw Error.missingURLSession }

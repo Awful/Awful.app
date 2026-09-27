@@ -427,6 +427,11 @@ public final class SearchResultsViewController: ViewController {
     public override func themeDidChange() {
         super.themeDidChange()
         guard isViewLoaded else { return }
+        // Glass bar items take their glyph colour from the light/dark trait rather than `tintColor`.
+        // Inside the tab bar controller that trait is pinned to the theme, but a sheet presented
+        // from the root (e.g. a profile's Post History) inherits the system's, which can leave the
+        // arrows dark-on-dark. Pin it here too, like `PostsPageView`'s toolbar.
+        toolbar.overrideUserInterfaceStyle = theme[string: "mode"] == "light" ? .light : .dark
         toolbar.tintColor = theme["toolbarTextColor"]
         pageNumberView.textColor = theme["toolbarTextColor"] ?? UIColor.systemBlue
         pageNumberView.updateTheme()

@@ -3,6 +3,8 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
+import AwfulRapsheet
+import AwfulSearch
 import AwfulSettings
 import AwfulTheming
 import os
@@ -22,6 +24,8 @@ final class ProfileViewController: ViewController {
         
         renderView.registerMessage(SendPrivateMessage.self)
         renderView.registerMessage(ShowHomepageActions.self)
+        renderView.registerMessage(ShowPostHistory.self)
+        renderView.registerMessage(ShowRapSheet.self)
         
         return renderView
     }()
@@ -48,6 +52,22 @@ final class ProfileViewController: ViewController {
         present(compose.enclosingNavigationController, animated: true)
     }
     
+    /// Searches forum-wide for everything this user has posted, same as the posts page's "All their posts".
+    private func showPostHistory() {
+        guard let username = user.username, !username.isEmpty,
+              let navigationController
+        else { return }
+        SearchFormViewController.push([SearchResultsViewController.immediateSearch(
+            query: "username:\"\(username)\"",
+            handlers: .awful
+        )], onto: navigationController)
+    }
+
+    private func showRapSheet() {
+        let rapSheetVC = RapSheetViewController(user: user, handlers: .awful)
+        navigationController?.pushViewController(rapSheetVC, animated: true)
+    }
+
     private func showActionsForHomepage(_ url: URL, from frame: CGRect) {
         let activity = UIActivityViewController(activityItems: [url], applicationActivities: [SafariActivity(), ChromeActivity(url: url)])
         present(activity, animated: true)
@@ -215,6 +235,22 @@ private struct SendPrivateMessage: RenderViewMessage {
     }
 }
 
+private struct ShowPostHistory: RenderViewMessage {
+    static let messageName = "showPostHistory"
+
+    init?(rawMessage: WKScriptMessage, in renderView: RenderView) {
+        assert(rawMessage.name == ShowPostHistory.messageName)
+    }
+}
+
+private struct ShowRapSheet: RenderViewMessage {
+    static let messageName = "showRapSheet"
+
+    init?(rawMessage: WKScriptMessage, in renderView: RenderView) {
+        assert(rawMessage.name == ShowRapSheet.messageName)
+    }
+}
+
 private struct ShowHomepageActions: RenderViewMessage {
     static let messageName = "showHomepageActions"
     
@@ -283,6 +319,12 @@ extension ProfileViewController: RenderViewDelegate {
         switch message {
         case is SendPrivateMessage:
             sendPrivateMessage()
+
+        case is ShowPostHistory:
+            showPostHistory()
+
+        case is ShowRapSheet:
+            showRapSheet()
             
         case let message as ShowHomepageActions:
             guard let url = URL(string: message.urlString, relativeTo: baseURL) else {
@@ -314,6 +356,16 @@ extension ProfileViewController: RenderViewDelegate {
     }
 }
 
+
+/// `userpic.php` is only served to logged-in users and the web view doesn't have the session cookie, so hand it to `AttachmentSchemeHandler` to fetch.
+private func servableProfilePictureURL(_ url: URL) -> URL {
+    guard let components = URLComponents(url: url, resolvingAgainstBaseURL: true),
+          components.path.hasSuffix("userpic.php"),
+          let userID = components.queryItems?.first(where: { $0.name == "userid" })?.value,
+          let servedURL = AttachmentSchemeHandler.serveURL(profilePictureUserID: userID)
+    else { return url }
+    return servedURL
+}
 
 private struct RenderModel: StencilContextConvertible {
     let aboutMe: String?
@@ -369,7 +421,7 @@ private struct RenderModel: StencilContextConvertible {
         postCount = Int(profile.postCount)
         postRate = profile.postRate
         self.privateMessagesWork = privateMessagesWork
-        profilePictureURL = profile.profilePictureURL
+        profilePictureURL = profile.profilePictureURL.map(servableProfilePictureURL)
         regdate = profile.user.regdate
         regdateRaw = profile.user.regdateRaw
         username = profile.user.username

@@ -10,6 +10,8 @@ import WebKit
 
  `attachment.php` requires the logged-in session cookie, which lives in `HTTPCookieStorage.shared` and never reaches the web view's cookie store, so the web view can't load attachments directly. Register this handler on a `WKWebViewConfiguration` and rewrite attachment `img` sources to `serveURL(attachmentID:)`; WebKit then fetches attachments like any other image: during page parse, concurrently, with no JavaScript involved.
 
+ Profile pictures (`userpic.php?userid=N`) have the same restriction, so they're served here too, at `awful-attachment:///userpic/N` (see `serveURL(profilePictureUserID:)`).
+
  Fetched attachments are kept in a shared in-memory cache and concurrent requests for the same attachment are coalesced, so a re-render (e.g. after a theme change) or a duplicate attachment within one page costs a single network round-trip.
  */
 final class AttachmentSchemeHandler: NSObject, WKURLSchemeHandler {
@@ -23,6 +25,16 @@ final class AttachmentSchemeHandler: NSObject, WKURLSchemeHandler {
         components.path = "/\(attachmentID)"
         return components.url
     }
+
+    /// The URL to use as an `img` src for the given user's profile picture.
+    static func serveURL(profilePictureUserID userID: String) -> URL? {
+        var components = URLComponents()
+        components.scheme = scheme
+        components.path = "/\(profilePicturePathPrefix)\(userID)"
+        return components.url
+    }
+
+    private static let profilePicturePathPrefix = "userpic/"
 
     final class CachedAttachment {
         let data: Data
@@ -50,13 +62,17 @@ final class AttachmentSchemeHandler: NSObject, WKURLSchemeHandler {
         Task { @MainActor in
             do {
                 guard let url = schemeTask.request.url else { throw URLError(.badURL) }
-                let attachmentID = String(url.path.dropFirst())
-                // Digits only, so the authenticated session can only ever be pointed at attachment.php?attachmentid=N.
-                guard !attachmentID.isEmpty, attachmentID.allSatisfy({ $0.isASCII && $0.isNumber }) else {
+                let path = url.path.dropFirst()
+                let isProfilePicture = path.hasPrefix(Self.profilePicturePathPrefix)
+                let id = String(isProfilePicture ? path.dropFirst(Self.profilePicturePathPrefix.count) : path)
+                // Digits only, so the authenticated session can only ever be pointed at attachment.php?attachmentid=N or userpic.php?userid=N.
+                guard !id.isEmpty, id.allSatisfy({ $0.isASCII && $0.isNumber }) else {
                     throw URLError(.badURL)
                 }
 
-                let attachment = try await Self.attachment(id: attachmentID)
+                let attachment = isProfilePicture
+                    ? try await Self.profilePicture(userID: id)
+                    : try await Self.attachment(id: id)
 
                 guard self.liveTasks.remove(key) != nil else { return }
                 let response = HTTPURLResponse(url: url, statusCode: 200, httpVersion: "HTTP/1.1", headerFields: [
@@ -78,11 +94,25 @@ final class AttachmentSchemeHandler: NSObject, WKURLSchemeHandler {
 
     /// Returns the attachment from cache, joining any in-flight fetch, otherwise fetching it via the authenticated session.
     @MainActor static func attachment(id: String) async throws -> CachedAttachment {
+        try await cachedImage(key: id) { try await ForumsClient.shared.fetchAttachment(id: id) }
+    }
+
+    /// Returns the user's profile picture from cache, joining any in-flight fetch, otherwise fetching it via the authenticated session.
+    @MainActor static func profilePicture(userID: String) async throws -> CachedAttachment {
+        try await cachedImage(key: profilePicturePathPrefix + userID) {
+            try await ForumsClient.shared.fetchProfilePicture(userID: userID)
+        }
+    }
+
+    @MainActor private static func cachedImage(
+        key id: String,
+        fetch fetchImage: @escaping () async throws -> (data: Data, mimeType: String?)
+    ) async throws -> CachedAttachment {
         if let cached = cache.object(forKey: id as NSString) { return cached }
         if let inflight = inflight[id] { return try await inflight.value }
 
         let fetch = Task<CachedAttachment, Swift.Error> {
-            let (data, serverMIMEType) = try await ForumsClient.shared.fetchAttachment(id: id)
+            let (data, serverMIMEType) = try await fetchImage()
             // Sniff the actual bytes first: the server may claim application/octet-stream, and an expired session gets an HTML login page instead of an image.
             guard let mimeType = sniffImageMIMEType(data) ?? serverMIMEType.flatMap({ $0.hasPrefix("image/") ? $0 : nil }) else {
                 throw URLError(.cannotDecodeContentData)

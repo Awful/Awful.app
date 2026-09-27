@@ -33,8 +33,13 @@
         <p>{{ aboutMe }}</p>
 
         {% if profilePictureURL %}
-        <img src="{{ profilePictureURL }}" alt="Profile picture" id="profilePicture">
+        <img src="{{ profilePictureURL }}" alt="Profile picture" id="profilePicture" onerror="this.remove()">
         {% endif %}
+
+        <div id="actions">
+            <button type="button" class="rap-sheet" data-action="rapSheet">Rap Sheet</button>
+            <button type="button" class="post-history" data-action="postHistory">Post History</button>
+        </div>
     </section>
 
     <section>

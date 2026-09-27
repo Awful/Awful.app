@@ -315,6 +315,11 @@ public final class RapSheetViewController: ViewController, ContentRefreshable {
         // change, so the title takes the bar's text colour to match.
         navigationItem.updateTitleLabelTextColor(forScrollProgress: 0, theme: theme)
 
+        // Glass bar items take their glyph colour from the light/dark trait rather than `tintColor`.
+        // Inside the tab bar controller that trait is pinned to the theme, but a sheet presented
+        // from the root (e.g. a profile's Post History) inherits the system's, which can leave the
+        // arrows dark-on-dark. Pin it here too, like `PostsPageView`'s toolbar.
+        toolbar.overrideUserInterfaceStyle = theme[string: "mode"] == "light" ? .light : .dark
         toolbar.tintColor = theme["toolbarTextColor"]
         pageNumberView.textColor = theme["toolbarTextColor"] ?? UIColor.systemBlue
         pageNumberView.updateTheme()

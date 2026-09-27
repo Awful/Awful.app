@@ -103,8 +103,17 @@ extension SearchHandlers {
     /// The app's implementation of what the search screens can't do themselves. Opening a post uses
     /// `showDetailViewController` rather than a push: on iPad the posts page belongs in the detail
     /// column, and when collapsed the split view pushes onto the results' stack anyway.
+    ///
+    /// Results reached from a modal (e.g. a profile's "All Their Posts") dismiss and let the router
+    /// place the post, like the modal Rap Sheet does, rather than pushing it inside the modal.
     @MainActor static var awful: SearchHandlers {
         SearchHandlers(openPost: { postID, from in
+            if from.presentingViewController != nil {
+                AppDelegate.instance.open(route: .post(id: postID, .noseen))
+                await from.dismiss(animated: true)
+                return
+            }
+
             let postsVC = await PostLocator.withLocatingOverlay(in: from.view) {
                 try await PostLocator.makePostsPageViewController(
                     postID: postID, updateLastReadPost: false)

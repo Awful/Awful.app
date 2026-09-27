@@ -88,6 +88,51 @@ section > img {
   margin: 1em auto;
 }
 
+/* Rap Sheet and Post History buttons, side by side under the profile. */
+#actions {
+  display: flex;
+  gap: 0.75em;
+  margin: 1em;
+
+  button {
+    flex: 1;
+    padding: 0.8em 0.5em;
+    border: 1px solid;
+    border-radius: 10px;
+    font: inherit;
+    font-weight: bold;
+    -webkit-tap-highlight-color: transparent;
+
+    &:active {
+      opacity: 0.6;
+    }
+  }
+
+  .rap-sheet {
+    color: hsl(0, 55%, 42%);
+    background: hsla(0, 55%, 42%, 0.1);
+    border-color: hsla(0, 55%, 42%, 0.4);
+
+    .dark & {
+      color: hsl(0, 90%, 72%);
+      background: hsla(0, 90%, 72%, 0.12);
+      border-color: hsla(0, 90%, 72%, 0.4);
+    }
+  }
+
+  .post-history {
+    color: hsl(217, 40%, 37%);
+    background: hsla(217, 40%, 37%, 0.1);
+    border-color: hsla(217, 40%, 37%, 0.4);
+
+    .dark & {
+      color: hsl(209, 100%, 72%);
+      background: hsla(209, 100%, 72%, 0.12);
+      border-color: hsla(209, 100%, 72%, 0.4);
+    }
+  }
+}
+
 /* Second section: contact and additional info. */
 
 table {
