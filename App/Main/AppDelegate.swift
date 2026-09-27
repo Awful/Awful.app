@@ -93,6 +93,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         announcementListRefresher = AnnouncementListRefresher(client: ForumsClient.shared, minder: RefreshMinder.sharedMinder)
         inboxRefresher = PrivateMessageInboxRefresher(client: ForumsClient.shared, minder: RefreshMinder.sharedMinder)
         PostsViewExternalStylesheetLoader.shared.refreshIfNecessary()
+        PostsViewExternalStylesheetLoader.platinumIcons.refreshIfNecessary()
         
         do {
             NotificationCenter.default.addObserver(self, selector: #selector(forumSpecificThemeDidChange), name: Theme.themeForForumDidChangeNotification, object: Theme.self)
@@ -202,6 +203,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // Clear external stylesheet cache
         PostsViewExternalStylesheetLoader.shared.clearCache()
+        PostsViewExternalStylesheetLoader.platinumIcons.clearCache()
     }
 
     /// Clears all caches *and* deletes the Core Data store (cached forums, threads, posts).

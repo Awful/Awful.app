@@ -35,6 +35,7 @@
 		1C16FBC01CB950BE00C88BD1 /* ThreadTagButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBBF1CB950BE00C88BD1 /* ThreadTagButton.swift */; };
 		1C16FBC21CB9525B00C88BD1 /* NewThreadFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBC11CB9525B00C88BD1 /* NewThreadFieldView.swift */; };
 		1C16FBD51CBA91ED00C88BD1 /* PostsViewExternalStylesheetLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBD41CBA91ED00C88BD1 /* PostsViewExternalStylesheetLoader.swift */; };
+		06C7F9BC3BCF55D6838324DA /* PlatinumIconStylesheetBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = A428585054EABD2EE84E0CED /* PlatinumIconStylesheetBuilder.swift */; };
 		1C16FBD71CBAA00200C88BD1 /* PostsPageTopBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBD61CBAA00200C88BD1 /* PostsPageTopBar.swift */; };
 		1C16FBE71CBC671A00C88BD1 /* PostRenderModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBE61CBC671A00C88BD1 /* PostRenderModel.swift */; };
 		1C16FBF31CBDC58B00C88BD1 /* URL+OpensInBrowser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBF21CBDC58B00C88BD1 /* URL+OpensInBrowser.swift */; };
@@ -384,6 +385,7 @@
 		1C16FBBF1CB950BE00C88BD1 /* ThreadTagButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadTagButton.swift; sourceTree = "<group>"; };
 		1C16FBC11CB9525B00C88BD1 /* NewThreadFieldView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewThreadFieldView.swift; sourceTree = "<group>"; };
 		1C16FBD41CBA91ED00C88BD1 /* PostsViewExternalStylesheetLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostsViewExternalStylesheetLoader.swift; sourceTree = "<group>"; };
+		A428585054EABD2EE84E0CED /* PlatinumIconStylesheetBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlatinumIconStylesheetBuilder.swift; sourceTree = "<group>"; };
 		1C16FBD61CBAA00200C88BD1 /* PostsPageTopBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostsPageTopBar.swift; sourceTree = "<group>"; };
 		1C16FBE61CBC671A00C88BD1 /* PostRenderModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostRenderModel.swift; sourceTree = "<group>"; };
 		1C16FBF21CBDC58B00C88BD1 /* URL+OpensInBrowser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URL+OpensInBrowser.swift"; sourceTree = "<group>"; };
@@ -1179,6 +1181,7 @@
 				1CA3D6FB2D98A7E100D70964 /* OEmbedFetcher.swift */,
 				331315F1D8261A5D757E8D2D /* OfferedPollToastStore.swift */,
 				1C16FBD41CBA91ED00C88BD1 /* PostsViewExternalStylesheetLoader.swift */,
+				A428585054EABD2EE84E0CED /* PlatinumIconStylesheetBuilder.swift */,
 				1C8A8CF91A3C14DF00E4F6A4 /* ReplyWorkspace.swift */,
 				2D3D26002F85E80100862513 /* NewThreadDraft.swift */,
 			);
@@ -1805,6 +1808,7 @@
 				2D5009F32F9C9FF300887F4B /* LoadMoreCollectionFooter.swift in Sources */,
 				1CE2B76819C2372200FDC33E /* LoginViewController.swift in Sources */,
 				1C16FBD51CBA91ED00C88BD1 /* PostsViewExternalStylesheetLoader.swift in Sources */,
+				06C7F9BC3BCF55D6838324DA /* PlatinumIconStylesheetBuilder.swift in Sources */,
 				2D2E14412F0DE929003411D7 /* MessageFolderManagementViewController.swift in Sources */,
 				2D2E14422F0DE929003411D7 /* MessageFolderPickerView.swift in Sources */,
 				1CB15BFB1A9EC9C800176E73 /* ReportPostViewController.swift in Sources */,

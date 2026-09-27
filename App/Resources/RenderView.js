@@ -1700,6 +1700,17 @@ Awful.setExternalStylesheet = function(stylesheet) {
 
 
 /**
+ Updates the stylesheet for custom platinum icons, which is made from the Forums' own stylesheet.
+ */
+Awful.setPlatinumIconStylesheet = function(stylesheet) {
+  var style = document.getElementById('awful-platinum-icons');
+  if (style) {
+    style.textContent = stylesheet;
+  }
+};
+
+
+/**
  Updates the user-specified font scale setting.
 
  @param {number} percentage - The user's selected font scale as a percentage.

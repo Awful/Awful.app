@@ -220,6 +220,11 @@ header {
   }
 }
 
+// Custom platinum icons that are black (see PlatinumIcons.postsViewStylesheet) follow the grenade: black in light themes, white in dark ones. Themes that tint their grenade override this to match.
+body.dark {
+  --awful-black-icon-filter: invert(100%);
+}
+
 .action-button {
   margin: 0;
   padding: 0.6em;

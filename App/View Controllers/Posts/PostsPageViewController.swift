@@ -756,6 +756,7 @@ final class PostsPageViewController: ViewController {
         var context: [String: Any] = [:]
 
         context["stylesheet"] = theme[string: "postsViewCSS"] as Any
+        context["darkMode"] = theme[string: "mode"] == "dark"
 
         if posts.count > hiddenPosts {
             let subset = posts[hiddenPosts...]
@@ -793,6 +794,7 @@ final class PostsPageViewController: ViewController {
         }
 
         context["externalStylesheet"] = PostsViewExternalStylesheetLoader.shared.stylesheet
+        context["platinumIconStylesheet"] = PostsViewExternalStylesheetLoader.platinumIcons.stylesheet
 
         if !thread.threadID.isEmpty {
             context["threadID"] = thread.threadID
@@ -2680,6 +2682,15 @@ final class PostsPageViewController: ViewController {
         .map { PostsViewExternalStylesheetLoader.DidUpdateNotification($0)! }
         .receive(on: RunLoop.main)
         .sink { [weak self] in self?.postsView.renderView.setExternalStylesheet($0.stylesheet) }
+        .store(in: &cancellables)
+
+        NotificationCenter.default.publisher(
+            for: PostsViewExternalStylesheetLoader.DidUpdateNotification.name,
+            object: PostsViewExternalStylesheetLoader.platinumIcons
+        )
+        .map { PostsViewExternalStylesheetLoader.DidUpdateNotification($0)! }
+        .receive(on: RunLoop.main)
+        .sink { [weak self] in self?.postsView.renderView.setPlatinumIconStylesheet($0.stylesheet) }
         .store(in: &cancellables)
 
         $embedBlueskyPosts

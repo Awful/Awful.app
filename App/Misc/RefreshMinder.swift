@@ -84,11 +84,12 @@ final class RefreshMinder {
         static let externalStylesheet = Refresh(key: "LastExternalStylesheetRefreshDate", interval: 60 * 60)
         static let forumList = Refresh(key: "com.awfulapp.Awful.LastForumRefreshDate", interval: 60 * 60 * 6)
         static let lepersColony = Refresh(key: "com.awfulapp.Awful.LastLepersColonyRefreshDate", interval: 60 * 5)
+        static let platinumIcons = Refresh(key: "LastPlatinumIconsRefreshDate", interval: 60 * 60 * 12)
         static let loggedInUser = Refresh(key: "LastLoggedInUserRefreshDate", interval: 60 * 5)
         static let privateMessagesInbox = Refresh(key: "LastPrivateMessageInboxRefreshDate", interval: 60 * 10)
         
         static var all: [Refresh] {
-            return [.accountFeatures, .announcements, .avatar, .bookmarks, .externalStylesheet, .forumList, .lepersColony, .loggedInUser, .privateMessagesInbox]
+            return [.accountFeatures, .announcements, .avatar, .bookmarks, .externalStylesheet, .forumList, .lepersColony, .loggedInUser, .platinumIcons, .privateMessagesInbox]
         }
     }
     
@@ -99,6 +100,10 @@ final class RefreshMinder {
     
     func didRefresh(_ r: Refresh) {
         userDefaults.set(Date(), forKey: r.key)
+    }
+
+    func forget(_ r: Refresh) {
+        userDefaults.removeObject(forKey: r.key)
     }
     
     func suggestedRefreshDate(_ r: Refresh) -> Date {

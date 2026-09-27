@@ -842,6 +842,25 @@ extension RenderView {
         }
     }
     
+    /// Replaces the CSS for custom platinum icons, which is made from the Forums' own stylesheet.
+    func setPlatinumIconStylesheet(_ css: String) {
+        let escaped: String
+        do {
+            escaped = try escapeForEval(css)
+        } catch {
+            logger.warning("could not JSON-escape the CSS: \(error)")
+            return
+        }
+
+        Task {
+            do {
+                try await webView.eval("if (window.Awful) Awful.setPlatinumIconStylesheet(\(escaped))")
+            } catch {
+                self.mentionError(error, explanation: "could not evaluate setPlatinumIconStylesheet")
+            }
+        }
+    }
+    
     /// Sets the font scale to the specified number of percentage points. e.g. for `font-scale: 50%` you would pass in `50`.
     func setFontScale(_ scale: Double) {
         Task {
@@ -929,6 +948,17 @@ extension RenderView {
                 _ = try await webView.eval("if (window.Awful) Awful.setThemeStylesheet(\(escaped))")
             } catch {
                 self.mentionError(error, explanation: "could not evaluate setThemeStylesheet")
+            }
+        }
+    }
+
+    /// Sets the `dark` class on `<body>`, for styles that depend on the theme's mode rather than the theme itself.
+    func setDarkMode(_ dark: Bool) {
+        Task {
+            do {
+                _ = try await webView.eval("if (window.Awful) Awful.setDarkMode(\(dark))")
+            } catch {
+                self.mentionError(error, explanation: "could not evaluate setDarkMode")
             }
         }
     }

@@ -10,6 +10,10 @@
 {{ stylesheet }}
 </style>
 
+<style id="awful-platinum-icons">
+{{ platinumIconStylesheet }}
+</style>
+
 <style id="awful-external-style">
 {{ externalStylesheet }}
 </style>
@@ -22,6 +26,7 @@
 
 <body
     class="{{ userInterfaceIdiom }}
+           {% if darkMode %} dark {% endif %}
            {% if threadID %} thread-{{ threadID|htmlEscape }} {% endif %}
            {% if forumID %} forum-{{ forumID|htmlEscape }} {% endif %}"
     data-version="{{ version }}"
