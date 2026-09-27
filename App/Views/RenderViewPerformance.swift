@@ -77,9 +77,14 @@ enum PostsPerformance {
     /// Injected at document start so it observes the whole load, including first paint.
     static let probeScript = WKUserScript(source: probeSource, injectionTime: .atDocumentStart, forMainFrameOnly: true)
 
+    /// Launching with `-AwfulPerfProbeFrames NO` as well turns off the probe's frame sampling. Sampling runs a `requestAnimationFrame` loop while scrolling, which makes the web content process do a rendering update every frame, so turn it off to measure that process's CPU without the probe's own cost.
+    private static let samplesFrames = UserDefaults.standard.object(forKey: "AwfulPerfProbeFrames") == nil
+        || UserDefaults.standard.bool(forKey: "AwfulPerfProbeFrames")
+
     private static let probeSource = #"""
     (function() {
       if (window.AwfulPerf) { return; }
+      const sampleFrames = \#(samplesFrames);
 
       function post(type, data) {
         if (data === null) { return; }
@@ -152,43 +157,16 @@ enum PostsPerformance {
           s.maxGap = Math.max(s.maxGap, gap);
         }
         s.last = timestamp;
-        if (s.kind === 'scroll') { trackVisualJumps(s, gap); }
         frameRequest = requestAnimationFrame(tick);
-      }
-      // What the reader sees: the post at the top of the viewport should glide, its speed changing gradually. A frame where the speed changes abruptly is a visible jump, whatever caused it (content resizing, a late scroll anchoring correction). Speed rather than per-frame movement, so a dropped frame (twice the movement over twice the time) doesn't count.
-      function trackVisualJumps(s, gap) {
-        if (!s.anchor || !s.anchor.isConnected) {
-          const hit = document.elementFromPoint(document.documentElement.clientWidth / 2, 1);
-          s.anchor = hit && hit.closest('post');
-          s.anchorDelta = null;
-          if (s.anchor) { s.anchorTop = s.anchor.getBoundingClientRect().top; }
-          return;
-        }
-        const rect = s.anchor.getBoundingClientRect();
-        const delta = rect.top - s.anchorTop;
-        s.anchorTop = rect.top;
-        if (gap <= 0) { return; }
-        const speed = delta / gap;
-        if (s.anchorDelta !== null) {
-          // The change in speed, as pixels per 60Hz frame.
-          const jerk = Math.abs(speed - s.anchorDelta) * (1000 / 60);
-          if (jerk > 20) {
-            s.visualJumps++;
-            s.largestVisualJump = Math.max(s.largestVisualJump, jerk);
-          }
-        }
-        s.anchorDelta = speed;
-        // Switch to the next post once this one has scrolled well out of view.
-        if (rect.bottom < 0 || rect.top > window.innerHeight) { s.anchor = null; }
       }
       function startFrames(kind) {
         if (frameSession) { return; }
         frameSession = {
           kind: kind, begin: performance.now(), startY: window.scrollY, frames: 0, dropped: 0, longFrames: 0, maxGap: 0, last: 0,
-          shifts: { above: 0, straddling: 0, firstRender: 0, growth: 0, px: 0 }, layoutShift: 0,
-          anchor: null, anchorTop: 0, anchorDelta: null, visualJumps: 0, largestVisualJump: 0
+          shifts: { above: 0, straddling: 0, firstRender: 0, growth: 0, px: 0 }, layoutShift: 0
         };
-        frameRequest = requestAnimationFrame(tick);
+        // Without frame sampling the session still collects resizes above the viewport.
+        if (sampleFrames) { frameRequest = requestAnimationFrame(tick); }
       }
       function stopFrames() {
         const s = frameSession;
@@ -205,8 +183,6 @@ enum PostsPerformance {
           maxFrameGapMs: Math.round(s.maxGap),
           // Posts that changed height while above (or across) the top of the viewport, which moves everything below unless scroll anchoring compensates.
           resizesAboveViewport: s.shifts,
-          visualJumps: s.visualJumps,
-          largestVisualJumpPx: Math.round(s.largestVisualJump),
           layoutShiftScore: perf.supported['layout-shift'] ? Math.round(s.layoutShift * 1000) / 1000 : 'unsupported'
         };
       }
@@ -339,10 +315,19 @@ enum PostsPerformance {
         return Math.round((performance.now() - start) * 10) / 10;
       }
 
+      // A full relayout blocks the page (and its GIFs and animations) for tens of milliseconds, so after a scroll it's only timed again once the document has changed, as after an endless scroll insert.
+      let postsAtLastRelayout = -1;
+      function relayoutMsIfChanged(reason) {
+        const posts = document.getElementsByTagName('post').length;
+        if (reason === 'scroll-end' && posts === postsAtLastRelayout) { return null; }
+        postsAtLastRelayout = posts;
+        return relayoutMs();
+      }
+
       perf.report = function(reason) {
         post('snapshot', {
           reason: reason,
-          relayoutMs: relayoutMs(),
+          relayoutMs: relayoutMsIfChanged(reason),
           features: {
             contentVisibility: CSS.supports('content-visibility', 'auto'),
             scrollAnchoring: CSS.supports('overflow-anchor', 'auto'),
@@ -416,7 +401,7 @@ enum PostsPerformance {
 
  - Hitches: display frames the app's main thread delivered late, which stutter the scroll itself.
  - Reversals: frames where the offset moved against the gesture. Usually scroll anchoring correcting for content that changed height above the viewport; visible as jitter if the correction lands a frame after the content moved.
- - Leaps: single frames that moved much further than the frames either side of them (a fling speeding up or slowing down doesn't count).
+ - Leaps: single frames that moved much further than the frames either side of them (a fling speeding up or slowing down doesn't count). Each is classified by where in the gesture it happened, since synthetic touches (as in UI tests) can start and end abruptly: `touchDown` (the first few frames of a drag), `release` (around the finger lifting), `dragging`, `decelerating`, or `resize` (the content size changed that frame, whatever the gesture was doing).
  - Content size changes while scrolling.
 
  Add it to the scroll view's `ScrollViewDelegateMultiplexer`, and keep a strong reference to it (the multiplexer's is weak).
@@ -443,10 +428,32 @@ final class ScrollJankMonitor: NSObject, ScrollViewDelegateExtras {
         var largestReversal: CGFloat = 0
         var leaps = 0
         var largestLeap: CGFloat = 0
+        /// Leap counts and largest leap by where in the gesture they happened; see `leapContext(of:)`.
+        var leapsAt: [String: Int] = [:]
+        var largestLeapAt: [String: CGFloat] = [:]
         /// The previous two frames' movement, to spot a single-frame spike once the frame after it arrives.
         var previousDelta: CGFloat = 0
         var deltaBeforePrevious: CGFloat = 0
+        /// The previous frame's context, since a spike is only recognized a frame later.
+        var previousContext = FrameContext()
+        var dragBeganFrame = 0
+        var dragEndedFrame: Int?
+        var contentSizeChangedThisFrame = false
         var contentSizeChanges = 0
+
+        /// Where in the gesture a frame was. The content resizing and the finger touching down or lifting are checked first, since a leap then is most likely caused by that (synthetic touches start and stop abruptly).
+        func leapContext(of frame: FrameContext) -> String {
+            if frame.contentSizeChanged { return "resize" }
+            if frame.dragging, frame.index - dragBeganFrame <= 3 { return "touchDown" }
+            if let dragEndedFrame, abs(frame.index - dragEndedFrame) <= 2 { return "release" }
+            return frame.dragging ? "dragging" : "decelerating"
+        }
+    }
+
+    private struct FrameContext {
+        var index = 0
+        var dragging = false
+        var contentSizeChanged = false
     }
 
     /// - Parameter label: Names the page in log lines, to match the probe's other output.
@@ -460,7 +467,12 @@ final class ScrollJankMonitor: NSObject, ScrollViewDelegateExtras {
 
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         // A drag that interrupts deceleration continues the same session.
-        guard session == nil else { return }
+        if var s = session {
+            s.dragBeganFrame = s.frames
+            s.dragEndedFrame = nil
+            session = s
+            return
+        }
         self.scrollView = scrollView
         let offset = scrollView.contentOffset.y
         session = Session(begin: CACurrentMediaTime(), startOffset: offset, previousOffset: offset)
@@ -470,6 +482,7 @@ final class ScrollJankMonitor: NSObject, ScrollViewDelegateExtras {
     }
 
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        if let frames = session?.frames { session?.dragEndedFrame = frames }
         if !decelerate { finish() }
     }
 
@@ -480,6 +493,7 @@ final class ScrollJankMonitor: NSObject, ScrollViewDelegateExtras {
     func scrollViewDidChangeContentSize(_ scrollView: UIScrollView) {
         guard session != nil else { return }
         session?.contentSizeChanges += 1
+        session?.contentSizeChangedThisFrame = true
     }
 
     @objc private func tick(_ link: CADisplayLink) {
@@ -497,6 +511,8 @@ final class ScrollJankMonitor: NSObject, ScrollViewDelegateExtras {
         }
         s.previousTargetTimestamp = link.targetTimestamp
 
+        let context = FrameContext(index: s.frames, dragging: scrollView.isDragging, contentSizeChanged: s.contentSizeChangedThisFrame)
+        s.contentSizeChangedThisFrame = false
         let offset = scrollView.contentOffset.y
         let delta = offset - s.previousOffset
         s.previousOffset = offset
@@ -516,10 +532,14 @@ final class ScrollJankMonitor: NSObject, ScrollViewDelegateExtras {
             if spike > 12, spike > abs(s.deltaBeforePrevious) * 3, spike > abs(delta) * 3 {
                 s.leaps += 1
                 s.largestLeap = max(s.largestLeap, spike)
+                let at = s.leapContext(of: s.previousContext)
+                s.leapsAt[at, default: 0] += 1
+                s.largestLeapAt[at] = max(s.largestLeapAt[at] ?? 0, spike)
             }
         }
         s.deltaBeforePrevious = s.previousDelta
         s.previousDelta = delta
+        s.previousContext = context
         session = s
     }
 
@@ -544,6 +564,8 @@ final class ScrollJankMonitor: NSObject, ScrollViewDelegateExtras {
             "largestReversalPx": Int(s.largestReversal),
             "leaps": s.leaps,
             "largestLeapPx": Int(s.largestLeap),
+            "leapsAt": s.leapsAt,
+            "largestLeapPxAt": s.largestLeapAt.mapValues { Int($0) },
             "contentSizeChanges": s.contentSizeChanges,
             "contentHeight": Int(height),
         ]

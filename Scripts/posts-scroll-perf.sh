@@ -1,5 +1,5 @@
 #!/bin/bash
-# posts-scroll-perf.sh [-o dir] [device]
+# posts-scroll-perf.sh [-o dir] [-w slow|medium] [--gifs on|off] [--no-frames] [device]
 #
 # Runs the posts scrolling workout (App/UITests/PostsScrollPerformanceTests.swift)
 # on a simulator while recording the performance probe's output and every app
@@ -8,16 +8,22 @@
 #   ./Scripts/posts-scroll-perf.sh                  # the booted simulator
 #   ./Scripts/posts-scroll-perf.sh <udid>           # a specific simulator
 #   ./Scripts/posts-scroll-perf.sh -o /tmp/scroll   # elsewhere
+#   ./Scripts/posts-scroll-perf.sh -w medium        # just one workout (about half the time)
+#   ./Scripts/posts-scroll-perf.sh --gifs off       # GIF autoplay forced off (or on) for the run
+#   ./Scripts/posts-scroll-perf.sh --no-frames      # no frame sampling in the page, whose
+#                                                   # rAF loop itself costs web content CPU
 #
 # Two workouts run back to back. Each opens page 1 of the GIF thread with
 # endless scroll on, flicks quickly down four pages, then scrolls up two pages
 # and down two again: unhurried ("slow") and twice as fast ("medium").
 # Endless scroll and the probe are switched on through launch arguments for
-# the run only; the simulator's own settings are left alone. It needs a
+# the run only, as is GIF autoplay with --gifs; the simulator's own settings are
+# left alone. It needs a
 # logged-in, booted simulator (the tests skip otherwise).
 #
 # Output, in PostsScrollPerf/<timestamp>/ unless -o is given:
 #   report.md       the per-phase report
+#   run.txt         what was run, for the report's heading
 #   probe.log       the probe's log lines and the test's phase markers
 #   processes.csv   CPU % and memory per process, once a second
 #   test.log        full xcodebuild output
@@ -27,6 +33,9 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 OUT_DIR=""
 DEVICE=""
+WORKOUT=""
+GIFS=""
+FRAMES=YES
 
 # The whole header comment, however long it grows.
 usage() { awk 'NR > 1 && !/^#/ { exit } NR > 1 { sub(/^# ?/, ""); print }' "$0"; }
@@ -34,6 +43,21 @@ usage() { awk 'NR > 1 && !/^#/ { exit } NR > 1 { sub(/^# ?/, ""); print }' "$0";
 while [ $# -gt 0 ]; do
     case "$1" in
         -o|--out)  OUT_DIR="${2:?--out needs a directory}"; shift 2 ;;
+        -w|--workout)
+            case "${2:-}" in
+                slow)   WORKOUT=testSlowScrolling ;;
+                medium) WORKOUT=testMediumScrolling ;;
+                *)      echo "--workout is slow or medium" >&2; exit 1 ;;
+            esac
+            shift 2 ;;
+        --gifs)
+            case "${2:-}" in
+                on)  GIFS=YES ;;
+                off) GIFS=NO ;;
+                *)   echo "--gifs is on or off" >&2; exit 1 ;;
+            esac
+            shift 2 ;;
+        --no-frames) FRAMES=NO; shift ;;
         -h|--help) usage; exit 0 ;;
         -*)        echo "unknown option: $1" >&2; usage >&2; exit 1 ;;
         *)         DEVICE="$1"; shift ;;
@@ -80,7 +104,11 @@ sample_processes() {
 
 cleanup() {
     [ -n "${LOG_PID:-}" ] && kill "$LOG_PID" 2>/dev/null
-    [ -n "${SAMPLER_PID:-}" ] && pkill -P "$SAMPLER_PID" 2>/dev/null && kill "$SAMPLER_PID" 2>/dev/null
+    # Separately: pkill fails when the sampler has no child at that instant, which mustn't spare the sampler.
+    if [ -n "${SAMPLER_PID:-}" ]; then
+        kill "$SAMPLER_PID" 2>/dev/null
+        pkill -P "$SAMPLER_PID" 2>/dev/null
+    fi
 }
 trap cleanup EXIT
 
@@ -88,16 +116,26 @@ echo "recording to $OUT_DIR"
 xcrun simctl spawn "$DEVICE" log stream --level info --style compact \
     --predicate 'category == "PostsPerformance"' > "$OUT_DIR/probe.log" 2>&1 &
 LOG_PID=$!
-sample_processes > "$OUT_DIR/processes.csv" &
+# Its stderr is dropped so that killing it mid-sample doesn't report top being "Terminated".
+sample_processes > "$OUT_DIR/processes.csv" 2>/dev/null &
 SAMPLER_PID=$!
+# Nor this shell reporting either job as "Terminated" when cleanup kills them.
+disown "$LOG_PID" "$SAMPLER_PID"
 
-echo "running the workout (a few minutes)…"
+TEST_ID="AwfulUITests/PostsScrollPerformanceTests${WORKOUT:+/$WORKOUT}"
+echo "running $TEST_ID${GIFS:+ with GIF autoplay $GIFS} (several minutes)…"
+[ -n "$GIFS" ] && export TEST_RUNNER_AWFUL_PERF_AUTOPLAY_GIFS="$GIFS"
+export TEST_RUNNER_AWFUL_PERF_PROBE_FRAMES="$FRAMES"
+{
+    echo "Workouts: ${WORKOUT:-all}; GIF autoplay: ${GIFS:-simulator setting}; page frame sampling: $FRAMES"
+    echo "Commit: $(git -C "$REPO_ROOT" rev-parse --short HEAD)$(git -C "$REPO_ROOT" diff --quiet HEAD || echo ' plus uncommitted changes')"
+} > "$OUT_DIR/run.txt"
 # Parallel testing would run the test on a fresh clone of the simulator, which isn't logged in.
 xcodebuild test \
     -project "$REPO_ROOT/Awful.xcodeproj" -scheme Awful -testPlan UITests \
     -destination "platform=iOS Simulator,id=$DEVICE" \
     -parallel-testing-enabled NO \
-    -only-testing:AwfulUITests/PostsScrollPerformanceTests \
+    -only-testing:"$TEST_ID" \
     > "$OUT_DIR/test.log" 2>&1
 rc=$?
 sleep 2

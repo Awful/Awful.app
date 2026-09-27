@@ -5,7 +5,7 @@ Usage: posts-scroll-perf-report.py <recording dir>
 
 Reads probe.log (the performance probe's log lines plus the UI test's phase markers)
 and processes.csv (CPU and memory per process, once a second), and reports for each
-phase of the workout what the reader would have felt: app hitches, visible jumps,
+phase of the workout what the reader would have felt: app hitches, leaps,
 dropped frames, content resizing above the viewport, endless-scroll inserts, and
 CPU and memory.
 """
@@ -15,7 +15,7 @@ import json
 import os
 import re
 import sys
-from collections import defaultdict
+from collections import Counter, defaultdict
 
 LINE = re.compile(r'^\S+ (\d\d:\d\d:\d\d\.\d+) \S+\s+\S+ \[[^\]]*\] (.*)$')
 PHASE = re.compile(r'\[ui-test\] phase (\S+) (start|end)')
@@ -23,6 +23,8 @@ NATIVE = re.compile(r'native scroll (\{.*\})')
 JS = re.compile(r' js (\{.*)$')
 CHUNK = re.compile(r'\[t\d+ append (\d+) posts (\d+)-(\d+)\] \+(\d+)ms (built and rendered|appended to document)')
 FETCH = re.compile(r'\[t\d+ append (\d+)\] \+(\d+)ms fetched and scraped')
+# Where in a gesture the app's scroll monitor saw each leap, in report order.
+LEAP_MOMENTS = ('touchDown', 'dragging', 'release', 'decelerating', 'resize')
 
 
 def load_lines(path):
@@ -62,7 +64,8 @@ def field(text, name):
 
 def summarize(lines, start, end):
     s = defaultdict(float)
-    s['worst_hitch'] = s['worst_gap'] = s['largest_jump'] = s['largest_leap'] = 0
+    s['worst_hitch'] = s['worst_gap'] = s['largest_leap'] = 0
+    s['leaps_at'], s['largest_leap_at'] = Counter(), Counter()
     chunk_starts, insert_times, fetch_times = {}, [], []
     for t, msg in lines:
         if not (start <= t <= end):
@@ -78,14 +81,15 @@ def summarize(lines, start, end):
             s['reversal_px'] += r['reversalPx']
             s['leaps'] += r['leaps']
             s['largest_leap'] = max(s['largest_leap'], r['largestLeapPx'])
+            s['leaps_at'].update(r.get('leapsAt', {}))
+            for at, px in r.get('largestLeapPxAt', {}).items():
+                s['largest_leap_at'][at] = max(s['largest_leap_at'][at], px)
         elif (m := JS.search(msg)) and '"kind":"scroll"' in msg and '"type":"frames"' in msg:
             text = m.group(1)
             s['frames'] += field(text, 'frames') or 0
             s['dropped'] += field(text, 'droppedFrames') or 0
             s['long_frames'] += field(text, 'longFrames') or 0
             s['worst_gap'] = max(s['worst_gap'], field(text, 'maxFrameGapMs') or 0)
-            s['jumps'] += field(text, 'visualJumps') or 0
-            s['largest_jump'] = max(s['largest_jump'], field(text, 'largestVisualJumpPx') or 0)
             resizes = field(text, 'resizesAboveViewport') or {}
             s['first_draws'] += resizes.get('firstRender', 0)
             s['growths'] += resizes.get('growth', 0)
@@ -159,11 +163,16 @@ def main():
         ('Hitches (worst)', [f"{s['hitches']:.0f} ({s['worst_hitch']:.0f}ms)" for s in stats]),
         ('Offset reversals', [f"{s['reversals']:.0f} ({s['reversal_px']:.0f}px)" for s in stats]),
         ('Leaps (largest)', [f"{s['leaps']:.0f} ({s['largest_leap']:.0f}px)" for s in stats]),
+    ]
+    rows += [
+        (f'&nbsp;&nbsp;{at}', [f"{s['leaps_at'][at]} ({s['largest_leap_at'][at]}px)" if s['leaps_at'][at] else '0' for s in stats])
+        for at in LEAP_MOMENTS
+    ]
+    rows += [
         ('**Page (web content)**', ['' for _ in phases]),
-        ('Visible jumps (largest)', [f"{s['jumps']:.0f} ({s['largest_jump']:.0f}px)" for s in stats]),
         ('Resizes above viewport: first draw / growth', [f"{s['first_draws']:.0f} / {s['growths']:.0f} ({s['resize_px']:.0f}px)" for s in stats]),
         ('Frames, dropped', [f"{s['frames']:.0f}, {s['dropped']:.0f} ({s['dropped'] / s['frames'] * 100:.1f}%)" if s['frames'] else '-' for s in stats]),
-        ('Long frames (worst gap)', [f"{s['long_frames']:.0f} ({s['worst_gap']:.0f}ms)" for s in stats]),
+        ('Long frames (worst gap)', [f"{s['long_frames']:.0f} ({s['worst_gap']:.0f}ms)" if s['frames'] else '-' for s in stats]),
         ('**Endless scroll**', ['' for _ in phases]),
         ('Pages fetched (avg fetch)', [f"{s['fetches']} ({s['avg_fetch']:.0f}ms)" if s['fetches'] else '0' for s in stats]),
         ('Chunks inserted (worst insert)', [f"{s['inserts']} ({s['worst_insert']}ms)" if s['inserts'] else '0' for s in stats]),
@@ -173,6 +182,10 @@ def main():
         rows.append((name, [f"{p[name][0]:.1f}% / {p[name][1]:.0f}%, {p[name][2]}" if name in p else '-' for p in procs]))
 
     print('# Posts scroll performance\n')
+    run = os.path.join(rec, 'run.txt')
+    if os.path.exists(run):
+        with open(run) as f:
+            print(''.join(f'{line.rstrip()}  \n' for line in f))
     print('| | ' + ' | '.join(name for name, _, _ in phases) + ' |')
     print('|---|' + '---|' * len(phases))
     for label, values in rows:
@@ -181,6 +194,10 @@ def main():
     # The page as it stood at the end.
     last = next((msg for _, msg in reversed(lines) if '"reason":' in msg), None)
     if last:
+        # Only timed when the document has changed since, so take the latest timing.
+        relayout = next((field(msg, 'relayoutMs') for _, msg in reversed(lines) if field(msg, 'relayoutMs') is not None), None)
+        if relayout is not None:
+            last = re.sub(r'"relayoutMs":null', f'"relayoutMs":{relayout}', last)
         print('\n**Document at the end:** ' + ', '.join(
             f'{label} {field(last, key)}' for label, key in (
                 ('posts', 'posts'), ('height', 'docHeight'), ('DOM nodes', 'domNodes'),

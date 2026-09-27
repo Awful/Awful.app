@@ -49,6 +49,14 @@ final class PostsScrollPerformanceTests: XCTestCase {
             "-AwfulPerfProbe", "YES",
             "-endless_scroll_posts", "<true/>",
         ]
+        // Set by posts-scroll-perf.sh's --gifs option (passed through xcodebuild as TEST_RUNNER_AWFUL_PERF_AUTOPLAY_GIFS) to compare runs with and without animated GIFs. Otherwise the simulator's own setting applies.
+        if let autoplay = ProcessInfo.processInfo.environment["AWFUL_PERF_AUTOPLAY_GIFS"] {
+            app.launchArguments += ["-autoplay_gifs", autoplay == "YES" ? "<true/>" : "<false/>"]
+        }
+        // Set by posts-scroll-perf.sh's --no-frames option, to measure the web content process without the probe's frame sampling.
+        if ProcessInfo.processInfo.environment["AWFUL_PERF_PROBE_FRAMES"] == "NO" {
+            app.launchArguments += ["-AwfulPerfProbeFrames", "NO"]
+        }
         Self.topPage = 1
         observeTopPage()
     }
