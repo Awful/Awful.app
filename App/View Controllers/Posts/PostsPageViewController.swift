@@ -3226,17 +3226,9 @@ extension PostsPageViewController: RenderViewDelegate {
                 eagerImagesSettledForTrace = true
                 performanceTrace?.mark("eager images settled (\(message.loaded)/\(message.total))")
             }
-            if message.total == 0 {
-                // No images to load; dismiss (respecting any embed hold).
+            // Dismiss loading view when there are no images or all images are done (respecting any embed hold).
+            if message.total == 0 || message.complete {
                 dismissLoadingViewAfterRender()
-            } else {
-                let statusText = "Downloading images: \(message.loaded)/\(message.total)"
-                postsView.loadingView?.updateStatus(statusText)
-
-                // Dismiss loading view when all images are done (respecting any embed hold).
-                if message.complete {
-                    dismissLoadingViewAfterRender()
-                }
             }
 
         case is FYADFlagRequest:

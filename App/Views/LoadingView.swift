@@ -9,10 +9,10 @@ import Lottie
 
 /// Configuration for LoadingView behavior
 enum LoadingViewConfiguration {
-    /// Shows status text and exit button after delay (for thread pages)
+    /// Shows an exit button after a delay (for thread pages)
     case showStatusElements
 
-    /// Never shows status text or exit button (for previews and messages)
+    /// Never shows the exit button (for previews and messages)
     case hideStatusElements
 }
 
@@ -21,9 +21,8 @@ class LoadingView: UIView {
 
     // MARK: - Constants
 
-    /// Duration in seconds before showing the exit button and status messages.
-    /// 3 seconds gives users time to see loading begin while preventing accidental early dismissal.
-    fileprivate static let statusElementsVisibilityDelay: TimeInterval = 3.0
+    /// Duration in seconds before showing the exit button, so it only appears when loading is taking unusually long.
+    fileprivate static let exitButtonVisibilityDelay: TimeInterval = 10.0
 
     // MARK: - Properties
 
@@ -59,10 +58,6 @@ class LoadingView: UIView {
 
     var onDismiss: (() -> Void)?
 
-    func updateStatus(_ text: String) {
-        // Override in subclasses
-    }
-
     fileprivate func retheme() {
         // nop
     }
@@ -78,7 +73,6 @@ class LoadingView: UIView {
 private class DefaultLoadingView: LoadingView {
 
     private let animationView: LottieAnimationView
-    private let statusLabel: UILabel
     private let showNowButton: UIButton
     private var visibilityTimer: Timer?
 
@@ -87,7 +81,6 @@ private class DefaultLoadingView: LoadingView {
             animation: LottieAnimation.named("mainthrobber60"),
             configuration: LottieConfiguration(renderingEngine: .mainThread))
 
-        statusLabel = UILabel()
         showNowButton = UIButton(type: .system)
 
         super.init(theme: theme, configuration: configuration)
@@ -99,14 +92,6 @@ private class DefaultLoadingView: LoadingView {
         animationView.isOpaque = true
         animationView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(animationView)
-
-        // Setup status label
-        statusLabel.text = "Loading..."
-        statusLabel.font = .preferredFont(forTextStyle: .subheadline)
-        statusLabel.textAlignment = .center
-        statusLabel.translatesAutoresizingMaskIntoConstraints = false
-        statusLabel.alpha = 0 // Initially hidden
-        addSubview(statusLabel)
 
         // Setup Show Now button as X in circle icon
         let xCircleImage = UIImage(systemName: "xmark.circle.fill")
@@ -120,21 +105,14 @@ private class DefaultLoadingView: LoadingView {
 
         // Layout constraints
         NSLayoutConstraint.activate([
-            // Animation centered, shifted up
+            // Animation centered
             animationView.widthAnchor.constraint(equalToConstant: 90),
             animationView.heightAnchor.constraint(equalToConstant: 90),
             animationView.centerXAnchor.constraint(equalTo: centerXAnchor),
-            // Center animation slightly above true center for better visual balance with status text below
-            animationView.centerYAnchor.constraint(equalTo: centerYAnchor, constant: -40),
+            animationView.centerYAnchor.constraint(equalTo: centerYAnchor),
 
-            // Status label below animation
-            statusLabel.topAnchor.constraint(equalTo: animationView.bottomAnchor, constant: 16),
-            statusLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
-            statusLabel.leadingAnchor.constraint(greaterThanOrEqualTo: leadingAnchor, constant: 20),
-            trailingAnchor.constraint(greaterThanOrEqualTo: statusLabel.trailingAnchor, constant: 20),
-
-            // Button below status (X icon)
-            showNowButton.topAnchor.constraint(equalTo: statusLabel.bottomAnchor, constant: 16),
+            // Button below animation (X icon)
+            showNowButton.topAnchor.constraint(equalTo: animationView.bottomAnchor, constant: 16),
             showNowButton.centerXAnchor.constraint(equalTo: centerXAnchor),
             showNowButton.widthAnchor.constraint(equalToConstant: 32),
             showNowButton.heightAnchor.constraint(equalToConstant: 32)
@@ -151,10 +129,6 @@ private class DefaultLoadingView: LoadingView {
 
     @objc private func showNowTapped() {
         onDismiss?()
-    }
-
-    override func updateStatus(_ text: String) {
-        statusLabel.text = text
     }
 
     deinit {
@@ -176,25 +150,20 @@ private class DefaultLoadingView: LoadingView {
             )
             showNowButton.tintColor = tintColor
         }
-
-        // Apply text color to status label
-        if let textColor = theme?[uicolor: "listTextColor"] {
-            statusLabel.textColor = textColor
-        }
     }
     
     fileprivate override func willMove(toSuperview newSuperview: UIView?) {
         super.willMove(toSuperview: newSuperview)
 
         if newSuperview != nil {
-            // Only start timer if configuration allows status elements
+            // Only start timer if configuration allows the exit button
             guard configuration == .showStatusElements else { return }
 
             // Invalidate any existing timer first to prevent race conditions
             visibilityTimer?.invalidate()
-            // Start timer to show status and button after delay
-            visibilityTimer = Timer.scheduledTimer(withTimeInterval: LoadingView.statusElementsVisibilityDelay, repeats: false) { [weak self] _ in
-                self?.showStatusElements()
+            // Start timer to show the exit button after delay
+            visibilityTimer = Timer.scheduledTimer(withTimeInterval: LoadingView.exitButtonVisibilityDelay, repeats: false) { [weak self] _ in
+                self?.showExitButton()
             }
         } else {
             // Clean up timer when view is removed
@@ -203,14 +172,13 @@ private class DefaultLoadingView: LoadingView {
         }
     }
 
-    private func showStatusElements() {
+    private func showExitButton() {
         // Check that view is still in hierarchy before animating (prevents race condition)
         guard superview != nil else { return }
 
         UIView.animate(withDuration: 0.3) { [weak self] in
             // Double-check during animation block
             guard self?.superview != nil else { return }
-            self?.statusLabel.alpha = 1.0
             self?.showNowButton.alpha = 1.0
         }
     }
