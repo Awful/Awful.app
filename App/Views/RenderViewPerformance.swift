@@ -4,6 +4,8 @@
 
 import Foundation
 import os
+import ScrollViewDelegateMultiplexer
+import UIKit
 import WebKit
 
 /**
@@ -62,6 +64,16 @@ enum PostsPerformance {
     #if DEBUG
     static let reportMessageName = "perfReport"
 
+    /// Posted as a Darwin notification, with the page number appended, whenever the probe reports a different page at the top of the viewport (0 for the page first loaded). Lets a UI test follow along without snapshotting the web view's accessibility tree.
+    static let topPageNotificationPrefix = "com.awfulapp.Awful.perf.topPage."
+
+    static func announceTopPage(_ page: Int) {
+        CFNotificationCenterPostNotification(
+            CFNotificationCenterGetDarwinNotifyCenter(),
+            CFNotificationName("\(topPageNotificationPrefix)\(page)" as CFString),
+            nil, nil, true)
+    }
+
     /// Injected at document start so it observes the whole load, including first paint.
     static let probeScript = WKUserScript(source: probeSource, injectionTime: .atDocumentStart, forMainFrameOnly: true)
 
@@ -113,6 +125,11 @@ enum PostsPerformance {
           perf.longTasks.max = Math.max(perf.longTasks.max, e.duration);
         });
       });
+      observe('layout-shift', function(entries) {
+        entries.forEach(function(e) {
+          if (frameSession && !e.hadRecentInput) { frameSession.layoutShift += e.value; }
+        });
+      });
       perf.slowEvents = [];
       observe('event', function(entries) {
         entries.forEach(function(e) {
@@ -127,19 +144,50 @@ enum PostsPerformance {
       function tick(timestamp) {
         const s = frameSession;
         if (!s) { return; }
+        const gap = s.last ? timestamp - s.last : 0;
         if (s.last) {
-          const gap = timestamp - s.last;
           s.frames++;
           if (gap > 20) { s.dropped += Math.max(0, Math.round(gap / (1000 / 60)) - 1); }
           if (gap > 50) { s.longFrames++; }
           s.maxGap = Math.max(s.maxGap, gap);
         }
         s.last = timestamp;
+        if (s.kind === 'scroll') { trackVisualJumps(s, gap); }
         frameRequest = requestAnimationFrame(tick);
+      }
+      // What the reader sees: the post at the top of the viewport should glide, its speed changing gradually. A frame where the speed changes abruptly is a visible jump, whatever caused it (content resizing, a late scroll anchoring correction). Speed rather than per-frame movement, so a dropped frame (twice the movement over twice the time) doesn't count.
+      function trackVisualJumps(s, gap) {
+        if (!s.anchor || !s.anchor.isConnected) {
+          const hit = document.elementFromPoint(document.documentElement.clientWidth / 2, 1);
+          s.anchor = hit && hit.closest('post');
+          s.anchorDelta = null;
+          if (s.anchor) { s.anchorTop = s.anchor.getBoundingClientRect().top; }
+          return;
+        }
+        const rect = s.anchor.getBoundingClientRect();
+        const delta = rect.top - s.anchorTop;
+        s.anchorTop = rect.top;
+        if (gap <= 0) { return; }
+        const speed = delta / gap;
+        if (s.anchorDelta !== null) {
+          // The change in speed, as pixels per 60Hz frame.
+          const jerk = Math.abs(speed - s.anchorDelta) * (1000 / 60);
+          if (jerk > 20) {
+            s.visualJumps++;
+            s.largestVisualJump = Math.max(s.largestVisualJump, jerk);
+          }
+        }
+        s.anchorDelta = speed;
+        // Switch to the next post once this one has scrolled well out of view.
+        if (rect.bottom < 0 || rect.top > window.innerHeight) { s.anchor = null; }
       }
       function startFrames(kind) {
         if (frameSession) { return; }
-        frameSession = { kind: kind, begin: performance.now(), startY: window.scrollY, frames: 0, dropped: 0, longFrames: 0, maxGap: 0, last: 0 };
+        frameSession = {
+          kind: kind, begin: performance.now(), startY: window.scrollY, frames: 0, dropped: 0, longFrames: 0, maxGap: 0, last: 0,
+          shifts: { above: 0, straddling: 0, firstRender: 0, growth: 0, px: 0 }, layoutShift: 0,
+          anchor: null, anchorTop: 0, anchorDelta: null, visualJumps: 0, largestVisualJump: 0
+        };
         frameRequest = requestAnimationFrame(tick);
       }
       function stopFrames() {
@@ -154,9 +202,43 @@ enum PostsPerformance {
           frames: s.frames,
           droppedFrames: s.dropped,
           longFrames: s.longFrames,
-          maxFrameGapMs: Math.round(s.maxGap)
+          maxFrameGapMs: Math.round(s.maxGap),
+          // Posts that changed height while above (or across) the top of the viewport, which moves everything below unless scroll anchoring compensates.
+          resizesAboveViewport: s.shifts,
+          visualJumps: s.visualJumps,
+          largestVisualJumpPx: Math.round(s.largestVisualJump),
+          layoutShiftScore: perf.supported['layout-shift'] ? Math.round(s.layoutShift * 1000) / 1000 : 'unsupported'
         };
       }
+
+      // Watches post heights so a scroll session can report resizes that happen out of sight above the viewport: a post drawn for the first time by `content-visibility` (leaving its placeholder height), or growing as images and embeds load.
+      const postHeights = new WeakMap();
+      const postResizeObserver = new ResizeObserver(function(entries) {
+        const placeholderHeight = parseFloat((getComputedStyle(entries[0].target).containIntrinsicHeight || '').replace('auto', ''));
+        entries.forEach(function(entry) {
+          const height = entry.borderBoxSize && entry.borderBoxSize[0] ? entry.borderBoxSize[0].blockSize : entry.target.getBoundingClientRect().height;
+          const previous = postHeights.get(entry.target);
+          postHeights.set(entry.target, height);
+          const s = frameSession;
+          if (previous === undefined || !s || s.kind !== 'scroll' || Math.abs(height - previous) < 1) { return; }
+          const rect = entry.target.getBoundingClientRect();
+          if (rect.top >= 0) { return; }
+          if (rect.bottom <= 0) { s.shifts.above++; } else { s.shifts.straddling++; }
+          if (Math.abs(previous - placeholderHeight) < 1) { s.shifts.firstRender++; } else { s.shifts.growth++; }
+          s.shifts.px += Math.round(Math.abs(height - previous));
+        });
+      });
+      function observePosts(root) {
+        (root.matches && root.matches('post') ? [root] : Array.from(root.querySelectorAll ? root.querySelectorAll('post') : []))
+          .forEach(function(post) { postResizeObserver.observe(post); });
+      }
+      document.addEventListener('DOMContentLoaded', function() {
+        observePosts(document);
+        // Endless scroll appends posts later.
+        new MutationObserver(function(mutations) {
+          mutations.forEach(function(m) { m.addedNodes.forEach(observePosts); });
+        }).observe(document.body, { childList: true, subtree: true });
+      });
 
       function hostOf(url) {
         try { return new URL(url).host || url.split(':')[0]; } catch (e) { return '?'; }
@@ -187,9 +269,16 @@ enum PostsPerformance {
           const host = hostOf(f.src);
           iframeHosts[host] = (iframeHosts[host] || 0) + 1;
         });
+        const posts = Array.from(document.querySelectorAll('post'));
+        // Posts that `content-visibility: auto` hasn't rendered yet still sit at their placeholder height. (WebKit ignores checkVisibility's contentVisibilityAuto option, so it can't tell us.)
+        const placeholderHeight = posts.length ? parseFloat((getComputedStyle(posts[0]).containIntrinsicHeight || '').replace('auto', '')) : NaN;
+        const unrenderedPosts = isNaN(placeholderHeight) ? null
+          : posts.filter(function(p) { return Math.abs(p.getBoundingClientRect().height - placeholderHeight) < 1; }).length;
         return {
           domNodes: document.getElementsByTagName('*').length,
-          posts: document.querySelectorAll('post').length,
+          posts: posts.length,
+          unrenderedPosts: unrenderedPosts,
+          pageDividers: Array.from(document.querySelectorAll('.endless-page-divider')).map(function(d) { return d.textContent.trim(); }),
           docHeight: document.documentElement.scrollHeight,
           images: { total: imgs.length, lazy: lazy, complete: complete, broken: broken, pending: imgs.length - complete - broken, gifs: gifs },
           estDecodedImageMB: Math.round(decodedBytes / 10485.76) / 100,
@@ -237,9 +326,28 @@ enum PostsPerformance {
         };
       }
 
+      // Times a full relayout (as after a font size change or rotation) by nudging the body's width and back.
+      function relayoutMs() {
+        const body = document.body;
+        if (!body) { return null; }
+        const width = body.style.width;
+        const start = performance.now();
+        body.style.width = (document.documentElement.clientWidth - 1) + 'px';
+        void body.offsetHeight;
+        body.style.width = width;
+        void body.offsetHeight;
+        return Math.round((performance.now() - start) * 10) / 10;
+      }
+
       perf.report = function(reason) {
         post('snapshot', {
           reason: reason,
+          relayoutMs: relayoutMs(),
+          features: {
+            contentVisibility: CSS.supports('content-visibility', 'auto'),
+            scrollAnchoring: CSS.supports('overflow-anchor', 'auto'),
+            lazyIframes: 'loading' in HTMLIFrameElement.prototype
+          },
           navigation: navigation(),
           lcp: perf.lcp || null,
           longTasks: perf.supported.longtask ? perf.longTasks : 'unsupported',
@@ -263,6 +371,22 @@ enum PostsPerformance {
         }, 5000);
       });
 
+      // Which page's posts are at the top of the viewport: the last endless-scroll divider scrolled past, or 0 for the page first loaded. Reported when it changes, so an automated test can tell how far it has scrolled.
+      let lastTopPage = null;
+      let lastTopPageCheck = 0;
+      function reportTopPage() {
+        let page = 0;
+        for (const divider of document.querySelectorAll('.endless-page-divider')) {
+          if (divider.getBoundingClientRect().top > 0) { break; }
+          const match = /Page (\d+)/.exec(divider.textContent);
+          if (match) { page = parseInt(match[1], 10); }
+        }
+        if (page !== lastTopPage) {
+          lastTopPage = page;
+          post('position', { topPage: page });
+        }
+      }
+
       let scrollEndTimer = 0;
       window.addEventListener('scroll', function() {
         // Flush long sessions too, since momentum from repeated flicks can keep one going until the page is replaced.
@@ -270,8 +394,13 @@ enum PostsPerformance {
           post('frames', stopFrames());
         }
         startFrames('scroll');
+        if (performance.now() - lastTopPageCheck > 200) {
+          lastTopPageCheck = performance.now();
+          reportTopPage();
+        }
         clearTimeout(scrollEndTimer);
         scrollEndTimer = setTimeout(function() {
+          reportTopPage();
           post('frames', stopFrames());
           perf.report('scroll-end');
         }, 1000);
@@ -280,3 +409,147 @@ enum PostsPerformance {
     """#
     #endif
 }
+
+#if DEBUG
+/**
+ Logs how smoothly a scroll view moved during each scroll gesture (the drag plus any deceleration), for the probe. Per gesture it reports:
+
+ - Hitches: display frames the app's main thread delivered late, which stutter the scroll itself.
+ - Reversals: frames where the offset moved against the gesture. Usually scroll anchoring correcting for content that changed height above the viewport; visible as jitter if the correction lands a frame after the content moved.
+ - Leaps: single frames that moved much further than the frames either side of them (a fling speeding up or slowing down doesn't count).
+ - Content size changes while scrolling.
+
+ Add it to the scroll view's `ScrollViewDelegateMultiplexer`, and keep a strong reference to it (the multiplexer's is weak).
+ */
+final class ScrollJankMonitor: NSObject, ScrollViewDelegateExtras {
+    private let label: () -> String
+    private var displayLink: CADisplayLink?
+    private weak var scrollView: UIScrollView?
+    private var session: Session?
+
+    private struct Session {
+        let begin: CFTimeInterval
+        let startOffset: CGFloat
+        var frames = 0
+        var hitches = 0
+        var hitchTime: CFTimeInterval = 0
+        var worstHitch: CFTimeInterval = 0
+        var previousTargetTimestamp: CFTimeInterval = 0
+        var previousOffset: CGFloat
+        /// +1 scrolling down the page, -1 up, 0 until the gesture has moved far enough to tell.
+        var direction: CGFloat = 0
+        var reversals = 0
+        var reversalDistance: CGFloat = 0
+        var largestReversal: CGFloat = 0
+        var leaps = 0
+        var largestLeap: CGFloat = 0
+        /// The previous two frames' movement, to spot a single-frame spike once the frame after it arrives.
+        var previousDelta: CGFloat = 0
+        var deltaBeforePrevious: CGFloat = 0
+        var contentSizeChanges = 0
+    }
+
+    /// - Parameter label: Names the page in log lines, to match the probe's other output.
+    init(label: @escaping () -> String) {
+        self.label = label
+    }
+
+    deinit {
+        displayLink?.invalidate()
+    }
+
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        // A drag that interrupts deceleration continues the same session.
+        guard session == nil else { return }
+        self.scrollView = scrollView
+        let offset = scrollView.contentOffset.y
+        session = Session(begin: CACurrentMediaTime(), startOffset: offset, previousOffset: offset)
+        let link = CADisplayLink(target: self, selector: #selector(tick))
+        link.add(to: .main, forMode: .common)
+        displayLink = link
+    }
+
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        if !decelerate { finish() }
+    }
+
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        finish()
+    }
+
+    func scrollViewDidChangeContentSize(_ scrollView: UIScrollView) {
+        guard session != nil else { return }
+        session?.contentSizeChanges += 1
+    }
+
+    @objc private func tick(_ link: CADisplayLink) {
+        guard var s = session, let scrollView else { return }
+        let frameDuration = link.targetTimestamp - link.timestamp
+        if s.previousTargetTimestamp > 0 {
+            s.frames += 1
+            // Late by more than half a frame counts as a hitch (as in Instruments' hitch detection).
+            let lateness = link.timestamp - s.previousTargetTimestamp
+            if lateness > frameDuration / 2 {
+                s.hitches += 1
+                s.hitchTime += lateness
+                s.worstHitch = max(s.worstHitch, lateness)
+            }
+        }
+        s.previousTargetTimestamp = link.targetTimestamp
+
+        let offset = scrollView.contentOffset.y
+        let delta = offset - s.previousOffset
+        s.previousOffset = offset
+        if s.direction == 0, abs(offset - s.startOffset) > 4 {
+            s.direction = offset > s.startOffset ? 1 : -1
+        }
+        // Rubber-banding past either end reverses the offset by design, so skip it.
+        let minOffset = -scrollView.adjustedContentInset.top
+        let maxOffset = max(minOffset, scrollView.contentSize.height + scrollView.adjustedContentInset.bottom - scrollView.bounds.height)
+        if offset >= minOffset, offset <= maxOffset {
+            if s.direction != 0, delta * s.direction < -0.5 {
+                s.reversals += 1
+                s.reversalDistance += abs(delta)
+                s.largestReversal = max(s.largestReversal, abs(delta))
+            }
+            let spike = abs(s.previousDelta)
+            if spike > 12, spike > abs(s.deltaBeforePrevious) * 3, spike > abs(delta) * 3 {
+                s.leaps += 1
+                s.largestLeap = max(s.largestLeap, spike)
+            }
+        }
+        s.deltaBeforePrevious = s.previousDelta
+        s.previousDelta = delta
+        session = s
+    }
+
+    private func finish() {
+        displayLink?.invalidate()
+        displayLink = nil
+        guard let s = session else { return }
+        session = nil
+        let duration = CACurrentMediaTime() - s.begin
+        let height = scrollView?.contentSize.height ?? 0
+        let report: [String: Any] = [
+            "durationMs": Int(duration * 1000),
+            "distance": Int((scrollView?.contentOffset.y ?? s.startOffset) - s.startOffset),
+            "frames": s.frames,
+            "hitches": s.hitches,
+            "hitchTimeMs": Int(s.hitchTime * 1000),
+            // Apple's hitch ratio: under 5 ms/s is good, over 10 ms/s is noticeable.
+            "hitchRatioMsPerS": duration > 0 ? (s.hitchTime * 1000 / duration * 10).rounded() / 10 : 0,
+            "worstHitchMs": Int(s.worstHitch * 1000),
+            "reversals": s.reversals,
+            "reversalPx": Int(s.reversalDistance),
+            "largestReversalPx": Int(s.largestReversal),
+            "leaps": s.leaps,
+            "largestLeapPx": Int(s.largestLeap),
+            "contentSizeChanges": s.contentSizeChanges,
+            "contentHeight": Int(height),
+        ]
+        let json = (try? JSONSerialization.data(withJSONObject: report, options: [.sortedKeys]))
+            .flatMap { String(data: $0, encoding: .utf8) } ?? "\(report)"
+        PostsPerformance.logger.info("[\(self.label(), privacy: .public)] native scroll \(json, privacy: .public)")
+    }
+}
+#endif

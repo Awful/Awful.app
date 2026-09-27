@@ -10,8 +10,8 @@ extension HTMLDocument {
 
     // MARK: - Constants
 
-    /// Number of post images to load immediately before deferring to lazy loading.
-    private static let immediatelyLoadedImageCount = 10
+    /// Number of post content images per page to load immediately before deferring to lazy loading.
+    static let immediatelyLoadedImageCount = 10
 
     // MARK: - HTML Processing Methods
 
@@ -150,8 +150,14 @@ extension HTMLDocument {
      - Defers loading of post content images beyond the first 10 (lazy loading).
      */
     func processImgTags(shouldLinkifyNonSmilies: Bool) {
-        var postContentImageCount = 0
+        var eagerImageAllowance = Self.immediatelyLoadedImageCount
+        processImgTags(shouldLinkifyNonSmilies: shouldLinkifyNonSmilies, eagerImageAllowance: &eagerImageAllowance)
+    }
 
+    /**
+     Like `processImgTags(shouldLinkifyNonSmilies:)`, but post content images load immediately only while `eagerImageAllowance` is above zero, and each one that does decrements it. Share one allowance across every post on a page so the page as a whole, rather than each post, loads its first few images immediately.
+     */
+    func processImgTags(shouldLinkifyNonSmilies: Bool, eagerImageAllowance: inout Int) {
         for img in nodes(matchingParsedSelector: .cached("img")) {
             guard
                 let src = img["src"],
@@ -217,8 +223,11 @@ extension HTMLDocument {
                 // Post content images beyond the first few defer to the browser's lazy
                 // loading; avatars and data URIs always load immediately.
                 if !isAvatar && !isDataURI {
-                    postContentImageCount += 1
-                    if postContentImageCount > Self.immediatelyLoadedImageCount {
+                    // Decode off the main thread so big images don't hold up scrolling.
+                    img["decoding"] = "async"
+                    if eagerImageAllowance > 0 {
+                        eagerImageAllowance -= 1
+                    } else {
                         img["loading"] = "lazy"
                     }
                 }
@@ -293,10 +302,17 @@ extension HTMLDocument {
                 continue
             }
             
-            let replacementImg = HTMLElement(tagName: "img", attributes: [
+            var replacementAttributes = [
                 "src": replacementSrc,
                 "class": "posterized",
-                "data-original-url": url.absoluteString])
+                "data-original-url": url.absoluteString]
+            // Keep the loading behaviour `processImgTags` gave the GIF.
+            for name in ["loading", "decoding"] {
+                if let value = img[name] {
+                    replacementAttributes[name] = value
+                }
+            }
+            let replacementImg = HTMLElement(tagName: "img", attributes: replacementAttributes)
             let wrapper = HTMLElement(tagName: "div", attributes: [
                 "class": "gif-wrap"])
             replacementImg.parent = wrapper
@@ -340,7 +356,8 @@ extension HTMLDocument {
                 "height": object["height"] ?? "225",
                 "frameborder": "0",
                 "webkitAllowFullScreen": "",
-                "allowFullScreen": ""])
+                "allowFullScreen": "",
+                "loading": "lazy"])
             
             if let divSiblings = div.parent?.mutableChildren {
                 divSiblings.replaceObject(at: divSiblings.index(of: div), with: iframe)
@@ -382,9 +399,10 @@ extension HTMLDocument {
                 if let ext = href.range(of: #"(\.gifv|\.webm|\.mp4)$"#, options: .regularExpression) {
                     if lowerHost.hasSuffix("imgur.com") ||
                         lowerHost.hasSuffix("imgur.io") {
+                        // The poster stands in until playback, so the video itself needn't be fetched before then.
                         let videoElement = HTMLElement(tagName: "video", attributes: [
                             "width": "300",
-                            "preload":"metadata",
+                            "preload":"none",
                             "controls":"",
                             "loop":"",
                             "muted":"true",
@@ -423,6 +441,8 @@ extension HTMLDocument {
                             "frameborder": "0",
                             "allow": "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture",
                             "allowfullscreen": "",
+                            // As the Forums do for the players they embed.
+                            "loading": "lazy",
                         ])
                         a.parent?.replace(child: a, with: embedElement)
                     }

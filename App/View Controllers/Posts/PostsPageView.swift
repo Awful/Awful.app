@@ -284,6 +284,9 @@ final class PostsPageView: UIView {
     private(set) lazy var renderView = RenderView()
 
     private var scrollViewDelegateMux: ScrollViewDelegateMultiplexer?
+    #if DEBUG
+    private var scrollJankMonitor: ScrollJankMonitor?
+    #endif
 
     let toolbar = Toolbar(frame: CGRect(x: 0, y: 0, width: 320, height: 44) /* somewhat arbitrary size to avoid unhelpful unsatisfiable constraints console messages */)
 
@@ -343,6 +346,14 @@ final class PostsPageView: UIView {
 
         scrollViewDelegateMux = ScrollViewDelegateMultiplexer(scrollView: renderView.scrollView)
         scrollViewDelegateMux?.addDelegate(self)
+
+        #if DEBUG
+        if PostsPerformance.isProbeEnabled {
+            let monitor = ScrollJankMonitor(label: { [weak self] in self?.renderView.performanceTrace?.label ?? "untraced" })
+            scrollJankMonitor = monitor
+            scrollViewDelegateMux?.addDelegate(monitor)
+        }
+        #endif
     }
 
     override func layoutSubviews() {

@@ -54,8 +54,19 @@ final class PostsPageViewController: ViewController {
     @FoilDefaultStorage(Settings.embedTweets) private var embedTweets
     @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
     @FoilDefaultStorage(Settings.endlessScrollPosts) private var endlessScrollPosts
-    /// Non-nil while an endless-scroll append of the next page is in flight.
+    /// Non-nil while an endless-scroll append (fetching the next page, or inserting a chunk of it) is in flight.
     private var appendTask: Task<Void, Never>?
+    /// Posts endless scroll has fetched but not yet inserted. A page goes into the document a chunk at a time as the reader nears the bottom, so a whole page of posts never lands in one frame.
+    private var pendingAppend: PendingAppend?
+    private struct PendingAppend {
+        let page: Int
+        var posts: ArraySlice<Post>
+        /// What's left of the page's allowance of immediately-loaded images, so the page's later chunks carry on from its first.
+        var eagerImageAllowance: Int
+    }
+    private static let endlessScrollChunkSize = 20
+    /// The scroll view's content height when the last chunk went in. The web view reports its new height a beat after an insert, and until then the reader still looks to be near the bottom, which would pull in the next chunk straight away.
+    private var contentHeightBeforeLastChunk: CGFloat = 0
     /// True once endless scroll has appended pages, so `posts` spans multiple pages and
     /// `page`/`hiddenPosts` no longer describe a single page's document.
     private var endlessScrollDidAppend = false
@@ -386,6 +397,8 @@ final class PostsPageViewController: ViewController {
         // A fresh page load collapses any endless-scroll accumulation.
         appendTask?.cancel()
         appendTask = nil
+        pendingAppend = nil
+        contentHeightBeforeLastChunk = 0
 
         // prevent white flash caused by webview being opaque during refreshes
         if darkMode {
@@ -781,17 +794,23 @@ final class PostsPageViewController: ViewController {
             if endlessScrollPosts {
                 // Re-emit page dividers so a full re-render (theme change, web process termination) reproduces the accumulated document.
                 var previousPage: Int?
+                var eagerImageAllowance = PostRenderModel.eagerImagesPerPage
                 context["posts"] = subset.map { post -> [String: Any] in
-                    var postContext = PostRenderModel(post).context
                     let postPage = pageNumber(of: post)
-                    if let previousPage, postPage != previousPage {
+                    let startsNewPage = previousPage.map { postPage != $0 } ?? false
+                    if startsNewPage {
+                        eagerImageAllowance = PostRenderModel.eagerImagesPerPage
+                    }
+                    var postContext = PostRenderModel(post, eagerImageAllowance: &eagerImageAllowance).context
+                    if startsNewPage {
                         postContext["pageDivider"] = "Page \(postPage) of \(numberOfPages)"
                     }
                     previousPage = postPage
                     return postContext
                 }
             } else {
-                context["posts"] = subset.map { PostRenderModel($0).context }
+                var eagerImageAllowance = PostRenderModel.eagerImagesPerPage
+                context["posts"] = subset.map { PostRenderModel($0, eagerImageAllowance: &eagerImageAllowance).context }
             }
         }
 
@@ -1345,8 +1364,22 @@ final class PostsPageViewController: ViewController {
         guard endlessScrollPosts,
               appendTask == nil,
               postsView.loadingView == nil,
-              webViewDidLoadOnce,
-              case .specific(let currentPage)? = page,
+              webViewDidLoadOnce
+        else { return }
+
+        // Posts from the last fetch come first; only fetch once they're all in.
+        if pendingAppend != nil {
+            guard postsView.renderView.scrollView.contentSize.height > contentHeightBeforeLastChunk else { return }
+            var task: Task<Void, Never>?
+            task = Task { [weak self] in
+                defer { if self?.appendTask == task { self?.appendTask = nil } }
+                await self?.insertNextPendingChunk()
+            }
+            appendTask = task
+            return
+        }
+
+        guard case .specific(let currentPage)? = page,
               currentPage < numberOfPages
         else { return }
 
@@ -1369,47 +1402,63 @@ final class PostsPageViewController: ViewController {
                       !result.posts.isEmpty
                 else { return }
 
-                self.posts.append(contentsOf: result.posts)
-                self.page = .specific(nextPage)
-                self.endlessScrollDidAppend = true
-
-                var html = ""
-                for (i, post) in result.posts.enumerated() {
-                    var context = PostRenderModel(post).context
-                    if i == 0 {
-                        context["pageDivider"] = "Page \(nextPage) of \(self.numberOfPages)"
-                    }
-                    do {
-                        html += try StencilEnvironment.shared.renderTemplate(.post, context: context)
-                    } catch {
-                        logger.error("could not render appended post \(post.postID): \(error)")
-                    }
-                }
-                // On the last page, restore the end-of-thread marker (the frog spacer / "End of the thread"), which normally comes from the full-document template.
-                var endHTML: String?
-                if nextPage >= self.numberOfPages {
-                    endHTML = self.frogAndGhostEnabled
-                        ? #"<div id="endf" class=".end" style="height: 100px;"></div>"#
-                        : #"<div id="end" class=".end">End of the thread</div>"#
-                }
-                trace.mark("built and rendered \(result.posts.count) posts on main thread (\(html.utf8.count / 1024)KB)")
-                await self.postsView.renderView.appendPostHTML(html, endHTML: endHTML)
-                trace.mark("appended to document")
-                if self.embedBlueskyPosts {
-                    self.postsView.renderView.embedBlueskyPosts()
-                }
-
-                if let lastPost = result.posts.last, self.thread.seenPosts < lastPost.threadIndex {
-                    self.thread.seenPosts = lastPost.threadIndex
-                }
-                self.updateUserInterface()
-                self.configureUserActivityIfPossible()
+                self.pendingAppend = PendingAppend(page: nextPage, posts: result.posts[...], eagerImageAllowance: PostRenderModel.eagerImagesPerPage)
+                await self.insertNextPendingChunk()
             } catch {
                 // Stay quiet; scrolling near the bottom again retries.
                 logger.error("endless scroll could not load page \(nextPage): \(error)")
             }
         }
         appendTask = task
+    }
+
+    /// Inserts the next `endlessScrollChunkSize` posts of `pendingAppend` at the end of the document.
+    private func insertNextPendingChunk() async {
+        guard var pending = pendingAppend, !Task.isCancelled else { return }
+        let chunk = pending.posts.prefix(Self.endlessScrollChunkSize)
+        pending.posts = pending.posts.dropFirst(chunk.count)
+        let isFirstChunk = chunk.startIndex == 0
+        let isLastChunk = pending.posts.isEmpty
+        let trace = PostsPerformance.Trace(label: "t\(thread.threadID) append \(pending.page) posts \(chunk.startIndex + 1)-\(chunk.endIndex)")
+
+        var html = ""
+        for (offset, post) in chunk.enumerated() {
+            var context = PostRenderModel(post, eagerImageAllowance: &pending.eagerImageAllowance).context
+            if isFirstChunk, offset == 0 {
+                context["pageDivider"] = "Page \(pending.page) of \(numberOfPages)"
+            }
+            do {
+                html += try StencilEnvironment.shared.renderTemplate(.post, context: context)
+            } catch {
+                logger.error("could not render appended post \(post.postID): \(error)")
+            }
+        }
+        // On the last page, restore the end-of-thread marker (the frog spacer / "End of the thread"), which normally comes from the full-document template.
+        var endHTML: String?
+        if isLastChunk, pending.page >= numberOfPages {
+            endHTML = frogAndGhostEnabled
+                ? #"<div id="endf" class=".end" style="height: 100px;"></div>"#
+                : #"<div id="end" class=".end">End of the thread</div>"#
+        }
+
+        pendingAppend = isLastChunk ? nil : pending
+        posts.append(contentsOf: chunk)
+        page = .specific(pending.page)
+        endlessScrollDidAppend = true
+
+        trace.mark("built and rendered \(chunk.count) posts on main thread (\(html.utf8.count / 1024)KB)")
+        contentHeightBeforeLastChunk = postsView.renderView.scrollView.contentSize.height
+        await postsView.renderView.appendPostHTML(html, endHTML: endHTML)
+        trace.mark("appended to document")
+        if embedBlueskyPosts {
+            postsView.renderView.embedBlueskyPosts()
+        }
+
+        if let lastPost = chunk.last, thread.seenPosts < lastPost.threadIndex {
+            thread.seenPosts = lastPost.threadIndex
+        }
+        updateUserInterface()
+        configureUserActivityIfPossible()
     }
 
     @objc func currentPageButtonTapped(_ sender: UIBarButtonItem) {

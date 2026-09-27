@@ -222,6 +222,9 @@ final class RenderView: UIView {
     
     #if DEBUG
     private func logPerformanceReport(_ body: Any) {
+        if let report = body as? [String: Any], report["type"] as? String == "position", let page = report["topPage"] as? Int {
+            PostsPerformance.announceTopPage(page)
+        }
         let json = (try? JSONSerialization.data(withJSONObject: body, options: [.sortedKeys]))
             .flatMap { String(data: $0, encoding: .utf8) } ?? "\(body)"
         let label = performanceTrace?.label ?? "untraced"

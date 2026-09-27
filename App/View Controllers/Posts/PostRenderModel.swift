@@ -12,7 +12,16 @@ import UIKit
 struct PostRenderModel: StencilContextConvertible {
     let context: [String: Any]
 
+    /// How many post content images a page loads immediately before the rest load lazily.
+    static let eagerImagesPerPage = HTMLDocument.immediatelyLoadedImageCount
+
     init(_ post: Post) {
+        var eagerImageAllowance = Self.eagerImagesPerPage
+        self.init(post, eagerImageAllowance: &eagerImageAllowance)
+    }
+
+    /// - Parameter eagerImageAllowance: How many more of the page's post content images may load immediately rather than lazily. Share one across all the posts on a page.
+    init(_ post: Post, eagerImageAllowance: inout Int) {
         var roles: String {
             guard let author = post.author else { return "" }
             var roles = author.authorClasses ?? ""
@@ -44,9 +53,7 @@ struct PostRenderModel: StencilContextConvertible {
         var hiddenAvatarURL: URL? {
             return showAvatars ? nil : post.author?.avatarURL
         }
-        var htmlContents: String {
-            return massageHTML(post.innerHTML ?? "", isIgnored: post.ignored, forumID: forumID)
-        }
+        let htmlContents = massageHTML(post.innerHTML ?? "", isIgnored: post.ignored, forumID: forumID, eagerImageAllowance: &eagerImageAllowance)
         var visibleAvatarURL: URL? {
             return showAvatars ? post.author?.avatarURL : nil
         }
@@ -80,6 +87,7 @@ struct PostRenderModel: StencilContextConvertible {
     }
 
     init(author: User, isOP: Bool, postDate: String, postHTML: String) {
+        var eagerImageAllowance = Self.eagerImagesPerPage
         context = [
             "author": [
                 "regdate": author.regdate as Any,
@@ -89,7 +97,7 @@ struct PostRenderModel: StencilContextConvertible {
             "hiddenAvatarURL": (showAvatars ? author.avatarURL : nil) as Any,
             "hideMetadataForReader": hidePostMetadataForReader,
             "customTitleHTML": (enableCustomTitlePostLayout ? author.customTitleHTML : nil) as Any,
-            "htmlContents": massageHTML(postHTML, isIgnored: false, forumID: ""),
+            "htmlContents": massageHTML(postHTML, isIgnored: false, forumID: "", eagerImageAllowance: &eagerImageAllowance),
             "postDate": postDate,
             "postDateRaw": "",
             "postID": "fake",
@@ -99,7 +107,7 @@ struct PostRenderModel: StencilContextConvertible {
     }
 }
 
-private func massageHTML(_ html: String, isIgnored: Bool, forumID: String) -> String {
+private func massageHTML(_ html: String, isIgnored: Bool, forumID: String, eagerImageAllowance: inout Int) -> String {
     let document = HTMLDocument(string: html)
     document.removeSpoilerStylingAndEvents()
     document.removeEmptyEditedByParagraphs()
@@ -113,7 +121,7 @@ private func massageHTML(_ html: String, isIgnored: Bool, forumID: String) -> St
         document.identifyQuotesCitingUser(named: username, shouldHighlight: true)
         document.identifyMentionsOfUser(named: username, shouldHighlight: true)
     }
-    document.processImgTags(shouldLinkifyNonSmilies: !UserDefaults.standard.defaultingValue(for: Settings.loadImages))
+    document.processImgTags(shouldLinkifyNonSmilies: !UserDefaults.standard.defaultingValue(for: Settings.loadImages), eagerImageAllowance: &eagerImageAllowance)
     if !UserDefaults.standard.defaultingValue(for: Settings.autoplayGIFs) {
         document.stopGIFAutoplay()
     }

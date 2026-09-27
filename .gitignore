@@ -6,6 +6,7 @@
 # which is tracked. Ignoring the whole directory rather than listing extensions:
 # it holds gigabytes of PNG and MP4, and a rule per type missed the videos.
 /ScreenshotMatrix/
+/PostsScrollPerf/
 
 # Bundler local install
 /.bundle/

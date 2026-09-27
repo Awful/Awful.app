@@ -62,6 +62,15 @@ post {
   overflow-x: hidden;
   overflow-x: clip;
 
+  // Skip layout and painting for posts well offscreen (iOS 18+), which keeps long pages and endless scroll cheap. `auto` remembers a post's real height once it has rendered, so the estimate only applies to posts not yet seen.
+  content-visibility: auto;
+  contain-intrinsic-height: auto 600px;
+
+  // Set briefly by `Awful.renderPostsAbove` so WebKit records a post's real height before the reader can scroll up to it.
+  &.awful-measuring {
+    content-visibility: visible;
+  }
+
   .iphone & {
     .post-side-padding(0.6em);
   }

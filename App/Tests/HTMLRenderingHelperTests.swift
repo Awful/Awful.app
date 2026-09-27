@@ -67,4 +67,58 @@ final class HTMLRenderingHelperTests: XCTestCase {
         XCTAssertNil(doc.firstNode(matchingParsedSelector: .cached("iframe")))
         XCTAssertNotNil(doc.firstNode(matchingParsedSelector: .cached("a")))
     }
+
+    func testEagerImageAllowanceIsSharedAcrossPosts() {
+        func post(imageCount: Int) -> HTMLDocument {
+            HTMLDocument(string: (0..<imageCount).map { #"<img src="https://example.com/\#($0).png">"# }.joined())
+        }
+        func lazyImageCount(in document: HTMLDocument) -> Int {
+            document.nodes(matchingParsedSelector: .cached("img[loading='lazy']")).count
+        }
+
+        var allowance = 3
+        let first = post(imageCount: 2)
+        let second = post(imageCount: 2)
+        let third = post(imageCount: 1)
+        first.processImgTags(shouldLinkifyNonSmilies: false, eagerImageAllowance: &allowance)
+        second.processImgTags(shouldLinkifyNonSmilies: false, eagerImageAllowance: &allowance)
+        third.processImgTags(shouldLinkifyNonSmilies: false, eagerImageAllowance: &allowance)
+
+        XCTAssertEqual(lazyImageCount(in: first), 0)
+        XCTAssertEqual(lazyImageCount(in: second), 1)
+        XCTAssertEqual(lazyImageCount(in: third), 1)
+        XCTAssertEqual(allowance, 0)
+    }
+
+    func testStoppedGIFKeepsLazyLoading() {
+        let doc = HTMLDocument(string: #"<img src="https://i.imgur.com/abc.gif" loading="lazy">"#)
+        doc.stopGIFAutoplay()
+        let poster = doc.firstNode(matchingParsedSelector: .cached("img.posterized"))
+        XCTAssertEqual(poster?["src"], "https://i.imgur.com/abch.jpg")
+        XCTAssertEqual(poster?["loading"], "lazy")
+    }
+
+    func testEmbeddedYouTubeLinkLoadsLazily() {
+        let url = "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+        let doc = HTMLDocument(string: #"<a href="\#(url)">\#(url)</a>"#)
+        doc.embedVideos()
+        let iframe = doc.firstNode(matchingParsedSelector: .cached("iframe"))
+        XCTAssertNotNil(iframe)
+        XCTAssertEqual(iframe?["loading"], "lazy")
+    }
+
+    func testEmbeddedImgurVideoWaitsForPlayback() {
+        let url = "https://i.imgur.com/abc.gifv"
+        let doc = HTMLDocument(string: #"<a href="\#(url)">\#(url)</a>"#)
+        doc.embedVideos()
+        let video = doc.firstNode(matchingParsedSelector: .cached("video"))
+        XCTAssertEqual(video?["preload"], "none")
+        XCTAssertEqual(video?["poster"], "https://i.imgur.com/abch.jpg")
+    }
+
+    func testPostImagesDecodeAsynchronously() {
+        let doc = HTMLDocument(string: #"<img src="https://example.com/a.png">"#)
+        doc.processImgTags(shouldLinkifyNonSmilies: false)
+        XCTAssertEqual(doc.firstNode(matchingParsedSelector: .cached("img"))?["decoding"], "async")
+    }
 }

@@ -462,11 +462,39 @@ Awful.loadBlueskyEmbedScript = function() {
 };
 
 /**
- Turns apparent links to Bluesky posts into actual embedded Bluesky posts.
+ Turns apparent links to Bluesky posts into actual embedded Bluesky posts as the posts containing them near the viewport (with the same lookahead as tweets), so offscreen embeds don't fetch and load their iframes up front.
+
+ Safe to call again, e.g. after appending posts or toggling the setting: it only starts watching links it isn't already embedding.
  */
 Awful.embedBlueskyPosts = function() {
-  for (const a of document.querySelectorAll('a[data-bluesky-post]')) {
-    // This gets called again after appending posts or toggling the setting; don't refetch links that are still in flight.
+  if (!Awful.blueskyLazyLoadObserver) {
+    Awful.blueskyLazyLoadObserver = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          Awful.blueskyLazyLoadObserver.unobserve(entry.target);
+          Awful.embedBlueskyPostsNow(entry.target);
+        }
+      });
+    }, {
+      root: null,
+      rootMargin: `${LAZY_LOAD_LOOKAHEAD_DISTANCE} 0px`,
+      threshold: INTERSECTION_THRESHOLD_MIN,
+    });
+  }
+
+  for (const a of document.querySelectorAll('a[data-bluesky-post]:not([data-bluesky-pending])')) {
+    // Watch the post rather than the link: a post skipped by `content-visibility` still has a box to intersect, while links inside it don't. Observing an element twice is harmless.
+    Awful.blueskyLazyLoadObserver.observe(a.closest(SELECTORS.POST_ELEMENTS) || a);
+  }
+};
+
+/**
+ Embeds the Bluesky posts linked from within `container`.
+ */
+Awful.embedBlueskyPostsNow = function(container) {
+  const links = container.matches('a[data-bluesky-post]') ? [container] : container.querySelectorAll('a[data-bluesky-post]');
+  for (const a of links) {
+    // Don't refetch links that are still in flight.
     if (a.dataset.blueskyPending !== undefined) {
       continue;
     }
@@ -1417,6 +1445,8 @@ Awful.jumpToPostWithID = function(postID, animated, topOffset) {
     return;
   }
 
+  Awful.renderPostsAbove(post);
+
   var rect = post.getBoundingClientRect();
   var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
   var targetPosition = rect.top + scrollTop - (topOffset || 0);
@@ -1426,6 +1456,32 @@ Awful.jumpToPostWithID = function(postID, animated, topOffset) {
   } else {
     window.scrollTo(0, targetPosition);
   }
+};
+
+
+/**
+ Draws, once, every post above `post` that hasn't been drawn yet.
+
+ Posts use `content-visibility: auto`, so a post that has never been on screen sits at a placeholder height until it's drawn. Landing partway down the page and then scrolling up would draw those posts on the way, and each one changing height above the viewport shoves the reader's content down (WebKit doesn't correct for it mid-drag). Drawing them up front means the layout is already right when the jump lands.
+
+ The layout is correct immediately, so the caller can measure straight away. WebKit only records a post's real height (which `contain-intrinsic-height: auto` then keeps using once the post is skipped again) during a rendering update, so each post stays drawn until two animation frames have passed. If frames are throttled (say, the render view is hidden), the posts simply stay drawn until they resume.
+ */
+Awful.renderPostsAbove = function(post) {
+  var measuring = [];
+  for (var sibling = post.previousElementSibling; sibling; sibling = sibling.previousElementSibling) {
+    if (sibling.matches(SELECTORS.POST_ELEMENTS) && !sibling.hasAttribute('data-awful-measured')) {
+      sibling.setAttribute('data-awful-measured', '');
+      sibling.classList.add('awful-measuring');
+      measuring.push(sibling);
+    }
+  }
+  if (measuring.length === 0) { return; }
+
+  requestAnimationFrame(function() {
+    requestAnimationFrame(function() {
+      measuring.forEach(function(p) { p.classList.remove('awful-measuring'); });
+    });
+  });
 };
 
 
