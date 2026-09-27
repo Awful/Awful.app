@@ -129,6 +129,12 @@ final class PostsPageViewController: ViewController {
     /// Counts calls to `renderPosts()`, so work deferred past one render can tell when a newer one has superseded it.
     private var renderGeneration = 0
 
+    /// Times the current page load; see `PostsPerformance`.
+    private var performanceTrace: PostsPerformance.Trace? {
+        didSet { postsView.renderView.performanceTrace = performanceTrace }
+    }
+    private var eagerImagesSettledForTrace = false
+
     /// Set while the render view is hidden until a restored scroll position is on screen, so the reader never sees the page open at the top and then jump. Doubles as a backstop that reveals anyway if that never happens.
     private var revealTimeoutTask: Task<Void, Never>?
     private static let revealTimeout: TimeInterval = 4
@@ -285,6 +291,7 @@ final class PostsPageViewController: ViewController {
     }
 
     deinit {
+        PostsPerformance.logger.info("PostsPageViewController deinit (thread \(self.thread.threadID, privacy: .public))")
         cancelNetworkOperation?()
         loadingHoldTask?.cancel()
         appendTask?.cancel()
@@ -422,6 +429,9 @@ final class PostsPageViewController: ViewController {
         // completion replaces the accumulated `posts` with one page's worth, so skipping the
         // reset below would leave `hiddenPosts` pointing past the end of `posts`.
         let reloadingSamePage = page == newPage && !endlessScrollDidAppend
+        performanceTrace = PostsPerformance.Trace(label: "t\(thread.threadID) \(newPage)")
+        eagerImagesSettledForTrace = false
+        performanceTrace?.mark("loadPage (\(posts.count) posts in memory, updatingCache: \(updatingCache))")
         page = newPage
         endlessScrollDidAppend = false
 
@@ -586,8 +596,12 @@ final class PostsPageViewController: ViewController {
     private func startFetch(_ page: ThreadPage, updatingLastReadPost updateLastReadPost: Bool) -> Task<FetchResult, Error> {
         let thread = thread
         let author = author
+        let trace = performanceTrace
         let fetch = Task {
+            let signpost = PostsPerformance.signposter.beginInterval("Fetch", id: PostsPerformance.signposter.makeSignpostID())
+            defer { PostsPerformance.signposter.endInterval("Fetch", signpost) }
             let result = try await ForumsClient.shared.listPosts(in: thread, writtenBy: author, page: page, updateLastReadPost: updateLastReadPost)
+            trace?.mark("fetched and scraped \(result.posts.count) posts")
             return FetchResult(posts: result.posts, firstUnreadPost: result.firstUnreadPost, advertisementHTML: result.advertisementHTML, poll: result.poll)
         }
         cancelNetworkOperation = { fetch.cancel() }
@@ -753,6 +767,10 @@ final class PostsPageViewController: ViewController {
         renderGeneration += 1
         renderedPostsFingerprint = RenderedPostsFingerprint(posts.dropFirst(hiddenPosts))
 
+        let trace = performanceTrace
+        let generation = renderGeneration
+        let contextSignpost = PostsPerformance.signposter.beginInterval("BuildContext", id: PostsPerformance.signposter.makeSignpostID())
+
         var context: [String: Any] = [:]
 
         context["stylesheet"] = theme[string: "postsViewCSS"] as Any
@@ -808,7 +826,13 @@ final class PostsPageViewController: ViewController {
 
         prefetchAttachments(inPostsContext: context["posts"] as? [[String: Any]] ?? [])
 
+        PostsPerformance.signposter.endInterval("BuildContext", contextSignpost)
+        let postContexts = context["posts"] as? [[String: Any]] ?? []
+        let postsHTMLBytes = postContexts.reduce(0) { $0 + (($1["htmlContents"] as? String)?.utf8.count ?? 0) }
+        trace?.mark("render #\(generation): built context on main thread (\(postContexts.count) posts, \(postsHTMLBytes / 1024)KB post HTML)")
+
         Task.detached(priority: .userInitiated) { [context] in
+            let templateSignpost = PostsPerformance.signposter.beginInterval("Template", id: PostsPerformance.signposter.makeSignpostID())
             let html: String
             do {
                 html = try StencilEnvironment.shared.renderTemplate(.postsView, context: context)
@@ -816,8 +840,11 @@ final class PostsPageViewController: ViewController {
                 logger.error("could not render posts view HTML: \(error)")
                 html = ""
             }
+            PostsPerformance.signposter.endInterval("Template", templateSignpost)
+            trace?.mark("render #\(generation): template rendered")
 
             await self.postsView.renderView.eraseDocument()
+            trace?.mark("render #\(generation): document erased")
             await self.postsView.renderView.render(html: html, baseURL: ForumsClient.shared.baseURL)
         }
     }
@@ -1332,7 +1359,9 @@ final class PostsPageViewController: ViewController {
             // clobber the handle of a newer append that `loadPage` kicked off in the meantime.
             defer { if self?.appendTask == task { self?.appendTask = nil } }
             do {
+                let trace = PostsPerformance.Trace(label: "t\(thread.threadID) append \(nextPage)")
                 let result = try await ForumsClient.shared.listPosts(in: thread, writtenBy: author, page: .specific(nextPage), updateLastReadPost: true)
+                trace.mark("fetched and scraped \(result.posts.count) posts")
                 guard let self, !Task.isCancelled,
                       self.endlessScrollPosts,
                       // Bail if a loadPage raced us and the document no longer ends with the page we appended after.
@@ -1363,7 +1392,9 @@ final class PostsPageViewController: ViewController {
                         ? #"<div id="endf" class=".end" style="height: 100px;"></div>"#
                         : #"<div id="end" class=".end">End of the thread</div>"#
                 }
+                trace.mark("built and rendered \(result.posts.count) posts on main thread (\(html.utf8.count / 1024)KB)")
                 await self.postsView.renderView.appendPostHTML(html, endHTML: endHTML)
+                trace.mark("appended to document")
                 if self.embedBlueskyPosts {
                     self.postsView.renderView.embedBlueskyPosts()
                 }
@@ -3022,6 +3053,7 @@ extension PostsPageViewController: RenderViewDelegate {
 
     /// The rest of `didFinishRenderingHTML`, once the render is scrolled into place.
     private func finishRendering() {
+        performanceTrace?.mark("render #\(renderGeneration): scrolled into place and revealed")
         dismissLoadingViewAfterRender()
 
         // The bar sat at the opaque resting state while loading; if a restore is in flight,
@@ -3072,6 +3104,10 @@ extension PostsPageViewController: RenderViewDelegate {
             fetchOEmbed(url: message.url, id: message.id)
 
         case let message as RenderView.BuiltInMessage.ImageLoadProgress:
+            if message.complete, !eagerImagesSettledForTrace {
+                eagerImagesSettledForTrace = true
+                performanceTrace?.mark("eager images settled (\(message.loaded)/\(message.total))")
+            }
             if message.total == 0 {
                 // No images to load; dismiss (respecting any embed hold).
                 dismissLoadingViewAfterRender()

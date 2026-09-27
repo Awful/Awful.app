@@ -33,6 +33,11 @@ final class RenderView: UIView {
 
     private static let textSelectionChangedMessageName = "textSelectionChanged"
 
+    /// The page load being timed, if any. Web view milestones and probe reports are logged against it.
+    var performanceTrace: PostsPerformance.Trace?
+
+    private var webLoadSignpost: OSSignpostIntervalState?
+
     /// Whether lottie-player.js may be injected. Views that never show the frog/ghost animations (e.g. the Leper's Colony) pass `false` to skip the ~400 KB script.
     private let includesLottiePlayer: Bool
 
@@ -76,6 +81,12 @@ final class RenderView: UIView {
             return WKUserScript(source: script, injectionTime: .atDocumentEnd, forMainFrameOnly: false)
         }())
 
+        #if DEBUG
+        if PostsPerformance.isProbeEnabled {
+            configuration.userContentController.addUserScript(PostsPerformance.probeScript)
+        }
+        #endif
+
         configuration.setURLSchemeHandler(ImageURLProtocol(), forURLScheme: ImageURLProtocol.scheme)
         configuration.setURLSchemeHandler(ResourceURLProtocol(), forURLScheme: ResourceURLProtocol.scheme)
         configuration.setURLSchemeHandler(AttachmentSchemeHandler(), forURLScheme: AttachmentSchemeHandler.scheme)
@@ -107,6 +118,11 @@ final class RenderView: UIView {
         addSubview(webView)
 
         webView.configuration.userContentController.add(ScriptMessageHandlerWeakTrampoline(self), name: Self.textSelectionChangedMessageName)
+        #if DEBUG
+        if PostsPerformance.isProbeEnabled {
+            webView.configuration.userContentController.add(ScriptMessageHandlerWeakTrampoline(self), name: PostsPerformance.reportMessageName)
+        }
+        #endif
     }
 
     /*
@@ -129,10 +145,16 @@ final class RenderView: UIView {
     }
     
     deinit {
+        PostsPerformance.logger.info("RenderView deinit")
         for registeredName in registeredMessages.keys {
             webView.configuration.userContentController.removeScriptMessageHandler(forName: registeredName)
         }
         webView.configuration.userContentController.removeScriptMessageHandler(forName: Self.textSelectionChangedMessageName)
+        #if DEBUG
+        if PostsPerformance.isProbeEnabled {
+            webView.configuration.userContentController.removeScriptMessageHandler(forName: PostsPerformance.reportMessageName)
+        }
+        #endif
     }
 
     /**
@@ -141,6 +163,11 @@ final class RenderView: UIView {
     func render(html: String, baseURL: URL?) {
         logger.debug("rendering \(html.count) characters of HTML with baseURL = \(baseURL?.absoluteString ?? "(null)")")
         hasTextSelection = false
+        if let webLoadSignpost {
+            PostsPerformance.signposter.endInterval("WebLoad", webLoadSignpost, "superseded")
+        }
+        webLoadSignpost = PostsPerformance.signposter.beginInterval("WebLoad", id: PostsPerformance.signposter.makeSignpostID(), "\(html.utf8.count) bytes")
+        performanceTrace?.mark("loadHTMLString (\(html.utf8.count / 1024)KB)")
         webView.loadHTMLString(html, baseURL: baseURL)
     }
 
@@ -193,6 +220,16 @@ final class RenderView: UIView {
         }
     }
     
+    #if DEBUG
+    private func logPerformanceReport(_ body: Any) {
+        let json = (try? JSONSerialization.data(withJSONObject: body, options: [.sortedKeys]))
+            .flatMap { String(data: $0, encoding: .utf8) } ?? "\(body)"
+        let label = performanceTrace?.label ?? "untraced"
+        let elapsed = performanceTrace.map { "+\($0.elapsedMilliseconds)ms" } ?? ""
+        PostsPerformance.logger.info("[\(label, privacy: .public)] \(elapsed, privacy: .public) js \(json, privacy: .public)")
+    }
+    #endif
+
     // MARK: Gunk
     
     required init?(coder: NSCoder) {
@@ -226,10 +263,17 @@ extension RenderView: WKNavigationDelegate {
     }
     
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation) {
+        if let webLoadSignpost {
+            PostsPerformance.signposter.endInterval("WebLoad", webLoadSignpost)
+            self.webLoadSignpost = nil
+        }
+        performanceTrace?.mark("webView didFinish navigation")
         delegate?.didFinishRenderingHTML(in: self)
     }
     
     func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
+        PostsPerformance.logger.error("web content process terminated")
+        performanceTrace?.mark("web content process terminated")
         delegate?.renderProcessDidTerminate(in: self)
     }
 }
@@ -266,6 +310,13 @@ extension RenderView: WKScriptMessageHandler {
             hasTextSelection = (rawMessage.body as? [String: Any])?["hasSelection"] as? Bool ?? false
             return
         }
+
+        #if DEBUG
+        if rawMessage.name == PostsPerformance.reportMessageName {
+            logPerformanceReport(rawMessage.body)
+            return
+        }
+        #endif
 
         // Skip logging high-frequency progress updates to reduce console noise
         if rawMessage.name != "imageLoadProgress" {
