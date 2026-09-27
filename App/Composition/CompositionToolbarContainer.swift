@@ -166,6 +166,15 @@ final class CompositionToolbarContainer: UIInputView {
         }
     }
 
+    /// Whether an undocked or split keyboard is up; see `isLiftedByUndockedKeyboard(_:)`. The
+    /// toggle sits out then too: restoring from minimized leaves this view stuck behind the split
+    /// keyboard, and the keyboard's own dismiss key already hides it.
+    private var isKeyboardUndocked = false {
+        didSet {
+            if isKeyboardUndocked != oldValue { syncKeyboardToggle() }
+        }
+    }
+
     private static var hardwareKeyboardIsConnected: Bool {
         #if targetEnvironment(simulator)
         // The simulator's keyboard capture shows up as a GCKeyboard while iOS still runs the
@@ -188,7 +197,9 @@ final class CompositionToolbarContainer: UIInputView {
     private func keyboardDidChangeFrame(_ note: Notification) {
         guard let textView, let endFrame = keyboardEndFrame(from: note) else { return }
 
-        isKeyboardMinimizedBySystem = isCollapsedKeyboardFrame(endFrame) && !textView.isKeyboardMinimized
+        let isCollapsed = isCollapsedKeyboardFrame(endFrame)
+        isKeyboardUndocked = isCollapsed && isLiftedByUndockedKeyboard(endFrame)
+        isKeyboardMinimizedBySystem = isCollapsed && !isKeyboardUndocked && !textView.isKeyboardMinimized
 
         noteKeyboardEndFrame(endFrame)
         isKeyboardAnimating = false
@@ -228,6 +239,32 @@ final class CompositionToolbarContainer: UIInputView {
     private func isCollapsedKeyboardFrame(_ frame: CGRect) -> Bool {
         frame.height <= accessoryOnlyHeight + 1
     }
+
+    /// How far above the bottom of `keyboardFrame` this view's real frame sits, or `nil` when it
+    /// isn't in a window.
+    ///
+    /// Both frames are compared in screen coordinates: the keyboard notification reports in
+    /// screen space, and this view's window only coincides with the screen when the app fills it
+    /// (not in Stage Manager or Split View).
+    private func offsetAbove(_ keyboardFrame: CGRect) -> CGFloat? {
+        guard let window else { return nil }
+        let actual = window.convert(convert(bounds, to: nil), to: window.screen.coordinateSpace)
+        return keyboardFrame.maxY - actual.maxY
+    }
+
+    /// An undocked or split iPad keyboard carries this view up the screen on top of it, yet when
+    /// the composer opens iOS reports the keyboard as collapsed to just this view at the bottom of
+    /// the screen, and keeps reporting that while it stays undocked. (Floating keyboards report
+    /// their real frame.) That looks like a collapse, and like a stranded accessory, except that
+    /// the gap is a whole keyboard tall rather than a shortcuts bar.
+    private func isLiftedByUndockedKeyboard(_ keyboardFrame: CGRect) -> Bool {
+        (offsetAbove(keyboardFrame) ?? 0) > Self.undockedKeyboardLift
+    }
+
+    /// Well clear of the shortcuts bar slot a stranded accessory leaves beneath it, and well short
+    /// of an undocked keyboard (the split keyboard on an iPad (9th generation) in landscape lifts
+    /// this view 341pt).
+    private static let undockedKeyboardLift: CGFloat = 150
 
     /// Only a real software keyboard re-arms the heal. The frame is measured on screen, so the
     /// hide notification (parked below the screen) doesn't count, and a collapsed keyboard that
@@ -275,27 +312,24 @@ final class CompositionToolbarContainer: UIInputView {
     private static let healBreakerWindow: TimeInterval = 15
 
     /// How far above its reported position this view is sitting, or `nil` when the check doesn't
-    /// apply (keyboard not collapsed, not on screen, text view not first responder).
+    /// apply (keyboard not collapsed, not on screen, text view not first responder, or an
+    /// undocked or split keyboard holding this view up).
     ///
     /// On iPad, when the keyboard host last laid out the input views with the software keyboard
     /// up and then collapses to accessory-only (the keyboard's own dismiss key), it keeps the
     /// shortcuts bar's slot reserved beneath this view. The keyboard notification still reports
     /// the collapsed keyboard flush with the screen bottom, so the only tell is this view's real
     /// window frame disagreeing with it.
-    ///
-    /// Both frames are compared in screen coordinates: the keyboard notification reports in
-    /// screen space, and this view's window only coincides with the screen when the app fills it
-    /// (not in Stage Manager or Split View).
     private var strandedOffset: CGFloat? {
         guard
             let window,
             let textView, textView.isFirstResponder,
             let keyboardFrame = lastKeyboardEndFrame,
             keyboardFrame.minY < window.screen.bounds.maxY - 1,
-            isCollapsedKeyboardFrame(keyboardFrame)
+            isCollapsedKeyboardFrame(keyboardFrame),
+            !isLiftedByUndockedKeyboard(keyboardFrame)
             else { return nil }
-        let actual = window.convert(convert(bounds, to: nil), to: window.screen.coordinateSpace)
-        return keyboardFrame.maxY - actual.maxY
+        return offsetAbove(keyboardFrame)
     }
 
     private static let strandedThreshold: CGFloat = 24
@@ -386,7 +420,7 @@ final class CompositionToolbarContainer: UIInputView {
     /// us (the legacy smilie keyboard replaces the input view; the composer resets it when it
     /// disappears), and every such change reinstalls this accessory view.
     private var canToggleKeyboard: Bool {
-        !isHardwareKeyboardConnected
+        !isHardwareKeyboardConnected && !isKeyboardUndocked
     }
 
     private func syncKeyboardToggle() {
