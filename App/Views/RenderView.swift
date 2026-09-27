@@ -38,8 +38,8 @@ final class RenderView: UIView {
 
     private var webLoadSignpost: OSSignpostIntervalState?
 
-    /// Whether `render(html:baseURL:)` has ever been called, i.e. whether there's a document to erase.
-    private var hasRenderedHTML = false
+    /// Whether a rendered document has ever committed, i.e. whether there's a document to erase. Until then the web view shows its initial blank page, even while a render is loading.
+    private var hasCommittedDocument = false
 
     /// Whether lottie-player.js may be injected. Views that never show the frog/ghost animations (e.g. the Leper's Colony) pass `false` to skip the ~400 KB script.
     private let includesLottiePlayer: Bool
@@ -166,7 +166,6 @@ final class RenderView: UIView {
     func render(html: String, baseURL: URL?) {
         logger.debug("rendering \(html.count) characters of HTML with baseURL = \(baseURL?.absoluteString ?? "(null)")")
         hasTextSelection = false
-        hasRenderedHTML = true
         if let webLoadSignpost {
             PostsPerformance.signposter.endInterval("WebLoad", webLoadSignpost, "superseded")
         }
@@ -269,6 +268,10 @@ extension RenderView: WKNavigationDelegate {
         delegate?.didTapLink(to: url, in: self)
     }
     
+    func webView(_ webView: WKWebView, didCommit navigation: WKNavigation) {
+        hasCommittedDocument = true
+    }
+
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation) {
         if let webLoadSignpost {
             PostsPerformance.signposter.endInterval("WebLoad", webLoadSignpost)
@@ -575,10 +578,11 @@ extension RenderView {
          rv.eraseDocument().done { rv.render(html: "<h1>Hi!</h1>", baseURL: nil) }
      */
     func eraseDocument() async {
-        // A web view that has never rendered has nothing to erase. Scripting its blank page would
-        // also make WebKit treat the first render as a cross-site navigation and throw away the
-        // web content process launched with the web view, starting the render over in a new one.
-        guard hasRenderedHTML else { return }
+        // Until a render commits there's nothing to erase: the web view still shows its initial
+        // blank page, and a new render simply replaces one still loading. Scripting that blank page
+        // would also make WebKit treat the next render as a cross-site navigation and throw away
+        // the web content process launched with the web view, starting the render over in a new one.
+        guard hasCommittedDocument else { return }
         logger.debug("erasing document")
 
         do {
