@@ -302,17 +302,16 @@ extension HTMLDocument {
                 continue
             }
             
-            var replacementAttributes = [
+            let replacementImg = HTMLElement(tagName: "img", orderedAttributes: [
                 "src": replacementSrc,
                 "class": "posterized",
-                "data-original-url": url.absoluteString]
+                "data-original-url": url.absoluteString])
             // Keep the loading behaviour `processImgTags` gave the GIF.
             for name in ["loading", "decoding"] {
                 if let value = img[name] {
-                    replacementAttributes[name] = value
+                    replacementImg[name] = value
                 }
             }
-            let replacementImg = HTMLElement(tagName: "img", attributes: replacementAttributes)
             let wrapper = HTMLElement(tagName: "div", attributes: [
                 "class": "gif-wrap"])
             replacementImg.parent = wrapper
@@ -350,7 +349,7 @@ extension HTMLDocument {
             iframeSrcComponents.query = "byline=0&portrait=0"
             guard let iframeSrc = iframeSrcComponents.url else { continue }
             
-            let iframe = HTMLElement(tagName: "iframe", attributes: [
+            let iframe = HTMLElement(tagName: "iframe", orderedAttributes: [
                 "src": iframeSrc.absoluteString,
                 "width": object["width"] ?? "400",
                 "height": object["height"] ?? "225",
@@ -400,7 +399,7 @@ extension HTMLDocument {
                     if lowerHost.hasSuffix("imgur.com") ||
                         lowerHost.hasSuffix("imgur.io") {
                         // The poster stands in until playback, so the video itself needn't be fetched before then.
-                        let videoElement = HTMLElement(tagName: "video", attributes: [
+                        let videoElement = HTMLElement(tagName: "video", orderedAttributes: [
                             "width": "300",
                             "preload":"none",
                             "controls":"",
@@ -416,7 +415,7 @@ extension HTMLDocument {
                     // any raw .mp4 URLs can embed, what the hell
                     if href == a.textContent && href.hasSuffix(".mp4")
                     {
-                        let videoElement = HTMLElement(tagName: "video", attributes: [
+                        let videoElement = HTMLElement(tagName: "video", orderedAttributes: [
                             "width": "300",
                             "preload":"metadata",
                             "controls":"",
@@ -434,7 +433,7 @@ extension HTMLDocument {
                             href.range(of: #"https.+youtu"#, options: .regularExpression) != nil
                 {
                     if let youtubeUri = getYoutubeEmbeddedUri(href: href) {
-                        let embedElement = HTMLElement(tagName: "iframe", attributes: [
+                        let embedElement = HTMLElement(tagName: "iframe", orderedAttributes: [
                             "width": "500",
                             "height": "315",
                             "src": youtubeUri.absoluteString,
@@ -452,7 +451,7 @@ extension HTMLDocument {
                 // https://forums.somethingawful.com/showthread.php?threadid=3901275
                 else if lowerHost.hasSuffix("steamstatic.com"),
                             let ext = href.range(of: "_vp9.webm") {
-                    let videoElement = HTMLElement(tagName: "video", attributes: [
+                    let videoElement = HTMLElement(tagName: "video", orderedAttributes: [
                         "preload": "metadata",
                         "controls": "",
                         "loop": "",
@@ -644,4 +643,14 @@ private func getYoutubeEmbeddedUri(href: String) -> URL? {
         embed.queryItems = [.init(name: "start", value: "\(seconds)")]
     }
     return embed.url
+}
+
+extension HTMLElement {
+    /// Makes an element whose attributes come out in the order given. `init(tagName:attributes:)` takes a dictionary, whose order can differ from one instance to the next, so the same post would render differently each time. The posts page relies on an unchanged post rendering identically, to keep a page it would otherwise reload for nothing.
+    convenience init(tagName: String, orderedAttributes: KeyValuePairs<String, String>) {
+        self.init(tagName: tagName, attributes: nil)
+        for (name, value) in orderedAttributes {
+            self[name] = value
+        }
+    }
 }

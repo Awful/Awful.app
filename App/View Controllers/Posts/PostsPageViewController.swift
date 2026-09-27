@@ -140,6 +140,9 @@ final class PostsPageViewController: ViewController {
     /// Counts calls to `renderPosts()`, so work deferred past one render can tell when a newer one has superseded it.
     private var renderGeneration = 0
 
+    /// The HTML of the document in the render view, for as long as the document still is exactly that. Cleared once a render sets out to replace the document, and when posts are added to, revealed in or rewritten in it.
+    private var loadedHTML: String?
+
     /// Times the current page load; see `PostsPerformance`.
     private var performanceTrace: PostsPerformance.Trace? {
         didSet { postsView.renderView.performanceTrace = performanceTrace }
@@ -448,6 +451,9 @@ final class PostsPageViewController: ViewController {
         page = newPage
         endlessScrollDidAppend = false
 
+        // The fetch below only needs to replace this render if it would show something different.
+        var renderedFromCache = false
+
         if posts.isEmpty || !reloadingSamePage {
             postsView.endRefreshing()
 
@@ -461,6 +467,7 @@ final class PostsPageViewController: ViewController {
                 discardStagedRestorationIfAnchorMissing()
                 applyStagedHiddenPosts()
                 renderPosts()
+                renderedFromCache = true
             }
         }
 
@@ -543,14 +550,24 @@ final class PostsPageViewController: ViewController {
 
                 // Keep the reader in place across the re-render, unless a scroll target is
                 // already staged (e.g. by restoration), which must win.
+                var stagedFraction = false
                 if reloadingSamePage || renderedCachedPosts,
                    self.scrollToFractionAfterLoading == nil,
                    self.anchorPostIDAfterLoading == nil
                 {
                     self.scrollToFractionAfterLoading = self.postsView.renderView.scrollView.fractionalContentOffset.y
+                    stagedFraction = true
                 }
 
-                self.renderPosts()
+                // Usually the cached posts were already up to date. A pull-to-refresh of the same
+                // page still reloads regardless, as it's also how a reader retries broken images.
+                self.renderPosts(keepingUnchangedDocument: renderedFromCache) { [weak self, stagedFraction] in
+                    // The fraction was only for the re-render; left staged, a late tweet
+                    // settling would pull the reader back to where they were when the fetch landed.
+                    if stagedFraction {
+                        self?.scrollToFractionAfterLoading = nil
+                    }
+                }
 
                 self.updateUserInterface()
 
@@ -774,9 +791,20 @@ final class PostsPageViewController: ViewController {
         return true
     }
 
-    private func renderPosts() {
-        webViewDidLoadOnce = false
-        hasScrolledSinceRender = false
+    /// - Parameters:
+    ///   - keepingUnchangedDocument: Leave the render view alone when it already shows exactly the HTML this render comes up with.
+    ///   - didKeepDocument: Called instead of loading, when the document was left alone.
+    private func renderPosts(keepingUnchangedDocument: Bool = false, didKeepDocument: @escaping @MainActor () -> Void = {}) {
+        // A render that might keep the document leaves this for `shouldLoadRenderedHTML`. Any
+        // other replaces the document come what may (e.g. the web content process died), so it
+        // resets now: `scrollPostToVisible` right after `loadPage` then stages its jump for the
+        // new document instead of scrolling the old one, and a render starting after this one
+        // can't count on keeping the old document.
+        if !keepingUnchangedDocument {
+            webViewDidLoadOnce = false
+            hasScrolledSinceRender = false
+            loadedHTML = nil
+        }
         renderGeneration += 1
         renderedPostsFingerprint = RenderedPostsFingerprint(posts.dropFirst(hiddenPosts))
 
@@ -862,10 +890,47 @@ final class PostsPageViewController: ViewController {
             PostsPerformance.signposter.endInterval("Template", templateSignpost)
             trace?.mark("render #\(generation): template rendered")
 
+            guard await self.shouldLoadRenderedHTML(html, generation: generation, keepingUnchangedDocument: keepingUnchangedDocument, didKeepDocument: didKeepDocument) else { return }
             await self.postsView.renderView.eraseDocument()
             trace?.mark("render #\(generation): document erased")
-            await self.postsView.renderView.render(html: html, baseURL: ForumsClient.shared.baseURL)
+            await self.loadRenderedHTML(html, generation: generation)
         }
+    }
+
+    /// Decides, once a render's HTML is ready, whether it goes into the render view. Not if a newer render has started since (the web view may still be spinning up from the first, and the newer one would load straight over it), nor if it would reload the document with exactly what it already shows.
+    private func shouldLoadRenderedHTML(_ html: String, generation: Int, keepingUnchangedDocument: Bool, didKeepDocument: @MainActor () -> Void) -> Bool {
+        guard generation == renderGeneration else {
+            performanceTrace?.mark("render #\(generation): superseded, not loaded")
+            return false
+        }
+        if keepingUnchangedDocument {
+            // Endless scroll adds posts to the document that a single page's HTML doesn't have,
+            // and a reveal in progress is waiting on a render that would now never come.
+            if html == loadedHTML, !endlessScrollDidAppend, pendingAppend == nil, !isAwaitingReveal {
+                performanceTrace?.mark("render #\(generation): unchanged, kept the loaded document")
+                didKeepDocument()
+                // Normally offered once the render finishes; if this document already has, offer
+                // it now (the poll may only have come with this fetch).
+                if webViewDidLoadOnce {
+                    offerPollToastIfNeeded()
+                }
+                return false
+            }
+            webViewDidLoadOnce = false
+            hasScrolledSinceRender = false
+        }
+        loadedHTML = nil
+        return true
+    }
+
+    /// Loads a render's HTML once the document is erased, unless a newer render has started in the meantime.
+    private func loadRenderedHTML(_ html: String, generation: Int) {
+        guard generation == renderGeneration else {
+            performanceTrace?.mark("render #\(generation): superseded, not loaded")
+            return
+        }
+        loadedHTML = html
+        postsView.renderView.render(html: html, baseURL: ForumsClient.shared.baseURL)
     }
 
     /// Starts fetching the page's first few attachments concurrently with the template render, so their bytes are cached — or at least in flight — by the time WebKit asks `AttachmentSchemeHandler` for them during page load.
@@ -1448,6 +1513,7 @@ final class PostsPageViewController: ViewController {
 
         trace.mark("built and rendered \(chunk.count) posts on main thread (\(html.utf8.count / 1024)KB)")
         contentHeightBeforeLastChunk = postsView.renderView.scrollView.contentSize.height
+        loadedHTML = nil
         await postsView.renderView.appendPostHTML(html, endHTML: endHTML)
         trace.mark("appended to document")
         if embedBlueskyPosts {
@@ -1543,6 +1609,7 @@ final class PostsPageViewController: ViewController {
         hiddenPosts = 0
 
         let html = (0..<end).map(renderedPostAtIndex).joined(separator: "\n")
+        loadedHTML = nil
         postsView.renderView.prependPostHTML(html)
     }
 
@@ -1649,6 +1716,7 @@ final class PostsPageViewController: ViewController {
 
                 // Grabbing the index here ensures we're still on the same page as the post to replace, and that we have the right post index (in case it got hidden).
                 if let i = posts.firstIndex(of: post) {
+                    loadedHTML = nil
                     postsView.renderView.replacePostHTML(renderedPostAtIndex(i), at: i - hiddenPosts)
                 }
             } catch {
@@ -1785,6 +1853,7 @@ final class PostsPageViewController: ViewController {
             do {
                 try await ForumsClient.shared.markThreadAsSeenUpTo(selectedPost!)
                 selectedPost!.thread?.seenPosts = selectedPost!.threadIndex
+                loadedHTML = nil
                 postsView.renderView.markReadUpToPost(identifiedBy: selectedPost!.postID)
 
                 let overlay = MRProgressOverlayView.showOverlayAdded(to: view, title: LocalizedString("posts-page.marked-read"), mode: .checkmark, animated: true)!

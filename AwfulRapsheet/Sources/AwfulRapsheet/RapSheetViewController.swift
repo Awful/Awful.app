@@ -181,7 +181,10 @@ public final class RapSheetViewController: ViewController, ContentRefreshable {
             modalPresentationStyle = .formSheet
         }
 
-        themeDidChange()
+        // Only the tab bar item, as the rest of `themeDidChange()` loads the view, and with it the
+        // render view's web content process. The Leper's Colony is made at launch with the other
+        // tabs, and needn't cost a process until it's opened. `viewDidLoad` themes the rest.
+        updateTabBarItem()
     }
 
     public required init?(coder: NSCoder) {
@@ -297,17 +300,7 @@ public final class RapSheetViewController: ViewController, ContentRefreshable {
     public override func themeDidChange() {
         super.themeDidChange()
 
-        if theme[bool: "showRootTabBarLabel"] == false {
-            tabBarItem.imageInsets = UIEdgeInsets(top: 9, left: 0, bottom: -9, right: 0)
-            tabBarItem.title = nil
-        } else {
-            tabBarItem.imageInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-            tabBarItem.title = if isLepersColony {
-                String(localized: "Lepers", bundle: .module)
-            } else {
-                String(localized: "Rap Sheet", bundle: .module)
-            }
-        }
+        updateTabBarItem()
 
         guard isViewLoaded else { return }
 
@@ -328,6 +321,20 @@ public final class RapSheetViewController: ViewController, ContentRefreshable {
         pullToRefresh.themeDidChange(theme)
 
         renderView.setThemeStylesheet(theme[string: "postsViewCSS"] ?? "")
+    }
+
+    private func updateTabBarItem() {
+        if theme[bool: "showRootTabBarLabel"] == false {
+            tabBarItem.imageInsets = UIEdgeInsets(top: 9, left: 0, bottom: -9, right: 0)
+            tabBarItem.title = nil
+        } else {
+            tabBarItem.imageInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+            tabBarItem.title = if isLepersColony {
+                String(localized: "Lepers", bundle: .module)
+            } else {
+                String(localized: "Rap Sheet", bundle: .module)
+            }
+        }
     }
 
     /// A clear glass bar on iOS 26 (only the liquid-glass item pills show), opaque before. A `barTintColor`

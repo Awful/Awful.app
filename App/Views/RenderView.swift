@@ -38,6 +38,9 @@ final class RenderView: UIView {
 
     private var webLoadSignpost: OSSignpostIntervalState?
 
+    /// Whether `render(html:baseURL:)` has ever been called, i.e. whether there's a document to erase.
+    private var hasRenderedHTML = false
+
     /// Whether lottie-player.js may be injected. Views that never show the frog/ghost animations (e.g. the Leper's Colony) pass `false` to skip the ~400 KB script.
     private let includesLottiePlayer: Bool
 
@@ -163,6 +166,7 @@ final class RenderView: UIView {
     func render(html: String, baseURL: URL?) {
         logger.debug("rendering \(html.count) characters of HTML with baseURL = \(baseURL?.absoluteString ?? "(null)")")
         hasTextSelection = false
+        hasRenderedHTML = true
         if let webLoadSignpost {
             PostsPerformance.signposter.endInterval("WebLoad", webLoadSignpost, "superseded")
         }
@@ -571,6 +575,10 @@ extension RenderView {
          rv.eraseDocument().done { rv.render(html: "<h1>Hi!</h1>", baseURL: nil) }
      */
     func eraseDocument() async {
+        // A web view that has never rendered has nothing to erase. Scripting its blank page would
+        // also make WebKit treat the first render as a cross-site navigation and throw away the
+        // web content process launched with the web view, starting the render over in a new one.
+        guard hasRenderedHTML else { return }
         logger.debug("erasing document")
 
         do {

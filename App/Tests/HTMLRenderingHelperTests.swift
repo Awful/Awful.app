@@ -116,6 +116,15 @@ final class HTMLRenderingHelperTests: XCTestCase {
         XCTAssertEqual(video?["poster"], "https://i.imgur.com/abch.jpg")
     }
 
+    /// The posts page keeps a page instead of reloading it when a fetch renders to the same HTML, which only works if an unchanged post renders identically every time.
+    func testEmbeddedVideoAttributesComeOutInAFixedOrder() {
+        let url = "https://i.imgur.com/abc.gifv"
+        let doc = HTMLDocument(string: #"<a href="\#(url)">\#(url)</a>"#)
+        doc.embedVideos()
+        let video = doc.firstNode(matchingParsedSelector: .cached("video"))
+        XCTAssertEqual(video?.serializedFragment, #"<video width="300" preload="none" controls="" loop="" muted="true" poster="https://i.imgur.com/abch.jpg" src="https://i.imgur.com/abc.mp4" type="video/mp4"></video>"#)
+    }
+
     func testPostImagesDecodeAsynchronously() {
         let doc = HTMLDocument(string: #"<img src="https://example.com/a.png">"#)
         doc.processImgTags(shouldLinkifyNonSmilies: false)
