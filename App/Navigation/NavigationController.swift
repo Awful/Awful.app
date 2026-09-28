@@ -997,6 +997,10 @@ final class NavigationController: UINavigationController, Themeable {
         themeDidChange()
 
         interactivePopGestureRecognizer?.delegate = self
+        // iOS 26's swipe-from-anywhere pop never begins by itself in these navigation controllers (and UIKit also treats the back button as hidden once replaceSidebarBarButtonItems swaps in a custom-view item). Sharing the edge pop's delegate lets it begin under the same conditions.
+        if #available(iOS 26.0, *) {
+            interactiveContentPopGestureRecognizer?.delegate = self
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
