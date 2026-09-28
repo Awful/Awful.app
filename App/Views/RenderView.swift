@@ -213,12 +213,13 @@ final class RenderView: UIView {
                 continuation.resume()
             }
             // Two frames: the first rAF callback runs before its frame is painted.
-            webView.callAsyncJavaScript(
+            // Calls the Objective-C method directly: since the iOS 26 SDK, WebKit's Swift `callAsyncJavaScript` overloads live in libswiftWebKit.dylib, which doesn't exist before iOS 26, so using them makes the app fail to launch on earlier versions.
+            webView.__callAsyncJavaScript(
                 "await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)))",
                 arguments: [:],
-                in: nil,
+                inFrame: nil,
                 in: .page
-            ) { _ in resume() }
+            ) { _, _ in resume() }
             DispatchQueue.main.asyncAfter(deadline: .now() + timeout) { resume() }
         }
     }
