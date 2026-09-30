@@ -553,7 +553,7 @@ final class SidebarTitleView: UIView {
  - Theming support.
  - Custom navbar class `NavigationBar`.
  - Shows and hides the toolbar depending on whether the view controller has toolbar items.
- - On iPhone, allows swiping from the *right* screen edge to unpop a view controller.
+ - On iPhone, allows swiping from the *right* screen edge (or, on iOS 26+, leftward from anywhere) to unpop a view controller.
  */
 final class NavigationController: UINavigationController, Themeable {
 
@@ -2152,12 +2152,7 @@ extension NavigationController: UIGestureRecognizerDelegate {
     }
     
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        /*
-            Allow simultaneous recognition with:
-         
-                1. The swipe-to-unpop gesture recognizer.
-                2. The swipe-to-show-basement gesture recognizer.
-         */
+        // Allow simultaneous recognition with the swipe-to-unpop edge gesture recognizer.
         return otherGestureRecognizer is UIScreenEdgePanGestureRecognizer
     }
 }

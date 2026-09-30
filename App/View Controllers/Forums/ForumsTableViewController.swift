@@ -159,7 +159,8 @@ final class ForumsTableViewController: CollectionViewController, ContentRefresha
     }
 
     private func swipeActionsConfig(at indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        guard listDataSource?.canEditItem(at: indexPath) == true else { return nil }
+        // Edit mode only, like Bookmarks, so a leftward swipe on a favorite is free to unpop.
+        guard collectionView.isEditing, listDataSource?.canEditItem(at: indexPath) == true else { return nil }
         let action = UIContextualAction(style: .destructive, title: nil) { [weak self] _, _, completion in
             self?.listDataSource.deleteFavorite(at: indexPath)
             completion(true)

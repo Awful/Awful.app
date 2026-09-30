@@ -2,20 +2,33 @@
 //
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import AwfulExtensions
 import UIKit
 
 final class UnpoppingViewHandler: UIPercentDrivenInteractiveTransition {
     let navigationController: UINavigationController
     var viewControllers: [UIViewController] = []
-    private var gestureStartPointX: CGFloat = 0
     private(set) var interactiveUnpopIsTakingPlace = false
     var navigationControllerIsAnimating = false
 
-    private lazy var panRecognizer: UIGestureRecognizer = {
+    /// Horizontal speed (points per second) past which releasing the finger commits to, or abandons, the unpop regardless of how far it got.
+    private static let flickVelocity: CGFloat = 500
+
+    private lazy var edgePanRecognizer: UIGestureRecognizer = {
         let pan = UIScreenEdgePanGestureRecognizer()
         pan.addTarget(self, action: #selector(handlePan))
         pan.delegate = self
         pan.edges = .right
+        return pan
+    }()
+
+    /// On iOS 26+, where the system pop works from anywhere, a leftward swipe starting anywhere unpops too. Waits on the edge recognizer so a swipe from the right edge still goes there.
+    private lazy var contentPanRecognizer: UIPanGestureRecognizer = {
+        let pan = UIPanGestureRecognizer()
+        pan.addTarget(self, action: #selector(handlePan))
+        pan.delegate = self
+        pan.maximumNumberOfTouches = 1
+        pan.require(toFail: edgePanRecognizer)
         return pan
     }()
     
@@ -23,40 +36,48 @@ final class UnpoppingViewHandler: UIPercentDrivenInteractiveTransition {
         self.navigationController = navigationController
         super.init()
 
-        navigationController.view.addGestureRecognizer(panRecognizer)
+        navigationController.view.addGestureRecognizer(edgePanRecognizer)
+        if #available(iOS 26.0, *) {
+            navigationController.view.addGestureRecognizer(contentPanRecognizer)
+        }
     }
     
     deinit {
-        navigationController.view.removeGestureRecognizer(panRecognizer)
+        navigationController.view.removeGestureRecognizer(edgePanRecognizer)
+        if #available(iOS 26.0, *) {
+            navigationController.view.removeGestureRecognizer(contentPanRecognizer)
+        }
+    }
+
+    /// Fraction of the way across the screen the finger has travelled leftward, which is how far the incoming view has slid in.
+    private func percentComplete(for sender: UIPanGestureRecognizer) -> CGFloat {
+        guard let view = sender.view, view.bounds.width > 0 else { return 0 }
+        return -sender.translation(in: view).x / view.bounds.width
     }
     
-    @objc private func handlePan(_ sender: UIScreenEdgePanGestureRecognizer) {
-        let location = sender.location(in: sender.view)
+    @objc private func handlePan(_ sender: UIPanGestureRecognizer) {
         switch sender.state {
         case .began:
-            guard !viewControllers.isEmpty else { break }
+            guard let vc = viewControllers.last else { break }
             interactiveUnpopIsTakingPlace = true
-            gestureStartPointX = location.x
-            if let vc = viewControllers.last {
-                navigationController.pushViewController(vc, animated: true)
-            }
+            navigationController.pushViewController(vc, animated: true)
             
         case .changed:
             guard interactiveUnpopIsTakingPlace else { break }
-            let percent = (gestureStartPointX - location.x) / gestureStartPointX
-            update(percent)
+            update(percentComplete(for: sender))
             
         case .cancelled, .ended:
             guard interactiveUnpopIsTakingPlace else { break }
-            let percent = (gestureStartPointX - location.x) / gestureStartPointX
-            // TODO: Use [recognizer velocityInView] too?
-            if percent <= 0.3 {
-                cancel()
-            } else {
+            // Swipes from mid-screen tend to be short, so a flick counts as much as distance does.
+            let velocity = sender.velocity(in: sender.view).x
+            let completes = sender.state == .ended
+                && (velocity < -Self.flickVelocity || (velocity <= Self.flickVelocity && percentComplete(for: sender) > 0.3))
+            if completes {
                 viewControllers.removeLast()
                 finish()
+            } else {
+                cancel()
             }
-            gestureStartPointX = 0
             interactiveUnpopIsTakingPlace = false
             
         case .failed, .possible:
@@ -76,7 +97,7 @@ final class UnpoppingViewHandler: UIPercentDrivenInteractiveTransition {
     }
     
     func navigationControllerDidCancelInteractivePop() {
-        /// We get a call to didPopViewController when the interactive pop starts, but no (automatic) inverse call if the gesture is cancelled. This cleans up the state by removing the falsely stacked controller.
+        // We get a call to didPopViewController when the interactive pop starts, but no (automatic) inverse call if the gesture is cancelled. This cleans up the state by removing the falsely stacked controller.
         navigationControllerIsAnimating = false
         viewControllers.removeLast()
     }
@@ -129,11 +150,14 @@ extension UnpoppingViewHandler: UIViewControllerAnimatedTransitioning {
 
 extension UnpoppingViewHandler: UIGestureRecognizerDelegate {
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
-        // Since we're on the right edge, the recognizer interferes with reordering UITableView.
+        // Leftward drags on an editing list belong to it: reordering, and the swipe actions that only exist while editing.
         var cur = touch.view
         while let view = cur {
             if let tableView = cur as? UITableView {
                 return !tableView.isEditing
+            }
+            if let collectionView = cur as? UICollectionView, collectionView.isEditing {
+                return false
             }
             cur = view.superview
         }
@@ -142,10 +166,27 @@ extension UnpoppingViewHandler: UIGestureRecognizerDelegate {
     }
 
     func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
-        return !viewControllers.isEmpty && !navigationControllerIsAnimating
+        guard !viewControllers.isEmpty && !navigationControllerIsAnimating else { return false }
+        guard gestureRecognizer === contentPanRecognizer, let view = gestureRecognizer.view else { return true }
+
+        // Don't hijack a text-selection drag in a posts web view, e.g. back on a thread after "Their posts" or a rap sheet.
+        let location = contentPanRecognizer.location(in: view)
+        if let hit = view.hitTest(location, with: nil),
+           let renderView = hit.responderChain.first(where: { $0 is RenderView }) as? RenderView,
+           renderView.hasTextSelection
+        {
+            return false
+        }
+        // Only for horizontal-dominant leftward motion; rightward is the system's pop.
+        let translation = contentPanRecognizer.translation(in: view)
+        return translation.x < 0 && abs(translation.x) > abs(translation.y)
     }
     
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith other: UIGestureRecognizer) -> Bool {
+        // Otherwise the web view's or list's scroll pan wins and the content pan never fires. Same as `AwfulSplitViewController.revealSidebarPan`.
+        if gestureRecognizer === contentPanRecognizer {
+            return true
+        }
         // Allow simultaneous recognition with the swipe-to-pop gesture recognizer.
         return other is UIScreenEdgePanGestureRecognizer
     }
