@@ -53,7 +53,7 @@ def phases_from(lines):
 
 def field(text, name):
     """Pulls one field from a JSON line the log may have truncated."""
-    m = re.search(r'"%s":(\{[^{}]*\}|\[[^\]]*\]|"[^"]*"|-?[\d.]+|null|true|false)' % re.escape(name), text)
+    m = re.search(r'"%s":(\{(?:[^{}]|\{[^{}]*\})*\}|\[[^\]]*\]|"[^"]*"|-?[\d.]+|null|true|false)' % re.escape(name), text)
     if not m:
         return None
     try:
@@ -66,6 +66,7 @@ def summarize(lines, start, end):
     s = defaultdict(float)
     s['worst_hitch'] = s['worst_gap'] = s['largest_leap'] = 0
     s['leaps_at'], s['largest_leap_at'] = Counter(), Counter()
+    s['growth_by'] = Counter()
     chunk_starts, insert_times, fetch_times = {}, [], []
     for t, msg in lines:
         if not (start <= t <= end):
@@ -94,6 +95,7 @@ def summarize(lines, start, end):
             s['first_draws'] += resizes.get('firstRender', 0)
             s['growths'] += resizes.get('growth', 0)
             s['resize_px'] += resizes.get('px', 0)
+            s['growth_by'].update(resizes.get('growthBy', {}))
         elif m := CHUNK.search(msg):
             key = m.group(1, 2)
             if m.group(5) == 'built and rendered':
@@ -171,6 +173,7 @@ def main():
     rows += [
         ('**Page (web content)**', ['' for _ in phases]),
         ('Resizes above viewport: first draw / growth', [f"{s['first_draws']:.0f} / {s['growths']:.0f} ({s['resize_px']:.0f}px)" for s in stats]),
+        ('&nbsp;&nbsp;growth in posts with', [', '.join(f"{cause} {n}" for cause, n in s['growth_by'].most_common()) or '-' for s in stats]),
         ('Frames, dropped', [f"{s['frames']:.0f}, {s['dropped']:.0f} ({s['dropped'] / s['frames'] * 100:.1f}%)" if s['frames'] else '-' for s in stats]),
         ('Long frames (worst gap)', [f"{s['long_frames']:.0f} ({s['worst_gap']:.0f}ms)" if s['frames'] else '-' for s in stats]),
         ('**Endless scroll**', ['' for _ in phases]),

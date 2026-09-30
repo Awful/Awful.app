@@ -1,5 +1,5 @@
 #!/bin/bash
-# posts-scroll-perf.sh [-o dir] [-w slow|medium] [--gifs on|off] [--no-frames] [device]
+# posts-scroll-perf.sh [-o dir] [-w slow|medium|previous] [--gifs on|off] [--no-frames] [device]
 #
 # Runs the posts scrolling workout (App/UITests/PostsScrollPerformanceTests.swift)
 # on a simulator while recording the performance probe's output and every app
@@ -9,13 +9,18 @@
 #   ./Scripts/posts-scroll-perf.sh <udid>           # a specific simulator
 #   ./Scripts/posts-scroll-perf.sh -o /tmp/scroll   # elsewhere
 #   ./Scripts/posts-scroll-perf.sh -w medium        # just one workout (about half the time)
+#   ./Scripts/posts-scroll-perf.sh -w previous      # just the Previous posts workout
 #   ./Scripts/posts-scroll-perf.sh --gifs off       # GIF autoplay forced off (or on) for the run
 #   ./Scripts/posts-scroll-perf.sh --no-frames      # no frame sampling in the page, whose
 #                                                   # rAF loop itself costs web content CPU
 #
-# Two workouts run back to back. Each opens page 1 of the GIF thread with
-# endless scroll on, flicks quickly down four pages, then scrolls up two pages
-# and down two again: unhurried ("slow") and twice as fast ("medium").
+# Three workouts run back to back. Two open page 1 of the GIF thread with
+# endless scroll on, flick quickly down four pages, then scroll up two pages
+# and down two again: unhurried ("slow") and twice as fast ("medium"). The
+# third ("previous") marks a thread read partway down a page, opens that page,
+# taps Previous posts and scrolls up through the revealed posts, failing if any
+# is drawn for the first time above the viewport on the way. Set
+# TEST_RUNNER_AWFUL_PERF_SET_SEEN=<threadID>:<index> to pick the thread and post.
 # Endless scroll and the probe are switched on through launch arguments for
 # the run only, as is GIF autoplay with --gifs; the simulator's own settings are
 # left alone. It needs a
@@ -47,7 +52,8 @@ while [ $# -gt 0 ]; do
             case "${2:-}" in
                 slow)   WORKOUT=testSlowScrolling ;;
                 medium) WORKOUT=testMediumScrolling ;;
-                *)      echo "--workout is slow or medium" >&2; exit 1 ;;
+                previous) WORKOUT=testScrollUpAfterPreviousPosts ;;
+                *)      echo "--workout is slow, medium or previous" >&2; exit 1 ;;
             esac
             shift 2 ;;
         --gifs)

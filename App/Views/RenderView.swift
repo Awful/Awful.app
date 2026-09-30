@@ -190,10 +190,15 @@ final class RenderView: UIView {
     /// Like `scrollToFractionalOffset(_:)`, but returns once the new offset has been painted.
     func scrollToFractionalOffsetThenWaitForPaint(_ fractionalOffset: CGPoint, waitingForPaint: Bool = true) async {
         do {
+            // `jumpToFractionalOffset` gives the posts above the landing spot their real heights first. It only scrolls vertically, as pages of posts do.
             try await webView.eval("""
-                window.scrollTo(
-                    document.body.scrollWidth * \(fractionalOffset.x),
-                    document.body.scrollHeight * \(fractionalOffset.y));
+                if (window.Awful && Awful.jumpToFractionalOffset && \(fractionalOffset.x) === 0) {
+                    Awful.jumpToFractionalOffset(\(fractionalOffset.y));
+                } else {
+                    window.scrollTo(
+                        document.body.scrollWidth * \(fractionalOffset.x),
+                        document.body.scrollHeight * \(fractionalOffset.y));
+                }
                 """)
         } catch {
             logger.error("error attempting to scroll: \(error)")
@@ -226,8 +231,16 @@ final class RenderView: UIView {
     
     #if DEBUG
     private func logPerformanceReport(_ body: Any) {
-        if let report = body as? [String: Any], report["type"] as? String == "position", let page = report["topPage"] as? Int {
-            PostsPerformance.announceTopPage(page)
+        if let report = body as? [String: Any] {
+            switch report["type"] as? String {
+            case "position":
+                if let page = report["topPage"] as? Int { PostsPerformance.announceTopPage(page) }
+                if report["atTop"] as? Bool == true { PostsPerformance.announceAtTop() }
+            case "shiftAbove":
+                if let kind = report["kind"] as? String { PostsPerformance.announceShiftAbove(kind: kind) }
+            default:
+                break
+            }
         }
         let json = (try? JSONSerialization.data(withJSONObject: body, options: [.sortedKeys]))
             .flatMap { String(data: $0, encoding: .utf8) } ?? "\(body)"

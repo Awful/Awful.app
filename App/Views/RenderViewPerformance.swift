@@ -2,6 +2,7 @@
 //
 //  Copyright 2026 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import AwfulCore
 import Foundation
 import os
 import ScrollViewDelegateMultiplexer
@@ -68,9 +69,50 @@ enum PostsPerformance {
     static let topPageNotificationPrefix = "com.awfulapp.Awful.perf.topPage."
 
     static func announceTopPage(_ page: Int) {
+        postDarwinNotification("\(topPageNotificationPrefix)\(page)")
+    }
+
+    /// Posted as a Darwin notification whenever scrolling reaches the top of the document.
+    static let atTopNotificationName = "com.awfulapp.Awful.perf.atTop"
+
+    static func announceAtTop() {
+        postDarwinNotification(atTopNotificationName)
+    }
+
+    /// Posted as a Darwin notification, with `firstRender` or `growth` appended, whenever a post changes height above the viewport while scrolling. Lets a UI test count the jumps a reader would see.
+    static let shiftAboveNotificationPrefix = "com.awfulapp.Awful.perf.shiftAbove."
+
+    static func announceShiftAbove(kind: String) {
+        postDarwinNotification("\(shiftAboveNotificationPrefix)\(kind)")
+    }
+
+    /// Posted as a Darwin notification once the launch argument `-AwfulPerfSetSeen "<threadID>:<index>"` has marked that thread as read up to that post (or failed to).
+    static let setSeenNotificationName = "com.awfulapp.Awful.perf.setSeen"
+
+    /// For UI tests: with the launch argument `-AwfulPerfSetSeen "<threadID>:<index>"`, marks the thread as read up to the post at `index` (as "Mark as read up to here" does), so the thread next opens there with the earlier posts behind Previous posts.
+    static func performLaunchSetup() {
+        guard let spec = UserDefaults.standard.string(forKey: "AwfulPerfSetSeen") else { return }
+        let parts = spec.split(separator: ":")
+        guard parts.count == 2, let index = Int(parts[1]) else {
+            logger.error("[setup] can't read AwfulPerfSetSeen \(spec, privacy: .public); expected <threadID>:<index>")
+            return
+        }
+        let threadID = String(parts[0])
+        Task {
+            do {
+                try await ForumsClient.shared.markThreadAsSeenUpTo(threadID: threadID, index: index)
+                logger.info("[setup] marked thread \(threadID, privacy: .public) read up to post \(index)")
+            } catch {
+                logger.error("[setup] could not mark thread \(threadID, privacy: .public) read: \(error, privacy: .public)")
+            }
+            postDarwinNotification(setSeenNotificationName)
+        }
+    }
+
+    private static func postDarwinNotification(_ name: String) {
         CFNotificationCenterPostNotification(
             CFNotificationCenterGetDarwinNotifyCenter(),
-            CFNotificationName("\(topPageNotificationPrefix)\(page)" as CFString),
+            CFNotificationName(name as CFString),
             nil, nil, true)
     }
 
@@ -163,7 +205,7 @@ enum PostsPerformance {
         if (frameSession) { return; }
         frameSession = {
           kind: kind, begin: performance.now(), startY: window.scrollY, frames: 0, dropped: 0, longFrames: 0, maxGap: 0, last: 0,
-          shifts: { above: 0, straddling: 0, firstRender: 0, growth: 0, px: 0 }, layoutShift: 0
+          shifts: { above: 0, straddling: 0, firstRender: 0, growth: 0, px: 0, growthBy: {} }, layoutShift: 0
         };
         // Without frame sampling the session still collects resizes above the viewport.
         if (sampleFrames) { frameRequest = requestAnimationFrame(tick); }
@@ -187,6 +229,60 @@ enum PostsPerformance {
         };
       }
 
+      // When each image, video or iframe last finished loading, so a post's growth can be put down to what just loaded inside it.
+      const loadedAt = new WeakMap();
+      ['load', 'loadedmetadata', 'error'].forEach(function(type) {
+        document.addEventListener(type, function(event) { loadedAt.set(event.target, performance.now()); }, true);
+      });
+
+      // What last changed inside each post (a node swapped in, or a class, src or style changed), so growth with nothing newly loaded can still be put down to something.
+      const changedAt = new WeakMap();
+      function describeNode(node) {
+        if (node.nodeType !== 1) { return node.nodeName.toLowerCase(); }
+        return node.tagName.toLowerCase() + (node.className && typeof node.className === 'string' ? '.' + node.className.trim().split(/\s+/).join('.') : '');
+      }
+      function recordChange(m, now) {
+        const target = m.target.nodeType === 1 ? m.target : m.target.parentElement;
+        const post = target && target.closest('post');
+        // Measuring toggles a class on the post itself; that's not content changing.
+        if (!post || (m.type === 'attributes' && m.target === post)) { return; }
+        let what;
+        if (m.type === 'childList') {
+          const added = Array.from(m.addedNodes).filter(function(n) { return n.nodeType === 1; });
+          what = 'added ' + (added.length ? describeNode(added[0]) : 'text') + ' in ' + describeNode(target);
+        } else {
+          what = m.attributeName + ' of ' + describeNode(target);
+        }
+        changedAt.set(post, { at: now, what: what });
+      }
+
+      function describeLoaded(el) {
+        if (el.closest('.bluesky-post')) { return 'bluesky'; }
+        if (el.closest('.tweet')) { return 'tweet'; }
+        if (el.tagName === 'VIDEO' || el.tagName === 'IFRAME') { return 'video'; }
+        if (el.closest('header')) { return 'avatar'; }
+        if (el.classList.contains('awful-smile')) { return 'smilie'; }
+        return 'image';
+      }
+
+      // The likeliest reason a post above the viewport changed height once it was already drawn: whatever finished loading in it within the last second, or else the loading content it holds, checked in order of how much it tends to grow.
+      function growthCause(post) {
+        const now = performance.now();
+        let latest = null, latestAt = now - 1000;
+        post.querySelectorAll('img, video, iframe').forEach(function(el) {
+          const at = loadedAt.get(el);
+          if (at !== undefined && at > latestAt) { latest = el; latestAt = at; }
+        });
+        if (latest) { return describeLoaded(latest); }
+        const change = changedAt.get(post);
+        if (change && change.at > now - 1000) { return change.what; }
+        if (post.querySelector('.bluesky-post, a[data-bluesky-post]')) { return 'bluesky'; }
+        if (post.querySelector('.tweet, a[data-tweet-id]')) { return 'tweet'; }
+        if (post.querySelector('video, iframe')) { return 'video'; }
+        if (post.querySelector('section.postbody img:not(.awful-smile)')) { return 'image'; }
+        return 'other';
+      }
+
       // Watches post heights so a scroll session can report resizes that happen out of sight above the viewport: a post drawn for the first time by `content-visibility` (leaving its placeholder height), or growing as images and embeds load.
       const postHeights = new WeakMap();
       const postResizeObserver = new ResizeObserver(function(entries) {
@@ -200,8 +296,13 @@ enum PostsPerformance {
           const rect = entry.target.getBoundingClientRect();
           if (rect.top >= 0) { return; }
           if (rect.bottom <= 0) { s.shifts.above++; } else { s.shifts.straddling++; }
-          if (Math.abs(previous - placeholderHeight) < 1) { s.shifts.firstRender++; } else { s.shifts.growth++; }
+          const kind = Math.abs(previous - placeholderHeight) < 1 ? 'firstRender' : 'growth';
+          const cause = kind === 'firstRender' ? kind : growthCause(entry.target);
+          s.shifts[kind]++;
+          if (kind === 'growth') { s.shifts.growthBy[cause] = (s.shifts.growthBy[cause] || 0) + 1; }
           s.shifts.px += Math.round(Math.abs(height - previous));
+          // Straight away, so a UI test can count them as they happen.
+          post('shiftAbove', { kind: kind, cause: cause, px: Math.round(height - previous) });
         });
       });
       function observePosts(root) {
@@ -212,8 +313,12 @@ enum PostsPerformance {
         observePosts(document);
         // Endless scroll appends posts later.
         new MutationObserver(function(mutations) {
-          mutations.forEach(function(m) { m.addedNodes.forEach(observePosts); });
-        }).observe(document.body, { childList: true, subtree: true });
+          const now = performance.now();
+          mutations.forEach(function(m) {
+            m.addedNodes.forEach(observePosts);
+            recordChange(m, now);
+          });
+        }).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'src', 'style', 'width', 'height'] });
       });
 
       function hostOf(url) {
@@ -358,6 +463,7 @@ enum PostsPerformance {
 
       // Which page's posts are at the top of the viewport: the last endless-scroll divider scrolled past, or 0 for the page first loaded. Reported when it changes, so an automated test can tell how far it has scrolled.
       let lastTopPage = null;
+      let lastAtTop = null;
       let lastTopPageCheck = 0;
       function reportTopPage() {
         let page = 0;
@@ -369,6 +475,11 @@ enum PostsPerformance {
         if (page !== lastTopPage) {
           lastTopPage = page;
           post('position', { topPage: page });
+        }
+        const atTop = window.scrollY <= 0;
+        if (atTop !== lastAtTop) {
+          lastAtTop = atTop;
+          if (atTop) { post('position', { atTop: true }); }
         }
       }
 

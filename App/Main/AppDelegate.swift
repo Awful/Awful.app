@@ -88,6 +88,9 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
         ignoreSilentSwitchWhenPlayingEmbeddedVideo()
+        #if DEBUG
+        PostsPerformance.performLaunchSetup()
+        #endif
 
         accountFeaturesRefresher = AccountFeaturesRefresher(client: ForumsClient.shared, minder: RefreshMinder.sharedMinder)
         announcementListRefresher = AnnouncementListRefresher(client: ForumsClient.shared, minder: RefreshMinder.sharedMinder)

@@ -667,10 +667,18 @@ public final class ForumsClient {
             let error = NSError(domain: NSCocoaErrorDomain, code: NSUserCancelledError, userInfo: nil)
             throw error
         }
+        try await markThreadAsSeenUpTo(threadID: threadID, index: Int(threadIndex))
+    }
+
+    /// Like `markThreadAsSeenUpTo(_:)`, for a post known only by its thread and its index within that thread.
+    public func markThreadAsSeenUpTo(
+        threadID: String,
+        index: Int
+    ) async throws {
         _ = try await fetch(method: .post, urlString: "showthread.php", parameters: [
             "action": "setseen",
             "threadid": threadID,
-            "index": "\(threadIndex)",
+            "index": "\(index)",
         ])
     }
 

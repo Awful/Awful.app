@@ -8,15 +8,17 @@ import XCTest
 /// Repeatable scrolling workouts for the posts view, for measuring scroll smoothness with the
 /// performance probe (see `PostsPerformance`).
 ///
-/// With endless scroll on, each workout opens page 1 of an image-heavy thread, flicks quickly
-/// down four pages, then scrolls back up two pages and down two again: unhurried in
-/// `testSlowScrolling`, twice as fast in `testMediumScrolling`. The gestures are real touches, so
-/// scroll anchoring and WebKit's async scrolling behave as they do for a reader. (XCUITest waits
-/// for each gesture's scrolling to settle before the next, so gestures never overlap.)
+/// With endless scroll on, `testSlowScrolling` and `testMediumScrolling` open page 1 of an
+/// image-heavy thread, flick quickly down four pages, then scroll back up two pages and down two
+/// again, unhurried and twice as fast. `testScrollUpAfterPreviousPosts` scrolls up through posts
+/// revealed by Previous posts. The gestures are real touches, so scroll anchoring and WebKit's
+/// async scrolling behave as they do for a reader. (XCUITest waits for each gesture's scrolling to
+/// settle before the next, so gestures never overlap.)
 ///
-/// The test only drives the app and logs the start and end of each phase. The numbers come from
-/// the probe's own logging, so run it through `Scripts/posts-scroll-perf.sh`, which captures that
-/// output alongside process CPU and memory and writes a per-phase report.
+/// The tests drive the app and log the start and end of each phase; only the Previous posts one
+/// asserts anything. The numbers come from the probe's own logging, so run them through
+/// `Scripts/posts-scroll-perf.sh`, which captures that output alongside process CPU and memory and
+/// writes a per-phase report.
 ///
 /// Progress comes from the probe too: it posts a Darwin notification naming the page at the top of
 /// the viewport whenever that changes, so the test never snapshots the web view's (large, and
@@ -34,6 +36,17 @@ final class PostsScrollPerformanceTests: XCTestCase {
 
     /// The page at the top of the viewport, as last announced by the app. The probe reports 0 for the page first loaded, which here is page 1.
     private static var topPage = 1
+
+    /// Matches `PostsPerformance.shiftAboveNotificationPrefix`, `atTopNotificationName` and `setSeenNotificationName` in the app.
+    private static let shiftAboveNotificationPrefix = "com.awfulapp.Awful.perf.shiftAbove."
+    private static let atTopNotificationName = "com.awfulapp.Awful.perf.atTop"
+    private static let setSeenNotificationName = "com.awfulapp.Awful.perf.setSeen"
+
+    /// Posts that changed height above the viewport while scrolling, as announced by the app: drawn for the first time (leaving their placeholder height), or grown as images and embeds loaded.
+    private static var firstRenderShifts = 0
+    private static var growthShifts = 0
+    private static var reachedTop = false
+    private static var didSetSeen = false
 
     /// Shares the probe's category so one `log stream` captures both.
     private let logger = Logger(subsystem: "com.awfulapp.Awful.UITests", category: "PostsPerformance")
@@ -58,7 +71,12 @@ final class PostsScrollPerformanceTests: XCTestCase {
             app.launchArguments += ["-AwfulPerfProbeFrames", "NO"]
         }
         Self.topPage = 1
+        Self.firstRenderShifts = 0
+        Self.growthShifts = 0
+        Self.reachedTop = false
+        Self.didSetSeen = false
         observeTopPage()
+        observeProbeEvents()
     }
 
     override func tearDown() {
@@ -78,6 +96,58 @@ final class PostsScrollPerformanceTests: XCTestCase {
         try workout(name: "medium") { up in
             self.drag(up: up, velocity: XCUIGestureVelocity(3000))
         }
+    }
+
+    /// A reader opens a page at its first unread post, taps Previous posts to put the posts before it back above them, and scrolls up through those. None of those posts has been drawn yet, so each must already have its real height; if one is first drawn on the way up, everything below it lurches.
+    ///
+    /// Set `AWFUL_PERF_SET_SEEN` (passed through xcodebuild as `TEST_RUNNER_AWFUL_PERF_SET_SEEN`) to `<threadID>:<index>` to choose the thread and first unread post. The default is post 20 of page 3148 of the Bluesky thread, which has plenty of tweets and Bluesky posts. Pick a post on a full page, so the posts don't change between runs, and vary it now and then: embeds a run has already loaded come from cache next time.
+    func testScrollUpAfterPreviousPosts() throws {
+        let spec = ProcessInfo.processInfo.environment["AWFUL_PERF_SET_SEEN"] ?? "3879285:125900"
+        let parts = spec.split(separator: ":")
+        guard parts.count == 2, let index = Int(parts[1]), index > 1 else {
+            throw XCTSkip("AWFUL_PERF_SET_SEEN should look like <threadID>:<index>, with an index past the first post")
+        }
+        let threadID = String(parts[0])
+        let page = (index - 1) / 40 + 1
+
+        // Marks the thread read up to the post before `index`, as "Mark as read up to here" does, so the page opens there with the earlier posts hidden.
+        app.launchArguments += ["-AwfulPerfSetSeen", spec]
+        app.launch()
+        try skipUnlessLoggedIn()
+        guard #available(iOS 16.4, *) else {
+            throw XCTSkip("Opening the thread by URL needs iOS 16.4 or newer.")
+        }
+        waitUntil(timeout: 20) { Self.didSetSeen }
+        XCTAssertTrue(Self.didSetSeen, "the app didn't report marking the thread read")
+
+        app.open(URL(string: "awfulhttps://forums.somethingawful.com/showthread.php?threadid=\(threadID)&perpage=40&pagenumber=\(page)")!)
+        XCTAssertTrue(app.webViews.firstMatch.waitForExistence(timeout: 20), "no posts web view")
+        sleep(6)
+
+        // The top bar shows once the reader scrolls up a little.
+        let previousPosts = app.buttons["Previous posts"]
+        for _ in 0..<5 where !(previousPosts.exists && previousPosts.isHittable) {
+            point(0.4).press(forDuration: 0.05, thenDragTo: point(0.5), withVelocity: XCUIGestureVelocity(500), thenHoldForDuration: 0.2)
+        }
+        XCTAssertTrue(previousPosts.isHittable, "no Previous posts button; is post \(index) within the thread?")
+        XCTAssertTrue(previousPosts.isEnabled, "no posts to reveal; is the Forums option to mark seen posts in a different colour on?")
+        previousPosts.tap()
+        // Not `sleep`: the run loop must deliver what the tap caused before the counts reset, or it's counted as happening while scrolling.
+        RunLoop.current.run(until: Date().addingTimeInterval(2))
+
+        Self.firstRenderShifts = 0
+        Self.growthShifts = 0
+        Self.reachedTop = false
+        phase("previous-posts/up") {
+            repeatGesture(until: { Self.reachedTop }, maxGestures: 300) {
+                self.drag(up: false, velocity: XCUIGestureVelocity(1500))
+            }
+        }
+        sleep(3)
+        logger.info("[ui-test] shifts above viewport: \(Self.firstRenderShifts) first draws, \(Self.growthShifts) growths")
+        logger.info("[ui-test] done previous-posts")
+
+        XCTAssertEqual(Self.firstRenderShifts, 0, "posts were drawn for the first time above the viewport while scrolling up, so the page jumped")
     }
 
     // MARK: Workout
@@ -153,6 +223,13 @@ final class PostsScrollPerformanceTests: XCTestCase {
         XCTFail("didn't reach the target within \(maxGestures) gestures (top page \(Self.topPage))")
     }
 
+    private func waitUntil(timeout: TimeInterval, _ done: () -> Bool) {
+        let deadline = Date().addingTimeInterval(timeout)
+        while !done(), Date() < deadline {
+            RunLoop.current.run(until: Date().addingTimeInterval(0.1))
+        }
+    }
+
     // MARK: Progress
 
     private var observerToken: UnsafeRawPointer {
@@ -169,6 +246,32 @@ final class PostsScrollPerformanceTests: XCTestCase {
                 else { return }
                 PostsScrollPerformanceTests.topPage = max(page, 1)
             }, "\(Self.topPageNotificationPrefix)\(page)" as CFString, nil, .deliverImmediately)
+        }
+    }
+
+    private func observeProbeEvents() {
+        let center = CFNotificationCenterGetDarwinNotifyCenter()
+        let callback: CFNotificationCallback = { _, _, name, _, _ in
+            switch name?.rawValue as String? {
+            case PostsScrollPerformanceTests.shiftAboveNotificationPrefix + "firstRender":
+                PostsScrollPerformanceTests.firstRenderShifts += 1
+            case PostsScrollPerformanceTests.shiftAboveNotificationPrefix + "growth":
+                PostsScrollPerformanceTests.growthShifts += 1
+            case PostsScrollPerformanceTests.atTopNotificationName:
+                PostsScrollPerformanceTests.reachedTop = true
+            case PostsScrollPerformanceTests.setSeenNotificationName:
+                PostsScrollPerformanceTests.didSetSeen = true
+            default:
+                break
+            }
+        }
+        for name in [
+            Self.shiftAboveNotificationPrefix + "firstRender",
+            Self.shiftAboveNotificationPrefix + "growth",
+            Self.atTopNotificationName,
+            Self.setSeenNotificationName,
+        ] {
+            CFNotificationCenterAddObserver(center, observerToken, callback, name as CFString, nil, .deliverImmediately)
         }
     }
 

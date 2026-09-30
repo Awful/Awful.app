@@ -1106,7 +1106,26 @@ Awful.loadTwitterWidgets = function() {
  @param {number} fraction - A number between 0 and 1, where 0 is the top of the document and 1 is the bottom.
  */
 Awful.jumpToFractionalOffset = function(fraction) {
-  window.scroll(0, document.body.scrollHeight * fraction);
+  var target = document.body.scrollHeight * fraction;
+
+  // Land on the same post as the fraction does now, but with it and every post above it at their real heights. See `Awful.measurePosts`.
+  var posts = Array.from(document.querySelectorAll(SELECTORS.POST_ELEMENTS));
+  for (var i = 0; i < posts.length; i++) {
+    var rect = posts[i].getBoundingClientRect();
+    var top = rect.top + window.scrollY;
+    if (top + rect.height > target) {
+      // Above the post (say, in the page header) stays the same distance above it; within it, the same fraction of the way through.
+      var offsetIntoPost = target - top;
+      var fractionIntoPost = rect.height > 0 ? offsetIntoPost / rect.height : 0;
+      Awful.measurePosts(posts.slice(0, i + 1));
+      rect = posts[i].getBoundingClientRect();
+      top = rect.top + window.scrollY;
+      target = offsetIntoPost <= 0 ? top + offsetIntoPost : top + rect.height * fractionIntoPost;
+      break;
+    }
+  }
+
+  window.scroll(0, target);
 };
 
 
@@ -1460,29 +1479,87 @@ Awful.jumpToPostWithID = function(postID, animated, topOffset) {
 
 
 /**
- Draws, once, every post above `post` that hasn't been drawn yet.
+ Draws, once, every post above `post` that hasn't been drawn yet. See `Awful.measurePosts`.
+ */
+Awful.renderPostsAbove = function(post) {
+  var above = [];
+  for (var sibling = post.previousElementSibling; sibling; sibling = sibling.previousElementSibling) {
+    if (sibling.matches(SELECTORS.POST_ELEMENTS)) {
+      above.push(sibling);
+    }
+  }
+  Awful.measurePosts(above);
+};
 
- Posts use `content-visibility: auto`, so a post that has never been on screen sits at a placeholder height until it's drawn. Landing partway down the page and then scrolling up would draw those posts on the way, and each one changing height above the viewport shoves the reader's content down (WebKit doesn't correct for it mid-drag). Drawing them up front means the layout is already right when the jump lands.
+
+/**
+ Draws, once, each of `posts` that hasn't been drawn yet.
+
+ Posts use `content-visibility: auto`, so a post that has never been on screen sits at a placeholder height until it's drawn. Landing partway down the page (or having posts put back above the reader) and then scrolling up would draw those posts on the way, and each one changing height above the viewport shoves the reader's content down (WebKit doesn't correct for it mid-drag). Drawing them up front means the layout is already right before the reader scrolls.
 
  The layout is correct immediately, so the caller can measure straight away. WebKit only records a post's real height (which `contain-intrinsic-height: auto` then keeps using once the post is skipped again) during a rendering update, so each post stays drawn until two animation frames have passed. If frames are throttled (say, the render view is hidden), the posts simply stay drawn until they resume.
  */
-Awful.renderPostsAbove = function(post) {
+Awful.measurePosts = function(posts) {
   var measuring = [];
-  for (var sibling = post.previousElementSibling; sibling; sibling = sibling.previousElementSibling) {
-    if (sibling.matches(SELECTORS.POST_ELEMENTS) && !sibling.hasAttribute('data-awful-measured')) {
-      sibling.setAttribute('data-awful-measured', '');
-      sibling.classList.add('awful-measuring');
-      measuring.push(sibling);
+  posts.forEach(function(post) {
+    if (!post.hasAttribute('data-awful-measured')) {
+      post.setAttribute('data-awful-measured', '');
+      measuring.push(post);
     }
-  }
-  if (measuring.length === 0) { return; }
+  });
+  Awful.drawPostsBriefly(measuring);
+};
+
+
+/**
+ Draws `posts` for two animation frames, long enough for WebKit to record their real heights. Drawing a post again while it's already drawn restarts its two frames.
+ */
+Awful.drawPostsBriefly = function(posts) {
+  if (posts.length === 0) { return; }
+  var token = Awful.drawPostsToken = (Awful.drawPostsToken || 0) + 1;
+  posts.forEach(function(post) {
+    post.classList.add('awful-measuring');
+    post.awfulDrawToken = token;
+  });
 
   requestAnimationFrame(function() {
     requestAnimationFrame(function() {
-      measuring.forEach(function(p) { p.classList.remove('awful-measuring'); });
+      posts.forEach(function(post) {
+        if (post.awfulDrawToken === token) {
+          post.classList.remove('awful-measuring');
+        }
+      });
     });
   });
 };
+
+
+/**
+ Keeps measured posts' recorded heights up to date as their content arrives.
+
+ A measured post is usually skipped again (it's offscreen) before its avatar, images and embeds finish loading, and a skipped post keeps the height WebKit recorded without them, so it would grow as the reader scrolls into it. Drawing it again whenever something in it loads or resizes (embeds resize their iframes through `style`) updates that height soon after the measuring, while the reader is most likely still. Posts never measured sit at their placeholder height until drawn anyway.
+ */
+Awful.redrawMeasuredPostsContaining = function(nodes) {
+  var posts = new Set();
+  nodes.forEach(function(node) {
+    var element = node.nodeType === Node.ELEMENT_NODE ? node : node.parentElement;
+    var post = element && element.closest(SELECTORS.POST_ELEMENTS);
+    if (post && post.hasAttribute('data-awful-measured')) {
+      posts.add(post);
+    }
+  });
+  Awful.drawPostsBriefly(Array.from(posts));
+};
+
+document.addEventListener('load', function(event) {
+  if (event.target instanceof HTMLImageElement || event.target instanceof HTMLIFrameElement) {
+    Awful.redrawMeasuredPostsContaining([event.target]);
+  }
+}, true);
+
+new MutationObserver(function(mutations) {
+  Awful.redrawMeasuredPostsContaining(mutations.map(function(m) { return m.target; }));
+}).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'height', 'width', 'src'] });
 
 
 /**
@@ -1582,7 +1659,28 @@ Awful.postIndexOfElement = function(element) {
 Awful.prependPosts = function(postsHTML) {
   var oldHeight = document.documentElement.scrollHeight;
 
-  document.getElementById('posts').insertAdjacentHTML('afterbegin', postsHTML);
+  var container = document.getElementById('posts');
+  var firstExisting = container.firstElementChild;
+  container.insertAdjacentHTML('afterbegin', postsHTML);
+
+  // The reader scrolls up into these next, so give them their real heights now, which also makes the scroll correction below exact.
+  var inserted = [];
+  for (var el = container.firstElementChild; el && el !== firstExisting; el = el.nextElementSibling) {
+    if (el.matches(SELECTORS.POST_ELEMENTS)) {
+      inserted.push(el);
+    } else {
+      inserted.push.apply(inserted, el.querySelectorAll(SELECTORS.POST_ELEMENTS));
+    }
+  }
+  Awful.measurePosts(inserted);
+
+  // An embed loading just above the reader mid-scroll shoves the page down, so rather than waiting for these to near the viewport, start their embeds now while the reader is still (and scroll anchoring can correct for them). The observers only exist when their embed setting is on.
+  if (Awful.tweetLazyLoadObserver) {
+    inserted.forEach(function(post) { Awful.embedTweetNow(post); });
+  }
+  if (Awful.blueskyLazyLoadObserver) {
+    inserted.forEach(function(post) { Awful.embedBlueskyPostsNow(post); });
+  }
 
   if (window.twttr) {
     window.twttr.ready(function() {

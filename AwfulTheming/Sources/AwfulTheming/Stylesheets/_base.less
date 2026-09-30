@@ -66,9 +66,11 @@ post {
   content-visibility: auto;
   contain-intrinsic-height: auto 600px;
 
-  // Set briefly by `Awful.renderPostsAbove` so WebKit records a post's real height before the reader can scroll up to it.
+  // Set briefly by `Awful.drawPostsBriefly` so WebKit records a post's real height before the reader can scroll up to it.
   &.awful-measuring {
     content-visibility: visible;
+    // What `auto` applies while a post is drawn. Without it, margins inside the post collapse through its edges and it measures shorter than it draws.
+    contain: layout style paint;
   }
 
   .iphone & {
