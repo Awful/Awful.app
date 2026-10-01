@@ -20,7 +20,8 @@
 {% fontScaleStyle %}
 
 <body
-    class="{{ userInterfaceIdiom|htmlEscape }}"
+    class="{{ userInterfaceIdiom|htmlEscape }}
+           {% if collapseLongQuotes %} collapse-long-quotes {% endif %}"
     data-tweet-theme="{{ tweetTheme|htmlEscape }}">
     <post
         id="{{ messageID }}"

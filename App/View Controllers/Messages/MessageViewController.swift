@@ -19,6 +19,7 @@ final class MessageViewController: ViewController, ContentRefreshable {
     
     @FoilDefaultStorage(Settings.autoplayGIFs) private var autoplayGIFs
     private var cancellables: Set<AnyCancellable> = []
+    @FoilDefaultStorage(Settings.collapseLongQuotes) private var collapseLongQuotes
     private var composeVC: MessageComposeViewController?
     private var didLoadOnce = false
     private var didRender = false
@@ -272,6 +273,12 @@ final class MessageViewController: ViewController, ContentRefreshable {
             .dropFirst()
             .receive(on: RunLoop.main)
             .sink { [weak self] in self?.renderView.setShowAvatars($0) }
+            .store(in: &cancellables)
+
+        $collapseLongQuotes
+            .dropFirst()
+            .receive(on: RunLoop.main)
+            .sink { [weak self] in self?.renderView.setCollapseLongQuotes($0) }
             .store(in: &cancellables)
 
         $showImages
@@ -556,6 +563,7 @@ private struct RenderModel: StencilContextConvertible {
         let visibleAvatarURL = showAvatars ? message.from?.avatarURL : nil
         
         context = [
+            "collapseLongQuotes": FoilDefaultStorage(Settings.collapseLongQuotes).wrappedValue,
             "fromUsername": message.fromUsername ?? "",
             "hiddenAvataruRL": hiddenAvataruRL as Any,
             "htmlContents": htmlContents as Any,

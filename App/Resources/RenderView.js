@@ -19,7 +19,9 @@ const LAZY_LOAD_LOOKAHEAD_DISTANCE = '600px';
 const SELECTORS = {
     LOADING_IMAGES: 'section.postbody img[src]:not(.awful-smile):not(.awful-avatar):not([loading="lazy"])',
     POST_ELEMENTS: 'post',
-    LOTTIE_PLAYERS: 'lottie-player'
+    LOTTIE_PLAYERS: 'lottie-player',
+    /// [quote] bodies. Not [code] blocks, and not tweet or Bluesky embeds (which are also blockquotes).
+    QUOTES: '.bbc-block:not(.code) > blockquote'
 };
 
 /// Timeout configuration for image loading
@@ -42,6 +44,9 @@ const TWEET_EMBED_TIMEOUT = 5000;
 /// Threshold for IntersectionObserver - triggers when even tiny fraction is visible
 /// This minimal threshold ensures the observer fires as soon as element enters viewport
 const INTERSECTION_THRESHOLD_MIN = 0.000001;
+
+/// A quote at least this tall (in CSS pixels) gets a caret to collapse it, as on the Forums website. Its collapsed height is in `_base.less`.
+const QUOTE_COLLAPSIBLE_MIN_HEIGHT = 250;
 
 // MARK: - Utility Functions
 
@@ -1165,6 +1170,15 @@ Awful.handleClickEvent = function(event) {
     return;
   }
 
+  // Tap a long quote's caret or header (but not its "so-and-so posted:" link) to collapse or expand it.
+  var quoteHeader = event.target.closest('.bbc-block.collapsible > h4');
+  if (quoteHeader && (event.target.closest('.quote-collapse-caret') || !event.target.closest('a'))) {
+    var quote = quoteHeader.parentElement;
+    Awful.setQuoteCollapsed(quote, !quote.classList.contains('collapsed'), true);
+    event.preventDefault();
+    return;
+  }
+
   // Show linkified images on tap.
   var link = event.target;
   if (link.hasAttribute('data-awful-linkified-image')) {
@@ -1214,6 +1228,14 @@ Awful.handleClickEvent = function(event) {
   // Tap a gif-wrapper to toggle playing the gif.
   if (gifWrapper) {
     Awful.toggleGIF(gifWrapper);
+    event.preventDefault();
+    return;
+  }
+
+  // Tap anywhere else in a collapsed quote to expand it.
+  var collapsedQuoteBody = event.target.closest('.bbc-block.collapsed > blockquote');
+  if (collapsedQuoteBody && !event.target.closest('a, video')) {
+    Awful.setQuoteCollapsed(collapsedQuoteBody.parentElement, false, true);
     event.preventDefault();
     return;
   }
@@ -1508,6 +1530,11 @@ Awful.measurePosts = function(posts) {
     }
   });
   Awful.drawPostsBriefly(measuring);
+
+  // These posts are laid out now, so settle which of their quotes collapse before the caller measures them (rather than in a later frame, which would change their heights after any scroll correction).
+  measuring.forEach(function(post) {
+    post.querySelectorAll(SELECTORS.QUOTES).forEach(Awful.checkQuoteCollapsible);
+  });
 };
 
 
@@ -1725,6 +1752,7 @@ Awful.appendPosts = function(postsHTML, containerID, endHTML) {
   for (var el = lastExisting ? lastExisting.nextElementSibling : container.firstElementChild; el; el = el.nextElementSibling) {
     newElements.push(el);
   }
+  Awful.observeCollapsibleQuotes(newElements);
 
   if (Awful.tweetLazyLoadObserver || Awful.ghostLottieObserver) {
     newElements.forEach(function(node) {
@@ -1763,6 +1791,7 @@ Awful.setAnnouncementHTML = function(html) {
   }
 
   document.body.insertAdjacentHTML('beforeend', html);
+  Awful.observeCollapsibleQuotes([document]);
 };
 
 
@@ -1916,6 +1945,103 @@ Awful.setPostHTMLAtIndex = function(postHTML, i) {
   // nth-of-type is 1-indexed, but the app uses 0-indexing.
   var post = document.querySelector(`post:nth-of-type(${i + 1})`);
   post.outerHTML = postHTML;
+  Awful.observeCollapsibleQuotes([document.querySelector(`post:nth-of-type(${i + 1})`)]);
+};
+
+
+/**
+ Watches the posts in `roots` (elements or documents) that have quotes, so that as each nears the viewport any of its quotes at least `QUOTE_COLLAPSIBLE_MIN_HEIGHT` tall get a caret to collapse them.
+
+ Posts use `content-visibility: auto`, so a quote can only be measured once its post is laid out. Each post is measured (see `Awful.measurePosts`, which settles its quotes) as it comes within lookahead distance, so a quote that starts collapsed is collapsed before it's on screen.
+
+ Not torn down by `Awful.cleanupObservers`, which `Awful.embedTweets` calls to reset the tweet observers.
+ */
+Awful.observeCollapsibleQuotes = function(roots) {
+  if (!Awful.quotePostObserver) {
+    Awful.quotePostObserver = new IntersectionObserver(function(entries) {
+      var posts = [];
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          Awful.quotePostObserver.unobserve(entry.target);
+          posts.push(entry.target);
+        }
+      });
+      Awful.measurePosts(posts);
+    }, {
+      rootMargin: `${LAZY_LOAD_LOOKAHEAD_DISTANCE} 0px`,
+      threshold: INTERSECTION_THRESHOLD_MIN
+    });
+  }
+
+  Array.prototype.forEach.call(roots, function(root) {
+    if (!root) { return; }
+    var posts = (root.matches && root.matches(SELECTORS.POST_ELEMENTS)) ? [root] : root.querySelectorAll(SELECTORS.POST_ELEMENTS);
+    Array.prototype.forEach.call(posts, function(post) {
+      // A measured post had its quotes settled then.
+      if (!post.hasAttribute('data-awful-measured') && post.querySelector(SELECTORS.QUOTES)) {
+        Awful.quotePostObserver.observe(post);
+      }
+    });
+  });
+};
+
+
+/**
+ Gives the quote containing `blockquote` a collapse caret if it's tall enough, collapsing it when the user wants long quotes collapsed. Its post must be laid out.
+ */
+Awful.checkQuoteCollapsible = function(blockquote) {
+  var quote = blockquote.parentElement;
+  if (quote.classList.contains('collapsible') || blockquote.scrollHeight < QUOTE_COLLAPSIBLE_MIN_HEIGHT) { return; }
+  var header = quote.querySelector(':scope > h4');
+  if (!header) { return; }
+
+  var caret = document.createElement('button');
+  caret.type = 'button';
+  caret.className = 'quote-collapse-caret';
+  // First in the header so it floats to the right of the header's first line.
+  header.insertBefore(caret, header.firstChild);
+  quote.classList.add('collapsible');
+
+  Awful.setQuoteCollapsed(quote, document.body.classList.contains('collapse-long-quotes'), false);
+};
+
+
+/**
+ Collapses or expands a collapsible quote.
+
+ @param {Element} quote - A `.bbc-block.collapsible` element.
+ @param {boolean} collapsed - `true` to collapse the quote, `false` to expand it.
+ @param {boolean} byUser - `true` when the user tapped to do this, so changing the "collapse long quotes" setting leaves this quote alone.
+ */
+Awful.setQuoteCollapsed = function(quote, collapsed, byUser) {
+  var wasCollapsed = quote.classList.contains('collapsed');
+  quote.classList.toggle('collapsed', collapsed);
+  if (byUser) {
+    quote.setAttribute('data-awful-user-toggled', '');
+  }
+
+  var caret = quote.querySelector(':scope > h4 > .quote-collapse-caret');
+  if (caret) {
+    caret.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+    caret.setAttribute('aria-label', collapsed ? 'Expand quote' : 'Collapse quote');
+  }
+
+  if (wasCollapsed !== collapsed) {
+    Awful.redrawMeasuredPostsContaining([quote]);
+  }
+};
+
+
+/**
+ Updates the user-specified setting to collapse long quotes. Quotes the user has collapsed or expanded themselves are left as they are.
+
+ @param {boolean} collapseLongQuotes - `true` to collapse long quotes, `false` to expand them.
+ */
+Awful.setCollapseLongQuotes = function(collapseLongQuotes) {
+  document.body.classList.toggle('collapse-long-quotes', collapseLongQuotes);
+  document.querySelectorAll('.bbc-block.collapsible:not([data-awful-user-toggled])').forEach(function(quote) {
+    Awful.setQuoteCollapsed(quote, collapseLongQuotes, false);
+  });
 };
 
 
@@ -2122,6 +2248,8 @@ if (Awful.domContentLoadedFired) {
         }
     });
 }
+
+Awful.observeCollapsibleQuotes([document]);
 
 // THIS SHOULD STAY AT THE BOTTOM OF THE FILE!
 // All done; tell the native side we're ready.

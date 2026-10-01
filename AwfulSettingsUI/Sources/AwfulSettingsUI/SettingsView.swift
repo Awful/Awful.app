@@ -183,6 +183,7 @@ private struct PostsSection: View {
     let isPad: Bool
     @AppStorage(Settings.autoplayGIFs) private var alwaysAnimateGIFs
     @AppStorage(Settings.confirmBeforeReplying) private var alwaysPreviewNewPosts
+    @AppStorage(Settings.collapseLongQuotes) private var collapseLongQuotes
     @AppStorage(Settings.enableCustomTitlePostLayout) private var customTitlePostLayout
     @AppStorage(Settings.jumpToPostEndOnDoubleTap) private var doubleTapPostToJump
     @AppStorage(Settings.embedBlueskyPosts) private var embedBlueskyPosts
@@ -202,6 +203,7 @@ private struct PostsSection: View {
             Stepper("Scale Text \(fontScale.formatted())%", bundle: .module, value: $fontScale, in: 50...200, step: 10)
             Toggle("Always Preview New Posts", bundle: .module, isOn: $alwaysPreviewNewPosts)
             Toggle("Always Animate GIFs", bundle: .module, isOn: $alwaysAnimateGIFs)
+            Toggle("Collapse Long Quotes", bundle: .module, isOn: $collapseLongQuotes)
             Toggle("Embed Bluesky Posts", bundle: .module, isOn: $embedBlueskyPosts)
             Toggle("Embed Tweets", bundle: .module, isOn: $embedTweets)
             Toggle("Embed Videos", bundle: .module, isOn: $embedVideos)

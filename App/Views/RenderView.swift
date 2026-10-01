@@ -1002,6 +1002,17 @@ extension RenderView {
         }
     }
 
+    /// Starts long quotes collapsed (when `true`) or expanded (when `false`). Quotes the user has collapsed or expanded themselves stay as they are.
+    func setCollapseLongQuotes(_ collapseLongQuotes: Bool) {
+        Task {
+            do {
+                try await webView.eval("if (window.Awful) Awful.setCollapseLongQuotes(\(collapseLongQuotes ? "true" : "false"))")
+            } catch {
+                self.mentionError(error, explanation: "could not evaluate setCollapseLongQuotes")
+            }
+        }
+    }
+
     /// Turns all avatars on (when `true`) or off (when `false`).
     func setShowAvatars(_ showAvatars: Bool) {
         Task {

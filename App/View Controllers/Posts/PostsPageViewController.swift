@@ -134,6 +134,7 @@ final class PostsPageViewController: ViewController {
     private var anchorDeltaAfterLoading: CGFloat?
     @FoilDefaultStorage(Settings.showAvatars) private var showAvatars
     @FoilDefaultStorage(Settings.loadImages) private var showImages
+    @FoilDefaultStorage(Settings.collapseLongQuotes) private var collapseLongQuotes
     let thread: AwfulThread
     private var webViewDidLoadOnce = false
 
@@ -816,6 +817,7 @@ final class PostsPageViewController: ViewController {
 
         context["stylesheet"] = theme[string: "postsViewCSS"] as Any
         context["darkMode"] = theme[string: "mode"] == "dark"
+        context["collapseLongQuotes"] = collapseLongQuotes
 
         if posts.count > hiddenPosts {
             let subset = posts[hiddenPosts...]
@@ -2910,6 +2912,12 @@ final class PostsPageViewController: ViewController {
             .dropFirst()
             .receive(on: RunLoop.main)
             .sink { [weak self] in self?.postsView.renderView.setShowAvatars($0) }
+            .store(in: &cancellables)
+
+        $collapseLongQuotes
+            .dropFirst()
+            .receive(on: RunLoop.main)
+            .sink { [weak self] in self?.postsView.renderView.setCollapseLongQuotes($0) }
             .store(in: &cancellables)
 
         $showImages

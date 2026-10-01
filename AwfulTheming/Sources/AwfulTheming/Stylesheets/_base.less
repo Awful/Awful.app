@@ -302,6 +302,40 @@ body.dark {
     color: #7409a0;
     border-color: #7409a0;
   }
+
+  // A quote tall enough to collapse (see `Awful.checkQuoteCollapsible`). Tapping its header or caret toggles it; tapping a collapsed quote's body expands it. WebKit only sends clicks to elements with a pointer cursor.
+  &.collapsible > h4 {
+    cursor: pointer;
+  }
+
+  &.collapsed > blockquote {
+    max-height: 200px;
+    overflow: hidden;
+    cursor: pointer;
+    // A mask only uses alpha, so the fade works over any theme's background.
+    -webkit-mask-image: linear-gradient(to bottom, #000 60%, transparent);
+  }
+}
+
+.quote-collapse-caret {
+  float: right;
+  margin: 0 0 0 6px;
+  padding: 0 4px;
+  border: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+  -webkit-appearance: none;
+  -webkit-user-select: none;
+  cursor: pointer;
+
+  &::before {
+    content: "\25BC"; // ▼
+  }
+
+  .bbc-block.collapsed > h4 > &::before {
+    content: "\25B6"; // ▶
+  }
 }
 
 code, pre, tt {

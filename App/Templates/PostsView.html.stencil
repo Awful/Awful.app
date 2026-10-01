@@ -27,6 +27,7 @@
 <body
     class="{{ userInterfaceIdiom }}
            {% if darkMode %} dark {% endif %}
+           {% if collapseLongQuotes %} collapse-long-quotes {% endif %}
            {% if threadID %} thread-{{ threadID|htmlEscape }} {% endif %}
            {% if forumID %} forum-{{ forumID|htmlEscape }} {% endif %}"
     data-version="{{ version }}"

@@ -150,6 +150,7 @@ extension SpecsReport {
         .init(Settings.bookmarksSortedUnread),
         .init(Settings.cleanPastedURLs),
         .init(Settings.clipboardURLEnabled),
+        .init(Settings.collapseLongQuotes),
         .init(Settings.confirmBeforeReplying),
         .init(Settings.darkMode),
         .init(Settings.defaultBrowser),
