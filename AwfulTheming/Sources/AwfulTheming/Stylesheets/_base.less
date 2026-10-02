@@ -303,38 +303,47 @@ body.dark {
     border-color: #7409a0;
   }
 
-  // A quote tall enough to collapse (see `Awful.checkQuoteCollapsible`). Tapping its header or caret toggles it; tapping a collapsed quote's body expands it. WebKit only sends clicks to elements with a pointer cursor.
-  &.collapsible > h4 {
-    cursor: pointer;
-  }
-
+  // A quote long enough to collapse (see `Awful.checkQuoteCollapsible`). Its "more" or "less" toggles it; tapping a collapsed quote's body expands it. WebKit only sends clicks to elements with a pointer cursor.
   &.collapsed > blockquote {
-    max-height: 200px;
+    // As many lines as `Awful.updateQuoteCollapsedLines` decides, so the last one shown has something on it. `lh` needs iOS 16.4; older versions ignore it and keep the approximation (a line is about 1.2em).
+    max-height: ~"calc(var(--awful-quote-lines) * 1.2em)";
+    max-height: ~"calc(var(--awful-quote-lines) * 1lh)";
     overflow: hidden;
     cursor: pointer;
-    // A mask only uses alpha, so the fade works over any theme's background.
-    -webkit-mask-image: linear-gradient(to bottom, #000 60%, transparent);
+    // A mask only uses alpha, so the fade works over any theme's background. The quote fades out towards the bottom, and the end of its last line fades out under "more", which sits on that line: the fade is intersected with a mask that's opaque but for the end of the last line.
+    -webkit-mask-image:
+      linear-gradient(to bottom, #000 60%, transparent),
+      linear-gradient(to left, transparent 3.5em, #000 6em),
+      linear-gradient(#000, #000);
+    -webkit-mask-composite: source-in, source-over;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-position: top, bottom, top;
+    -webkit-mask-size: ~"100% 100%, 100% 1.2em, 100% calc(100% - 1.2em)";
+    -webkit-mask-size: ~"100% 100%, 100% 1lh, 100% calc(100% - 1lh)";
   }
 }
 
-.quote-collapse-caret {
-  float: right;
-  margin: 0 0 0 6px;
-  padding: 0 4px;
+// "more" or "less" at the bottom right of a collapsible quote, coloured like links (each theme adds it to its link colour rule). "less" takes a line of its own under the quote; "more" sits on the collapsed quote's last line.
+.quote-collapse-toggle {
+  display: block;
+  // Painted above the quote body, which the tap target overlaps.
+  position: relative;
+  margin: -10px -12px -10px auto;
+  // About 60×44pt to tap, while only taking a line's height in the quote.
+  padding: 10px 12px;
   border: none;
   background: none;
-  color: inherit;
+  color: -webkit-link;
   font: inherit;
+  font-weight: 600;
   -webkit-appearance: none;
   -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
   cursor: pointer;
 
-  &::before {
-    content: "\25BC"; // ▼
-  }
-
-  .bbc-block.collapsed > h4 > &::before {
-    content: "\25C0"; // ◀
+  .bbc-block.collapsed > & {
+    margin-top: ~"calc(-1.2em - 10px)";
+    margin-top: ~"calc(-1lh - 10px)";
   }
 }
 
