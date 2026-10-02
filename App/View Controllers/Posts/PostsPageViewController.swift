@@ -1801,6 +1801,7 @@ final class PostsPageViewController: ViewController {
                 let ignoreAction = UIAction(title: "Ignore user",
                                             image: UIImage(named: "ignore")!.withRenderingMode(.alwaysTemplate),
                                             identifier: ignoreUser,
+                                            attributes: .destructive,
                                             handler: ignoreUser(action:))
                 userActions.append(ignoreAction)
             }
@@ -2459,6 +2460,7 @@ final class PostsPageViewController: ViewController {
                 title: "Report",
                 image: UIImage(named: "rap-sheet")!.withRenderingMode(.alwaysTemplate),
                 identifier: .init("report"),
+                attributes: .destructive,
                 handler: report(action:)
             ))
 
