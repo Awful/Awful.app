@@ -17,6 +17,7 @@ final class ForumListCell: UICollectionViewListCell {
     @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
     private let expandButton = ExpandForumButton()
     private let favoriteButton = FavoriteForumButton()
+    private var displayedExpansion: ViewModel.Expansion?
 
     private let nameLabel: UILabel = {
         let nameLabel = UILabel()
@@ -28,17 +29,22 @@ final class ForumListCell: UICollectionViewListCell {
         didSet {
             contentView.backgroundColor = viewModel.backgroundColor
 
+            // Only animate when this same cell is reconfigured into a different state
+            // (i.e. the user tapped it); reused cells snap straight to their state.
+            let animateExpansion = displayedExpansion != nil && displayedExpansion != viewModel.expansion
+            displayedExpansion = viewModel.expansion
+
             switch viewModel.expansion {
             case .none:
                 expandButton.isHidden = true
 
             case .canExpand:
                 expandButton.isHidden = false
-                expandButton.isSelected = false
+                expandButton.setExpanded(false, animated: animateExpansion)
 
             case .isExpanded:
                 expandButton.isHidden = false
-                expandButton.isSelected = true
+                expandButton.setExpanded(true, animated: animateExpansion)
             }
 
             expandButton.tintColor = viewModel.expansionTintColor
@@ -125,6 +131,11 @@ final class ForumListCell: UICollectionViewListCell {
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        displayedExpansion = nil
     }
 
     @objc private func didTapExpandButton(_ sender: UIButton) {
@@ -224,16 +235,48 @@ final class ForumListCell: UICollectionViewListCell {
     }
 }
 
+/// A right-pointing chevron that rotates to point down when expanded.
 final class ExpandForumButton: UIButton {
+    private static let arrowSize = CGSize(width: 22, height: 22)
+
+    // A separate image view (rather than the button's own image) so UIButton's layout
+    // doesn't fight the rotation transform.
+    private let arrowView: UIImageView = {
+        let arrowView = UIImageView(image: UIImage(named: "forum-arrow-right"))
+        arrowView.contentMode = .scaleAspectFit
+        arrowView.isUserInteractionEnabled = false
+        return arrowView
+    }()
+
     init() {
         super.init(frame: .zero)
 
-        setImage(UIImage(named: "forum-arrow-down"), for: .normal)
-        setImage(UIImage(named: "forum-arrow-minus"), for: .selected)
+        addSubview(arrowView)
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    func setExpanded(_ expanded: Bool, animated: Bool) {
+        isSelected = expanded
+
+        let transform = expanded ? CGAffineTransform(rotationAngle: .pi / 2) : .identity
+        if animated && !UIAccessibility.isReduceMotionEnabled {
+            UIView.animate(withDuration: 0.25, delay: 0, options: [.curveEaseInOut, .beginFromCurrentState]) {
+                self.arrowView.transform = transform
+            }
+        } else {
+            arrowView.transform = transform
+        }
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+
+        // Set bounds and center, not frame, as frame is undefined while rotated.
+        arrowView.bounds = CGRect(origin: .zero, size: Self.arrowSize)
+        arrowView.center = CGPoint(x: bounds.midX, y: bounds.midY)
     }
 }
 
