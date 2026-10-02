@@ -3,12 +3,13 @@
 //  Copyright 2025 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
+import AwfulTheming
 import os
 import UIKit
 
 private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "AttachmentPreviewView")
 
-/// A card-style view that shows a preview of an attached image with options to remove it.
+/// A card-style view that shows a preview of a new forum attachment, optionally with a button to remove it.
 final class AttachmentPreviewView: AttachmentCardView {
 
     private let removeButton: UIButton = {
@@ -20,13 +21,56 @@ final class AttachmentPreviewView: AttachmentCardView {
         return button
     }()
 
+    /// Explains where the attachment ends up. Hidden while resizing.
+    private let subtitleLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.preferredFont(forTextStyle: .caption1)
+        label.textColor = .secondaryLabel
+        label.text = LocalizedString("compose.attachment.preview-subtitle")
+        return label
+    }()
+
+    private lazy var labelStack: UIStackView = {
+        let stack = UIStackView(arrangedSubviews: [titleLabel, subtitleLabel, detailLabel])
+        stack.axis = .vertical
+        stack.spacing = AttachmentCardLayout.titleDetailSpacing
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        return stack
+    }()
+
     var onRemove: (() -> Void)?
+
+    /// False for read-only cards, such as on the preview screens.
+    var showsRemoveButton = true {
+        didSet { removeButton.isHidden = !showsRemoveButton }
+    }
 
     func showResizingPlaceholder() {
         titleLabel.text = LocalizedString("compose.attachment.resizing-title")
+        subtitleLabel.isHidden = true
         detailLabel.text = LocalizedString("compose.attachment.resizing-message")
         imageView.image = nil
         imageView.backgroundColor = .secondarySystemFill
+    }
+
+    /// A card for screens that only show the attachment, such as the post previews.
+    static func readOnly(showing attachment: ForumAttachment) -> AttachmentPreviewView {
+        let card = AttachmentPreviewView()
+        card.showsRemoveButton = false
+        card.configure(with: attachment)
+        return card
+    }
+
+    /// Positions a read-only card just above a scroll view's content, in the
+    /// `AttachmentCardLayout.previewBlockHeight` band that the scroll view's top content inset leaves.
+    func layOutAboveContent(in view: UIView) {
+        let x = view.safeAreaInsets.left + AttachmentCardLayout.previewSideMargin
+        frame = CGRect(
+            x: x,
+            y: -AttachmentCardLayout.previewVerticalMargin - AttachmentCardLayout.previewHeight,
+            width: view.bounds.width - x - view.safeAreaInsets.right - AttachmentCardLayout.previewSideMargin,
+            height: AttachmentCardLayout.previewHeight
+        )
     }
 
     override init(frame: CGRect) {
@@ -44,8 +88,7 @@ final class AttachmentPreviewView: AttachmentCardView {
         titleLabel.text = LocalizedString("compose.attachment.preview-title")
 
         addSubview(imageView)
-        addSubview(titleLabel)
-        addSubview(detailLabel)
+        addSubview(labelStack)
         addSubview(removeButton)
 
         removeButton.addTarget(self, action: #selector(didTapRemove), for: .touchUpInside)
@@ -61,13 +104,9 @@ final class AttachmentPreviewView: AttachmentCardView {
             imageView.widthAnchor.constraint(equalToConstant: AttachmentCardLayout.imageSize),
             imageView.heightAnchor.constraint(equalToConstant: AttachmentCardLayout.imageSize),
 
-            titleLabel.leadingAnchor.constraint(equalTo: imageView.trailingAnchor, constant: AttachmentCardLayout.imageSpacing),
-            titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: AttachmentCardLayout.labelTopPadding),
-            titleLabel.trailingAnchor.constraint(equalTo: removeButton.leadingAnchor, constant: -8),
-
-            detailLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
-            detailLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: AttachmentCardLayout.titleDetailSpacing),
-            detailLabel.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor),
+            labelStack.leadingAnchor.constraint(equalTo: imageView.trailingAnchor, constant: AttachmentCardLayout.imageSpacing),
+            labelStack.centerYAnchor.constraint(equalTo: imageView.centerYAnchor),
+            labelStack.trailingAnchor.constraint(equalTo: removeButton.leadingAnchor, constant: -8),
 
             removeButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -AttachmentCardLayout.cardPadding),
             removeButton.centerYAnchor.constraint(equalTo: centerYAnchor),
@@ -80,8 +119,22 @@ final class AttachmentPreviewView: AttachmentCardView {
         onRemove?()
     }
 
+    override func updateTextColor(_ color: UIColor?) {
+        super.updateTextColor(color)
+        subtitleLabel.textColor = color?.withAlphaComponent(0.7)
+    }
+
+    /// Styles the card as a bordered panel in the theme's colors.
+    func applyTheme(_ theme: Theme) {
+        backgroundColor = theme["backgroundColor"]
+        layer.borderColor = (theme["listSecondaryTextColor"] as UIColor?)?.cgColor
+        layer.borderWidth = 1
+        updateTextColor(theme["listTextColor"])
+    }
+
     func configure(with attachment: ForumAttachment) {
         titleLabel.text = LocalizedString("compose.attachment.preview-title")
+        subtitleLabel.isHidden = false
         imageView.backgroundColor = .clear
         imageView.image = attachment.image
 

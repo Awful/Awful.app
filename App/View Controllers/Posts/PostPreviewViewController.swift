@@ -18,6 +18,10 @@ private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: 
  Note that some users (e.g. moderators) can edit other users' posts.
  */
 final class PostPreviewViewController: ViewController {
+    /// A new forum attachment going up with the post. The server's preview doesn't include it,
+    /// so a card above the post shows it. Set before the view loads.
+    var attachment: ForumAttachment?
+    private var attachmentCard: AttachmentPreviewView?
     private let bbcode: NSAttributedString
     private var didRender = false
     private let editingPost: Post?
@@ -188,6 +192,13 @@ final class PostPreviewViewController: ViewController {
             renderView.scrollView.contentInsetAdjustmentBehavior = .never
         }
 
+        if let attachment {
+            let card = AttachmentPreviewView.readOnly(showing: attachment)
+            card.applyTheme(theme)
+            renderView.scrollView.addSubview(card)
+            attachmentCard = card
+        }
+
         let loadingView = LoadingView.loadingViewWithTheme(theme, configuration: .hideStatusElements)
         self.loadingView = loadingView
         view.addSubview(loadingView)
@@ -198,15 +209,24 @@ final class PostPreviewViewController: ViewController {
     override func viewSafeAreaInsetsDidChange() {
         super.viewSafeAreaInsetsDidChange()
 
+        updateContentInsets()
+    }
+
+    /// Makes room above the post for the attachment card, if any.
+    private func updateContentInsets() {
+        let attachmentBlockHeight = attachmentCard == nil ? 0 : AttachmentCardLayout.previewBlockHeight
         if #available(iOS 26.0, *) {
-            renderView.scrollView.contentInset.top = view.safeAreaInsets.top
+            renderView.scrollView.contentInset.top = view.safeAreaInsets.top + attachmentBlockHeight
             renderView.scrollView.contentInset.bottom = view.safeAreaInsets.bottom
+        } else {
+            renderView.scrollView.contentInset.top = attachmentBlockHeight
         }
     }
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
+        attachmentCard?.layOutAboveContent(in: view)
         renderView.scrollView.relayoutNavigationBarPlatterBackdrop()
     }
 
@@ -218,6 +238,7 @@ final class PostPreviewViewController: ViewController {
         }
         
         loadingView?.tintColor = theme["backgroundColor"]
+        attachmentCard?.applyTheme(theme)
 
         if isViewLoaded {
             // The bar stays opaque over the preview, so its glass circles read as the bar at

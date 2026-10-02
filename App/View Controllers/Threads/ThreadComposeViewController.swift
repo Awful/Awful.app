@@ -49,11 +49,6 @@ final class ThreadComposeViewController: ComposeTextViewController {
     private let draft: NewThreadDraft
     private var autoSaveWorkItem: DispatchWorkItem?
 
-    private enum AttachmentPreviewLayout {
-        static let height: CGFloat = 84
-        static let spacing: CGFloat = 8
-        static let sideInset: CGFloat = 12
-    }
     private let attachmentPreviewView = AttachmentPreviewView()
     /// How much of `textView.textContainerInset.top` currently makes room for the attachment preview.
     private var attachmentPreviewInset: CGFloat = 0
@@ -105,10 +100,10 @@ final class ThreadComposeViewController: ComposeTextViewController {
         }
         textView.addSubview(attachmentPreviewView)
         NSLayoutConstraint.activate([
-            attachmentPreviewView.topAnchor.constraint(equalTo: fieldView.bottomAnchor, constant: AttachmentPreviewLayout.spacing),
-            attachmentPreviewView.leadingAnchor.constraint(equalTo: fieldView.leadingAnchor, constant: AttachmentPreviewLayout.sideInset),
-            attachmentPreviewView.trailingAnchor.constraint(equalTo: fieldView.trailingAnchor, constant: -AttachmentPreviewLayout.sideInset),
-            attachmentPreviewView.heightAnchor.constraint(equalToConstant: AttachmentPreviewLayout.height),
+            attachmentPreviewView.topAnchor.constraint(equalTo: fieldView.bottomAnchor, constant: AttachmentCardLayout.previewVerticalMargin),
+            attachmentPreviewView.leadingAnchor.constraint(equalTo: fieldView.leadingAnchor, constant: AttachmentCardLayout.previewSideMargin),
+            attachmentPreviewView.trailingAnchor.constraint(equalTo: fieldView.trailingAnchor, constant: -AttachmentCardLayout.previewSideMargin),
+            attachmentPreviewView.heightAnchor.constraint(equalToConstant: AttachmentCardLayout.previewHeight),
         ])
     }
     
@@ -159,7 +154,7 @@ final class ThreadComposeViewController: ComposeTextViewController {
     /// Shows or hides the attachment preview below the subject field, pushing the text down to make room.
     private func setAttachmentPreviewVisible(_ visible: Bool) {
         attachmentPreviewView.isHidden = !visible
-        let inset = visible ? AttachmentPreviewLayout.height + 2 * AttachmentPreviewLayout.spacing : 0
+        let inset = visible ? AttachmentCardLayout.previewBlockHeight : 0
         textView.textContainerInset.top += inset - attachmentPreviewInset
         attachmentPreviewInset = inset
     }
@@ -179,10 +174,7 @@ final class ThreadComposeViewController: ComposeTextViewController {
         fieldView.subjectField.textField.attributedPlaceholder = themedString
         updateThreadTagButtonImage()
 
-        attachmentPreviewView.backgroundColor = theme["backgroundColor"]
-        attachmentPreviewView.layer.borderColor = (theme["listSecondaryTextColor"] as UIColor?)?.cgColor
-        attachmentPreviewView.layer.borderWidth = 1
-        attachmentPreviewView.updateTextColor(theme["listTextColor"])
+        attachmentPreviewView.applyTheme(theme)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -387,7 +379,7 @@ final class ThreadComposeViewController: ComposeTextViewController {
             subject = fieldView.subjectField.textField.text,
             let threadTag = threadTag
             else { return handler(false) }
-        let preview = ThreadPreviewViewController(forum: forum, subject: subject, threadTag: threadTag, secondaryThreadTag: secondaryThreadTag, bbcode: textView.attributedText)
+        let preview = ThreadPreviewViewController(forum: forum, subject: subject, threadTag: threadTag, secondaryThreadTag: secondaryThreadTag, bbcode: textView.attributedText, attachment: draft.forumAttachment)
         preview.submitBlock = { [weak preview, weak self] in
             if let preview = preview, let self = self {
                 self.formData = preview.formData

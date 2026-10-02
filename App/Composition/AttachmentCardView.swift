@@ -20,6 +20,14 @@ enum AttachmentCardLayout {
     static let labelTopPadding: CGFloat = 16
     /// Spacing between title and detail labels
     static let titleDetailSpacing: CGFloat = 4
+    /// Height of the new-attachment preview card
+    static let previewHeight: CGFloat = 84
+    /// Space above and below the preview card
+    static let previewVerticalMargin: CGFloat = 8
+    /// Space either side of the preview card
+    static let previewSideMargin: CGFloat = 12
+    /// Vertical space the preview card takes up, including its margins
+    static let previewBlockHeight = previewHeight + 2 * previewVerticalMargin
     /// Size of action buttons (remove, etc.)
     static let actionButtonSize: CGFloat = 30
 }

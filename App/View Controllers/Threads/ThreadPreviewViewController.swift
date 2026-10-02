@@ -15,6 +15,10 @@ private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: 
 /// Renders the original post-to-be of a new thread.
 final class ThreadPreviewViewController: ViewController {
     
+    /// A new forum attachment going up with the thread. The server's preview doesn't include it,
+    /// so a card between the thread cell and the post shows it.
+    private let attachment: ForumAttachment?
+    private var attachmentCard: AttachmentPreviewView?
     private let bbcode: NSAttributedString
     private var didRender = false
     private(set) var formData: ForumsClient.PostNewThreadFormData?
@@ -47,7 +51,8 @@ final class ThreadPreviewViewController: ViewController {
         return renderView
     }()
     
-    init(forum: Forum, subject: String, threadTag: ThreadTag, secondaryThreadTag: ThreadTag?, bbcode: NSAttributedString) {
+    init(forum: Forum, subject: String, threadTag: ThreadTag, secondaryThreadTag: ThreadTag?, bbcode: NSAttributedString, attachment: ForumAttachment? = nil) {
+        self.attachment = attachment
         self.bbcode = bbcode
         self.forum = forum
         self.secondaryThreadTag = secondaryThreadTag
@@ -169,10 +174,12 @@ final class ThreadPreviewViewController: ViewController {
     
     private func repositionCell() {
         let cellHeight = ThreadListCell.heightForViewModel(threadCell.viewModel, inTableWithWidth: view.bounds.width)
-        threadCell.frame = CGRect(x: 0, y: -cellHeight, width: view.bounds.width, height: cellHeight)
+        let attachmentBlockHeight = attachmentCard == nil ? 0 : AttachmentCardLayout.previewBlockHeight
+        threadCell.frame = CGRect(x: 0, y: -(cellHeight + attachmentBlockHeight), width: view.bounds.width, height: cellHeight)
+        attachmentCard?.layOutAboveContent(in: view)
 
         let topInset = view.safeAreaLayoutGuide.layoutFrame.minY
-        renderView.scrollView.contentInset.top = topInset + cellHeight
+        renderView.scrollView.contentInset.top = topInset + cellHeight + attachmentBlockHeight
     }
     
     // MARK: View lifecycle
@@ -186,6 +193,13 @@ final class ThreadPreviewViewController: ViewController {
         
         threadCell.autoresizingMask = .flexibleWidth
         renderView.scrollView.addSubview(threadCell)
+
+        if let attachment {
+            let card = AttachmentPreviewView.readOnly(showing: attachment)
+            card.applyTheme(theme)
+            renderView.scrollView.addSubview(card)
+            attachmentCard = card
+        }
 
         let loadingView = LoadingView.loadingViewWithTheme(theme, configuration: .hideStatusElements)
         self.loadingView = loadingView
@@ -202,6 +216,7 @@ final class ThreadPreviewViewController: ViewController {
         }
         
         loadingView?.tintColor = theme["backgroundColor"]
+        attachmentCard?.applyTheme(theme)
 
         if isViewLoaded {
             // The bar stays opaque over the preview, so its glass circles read as the bar at

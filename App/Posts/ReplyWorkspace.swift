@@ -278,6 +278,7 @@ final class ReplyWorkspace: NSObject {
         } else {
             preview = PostPreviewViewController(thread: draft.thread, BBcode: draft.text ?? .init())
         }
+        preview.attachment = draft.forumAttachment
         let postButton = GlassTextBarButton(title: draft.submitButtonTitle) { [unowned self] in
             self.didTapPost(self.previewPostButton?.item)
         }

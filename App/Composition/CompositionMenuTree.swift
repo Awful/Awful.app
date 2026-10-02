@@ -373,9 +373,8 @@ extension CompositionMenuTree: UIImagePickerControllerDelegate, UINavigationCont
         switch destinations.count {
         case 0:
             clearPendingImage()
-        case 1 where !forumAttachmentsEnabled:
-            // Only the image host is available, so there's no choice to make. When attachments
-            // are available we always show the choice, so the option is visible.
+        case 1:
+            // No choice to make. A forum attachment says so in its preview card.
             destinations[0].action(self)
         default:
             showSubmenu(destinations)

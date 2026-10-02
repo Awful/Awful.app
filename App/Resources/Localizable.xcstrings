@@ -278,6 +278,18 @@
         }
       }
     },
+    "compose.attachment.preview-subtitle" : {
+      "comment" : "Explanation on the attachment preview card of where the attachment appears in the post.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Will be added to end of post"
+          }
+        }
+      }
+    },
     "compose.attachment.preview-title" : {
       "comment" : "Title shown on the attachment preview card.",
       "extractionState" : "manual",
@@ -285,7 +297,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Attachment"
+            "value" : "Adding a forums attachment"
           }
         }
       }

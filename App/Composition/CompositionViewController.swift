@@ -13,7 +13,7 @@ final class CompositionViewController: ViewController, ModernToolbarActionHandli
     @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
 
     private enum AttachmentViewLayout {
-        static let previewHeight: CGFloat = 84
+        static let previewHeight = AttachmentCardLayout.previewHeight
         static let editHeight: CGFloat = 120
         static let spacing: CGFloat = 8
         static let animationDuration: TimeInterval = 0.3
@@ -341,10 +341,7 @@ final class CompositionViewController: ViewController, ModernToolbarActionHandli
         let listTextColor: UIColor? = theme["listTextColor"]
         let borderColor: UIColor? = theme["listSecondaryTextColor"]
 
-        attachmentPreviewView.backgroundColor = theme["backgroundColor"]
-        attachmentPreviewView.layer.borderColor = borderColor?.cgColor
-        attachmentPreviewView.layer.borderWidth = 1
-        attachmentPreviewView.updateTextColor(listTextColor)
+        attachmentPreviewView.applyTheme(theme)
 
         attachmentEditView.backgroundColor = theme["backgroundColor"]
         attachmentEditView.layer.borderColor = borderColor?.cgColor
