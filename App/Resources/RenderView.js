@@ -2151,6 +2151,8 @@ Awful.animateQuoteCollapsed = function(quote, collapsed) {
   var toHeight = blockquote.getBoundingClientRect().height;
 
   blockquote.style.overflow = 'hidden';
+  // WebKit shudders a masked body's text by a point as its height changes, so a collapsing quote's fade waits until it settles.
+  blockquote.style.setProperty('-webkit-mask-image', 'none');
   blockquote.style.maxHeight = `${fromHeight}px`;
   blockquote.offsetHeight; // Forces layout at `fromHeight`, so the change below transitions.
   blockquote.style.transition = `max-height ${QUOTE_COLLAPSE_DURATION_MS}ms ease-in-out`;
@@ -2162,6 +2164,7 @@ Awful.animateQuoteCollapsed = function(quote, collapsed) {
     blockquote.style.removeProperty('transition');
     blockquote.style.removeProperty('max-height');
     blockquote.style.removeProperty('overflow');
+    blockquote.style.removeProperty('-webkit-mask-image');
     delete quote.awfulFinishAnimation;
     Awful.redrawMeasuredPostsContaining([quote]);
   };
