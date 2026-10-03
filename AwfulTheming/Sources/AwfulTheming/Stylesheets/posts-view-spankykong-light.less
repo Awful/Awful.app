@@ -225,8 +225,7 @@ body {
     border-radius: 3px !important;
 }
 .postbody a,
-[data-awful-linkified-image],
-.quote-collapse-toggle {
+[data-awful-linkified-image] {
     color: var(--link-color);
 }
 .iphone .postbody {
@@ -429,8 +428,7 @@ post,
 .bbc-spoiler:not(.spoiled) a:link,
 .bbc-spoiler:not(.spoiled) a:visited,
 .bbc-spoiler:not(.spoiled) a:active,
-.bbc-spoiler:not(.spoiled) [data-awful-linkified-image],
-.bbc-spoiler:not(.spoiled) .quote-collapse-toggle {
+.bbc-spoiler:not(.spoiled) [data-awful-linkified-image] {
     color: transparent;
     background: #333;
     border-radius: 6px;
@@ -553,6 +551,9 @@ footer {
 .action-button img {
   width: 24px;
   height: 8px;
+}
+.action-button img,
+.quote-collapse-toggle img {
   /* determine (close enough to) #999999 from black using https://codepen.io/sosuke/pen/Pjoqqp */
   -webkit-filter: invert(66%) sepia(11%) saturate(0%) hue-rotate(239deg) brightness(90%) contrast(92%);
 }

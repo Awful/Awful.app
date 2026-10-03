@@ -38,7 +38,7 @@ public enum Settings {
     /// Check the general pasteboard for a Forums URL whenever we enter the foreground. iOS shows an alert requesting permission from the user whenever we attempt to check the pasteboard, so we default to off to be less annoying.
     public static let clipboardURLEnabled = Setting(key: "clipboard_url_enabled", default: false)
 
-    /// Start long quotes in posts collapsed. Long quotes can be collapsed or expanded with their "more"/"less" button either way.
+    /// Start long quotes in posts collapsed. Long quotes can be collapsed or expanded by tapping their header's arrow either way.
     public static let collapseLongQuotes = Setting(key: "collapse_long_quotes", default: false)
 
     /// Show a post preview before submitting a reply to a thread.
