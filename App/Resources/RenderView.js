@@ -1146,17 +1146,39 @@ Awful.jumpToFractionalOffset = function(fraction) {
 
      * Loading linkified images.
      * Revealing spoilers.
+     * Collapsing and expanding quotes.
 
  @param {Event} event - A click event.
  */
 Awful.handleClickEvent = function(event) {
 
-  // We'll be using this in a couple places.
+  // We'll be using these in a couple places.
   var gifWrapper = event.target.closest('.gif-wrap');
-
-  // Toggle spoilers on tap.
   var spoiler = event.target.closest('.bbc-spoiler');
-  if (spoiler) {
+  var quoteHeader = event.target.closest('.bbc-block.collapsible > h4');
+  // A collapsed quote's body, unless it's behind a hidden spoiler (which takes the tap to reveal it).
+  var collapsedQuoteBody = event.target.closest('.bbc-block.collapsed > blockquote');
+  if (collapsedQuoteBody && !Awful.isSpoiled(collapsedQuoteBody)) {
+    collapsedQuoteBody = null;
+  }
+
+  // Tap a collapsible quote's header or arrow (but not its "so-and-so posted:" link) to collapse or expand it. A quote in a revealed spoiler takes the tap, rather than hiding the spoiler again.
+  if (quoteHeader && !event.target.closest('a') && Awful.isSpoiled(quoteHeader)) {
+    var quote = quoteHeader.parentElement;
+    Awful.setQuoteCollapsed(quote, !quote.classList.contains('collapsed'), true);
+    event.preventDefault();
+    return;
+  }
+
+  // Tap a spoiler in a collapsed quote's body (links and all) to expand the quote. A long spoiler can cover the whole body, so revealing it instead would leave nowhere to tap. Once the quote is expanded, its spoilers work as usual.
+  if (collapsedQuoteBody && spoiler && collapsedQuoteBody.contains(spoiler)) {
+    Awful.setQuoteCollapsed(collapsedQuoteBody.parentElement, false, true);
+    event.preventDefault();
+    return;
+  }
+
+  // Toggle spoilers on tap. A tap on a collapsed quote in a revealed spoiler goes to the quote (below) instead.
+  if (spoiler && !collapsedQuoteBody) {
     var isSpoiled = spoiler.classList.contains('spoiled');
 
     if (isSpoiled && gifWrapper) {
@@ -1170,19 +1192,11 @@ Awful.handleClickEvent = function(event) {
 
     if (!(isLink && isSpoiled)) {
         spoiler.classList.toggle("spoiled");
+        Awful.didToggleSpoiler(spoiler);
         event.preventDefault();
     } else if (isLink && !isSpoiled) {
         event.preventDefault();
     }
-    return;
-  }
-
-  // Tap a collapsible quote's header or arrow (but not its "so-and-so posted:" link) to collapse or expand it.
-  var quoteHeader = event.target.closest('.bbc-block.collapsible > h4');
-  if (quoteHeader && !event.target.closest('a')) {
-    var quote = quoteHeader.parentElement;
-    Awful.setQuoteCollapsed(quote, !quote.classList.contains('collapsed'), true);
-    event.preventDefault();
     return;
   }
 
@@ -1240,7 +1254,6 @@ Awful.handleClickEvent = function(event) {
   }
 
   // Tap anywhere else in a collapsed quote's body to expand it. Links and videos keep their taps, except on the faded last line, where they're hard to make out.
-  var collapsedQuoteBody = event.target.closest('.bbc-block.collapsed > blockquote');
   if (collapsedQuoteBody) {
     var onLastLine = event.clientY >= collapsedQuoteBody.getBoundingClientRect().bottom - Awful.lineHeightOf(collapsedQuoteBody);
     if (onLastLine || !event.target.closest('a, video')) {
@@ -1479,6 +1492,20 @@ Awful.interestingElementsAtPoint = function(x, y) {
 Awful.isSpoiled = function(element) {
   var spoiler = element.closest('.bbc-spoiler');
   return !spoiler || spoiler.classList.contains('spoiled');
+};
+
+
+/**
+ Updates what depends on a spoiler's size after it's revealed or hidden. A hidden spoiler's images take no space (and load that way), so the collapsible quotes in or around it need their collapsed lines counted again.
+ */
+Awful.didToggleSpoiler = function(spoiler) {
+  spoiler.querySelectorAll('.bbc-block.collapsible').forEach(function(quote) {
+    Awful.updateQuoteCollapsedLines(quote);
+  });
+  for (var quote = spoiler.closest('.bbc-block.collapsible'); quote; quote = quote.parentElement.closest('.bbc-block.collapsible')) {
+    Awful.updateQuoteCollapsedLines(quote);
+  }
+  Awful.redrawMeasuredPostsContaining([spoiler]);
 };
 
 

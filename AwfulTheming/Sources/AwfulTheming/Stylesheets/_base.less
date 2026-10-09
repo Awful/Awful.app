@@ -318,8 +318,9 @@ body.dark {
     -webkit-mask-image: linear-gradient(to bottom, #000 60%, transparent);
   }
 
-  // A hidden spoiler hides its quotes' arrows too.
-  .bbc-spoiler:not(.spoiled) & .quote-collapse-toggle {
+  // A hidden spoiler hides its quotes' arrows too, and the quote icon some themes put in a quote's top left corner (`h4::before`).
+  .bbc-spoiler:not(.spoiled) & .quote-collapse-toggle,
+  .bbc-spoiler:not(.spoiled) & > h4::before {
     visibility: hidden;
   }
 }
@@ -535,6 +536,18 @@ header {
 }
 .bbc-spoiler {
   cursor: pointer;
+}
+// A spoiler around a quote is a block rather than an inline span with a block in it. WebKit (iOS 27) adds the quote's top margin again while a quote in an inline span changes height, so the quote and everything below it jump 5px as it collapses or expands.
+.bbc-spoiler:has(.bbc-block) {
+  display: block;
+
+  // As a block, it would otherwise start with a blank line (the zero-width non-joiner below, plus the line break after `[spoiler]`), making the hidden spoiler taller than the quote it reveals.
+  .postbody &::before {
+    content: none;
+  }
+  > br:first-child {
+    display: none;
+  }
 }
 footer button.action-button {
   cursor: pointer;
