@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "ghost.png",
+      "filename" : "ghost_blue.png",
       "idiom" : "universal"
     },
     {
@@ -11,7 +11,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "ghost-dark.png",
+      "filename" : "ghost_blue-dark.png",
       "idiom" : "universal"
     }
   ],

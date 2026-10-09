@@ -1,6 +1,6 @@
 //  AppIconImageNames.swift
 //
-//  Copyright 2025 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
+//  Copyright 2026 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 /**
  App icon image names generated from the contents of `App Icons.xcassets`.

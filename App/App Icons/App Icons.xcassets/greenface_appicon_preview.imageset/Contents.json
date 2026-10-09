@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "creep.png",
+      "filename" : "greenface.png",
       "idiom" : "universal"
     },
     {
@@ -11,7 +11,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "creep-dark.png",
+      "filename" : "greenface-dark.png",
       "idiom" : "universal"
     }
   ],

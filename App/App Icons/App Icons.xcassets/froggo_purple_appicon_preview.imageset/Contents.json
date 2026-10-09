@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "froggo-purp.png",
+      "filename" : "froggo_purple.png",
       "idiom" : "universal"
     },
     {
@@ -11,7 +11,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "froggo-purp-dark.png",
+      "filename" : "froggo_purple-dark.png",
       "idiom" : "universal"
     }
   ],

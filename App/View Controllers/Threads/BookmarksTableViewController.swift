@@ -755,7 +755,7 @@ final class BookmarksTableViewController: HostedCollectionViewController {
 
         if #available(iOS 26.0, *),
            LiquidGlass.affectsPadSidebar,
-           let image = UIImage(named: "quick-look") {
+           let image = UIImage(named: "search") {
             let hosting = NavigationController.makeSidebarImageHostingView(
                 image: image,
                 accessibilityLabel: label,
@@ -765,7 +765,7 @@ final class BookmarksTableViewController: HostedCollectionViewController {
             searchButton = UIBarButtonItem(customView: hosting)
         } else {
             let button = UIButton(type: .system)
-            button.setImage(UIImage(named: "quick-look"), for: .normal)
+            button.setImage(UIImage(named: "search"), for: .normal)
             button.accessibilityLabel = label
             button.addTarget(self, action: #selector(searchButtonTapped), for: .touchUpInside)
 

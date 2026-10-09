@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "V.png",
+      "filename" : "v.png",
       "idiom" : "universal"
     },
     {
@@ -11,7 +11,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "V-dark.png",
+      "filename" : "v-dark.png",
       "idiom" : "universal"
     }
   ],

@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "doggo.png",
+      "filename" : "staredog.png",
       "idiom" : "universal"
     },
     {
@@ -11,7 +11,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "doggo-dark.png",
+      "filename" : "staredog-dark.png",
       "idiom" : "universal"
     }
   ],

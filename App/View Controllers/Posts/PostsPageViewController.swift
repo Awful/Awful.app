@@ -2441,7 +2441,7 @@ final class PostsPageViewController: ViewController {
             if author != nil {
                 postActions.append(.init(
                     title: "Find post",
-                    image: UIImage(named: "quick-look")!.withRenderingMode(.alwaysTemplate),
+                    image: UIImage(named: "search")!.withRenderingMode(.alwaysTemplate),
                     identifier: .init("find"),
                     handler: findPost(action:)
                 ))

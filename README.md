@@ -142,19 +142,15 @@ To add a new thread tag you just made:
 
 To add a new alternate app icon:
 
-1. Open `App/App Icons/App Icons.xcassets`.
-2. Add a new iOS App Icon.
-3. Name your app icon something appropriate, including the `_appicon` suffix.
-4. In the Attributes inspector, from the Appearances popover, choose "Any, Dark, Tinted" (assuming you have dark and tinted variants of your icon).
-5. Drag your 1024px×1024px image file over.
-6. Add a new Image Set with the same name as your icon set plus `_preview`.
-7. In the Attributes inspector, set Scales to "Single Scale" and Appearances to "Any, Dark".
-8. Make and drag one 225px×225px image into each of the Any and Dark wells. (e.g. `sips -Z 225 cool-icon.png`.) Previews are drawn `.resizable()` at 70pt by `AppIconGridView`, so 210px (70pt @3x) is the most that can ever be used — @1x/@2x/@3x variants would only waste memory.
-9. Run `Scripts/app-icons`. This will update the relevant build settings, make the image names available in Swift, and yell at you if you miss some of the above steps.
-10. Open `App/Settings/SettingsViewController.swift`.
-11. Add your new app icon info to the `appIcons` array.
+1. Make your icon in Icon Composer and save it in `App/App Icons/` with an `_appicon` suffix (e.g. `cool_appicon.icon`).
+2. Add the `.icon` file to the Awful target in Xcode.
+3. Run `Scripts/app-icons`. This renders the `_preview` image sets (Any and Dark) in `App Icons.xcassets` from your `.icon` using Icon Composer's `ictool`, updates the relevant build settings, and makes the image names available in Swift. It needs Xcode 26 or later; set `ICTOOL` to point at a different `ictool` if needed.
+4. Open `App/Settings/SettingsViewController.swift`.
+5. Add your new app icon info to the `appIcons` array.
 
-The bookkeeping and duplicate images are unfortunate, but there's no public API to list app icon sets or to load app icon images for display. Instead of hacking together something that could break later, we'll do it ourselves.
+Re-run `Scripts/app-icons` whenever you change a `.icon` so its previews stay in sync.
+
+The bookkeeping and generated previews are unfortunate, but there's no public API to list app icon sets or to load app icon images for display. Instead of hacking together something that could break later, we'll do it ourselves.
 
 ## URL schemes
 

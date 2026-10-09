@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "gold.png",
+      "filename" : "rated_five.png",
       "idiom" : "universal"
     },
     {
@@ -11,7 +11,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "gold-dark.png",
+      "filename" : "rated_five-dark.png",
       "idiom" : "universal"
     }
   ],

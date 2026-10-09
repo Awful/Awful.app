@@ -192,12 +192,12 @@ public final class SearchFormViewController: HostingController<AnyView> {
     /// `.plain` rather than `.done`: on iOS 26 a `.done` item renders as a filled, tinted capsule,
     /// which doesn't match the plain glass buttons everywhere else in the app.
     ///
-    /// Shows the same `quick-look` icon as the Forums list's Search button. That asset lives in the
+    /// Shows the same `search` icon as the Forums list's Search button. That asset lives in the
     /// app's main bundle rather than this package, so fall back to a "Search" title when it's
     /// unavailable (e.g. package-only previews).
     private lazy var searchItem: UIBarButtonItem = {
         let item: UIBarButtonItem
-        if let icon = UIImage(named: "quick-look") {
+        if let icon = UIImage(named: "search") {
             item = UIBarButtonItem(image: icon, style: .plain, target: self, action: #selector(didTapSearch))
         } else {
             item = UIBarButtonItem(

@@ -405,7 +405,7 @@ final class ForumsTableViewController: CollectionViewController, ContentRefresha
     }
 
     /// Builds the Search + overflow (⋯) buttons as an icon pair, mirroring
-    /// `BookmarksTableViewController`'s Filter/Search combo. Search uses the `quick-look`
+    /// `BookmarksTableViewController`'s Filter/Search combo. Search uses the `search`
     /// asset icon and is gated on PM privileges; the overflow menu is for everyone.
     /// Right-bar items are ordered right-to-left, so ⋯ keeps the rightmost spot with Search to its left.
     ///
@@ -435,7 +435,7 @@ final class ForumsTableViewController: CollectionViewController, ContentRefresha
             )
 
             var arranged: [UIView] = []
-            if canSearch, let searchImage = UIImage(named: "quick-look") {
+            if canSearch, let searchImage = UIImage(named: "search") {
                 let searchHosting = NavigationController.makeSidebarImageHostingView(
                     image: searchImage,
                     accessibilityLabel: "Search",
@@ -483,7 +483,7 @@ final class ForumsTableViewController: CollectionViewController, ContentRefresha
         }
 
         let searchButton = UIButton(type: .system)
-        searchButton.setImage(UIImage(named: "quick-look"), for: .normal)
+        searchButton.setImage(UIImage(named: "search"), for: .normal)
         searchButton.addTarget(self, action: #selector(searchForums), for: .touchUpInside)
         searchButton.accessibilityLabel = "Search"
         if #available(iOS 26.0, *), LiquidGlass.isEnabled {

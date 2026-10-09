@@ -1,20 +1,97 @@
 #!/usr/bin/env python3
 
 from datetime import datetime
+import json
+import os
 from pathlib import Path
+import subprocess
+import sys
 
 PRIMARY_APP_ICONSET = "rated_five_appicon"
+
+# Previews are drawn `.resizable()` at 70pt by `AppIconGridView`, so 210px (70pt @3x) is the most that can ever be used.
+PREVIEW_SIZE = 225
 
 script_dir = Path(__file__).parent
 
 asset_catalog_path = script_dir.joinpath('..', 'App', 'App Icons', 'App Icons.xcassets').resolve()
 app_icons_path = script_dir.joinpath('..', 'App', 'App Icons').resolve()
 appiconsets = list(p.stem for p in app_icons_path.iterdir() if p.suffix == '.icon')
-previews = set(p.stem for p in asset_catalog_path.iterdir() if p.stem.endswith('_preview'))
 assert PRIMARY_APP_ICONSET in appiconsets, f'Missing {PRIMARY_APP_ICONSET}'
-for a in appiconsets:
-    assert f'{a}_preview' in previews, f'Missing preview for {a}'
 alternate_appiconsets = sorted(a for a in appiconsets if a != PRIMARY_APP_ICONSET)
+
+
+def find_ictool() -> Path:
+    if 'ICTOOL' in os.environ:
+        return Path(os.environ['ICTOOL'])
+    developer_dir = Path(subprocess.run(['xcode-select', '-p'], capture_output=True, text=True, check=True).stdout.strip())
+    candidates = [
+        developer_dir.joinpath('..', 'Applications', 'Icon Composer.app', 'Contents', 'Executables', 'ictool').resolve(),
+        Path('/Applications/Icon Composer.app/Contents/Executables/ictool'),
+    ]
+    for candidate in candidates:
+        if os.access(candidate, os.X_OK):
+            return candidate
+    sys.exit(f"Couldn't find ictool (looked in {', '.join(map(str, candidates))}). Install Xcode 26 or later, or set ICTOOL to its path.")
+
+
+def render_preview(ictool: Path, icon_path: Path, rendition: str, output_path: Path):
+    result = subprocess.run([
+        ictool, icon_path,
+        '--export-image',
+        '--output-file', output_path,
+        '--platform', 'iOS',
+        '--rendition', rendition,
+        '--width', str(PREVIEW_SIZE),
+        '--height', str(PREVIEW_SIZE),
+        '--scale', '1',
+    ], capture_output=True, text=True)
+    if result.returncode != 0 or not output_path.exists():
+        sys.exit(f'ictool failed rendering {rendition} for {icon_path.name}:\n{result.stdout}{result.stderr}')
+
+
+# Render each icon's Any and Dark appearances into its `_preview` image set, so the picker always matches the real icon.
+ictool = find_ictool()
+for a in sorted(appiconsets):
+    imageset_path = asset_catalog_path.joinpath(f'{a}_preview.imageset')
+    imageset_path.mkdir(exist_ok=True)
+    for stale in imageset_path.glob('*.png'):
+        stale.unlink()
+
+    basename = a.removesuffix('_appicon')
+    light_filename = f'{basename}.png'
+    dark_filename = f'{basename}-dark.png'
+    icon_path = app_icons_path.joinpath(f'{a}.icon')
+    print(f'Rendering previews for {a}')
+    render_preview(ictool, icon_path, 'Default', imageset_path.joinpath(light_filename))
+    render_preview(ictool, icon_path, 'Dark', imageset_path.joinpath(dark_filename))
+
+    contents = {
+        'images': [
+            {
+                'filename': light_filename,
+                'idiom': 'universal',
+            },
+            {
+                'appearances': [{'appearance': 'luminosity', 'value': 'dark'}],
+                'filename': dark_filename,
+                'idiom': 'universal',
+            },
+        ],
+        'info': {
+            'author': 'xcode',
+            'version': 1,
+        },
+    }
+    with open(imageset_path.joinpath('Contents.json'), 'w') as f:
+        f.write(json.dumps(contents, indent=2, separators=(',', ' : ')) + '\n')
+
+orphaned_previews = sorted(
+    p.name for p in asset_catalog_path.iterdir()
+    if p.name.endswith('_preview.imageset') and p.name.removesuffix('_preview.imageset') not in appiconsets
+)
+for orphan in orphaned_previews:
+    print(f'warning: {orphan} has no matching .icon in {app_icons_path.name}; delete it if it is no longer needed', file=sys.stderr)
 
 xcconfig_path = script_dir.joinpath('..', 'App', 'App Icons', 'App Icons.xcconfig').resolve()
 with open(xcconfig_path, 'w') as xcconfig:
