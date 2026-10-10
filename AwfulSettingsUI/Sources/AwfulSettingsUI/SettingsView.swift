@@ -384,7 +384,7 @@ private struct ThemesSection: View {
                 Toggle(isOn: $disableLiquidGlass) {
                     CaptionedLabel(
                         "Reduce Liquid Glass",
-                        caption: "It can't be disabled completely, but we can revert our custom components to the original flat style and apply whatever settings available wherever possible to get rid of most of it. The back button and tab selector cannot be de-glassed. If turning this setting on, quit and relaunch the app for the best experience."
+                        caption: "Switch off Liquid Glass where possible. It is not always possible (i.e. the Back button). Some elements won't update until a relaunch occurs."
                     )
                 }
             }

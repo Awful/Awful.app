@@ -844,11 +844,14 @@ final class NavigationController: UINavigationController, Themeable {
         // the setting and brings its own top treatment: the bar's content blur under Liquid Glass
         // (see NavigationBar.contentBlurAlpha), the immersive mode's safe-area gradient under
         // Reduce. The effect belongs to the scroll view, so immersive mode can't slide it away
-        // with the bar, and it spans the whole top inset. Otherwise the web views keep it, like
-        // the lists.
+        // with the bar, and it spans the whole top inset. Under Reduce Liquid Glass the bar stays
+        // opaque at every offset, so (as on the iPad sidebar) the fade has nothing to blend into
+        // and just reads as a blurred band below the bar: hide it. Otherwise the web views keep
+        // it, like the lists.
         if let scrollView = screen?.navigationBarScrollView {
             scrollView.topEdgeEffect.style = .soft
-            scrollView.topEdgeEffect.isHidden = screen?.usesNavigationBarContentBlur == true
+            scrollView.topEdgeEffect.isHidden = !LiquidGlass.isEnabled
+                || screen?.usesNavigationBarContentBlur == true
         }
 
         if LiquidGlass.isEnabled {
