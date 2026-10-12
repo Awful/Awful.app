@@ -58,18 +58,39 @@ final class RootTabBarController: UITabBarController, UITabBarControllerDelegate
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        // The backplate is frame-based, so refresh it once the tab bar has its real
-        // post-layout bounds (first layout, rotation, size changes).
+        // The backplate and the opacity both depend on where the tab bar ended up, so refresh
+        // them once it has its real post-layout bounds (first layout, rotation, size changes,
+        // and the iPhone Duo moving it between the bottom edge and a side rail).
+        updateTabBarOpacity()
         if #available(iOS 26.0, *) {
             updateTabBarBackplate()
         }
     }
 
+    /// True when the tab bar runs down the side of the screen rather than across it (the
+    /// iPhone Duo's trailing rail).
+    private var isTabBarVertical: Bool {
+        tabBar.bounds.height > tabBar.bounds.width
+    }
+
+    /// Opaque under Reduce Liquid Glass, except as a side rail: UIKit lays out an opaque tab
+    /// bar's children as though it sat along the bottom, taking the rail's full height off
+    /// them and leaving every tab's content with no room at all.
+    private func updateTabBarOpacity() {
+        let isTranslucent = LiquidGlass.isEnabled || isTabBarVertical
+        if tabBar.isTranslucent != isTranslucent {
+            tabBar.isTranslucent = isTranslucent
+        }
+    }
+
     /// Paints the classic full-width bar behind the iOS 26 glass pill when Liquid Glass
-    /// is disabled — the pill shape itself can't be removed via `UITabBarAppearance`.
+    /// is disabled — the pill shape itself can't be removed via `UITabBarAppearance`. Not
+    /// for a side rail, where there's no full-width bar to recreate, and where the item
+    /// platters sit behind the tab bar so a backplate would hide them.
     @available(iOS 26.0, *)
     private func updateTabBarBackplate() {
-        tabBar.setLegacyOpaqueBackground(color: LiquidGlass.isEnabled ? nil : theme["tabBarBackgroundColor"])
+        let color = LiquidGlass.isEnabled || isTabBarVertical ? nil : theme[uicolor: "tabBarBackgroundColor"]
+        tabBar.setLegacyOpaqueBackground(color: color)
     }
 
     func tabBarController(
@@ -107,7 +128,6 @@ final class RootTabBarController: UITabBarController, UITabBarControllerDelegate
             barAppearance.shadowImage = nil
             barAppearance.shadowColor = nil
 
-            tabBar.isTranslucent = true
             tabBar.barTintColor = nil
             tabBar.unselectedItemTintColor = nil
             tabBar.topBorderColor = nil
@@ -126,7 +146,6 @@ final class RootTabBarController: UITabBarController, UITabBarControllerDelegate
             barAppearance.backgroundColor = theme[uicolor: "tabBarBackgroundColor"]
             barAppearance.shadowColor = theme[uicolor: "bottomBarTopBorderColor"]
 
-            tabBar.isTranslucent = false
             tabBar.barTintColor = theme["tabBarBackgroundColor"]
             tabBar.tintColor = theme["tintColor"]
             // iOS 26 glass items ignore UITabBarItemAppearance icon colors and render from
@@ -137,6 +156,7 @@ final class RootTabBarController: UITabBarController, UITabBarControllerDelegate
             tabBar.topBorderColor = theme["bottomBarTopBorderColor"]
         }
 
+        updateTabBarOpacity()
         if #available(iOS 26.0, *) {
             updateTabBarBackplate()
         }
