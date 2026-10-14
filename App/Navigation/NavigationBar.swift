@@ -58,9 +58,54 @@ final class NavigationBar: UINavigationBar {
         }
     }
 
+    // MARK: Vertical bar top fill
+
+    /// What the bar's background looks like right now (its colour at its current opacity), for
+    /// `verticalBarTopFill`. Nil leaves the fill off.
+    var verticalBarTopFillColor: UIColor? {
+        didSet {
+            guard verticalBarTopFillColor != oldValue else { return }
+            setNeedsLayout()
+        }
+    }
+
+    /// With the status bar moved into the vertical bar on the folded iPhone Duo, UIKit still lays
+    /// the bar out a little way down from the top of the screen but only extends its background
+    /// part of the way up, leaving a strip of whatever's behind (see `VerticalBar`). This covers
+    /// that strip in the bar's own colour. Kept at the back so it follows the bar's transform and
+    /// alpha (immersive mode) like the content blur.
+    private var verticalBarTopFill: UIView?
+
+    private func layoutVerticalBarTopFill() {
+        // `frame` would include the immersive-mode transform; the gap is the untransformed one.
+        let gap = center.y - bounds.height / 2
+        guard VerticalBar.isActive(in: traitCollection), gap > 0, let color = verticalBarTopFillColor else {
+            verticalBarTopFill?.isHidden = true
+            return
+        }
+        let fill: UIView
+        if let existing = verticalBarTopFill {
+            fill = existing
+        } else {
+            fill = UIView()
+            fill.isUserInteractionEnabled = false
+            verticalBarTopFill = fill
+        }
+        // Inserted once rather than kept first, so it doesn't trade places with the content
+        // blur on every pass; either way both stay behind the bar's own background.
+        if fill.superview !== self {
+            insertSubview(fill, at: 0)
+        }
+        fill.isHidden = false
+        fill.backgroundColor = color
+        fill.frame = CGRect(x: 0, y: -gap, width: bounds.width, height: gap)
+    }
+
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
+
+        VerticalBar.registerForChanges(self, action: #selector(UIView.setNeedsLayout))
+
         // For whatever reason, translucent navbars with a barTintColor do not necessarily blur their backgrounds. An iPad 3, for example, blurs a bar without a barTintColor but is simply semitransparent with a barTintColor. The semitransparent, non-blur effect looks awful, so just turn it off.
         // iOS 26: Allow translucency for liquid glass effect
         if #available(iOS 26.0, *) {
@@ -96,6 +141,7 @@ final class NavigationBar: UINavigationBar {
     override func layoutSubviews() {
         super.layoutSubviews()
         layoutContentBlur()
+        layoutVerticalBarTopFill()
         defer { didLayoutSubviews?() }
 
         guard let forced = forcedTintColor else { return }

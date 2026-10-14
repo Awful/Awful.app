@@ -3396,6 +3396,9 @@ extension PostsPageViewController: NavigationBarScrollTransitioning {
     /// Immersive mode slides the bar away, so the blur under it has to be the bar's own; otherwise
     /// the page keeps the system edge effect, the blurred fade the lists show.
     var usesNavigationBarContentBlur: Bool { immersiveModeEnabled }
+
+    /// The bar goes away only in immersive mode, which slides it off itself.
+    var allowsNavigationBarMinimization: Bool { false }
 }
 
 extension PostsPageViewController: NavigationBarScrollProgressProviding {

@@ -3,6 +3,7 @@
 //  Copyright 2018 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulSettings
+import AwfulTheming
 import UIKit
 
 /// In the Forum list, each cell represents either a favorite forum or a plain old forum.
@@ -28,6 +29,7 @@ final class ForumListCell: UICollectionViewListCell {
     var viewModel: ViewModel = .empty {
         didSet {
             contentView.backgroundColor = viewModel.backgroundColor
+            updateVerticalBarBackground(viewModel.backgroundColor)
 
             // Only animate when this same cell is reconfigured into a different state
             // (i.e. the user tapped it); reused cells snap straight to their state.
@@ -164,6 +166,9 @@ final class ForumListCell: UICollectionViewListCell {
         directionalLayoutMargins = .zero
         contentView.directionalLayoutMargins = .zero
 
+        // Folding or unfolding the iPhone Duo adds or removes the vertical bar.
+        updateVerticalBarBackground(viewModel.backgroundColor)
+
         // Hide the favorite star while editing so the row's delete accessory has room.
         isInEditingState = state.isEditing
         favoriteButton.alpha = state.isEditing ? 0 : 1
@@ -189,7 +194,7 @@ final class ForumListCell: UICollectionViewListCell {
     override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
         let attributes = super.preferredLayoutAttributesFitting(layoutAttributes)
         let width = layoutAttributes.size.width
-        let height = Layout(width: width, viewModel: viewModel, isEditing: isInEditingState).height
+        let height = Layout(width: contentViewWidth(forCellWidth: width), viewModel: viewModel, isEditing: isInEditingState).height
         attributes.size = CGSize(width: width, height: height)
         return attributes
     }

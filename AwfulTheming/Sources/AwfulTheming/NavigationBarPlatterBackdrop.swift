@@ -46,6 +46,11 @@ public protocol NavigationBarScrollTransitioning: AnyObject {
     /// away with the bar, so the bar puts its own fading blur under the transparent bar instead.
     /// False keeps the system effect, the blurred fade the lists show as they scroll under the bar.
     var usesNavigationBarContentBlur: Bool { get }
+
+    /// Whether iOS 27 may minimize the bar as this screen scrolls (on the folded iPhone Duo).
+    /// Reduce Liquid Glass never lets it whatever this says. False for a screen that decides for
+    /// itself when the bar goes away (the posts page, which slides it off only in immersive mode).
+    var allowsNavigationBarMinimization: Bool { get }
 }
 
 public extension NavigationBarScrollTransitioning {
@@ -58,6 +63,8 @@ public extension NavigationBarScrollTransitioning {
     var navigationBarContentColor: UIColor? { nil }
 
     var usesNavigationBarContentBlur: Bool { false }
+
+    var allowsNavigationBarMinimization: Bool { true }
 }
 
 /// A navigation controller that restyles the status bar and its content blur from its top

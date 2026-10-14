@@ -296,6 +296,7 @@ struct SettingsContainerView: View {
             core
                 .scrollEdgeEffectStyle(.soft, for: .top)
                 .scrollEdgeEffectHidden(isPad || disableLiquidGlass, for: .top)
+                .modifier(ReducedGlassBarMinimization(isReduced: disableLiquidGlass))
                 .onScrollGeometryChange(for: CGFloat.self) { geometry in
                     geometry.contentOffset.y + geometry.contentInsets.top
                 } action: { _, offsetFromTop in
@@ -327,6 +328,23 @@ struct SettingsContainerView: View {
         .themed()
         .onReceive(cacheSizeText) { newValue in
             displayedCacheSize = newValue
+        }
+    }
+}
+
+/// Reduce Liquid Glass keeps the bar in place at every scroll offset, where iOS 27 otherwise
+/// minimizes it on scroll here (see NavigationController.updateBarMinimization). The hosting
+/// controller copies SwiftUI's own toolbar settings onto its navigation item, so it has to be
+/// asked for in SwiftUI. A value rather than a branch, so flipping the setting from this very
+/// screen doesn't rebuild the form.
+private struct ReducedGlassBarMinimization: ViewModifier {
+    let isReduced: Bool
+
+    func body(content: Content) -> some View {
+        if #available(iOS 27.0, *) {
+            content.toolbarMinimizationBehavior(isReduced ? .never : .automatic, for: .navigationBar)
+        } else {
+            content
         }
     }
 }

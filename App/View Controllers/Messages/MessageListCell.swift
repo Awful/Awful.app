@@ -2,6 +2,7 @@
 //
 //  Copyright 2018 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import AwfulTheming
 import UIKit
 
 final class MessageListCell: UICollectionViewListCell {
@@ -59,6 +60,7 @@ final class MessageListCell: UICollectionViewListCell {
     var viewModel: ViewModel = .empty {
         didSet {
             contentView.backgroundColor = viewModel.backgroundColor
+            updateVerticalBarBackground(viewModel.backgroundColor)
 
             dateLabel.attributedText = viewModel.sentDateRaw
 
@@ -129,6 +131,12 @@ final class MessageListCell: UICollectionViewListCell {
         fatalError("init(coder:) has not been implemented")
     }
 
+    override func updateConfiguration(using state: UICellConfigurationState) {
+        super.updateConfiguration(using: state)
+        // Folding or unfolding the iPhone Duo adds or removes the vertical bar.
+        updateVerticalBarBackground(viewModel.backgroundColor)
+    }
+
     override func layoutSubviews() {
         super.layoutSubviews()
 
@@ -143,7 +151,7 @@ final class MessageListCell: UICollectionViewListCell {
     override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
         let attributes = super.preferredLayoutAttributesFitting(layoutAttributes)
         let width = layoutAttributes.size.width
-        let height = Layout(width: width, viewModel: viewModel).height
+        let height = Layout(width: contentViewWidth(forCellWidth: width), viewModel: viewModel).height
         attributes.size = CGSize(width: width, height: height)
         return attributes
     }

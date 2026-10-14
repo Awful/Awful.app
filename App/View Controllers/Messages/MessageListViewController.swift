@@ -123,16 +123,34 @@ final class MessageListViewController: CollectionViewController, ContentRefresha
                 header.addSubview(picker)
 
                 NSLayoutConstraint.activate([
-                    picker.leadingAnchor.constraint(equalTo: header.leadingAnchor, constant: 16),
-                    picker.trailingAnchor.constraint(equalTo: header.trailingAnchor, constant: -16),
                     // headerTopPadding already gives 4pt above the header, so only pad below
                     // to keep the picker vertically centered between nav bar and first cell.
                     picker.topAnchor.constraint(equalTo: header.topAnchor),
                     picker.bottomAnchor.constraint(equalTo: header.bottomAnchor, constant: -4),
                     picker.heightAnchor.constraint(equalToConstant: LayoutConstants.folderPickerHeight),
                 ])
+                folderPickerEdgeConstraints = [
+                    picker.leadingAnchor.constraint(equalTo: header.leadingAnchor, constant: 16),
+                    picker.trailingAnchor.constraint(equalTo: header.trailingAnchor, constant: -16),
+                ]
+                folderPickerSafeAreaConstraints = [
+                    picker.leadingAnchor.constraint(equalTo: header.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+                    picker.trailingAnchor.constraint(equalTo: header.safeAreaLayoutGuide.trailingAnchor, constant: -16),
+                ]
             }
+            self.updateFolderPickerInsets()
         }
+    }
+
+    private var folderPickerEdgeConstraints: [NSLayoutConstraint] = []
+    private var folderPickerSafeAreaConstraints: [NSLayoutConstraint] = []
+
+    /// The header spans the list's full width, which on the folded iPhone Duo runs under the
+    /// vertical bar, so there the picker keeps to the safe area instead (see `VerticalBar`).
+    @objc private func updateFolderPickerInsets() {
+        let usesSafeArea = VerticalBar.isActive(in: traitCollection)
+        NSLayoutConstraint.deactivate(usesSafeArea ? folderPickerEdgeConstraints : folderPickerSafeAreaConstraints)
+        NSLayoutConstraint.activate(usesSafeArea ? folderPickerSafeAreaConstraints : folderPickerEdgeConstraints)
     }
 
     private func makeDataSource() -> MessageListDataSource {
@@ -338,6 +356,7 @@ final class MessageListViewController: CollectionViewController, ContentRefresha
         super.viewDidLoad()
 
         setupFolderPicker()
+        VerticalBar.registerForChanges(self, action: #selector(updateFolderPickerInsets))
 
         rebuildLayout()
 

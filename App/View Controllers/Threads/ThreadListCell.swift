@@ -2,6 +2,7 @@
 //
 //  Copyright 2018 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import AwfulTheming
 import os
 import UIKit
 
@@ -29,6 +30,7 @@ final class ThreadListCell: UICollectionViewListCell {
     var viewModel: ViewModel = .empty {
         didSet {
             contentView.backgroundColor = viewModel.backgroundColor
+            updateVerticalBarBackground(viewModel.backgroundColor)
 
             pageCountLabel.attributedText = viewModel.pageCount
 
@@ -127,6 +129,9 @@ final class ThreadListCell: UICollectionViewListCell {
         // rows align; the Layout struct owns all insets (see init).
         directionalLayoutMargins = .zero
         contentView.directionalLayoutMargins = .zero
+
+        // Folding or unfolding the iPhone Duo adds or removes the vertical bar.
+        updateVerticalBarBackground(viewModel.backgroundColor)
         setNeedsLayout()
     }
 
@@ -169,7 +174,7 @@ final class ThreadListCell: UICollectionViewListCell {
     override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
         let attributes = super.preferredLayoutAttributesFitting(layoutAttributes)
         let width = layoutAttributes.size.width
-        let height = Layout(width: width, viewModel: viewModel).height
+        let height = Layout(width: contentViewWidth(forCellWidth: width), viewModel: viewModel).height
         attributes.size = CGSize(width: width, height: height)
         return attributes
     }

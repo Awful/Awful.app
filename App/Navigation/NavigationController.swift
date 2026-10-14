@@ -901,6 +901,12 @@ final class NavigationController: UINavigationController, Themeable {
     }
 
     override var preferredStatusBarStyle: UIStatusBarStyle {
+        // On the folded iPhone Duo the status bar sits in the vertical bar beside the content,
+        // never over the navigation bar, so it follows the content's mode whatever the bar does.
+        if VerticalBar.isActive(in: traitCollection) {
+            return theme.userInterfaceStyle == .dark ? .lightContent : .darkContent
+        }
+
         // Once the glass bar has gone transparent the status bar sits over the content. `.default`
         // would follow a trait rather than the pixels (white over a light theme's page when the
         // system is in dark mode), so screens that sample the page beneath the status bar
@@ -999,6 +1005,9 @@ final class NavigationController: UINavigationController, Themeable {
 
         themeDidChange()
 
+        // Folding the iPhone Duo moves the status bar between the top and the vertical bar.
+        VerticalBar.registerForChanges(self, action: #selector(setNeedsStatusBarAppearanceUpdate))
+
         interactivePopGestureRecognizer?.delegate = self
         // iOS 26's swipe-from-anywhere pop never begins by itself in these navigation controllers (and UIKit also treats the back button as hidden once replaceSidebarBarButtonItems swaps in a custom-view item). Sharing the edge pop's delegate lets it begin under the same conditions.
         if #available(iOS 26.0, *) {
@@ -1008,6 +1017,9 @@ final class NavigationController: UINavigationController, Themeable {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+
+        // A tab's root screen arrives without a willShow, so catch it here.
+        viewControllers.forEach(updateBarMinimization(for:))
 
         if #available(iOS 26.0, *) {
             applySidebarAppearanceIfNeeded(with: theme)
@@ -1034,6 +1046,8 @@ final class NavigationController: UINavigationController, Themeable {
                 updateSharedBackgroundVisibility(for: topVC)
             }
         }
+        // Covers the Reduce Liquid Glass setting changing while the stack is up.
+        viewControllers.forEach(updateBarMinimization(for:))
     }
 
     /// True for a nav controller that is a column of the iPad sidebar. A nav controller inside
@@ -1413,6 +1427,22 @@ final class NavigationController: UINavigationController, Themeable {
         for item in sharedBackgroundItems(of: viewController) {
             item.hidesSharedBackground = hide
         }
+    }
+
+    /// Reduce Liquid Glass keeps the bar opaque and in place at every scroll offset, so it doesn't
+    /// minimize on scroll either, as iOS 27 otherwise has it do on some screens (on the folded
+    /// iPhone Duo); nor does a screen that decides for itself when the bar goes
+    /// (`allowsNavigationBarMinimization`). Otherwise it's left to the system. A SwiftUI-hosted
+    /// screen's hosting controller overwrites this from SwiftUI, so those ask in SwiftUI instead
+    /// (see SettingsViewController's ReducedGlassBarMinimization).
+    private func updateBarMinimization(for viewController: UIViewController) {
+        guard #available(iOS 27.0, *) else { return }
+        let screenAllows = (viewController as? NavigationBarScrollTransitioning)?.allowsNavigationBarMinimization ?? true
+        let behavior: UIBarMinimizationBehavior = LiquidGlass.isEnabled && screenAllows ? .automatic : .never
+        var minimization = viewController.navigationItem.navigationBarMinimization
+        guard minimization.minimizationBehavior != behavior else { return }
+        minimization.minimizationBehavior = behavior
+        viewController.navigationItem.navigationBarMinimization = minimization
     }
 
     /// The items `updateSharedBackgroundVisibility` governs: the screen's bar and toolbar items,
@@ -1935,6 +1965,10 @@ final class NavigationController: UINavigationController, Themeable {
         configureBackIndicator(for: appearance, progress: progress)
         configureTitleAndButtons(for: appearance, progress: progress)
         applyAppearance(appearance, progress: progress)
+
+        // The strip above the bar on the folded iPhone Duo fades out with the bar's background.
+        awfulNavigationBar.verticalBarTopFillColor = theme[uicolor: "navigationBarTintColor"]?
+            .withAlphaComponent(1 - progress)
     }
 
     @available(iOS 26.0, *)
@@ -2115,6 +2149,7 @@ final class NavigationController: UINavigationController, Themeable {
         awfulNavigationBar.scrollEdgeAppearance = appearance
         awfulNavigationBar.compactAppearance = appearance
         awfulNavigationBar.compactScrollEdgeAppearance = appearance
+        awfulNavigationBar.verticalBarTopFillColor = theme[uicolor: "navigationBarTintColor"]
 
         awfulNavigationBar.tintColor = textColor
 
@@ -2181,6 +2216,7 @@ extension NavigationController: UINavigationControllerDelegate {
             updateSharedBackgroundVisibility(for: viewController)
             lendSharedBackgroundDuringTransition(navigationController)
         }
+        updateBarMinimization(for: viewController)
 
         if awfulNavigationBar.backIndicatorImage == nil {
             if #available(iOS 26.0, *), let backImage = vcTheme[uicolor: "navigationBarTextColor"].flatMap(backIndicatorImage(tinted:)) {
