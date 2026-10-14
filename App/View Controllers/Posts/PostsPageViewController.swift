@@ -3023,7 +3023,7 @@ final class PostsPageViewController: ViewController {
         navigationBar.setNeedsLayout()
 
         if let previousVC = navigationController?.viewControllers.dropLast().last {
-            previousVC.navigationItem.backBarButtonItem?.tintColor = textColor
+            previousVC.navigationItem.backBarButtonItem?.setBackButtonTint(textColor, in: traitCollection)
         }
     }
 

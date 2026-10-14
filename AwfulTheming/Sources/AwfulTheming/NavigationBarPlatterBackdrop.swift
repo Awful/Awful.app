@@ -623,6 +623,11 @@ public extension UIBarButtonItem {
         tintColor = tint
     }
 
+    /// True while `setGlassGlyph(bakedColor:tint:)` has a colour baked into the image.
+    var hasBakedGlassGlyph: Bool {
+        objc_getAssociatedObject(self, &glassGlyphBakedColorKey) != nil
+    }
+
     private func applyGlassGlyph() {
         guard let template = glassGlyphTemplate(for: self, current: image) else { return }
         guard let bakedColor = objc_getAssociatedObject(self, &glassGlyphBakedColorKey) as? UIColor else {

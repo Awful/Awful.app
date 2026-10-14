@@ -40,6 +40,16 @@ public enum VerticalBar {
     }
 }
 
+public extension UIBarButtonItem {
+
+    /// Tints a back button item for the navigation bar, except while there's a vertical bar: the
+    /// back button always goes in that, on glass over the content, where the system's own colour
+    /// is the one that reads.
+    func setBackButtonTint(_ color: UIColor?, in traitCollection: UITraitCollection) {
+        tintColor = VerticalBar.isActive(in: traitCollection) ? nil : color
+    }
+}
+
 public extension UICollectionViewCell {
 
     /// Paints the whole cell in `color` while there's a vertical bar. UIKit insets a list cell's

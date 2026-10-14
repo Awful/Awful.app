@@ -857,8 +857,11 @@ final class NavigationController: UINavigationController, Themeable {
         if LiquidGlass.isEnabled {
             screen?.navigationBarScrollView?.applyNavigationBarPlatterBackdrop(atTop: atTop, theme: theme)
             removeListPlatterBackdrop(for: viewController)
-        } else if screen?.navigationBarScrollView is UICollectionView {
+        } else if let collectionView = screen?.navigationBarScrollView as? UICollectionView {
             // See `installListPlatterBackdrop`: a collection view can't be made to sample right.
+            // Drop the backdrop Liquid Glass gave it, which would otherwise stay behind the list in
+            // the theme of the moment glass was switched off.
+            collectionView.applyNavigationBarPlatterBackdrop(atTop: false, theme: theme)
             installListPlatterBackdrop(for: viewController, theme: theme)
         } else {
             // Reduce Liquid Glass keeps the bar solid at every offset, so the backdrop never gets
@@ -877,6 +880,22 @@ final class NavigationController: UINavigationController, Themeable {
             item.setGlassGlyph(bakedColor: color, tint: nil)
         }
         screen?.updateGlassBarButtonGlyphs(color: color)
+        releaseVerticalBarItemColors(of: viewController)
+    }
+
+    /// On the folded iPhone Duo, UIKit moves some bar items into the vertical bar, by no rule it
+    /// exposes (see `VerticalBar`). There they sit on glass over the content, not on the bar, so
+    /// the bar colour baked or tinted into them doesn't read: hand them back to the system. Only an
+    /// item's frame says where it ended up, so this runs again once layout has placed them.
+    @available(iOS 26.0, *)
+    private func releaseVerticalBarItemColors(of viewController: UIViewController?) {
+        guard let viewController, VerticalBar.isActive(in: traitCollection) else { return }
+        for item in navigationBarItems(of: viewController) where item.customView == nil && item.image != nil {
+            guard item.hasBakedGlassGlyph || item.tintColor != nil else { continue }
+            guard let frame = item.frame(in: view), !frame.isEmpty,
+                  !navigationBar.frame.intersects(frame) else { continue }
+            item.setGlassGlyph(bakedColor: nil, tint: nil)
+        }
     }
 
     @available(iOS 26.0, *)
@@ -997,6 +1016,7 @@ final class NavigationController: UINavigationController, Themeable {
         if #available(iOS 26.0, *) {
             layoutListPlatterBackdrop()
             layoutTabBarTraitBackdrop()
+            releaseVerticalBarItemColors(of: topViewController)
         }
     }
 
@@ -1896,7 +1916,7 @@ final class NavigationController: UINavigationController, Themeable {
 
         if progressValue < ScrollProgress.atTop {
             isScrolledFromTop = false
-            backItem?.tintColor = theme[uicolor: "navigationBarTextColor"]
+            backItem?.setBackButtonTint(theme[uicolor: "navigationBarTextColor"], in: traitCollection)
 
             if theme["statusBarBackground"] == "light" {
                 statusBarEnterLightBackground()
@@ -2277,7 +2297,7 @@ extension NavigationController: UINavigationControllerDelegate {
 
                 if viewControllers.count > 1 {
                     let previousVC = viewControllers[viewControllers.count - 2]
-                    previousVC.navigationItem.backBarButtonItem?.tintColor = textColor
+                    previousVC.navigationItem.backBarButtonItem?.setBackButtonTint(textColor, in: traitCollection)
                 }
             }
         }
@@ -2338,6 +2358,10 @@ extension NavigationController: UINavigationControllerDelegate {
         }
 
         pushAnimationInProgress = false
+
+        if #available(iOS 26.0, *) {
+            releaseVerticalBarItemColors(of: viewController)
+        }
 
         // A completed transition (notably the swipe-from-right unpop onto a still-scrolled page)
         // leaves the bar in the opaque resting state that willShow/viewWillAppear applied
