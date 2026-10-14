@@ -288,6 +288,21 @@ final class PostsPageView: UIView {
     private var scrollJankMonitor: ScrollJankMonitor?
     #endif
 
+    /// Repro aid: `-AwfulDebugToolbarInset 70` narrows the toolbar by that many points, standing in
+    /// for a narrower screen the simulator can't emulate (Display Zoom takes an iPhone 14 from 390pt
+    /// to 320pt). Always zero outside debug builds.
+    private static let debugToolbarInset: CGFloat = {
+        #if DEBUG
+        return CGFloat(UserDefaults.standard.double(forKey: "AwfulDebugToolbarInset"))
+        #else
+        return 0
+        #endif
+    }()
+
+    /// Called when layout changes the toolbar's width, so its items can fit themselves to it.
+    var toolbarWidthDidChange: ((CGFloat) -> Void)?
+    private var lastToolbarWidth: CGFloat = 0
+
     let toolbar = Toolbar(frame: CGRect(x: 0, y: 0, width: 320, height: 44) /* somewhat arbitrary size to avoid unhelpful unsatisfiable constraints console messages */)
 
     private lazy var fallbackSafeAreaGradientView: GradientView = {
@@ -375,10 +390,14 @@ final class PostsPageView: UIView {
         if toolbar.transform == .identity {
             let toolbarHeight = toolbar.sizeThatFits(bounds.size).height
             toolbar.frame = CGRect(
-                x: bounds.minX + layoutMargins.left,
+                x: bounds.minX + layoutMargins.left + Self.debugToolbarInset / 2,
                 y: bounds.maxY - effectiveBottomInset - toolbarHeight,
-                width: bounds.width - layoutMargins.left - layoutMargins.right,
+                width: bounds.width - layoutMargins.left - layoutMargins.right - Self.debugToolbarInset,
                 height: toolbarHeight)
+            if toolbar.bounds.width != lastToolbarWidth {
+                lastToolbarWidth = toolbar.bounds.width
+                toolbarWidthDidChange?(lastToolbarWidth)
+            }
         }
 
         let scrollView = renderView.scrollView

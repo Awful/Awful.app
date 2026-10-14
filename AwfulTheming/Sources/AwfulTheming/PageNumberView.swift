@@ -7,13 +7,18 @@ import UIKit
 
 /// The "current / total" page counter shown between the paging arrows of a bottom toolbar.
 ///
-/// On iOS 26+ it's the bar item's custom view whether or not Liquid Glass is on: a plain-title
-/// `UIBarButtonItem` is sized by UIKit, which grows it with Dynamic Type until iOS 27 evicts the
-/// neighbouring toolbar buttons into an overflow menu. This view keeps a fixed-size font, so its
-/// width stays ours. With Reduce Liquid Glass the item's `hidesSharedBackground` leaves it flat.
+/// On iOS 26+ it's a bar item's custom view (or part of one, in `PageNavigationView`) whether or
+/// not Liquid Glass is on: a plain-title `UIBarButtonItem` is sized by UIKit, which grows it with
+/// Dynamic Type until iOS 27 evicts the neighbouring toolbar buttons into an overflow menu. This
+/// view keeps a fixed-size font, so its width stays ours. With Reduce Liquid Glass the item's
+/// `hidesSharedBackground` leaves it flat.
 public final class PageNumberView: UIView {
 
     private static let minWidth: CGFloat = 60
+
+    /// Matches the dimming UIKit gives a disabled bar button item.
+    public static let disabledAlpha: CGFloat = 0.35
+
     private static let heightModern: CGFloat = 39  // iOS 26+
     private static let heightLegacy: CGFloat = 44  // iOS < 26
 
@@ -84,6 +89,30 @@ public final class PageNumberView: UIView {
 
     public var onTap: (() -> Void)?
 
+    /// The widest the counter may get, for bars too narrow for its full text. Below the text's
+    /// width the text shrinks (to `minimumScaleFactor`), then truncates. Unlimited by default.
+    public var maximumWidth: CGFloat = .greatestFiniteMagnitude {
+        didSet {
+            guard maximumWidth != oldValue else { return }
+            updateWidthConstraints()
+            invalidateIntrinsicContentSize()
+        }
+    }
+
+    /// Called when the text or font changes, which can change `naturalWidth`.
+    public var contentDidChange: (() -> Void)?
+
+    /// How wide the counter wants to be, before any `maximumWidth`.
+    public var naturalWidth: CGFloat {
+        max(pageLabel.intrinsicContentSize.width, Self.minWidth)
+    }
+
+    private lazy var minimumWidthConstraint = widthAnchor.constraint(greaterThanOrEqualToConstant: Self.minWidth)
+    private lazy var maximumWidthConstraint = widthAnchor.constraint(lessThanOrEqualToConstant: Self.maximumConstraintConstant)
+
+    /// Stands in for an unlimited `maximumWidth`, which Auto Layout can't take as a constant.
+    private static let maximumConstraintConstant: CGFloat = 10_000
+
     public override init(frame: CGRect) {
         super.init(frame: frame)
         setupViews()
@@ -124,7 +153,8 @@ public final class PageNumberView: UIView {
             pageLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
             pageLabel.leadingAnchor.constraint(greaterThanOrEqualTo: leadingAnchor),
             pageLabel.trailingAnchor.constraint(lessThanOrEqualTo: trailingAnchor),
-            widthAnchor.constraint(greaterThanOrEqualToConstant: Self.minWidth),
+            minimumWidthConstraint,
+            maximumWidthConstraint,
             heightAnchor.constraint(equalToConstant: Self.currentHeight)
         ])
 
@@ -135,6 +165,12 @@ public final class PageNumberView: UIView {
 
         applyFont()
         updateColors()
+    }
+
+    private func updateWidthConstraints() {
+        let maximum = min(maximumWidth, Self.maximumConstraintConstant)
+        maximumWidthConstraint.constant = maximum
+        minimumWidthConstraint.constant = min(Self.minWidth, maximum)
     }
 
     private func applyFont() {
@@ -169,20 +205,22 @@ public final class PageNumberView: UIView {
         accessibilityLabel = "Page \(currentPageText) of \(totalPagesText)"
         accessibilityHint = "Opens page picker"
         largeContentTitle = accessibilityLabel
+        contentDidChange?()
     }
 
     private func updateColors() {
-        // Matches the dimming UIKit gives a disabled bar button item's title.
-        pageLabel.textColor = isEnabled ? textColor : textColor.withAlphaComponent(0.35)
+        pageLabel.textColor = isEnabled ? textColor : textColor.withAlphaComponent(Self.disabledAlpha)
     }
 
     public func updateTheme() {
         applyFont()
+        contentDidChange?()
     }
 
     public override var intrinsicContentSize: CGSize {
         let labelSize = pageLabel.intrinsicContentSize
-        return CGSize(width: max(labelSize.width, Self.minWidth), height: Self.currentHeight)
+        let width = min(max(labelSize.width, Self.minWidth), maximumWidth)
+        return CGSize(width: width, height: Self.currentHeight)
     }
 
     public override func layoutSubviews() {

@@ -266,6 +266,9 @@ final class PostsPageViewController: ViewController {
         postsView.renderView.registerMessage(RenderView.BuiltInMessage.DidTapAuthorHeader.self)
         postsView.renderView.registerMessage(RenderView.BuiltInMessage.FetchOEmbedFragment.self)
         postsView.renderView.registerMessage(RenderView.BuiltInMessage.ImageLoadProgress.self)
+        postsView.toolbarWidthDidChange = { [unowned self] width in
+            self.pageNavigationView.maximumWidth = max(0, width - Self.toolbarWidthBesidesPagingControls)
+        }
         postsView.topBar.goToParentForum = { [unowned self] in
             guard let forum = self.thread.forum else { return }
             AppDelegate.instance.open(route: .forum(id: forum.forumID))
@@ -518,7 +521,7 @@ final class PostsPageViewController: ViewController {
                 switch newPage {
                 case .last where self.posts.isEmpty,
                      .nextUnread where self.posts.isEmpty:
-                    if self.usesPageNumberView {
+                    if self.usesPagingItem {
                         self.pageNumberView.currentPage = 0
                         self.pageNumberView.totalPages = self.numberOfPages > 0 ? self.numberOfPages : 0
                     } else {
@@ -601,7 +604,7 @@ final class PostsPageViewController: ViewController {
                 switch newPage {
                 case .last where self.posts.isEmpty,
                      .nextUnread where self.posts.isEmpty:
-                    if self.usesPageNumberView {
+                    if self.usesPagingItem {
                         self.pageNumberView.currentPage = 0
                         self.pageNumberView.totalPages = self.numberOfPages > 0 ? self.numberOfPages : 0
                     } else {
@@ -1117,13 +1120,7 @@ final class PostsPageViewController: ViewController {
     private lazy var backItem: UIBarButtonItem = {
         let item = UIBarButtonItem(primaryAction: UIAction(
             image: UIImage(named: "arrowleft"),
-            handler: { [unowned self] action in
-                guard case .specific(let pageNumber)? = self.page, pageNumber > 1 else { return }
-                if enableHaptics {
-                    UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-                }
-                self.loadPage(.specific(pageNumber - 1), updatingCache: true, updatingLastReadPost: true)
-            }
+            handler: { [unowned self] _ in self.goToPreviousPage() }
         ))
         item.accessibilityLabel = "Previous page"
         if !LiquidGlass.isEnabled {
@@ -1140,74 +1137,86 @@ final class PostsPageViewController: ViewController {
         return view
     }()
 
+    /// How much of the toolbar's width everything but `pageNavigationView` needs on iOS 26+: the
+    /// bar's own margins, the settings and actions buttons, the paging pill's padding, and the
+    /// minimum gaps between the glass groups. Any wider and iOS 27 starts moving items into an
+    /// overflow menu, so the paging controls are fit to what's left. Measured on iOS 27.0: items
+    /// overflowed once this exceeded about 164pt; the rest is margin.
+    private static let toolbarWidthBesidesPagingControls: CGFloat = 172
+
+    /// The arrows and page counter as one custom view on iOS 26+; see `PageNavigationView`.
+    private lazy var pageNavigationView = PageNavigationView(
+        pageNumberView: pageNumberView,
+        backImage: UIImage(named: "arrowleft"),
+        forwardImage: UIImage(named: "arrowright"),
+        onBack: { [unowned self] in self.goToPreviousPage() },
+        onForward: { [unowned self] in self.goToNextPage() }
+    )
+
+    /// Stands in for `backItem`, `currentPageItem` and `forwardItem` on iOS 26+.
+    private lazy var pagingItem = UIBarButtonItem(customView: pageNavigationView)
+
+    private func goToPreviousPage() {
+        guard case .specific(let pageNumber)? = page, pageNumber > 1 else { return }
+        if enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
+        loadPage(.specific(pageNumber - 1), updatingCache: true, updatingLastReadPost: true)
+    }
+
+    private func goToNextPage() {
+        guard case .specific(let pageNumber)? = page, pageNumber < numberOfPages, pageNumber > 0 else { return }
+        if enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
+        loadPage(.specific(pageNumber + 1), updatingCache: true, updatingLastReadPost: true)
+    }
+
     private lazy var currentPageItem: UIBarButtonItem = {
         let item = UIBarButtonItem(primaryAction: UIAction { [unowned self] action in
             self.showPagePicker(anchoredTo: action.sender as? UIBarButtonItem ?? self.currentPageItem)
         })
 
         item.accessibilityHint = "Opens page picker"
+        item.possibleTitles = ["2345 / 2345"]
         return item
     }()
 
-    /// Whether `currentPageItem` shows the `PageNumberView` rather than a plain title. Always on
-    /// iOS 26+, glass or not: UIKit sizes a plain title itself and grows it with Dynamic Type until
-    /// iOS 27 evicts the neighbouring buttons into an overflow menu. With Reduce Liquid Glass the
-    /// item's hidden shared background leaves the view flat.
-    private var usesPageNumberView: Bool {
+    /// Whether the toolbar pages with `pagingItem` rather than separate `backItem`,
+    /// `currentPageItem` (a plain title) and `forwardItem`. Always on iOS 26+, glass or not: UIKit
+    /// grows a plain title with Dynamic Type and gives each image item a fixed slot, until iOS 27
+    /// evicts buttons into an overflow menu.
+    private var usesPagingItem: Bool {
         if #available(iOS 26.0, *) { return true }
         return false
     }
 
-    /// Keeps `currentPageItem`'s representation in sync: the `PageNumberView` on iOS 26+ (a glass
-    /// pill, or flat text under Reduce Liquid Glass), a plain text title before. Safe to call
-    /// repeatedly; only rebuilds when the representation actually changes.
-    private func syncCurrentPageItemStyle() {
-        if usesPageNumberView {
-            if currentPageItem.customView == nil {
-                currentPageItem.customView = pageNumberView.makeBarButtonItemContainer()
-                currentPageItem.title = nil
-            }
-        } else {
-            if currentPageItem.customView != nil {
-                pageNumberView.removeFromSuperview()
-                currentPageItem.customView = nil
-            }
-            currentPageItem.possibleTitles = ["2345 / 2345"]
-        }
-    }
-
-    /// Pushes the current page state into whichever representation `currentPageItem` is using.
+    /// Pushes the current page state into the counter (iOS 26+) or `currentPageItem`'s title.
     private func updateCurrentPageItemDisplay() {
         if case .specific(let pageNumber)? = page, numberOfPages > 0 {
-            if usesPageNumberView {
+            if usesPagingItem {
                 pageNumberView.currentPage = pageNumber
                 pageNumberView.totalPages = numberOfPages
             } else {
                 currentPageItem.title = "\(pageNumber) / \(numberOfPages)"
                 currentPageItem.setTitleTextAttributes([.font: PageNumberView.font()], for: .normal)
+                currentPageItem.accessibilityLabel = "Page \(pageNumber) of \(numberOfPages)"
             }
-            currentPageItem.accessibilityLabel = "Page \(pageNumber) of \(numberOfPages)"
         } else {
-            if usesPageNumberView {
+            if usesPagingItem {
                 pageNumberView.currentPage = 0
                 pageNumberView.totalPages = 0
             } else {
                 currentPageItem.title = ""
+                currentPageItem.accessibilityLabel = nil
             }
-            currentPageItem.accessibilityLabel = nil
         }
     }
 
     private lazy var forwardItem: UIBarButtonItem = {
         let item = UIBarButtonItem(primaryAction: UIAction(
             image: UIImage(named: "arrowright"),
-            handler: { [unowned self] action in
-                guard case .specific(let pageNumber)? = self.page, pageNumber < self.numberOfPages, pageNumber > 0 else { return }
-                if enableHaptics {
-                    UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-                }
-                self.loadPage(.specific(pageNumber + 1), updatingCache: true, updatingLastReadPost: true)
-            }
+            handler: { [unowned self] _ in self.goToNextPage() }
         ))
         item.accessibilityLabel = "Next page"
         if !LiquidGlass.isEnabled {
@@ -1311,6 +1320,8 @@ final class PostsPageViewController: ViewController {
             }
         }()
 
+        pageNavigationView.isBackEnabled = backItem.isEnabled
+
         updateCurrentPageItemDisplay()
 
         forwardItem.isEnabled = {
@@ -1321,6 +1332,7 @@ final class PostsPageViewController: ViewController {
                 return false
             }
         }()
+        pageNavigationView.isForwardEnabled = forwardItem.isEnabled
 
         composeItem.isEnabled = !thread.closed && !isArchivesMode
 
@@ -1328,13 +1340,15 @@ final class PostsPageViewController: ViewController {
     }
     
     private func updateToolbarItems() {
-        syncCurrentPageItemStyle()
         updateCurrentPageItemDisplay()
 
         let buttonItems: [UIBarButtonItem]
         if endlessScrollPosts {
             buttonItems = [settingsItem, actionsItem]
             postsView.toolbarItems = [settingsItem, .flexibleSpace(), actionsItem]
+        } else if usesPagingItem {
+            buttonItems = [settingsItem, pagingItem, actionsItem]
+            postsView.toolbarItems = [settingsItem, .flexibleSpace(), pagingItem, .flexibleSpace(), actionsItem]
         } else {
             buttonItems = [settingsItem, backItem, currentPageItem, forwardItem, actionsItem]
             postsView.toolbarItems = [settingsItem, .flexibleSpace(), backItem, currentPageItem, forwardItem, .flexibleSpace(), actionsItem]
@@ -1347,13 +1361,11 @@ final class PostsPageViewController: ViewController {
             for item in buttonItems {
                 item.hidesSharedBackground = hide
             }
+            pageNavigationView.hidesSharedBackground = hide
         }
         if #available(iOS 27.0, *) {
             // iOS 27 evicts standard-priority items into an overflow menu when space is tight.
-            // Keep the paging controls on the bar; they share one implicit group, which inherits this.
-            for item in [backItem, currentPageItem, forwardItem] {
-                item.visibilityPriority = .high
-            }
+            pagingItem.visibilityPriority = .high
         }
     }
 
@@ -1587,7 +1599,13 @@ final class PostsPageViewController: ViewController {
         // A popover may already be up (the responder chain still reaches here through the web view).
         guard presentedViewController == nil else { return }
         // Endless scrolling hides the page counter, so the picker hangs off the settings button instead.
-        showPagePicker(anchoredTo: endlessScrollPosts ? settingsItem : currentPageItem)
+        if endlessScrollPosts {
+            showPagePicker(anchoredTo: settingsItem)
+        } else if usesPagingItem {
+            handlePageNumberTap()
+        } else {
+            showPagePicker(anchoredTo: currentPageItem)
+        }
     }
 
     private func showPagePicker(anchoredTo item: UIBarButtonItem) {
@@ -2763,10 +2781,10 @@ final class PostsPageViewController: ViewController {
             backItem.tintColor = theme["toolbarTextColor"]
             forwardItem.tintColor = theme["toolbarTextColor"]
             settingsItem.tintColor = theme["toolbarTextColor"]
-            pageNumberView.textColor = theme["toolbarTextColor"] ?? UIColor.systemBlue
+            pageNavigationView.textColor = theme["toolbarTextColor"] ?? UIColor.systemBlue
         } else {
             // The glass pill's default; resets the colour above when glass is turned back on.
-            pageNumberView.textColor = .label
+            pageNavigationView.textColor = .label
         }
 
         pageNumberView.updateTheme()
