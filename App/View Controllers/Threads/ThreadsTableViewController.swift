@@ -333,6 +333,9 @@ final class ThreadsTableViewController: CollectionViewController, ComposeTextVie
 
             if !shouldKeepDraft {
                 self.threadComposeViewController = nil
+            } else if (composeTextViewController as? ThreadComposeViewController)?.submissionIsUnconfirmed == true {
+                // The thread may already exist; show the user the current list so they can tell before posting it again.
+                self.refresh()
             }
         }
     }

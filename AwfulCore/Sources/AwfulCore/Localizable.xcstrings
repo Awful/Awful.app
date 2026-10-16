@@ -25,6 +25,12 @@
     "Congratulations! Please visit the Something Awful Forums website to learn why you were banned, to contact a mod or admin, to read the rules, or to reactivate your account." : {
 
     },
+    "Couldn't Confirm Reply" : {
+
+    },
+    "Couldn't Confirm Thread" : {
+
+    },
     "Please ask a question." : {
 
     },
@@ -32,6 +38,12 @@
 
     },
     "Scraping failed" : {
+
+    },
+    "The connection dropped while posting. Your reply may already be in the thread." : {
+
+    },
+    "The connection dropped while posting. Your thread may already exist in the forum." : {
 
     },
     "The Forums answered with HTTP %lld (%@)." : {

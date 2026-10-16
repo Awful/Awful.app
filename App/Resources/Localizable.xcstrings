@@ -219,6 +219,18 @@
     "Cancel" : {
 
     },
+    "Check Forum" : {
+
+    },
+    "Check the forum before posting again. Your draft is retained. Delete it if the thread went through." : {
+
+    },
+    "Check the thread before posting again. Your draft has been retained. Delete it if the post went through." : {
+
+    },
+    "Check Thread" : {
+
+    },
     "compose.accessibility-label" : {
       "comment" : "Accessibility label of compose button in posts screen.",
       "localizations" : {
@@ -542,6 +554,9 @@
           }
         }
       }
+    },
+    "Couldn't Post" : {
+
     },
     "Creep" : {
 
@@ -1722,6 +1737,9 @@
 
     },
     "Stare" : {
+
+    },
+    "Stay" : {
 
     },
     "table-view.action.delete" : {

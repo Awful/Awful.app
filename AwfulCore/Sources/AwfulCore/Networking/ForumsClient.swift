@@ -815,25 +815,33 @@ public final class ForumsClient {
                 params.append((key: "polloptions", value: "\(clampedPollOptionCount)"))
             }
         }
-        let (data, response): (Data, URLResponse)
-        if let attachment {
-            (data, response) = try await submitMultipart(to: "newthread.php", formParams: params, attachment: attachment)
-        } else {
-            (data, response) = try await fetch(method: .post, urlString: "newthread.php", parameters: params)
-        }
-        let (document, url) = try parseHTML(data: data, response: response)
+        // Past this point a failure doesn't mean the thread wasn't made, so flag the ambiguous ones for the caller rather than inviting a retry that could post it twice.
+        let threadID: String
+        let pollForm: NewPollForm?
+        do {
+            let (data, response): (Data, URLResponse)
+            if let attachment {
+                (data, response) = try await submitMultipart(to: "newthread.php", formParams: params, attachment: attachment)
+            } else {
+                (data, response) = try await fetch(method: .post, urlString: "newthread.php", parameters: params)
+            }
+            let (document, url) = try parseHTML(data: data, response: response)
 
-        // Only worth looking when we asked for a poll: the response to an ordinary thread post has
-        // no poll form on it, and we'd rather not change how that path behaves at all.
-        let pollForm = pollOptionCount == nil ? nil : firstPollForm(in: document, url: url)
+            // Only worth looking when we asked for a poll: the response to an ordinary thread post has
+            // no poll form on it, and we'd rather not change how that path behaves at all.
+            pollForm = pollOptionCount == nil ? nil : firstPollForm(in: document, url: url)
 
-        guard let threadID = findNewThreadID(
-            in: document,
-            response: response,
-            pollForm: pollForm,
-            expectingPoll: pollOptionCount != nil
-        ) else {
-            throw AwfulCoreError.parseError(description: "The new thread could not be located. Maybe it didn't actually get made. Double-check if your thread has appeared, then try again.")
+            guard let foundThreadID = findNewThreadID(
+                in: document,
+                response: response,
+                pollForm: pollForm,
+                expectingPoll: pollOptionCount != nil
+            ) else {
+                throw AwfulCoreError.parseError(description: "The new thread could not be located. Maybe it didn't actually get made. Double-check if your thread has appeared, then try again.")
+            }
+            threadID = foundThreadID
+        } catch {
+            throw SubmissionError.rethrow(error, kind: .thread, logging: logger, what: "New thread POST")
         }
         // Save the new thread before handing it out. An unsaved object inserted into the main
         // context would be a separate record from the one that loading its posts page upserts
@@ -1325,6 +1333,63 @@ public final class ForumsClient {
         case post(Post)
     }
 
+    /// Errors shared by posting a reply and posting a new thread.
+    public enum SubmissionError: LocalizedError {
+        public enum Kind {
+            case reply
+            case thread
+        }
+
+        /**
+         The post was sent but no usable response came back, so the Forums may or may not have it.
+
+         Raised when the connection drops or times out during the `POST`, or when a response arrives that can't be read. Nothing is raised for failures before the `POST` (fetching the form), since those can't have created anything and are safe to retry.
+         */
+        case unconfirmedSubmission(Kind, underlying: Swift.Error)
+
+        public var errorDescription: String? {
+            switch self {
+            case .unconfirmedSubmission(.reply, _):
+                return String(localized: "Couldn't Confirm Reply", bundle: .module)
+            case .unconfirmedSubmission(.thread, _):
+                return String(localized: "Couldn't Confirm Thread", bundle: .module)
+            }
+        }
+
+        public var failureReason: String? {
+            switch self {
+            case .unconfirmedSubmission(.reply, _):
+                return String(localized: "The connection dropped while posting. Your reply may already be in the thread.", bundle: .module)
+            case .unconfirmedSubmission(.thread, _):
+                return String(localized: "The connection dropped while posting. Your thread may already exist in the forum.", bundle: .module)
+            }
+        }
+
+        /// Whether a failure of the `POST` leaves it unknown if the Forums received the post.
+        static func isUnconfirmed(_ error: Swift.Error) -> Bool {
+            if let urlError = error as? URLError {
+                switch urlError.code {
+                case .networkConnectionLost, .timedOut:
+                    return true
+                default:
+                    return false
+                }
+            }
+            // A response arrived but couldn't be parsed: the post most likely exists.
+            if case AwfulCoreError.parseError = error {
+                return true
+            }
+            return false
+        }
+
+        /// Rethrows `error` as `.unconfirmedSubmission` when it's one of the ambiguous ones, otherwise as itself.
+        static func rethrow(_ error: Swift.Error, kind: Kind, logging logger: Logger, what: String) -> Swift.Error {
+            guard isUnconfirmed(error) else { return error }
+            logger.warning("\(what, privacy: .public) failed without a usable response: \(error, privacy: .public)")
+            return unconfirmedSubmission(kind, underlying: error)
+        }
+    }
+
     /**
      Posts a new reply to a thread.
 
@@ -1359,11 +1424,16 @@ public final class ForumsClient {
             wasThreadClosed: wasThreadClosed
         )
 
-        // Submit the reply
-        let postID = try await submitReply(
-            formParams: formParams,
-            attachment: attachment
-        )
+        // Submit the reply. Past this point a failure doesn't mean the post wasn't made, so flag the ambiguous ones for the caller rather than inviting a retry that could double post.
+        let postID: String?
+        do {
+            postID = try await submitReply(
+                formParams: formParams,
+                attachment: attachment
+            )
+        } catch {
+            throw SubmissionError.rethrow(error, kind: .reply, logging: logger, what: "Reply POST to thread \(threadID)")
+        }
 
         // Determine reply location
         let location = await determineReplyLocation(postID: postID, in: mainContext)

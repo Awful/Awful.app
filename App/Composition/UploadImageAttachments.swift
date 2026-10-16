@@ -131,29 +131,32 @@ func uploadImages(attachedTo richText: NSAttributedString, completion: @escaping
 
 private func uploadImages(fromSources sources: [ImageTag.Source], completion: @escaping (_ urls: [URL]?, _ error: Error?) -> Void) -> Progress {
     let progress = Progress(totalUnitCount: Int64(sources.count))
-    
+
     let group = DispatchGroup()
-    
+
+    // Uploads finish on arbitrary queues, so their results are gathered under a lock and reported exactly once from `group.notify`. Reporting from the first failure too, as this used to, called the completion twice (once with the error, once as "cancelled").
+    let lock = NSLock()
     var urls: [URL?] = Array(repeating: nil, count: sources.count)
+    var firstError: Error?
+
     for (i, source) in sources.enumerated() {
         group.enter()
-        
+
         func uploadComplete(_ url: URL?, error: Error?) {
             defer { group.leave() }
-            
+
             if let error = error {
+                lock.withLock { if firstError == nil { firstError = error } }
                 if !progress.isCancelled { progress.cancel() }
-                return DispatchQueue.main.async {
-                    completion(nil, error)
-                }
+                return
             }
-            
+
             guard let url = url else { fatalError("no error should mean a URL!") }
-            urls[i] = url
+            lock.withLock { urls[i] = url }
         }
-        
+
         progress.becomeCurrent(withPendingUnitCount: 1)
-        
+
         switch source {
         case .image(let image):
             ImgurUploader.shared.upload(image, completion: { result in
@@ -165,14 +168,14 @@ private func uploadImages(fromSources sources: [ImageTag.Source], completion: @e
                     uploadComplete(nil, error: friendlierError(error))
                 }
             })
-            
+
         case .photoAsset(let assetIdentifier):
             guard let asset = PHAsset.fetchAssets(withLocalIdentifiers: [assetIdentifier], options: nil).firstObject else {
                 logger.error("Could not find asset corresponding to local identifier \(assetIdentifier)")
                 uploadComplete(nil, error: ImageUploadError.missingIdentifiedAsset)
                 break
             }
-            
+
             ImgurUploader.shared.upload(asset, completion: { result in
                 switch result {
                 case .success(let response):
@@ -183,18 +186,21 @@ private func uploadImages(fromSources sources: [ImageTag.Source], completion: @e
                 }
             })
         }
-        
+
         progress.resignCurrent()
     }
-    
-    group.notify(queue: DispatchQueue.global(qos: DispatchQoS.QoSClass.default)) { 
-        if progress.isCancelled {
+
+    group.notify(queue: DispatchQueue.main) {
+        let (gatheredURLs, error) = lock.withLock { (urls, firstError) }
+        if let error {
+            completion(nil, error)
+        } else if progress.isCancelled {
             completion(nil, NSError(domain: NSCocoaErrorDomain, code: NSUserCancelledError, userInfo: nil))
         } else {
-            completion(urls.compactMap { $0 }, nil)
+            completion(gatheredURLs.compactMap { $0 }, nil)
         }
     }
-    
+
     return progress
 }
 

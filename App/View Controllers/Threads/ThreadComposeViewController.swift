@@ -393,6 +393,9 @@ final class ThreadComposeViewController: ComposeTextViewController {
     override var submissionInProgressTitle: String {
         return "Posting…"
     }
+
+    /// Set when the last submission went out but was never acknowledged, so the presenter knows to refresh the forum when the composer is dismissed with its draft kept.
+    private(set) var submissionIsUnconfirmed = false
     
     override func submit(_ composition: String, completion: @escaping (Bool) -> Void) {
         guard
@@ -429,6 +432,23 @@ final class ThreadComposeViewController: ComposeTextViewController {
                     pollOptionCount: poll?.options.count,
                     attachment: try draft.forumAttachment?.imageData()
                 )
+            } catch ForumsClient.SubmissionError.unconfirmedSubmission(.thread, let underlying) {
+                // The POST went out but no response came back, so the app can't tell whether the thread was made. Retrying blindly would make it twice, so offer to close the composer (draft kept) and refresh the forum so the user can see for themselves.
+                let error = ForumsClient.SubmissionError.unconfirmedSubmission(.thread, underlying: underlying)
+                let message = [
+                    error.failureReason,
+                    String(localized: "Check the forum before posting again. Your draft is retained. Delete it if the thread went through."),
+                ].compactMap { $0 }.joined(separator: "\n\n")
+                let alert = UIAlertController(title: error.localizedDescription, message: message, alertActions: [
+                    .default(title: String(localized: "Check Forum")) {
+                        self.saveDraftNow()
+                        self.submissionIsUnconfirmed = true
+                        self.delegate?.composeTextViewController(self, didFinishWithSuccessfulSubmission: false, shouldKeepDraft: true)
+                    },
+                    .cancel(title: String(localized: "Stay")) { completion(false) },
+                ])
+                present(alert, animated: true)
+                return
             } catch {
                 let alert = UIAlertController(title: "Network Error", error: error, handler: {
                     completion(false)

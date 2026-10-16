@@ -1078,6 +1078,11 @@ final class PostsPageViewController: ViewController {
 
             case .saveDraft:
                 self.setMinimizedDraftBarVisible(true)
+
+            case .saveDraftAndCheckThread:
+                // The reply may or may not have landed. Keep the draft reachable and reload so the user can see for themselves before deciding whether to post it again.
+                self.setMinimizedDraftBarVisible(true)
+                self.loadPage(.nextUnread, updatingCache: true, updatingLastReadPost: true)
             }
 
             // The workspace can complete without its sheet on screen (e.g. an empty draft swiped

@@ -7,6 +7,7 @@ import AwfulModelTypes
 import AwfulSettings
 import AwfulTheming
 import Combine
+import ImgurAnonymousAPI
 import MRProgress
 import os
 
@@ -29,6 +30,8 @@ final class ReplyWorkspace: NSObject {
         case forgetAboutIt
         case posted
         case saveDraft
+        /// The reply was sent but never acknowledged. The draft is kept, and the owner should reload the thread so the user can see whether it landed before deciding to post again.
+        case saveDraftAndCheckThread
     }
 
     /// Constructs a workspace for a new reply to a thread, loading any saved draft from disk.
@@ -342,14 +345,34 @@ final class ReplyWorkspace: NSObject {
 
                     let alert: UIAlertController
                     switch error {
+                    case ForumsClient.SubmissionError.unconfirmedSubmission:
+                        // The POST went out but no response came back, so the app can't tell whether the Forums got the post. Retrying blindly is how a reply gets double posted, so instead of re-enabling Post as the obvious next step, offer to close the composer and reload the thread so the user can check for themselves.
+                        // The draft was saved before submitting and is only forgotten on a confirmed success, so nothing is lost either way.
+                        let message = [
+                            (error as? LocalizedError)?.failureReason,
+                            String(localized: "Check the thread before posting again. Your draft has been retained. Delete it if the post went through."),
+                        ].compactMap { $0 }.joined(separator: "\n\n")
+                        alert = UIAlertController(title: error.localizedDescription, message: message, alertActions: [
+                            .default(title: String(localized: "Check Thread")) {
+                                self.flushDraftAutoSave()
+                                self.completion(.saveDraftAndCheckThread)
+                            },
+                            .cancel(title: String(localized: "Stay")),
+                        ])
+
                     case let error as LocalizedError where error.failureReason != nil:
                         alert = UIAlertController(title: error.localizedDescription, message: error.failureReason ?? "", alertActions: [.ok()])
 
-                    case let error as LocalizedError:
-                        alert = UIAlertController(title: LocalizedString("image-upload.generic-error-title"), message: error.localizedDescription, alertActions: [.ok()])
-
-                    case let error:
+                    case is ImageUploadError, is ImgurUploader.Error, is ImgurUploader.APIError:
+                        // Only Imgur-side failures get the image upload title. Everything else here came from the Forums request and has nothing to do with images.
                         alert = UIAlertController(title: LocalizedString("image-upload.generic-error-title"), error: error)
+
+                    case let error as LocalizedError:
+                        // Forums-side rejections ("thread is closed", "posting too fast") come with a readable description and no numeric code worth showing.
+                        alert = UIAlertController(title: String(localized: "Couldn't Post"), message: error.localizedDescription, alertActions: [.ok()])
+
+                    default:
+                        alert = UIAlertController(networkError: error)
                     }
                     self.viewController.present(alert, animated: true)
                 }
