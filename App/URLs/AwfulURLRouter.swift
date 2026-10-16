@@ -248,7 +248,7 @@ struct AwfulURLRouter {
         restoration: RouteRestoration?
     ) -> Bool {
         let threadKey = ThreadKey(threadID: threadID)
-        let thread = AwfulThread.objectForKey(objectKey: threadKey, in: managedObjectContext)
+        let thread = AwfulThread.persistedObjectForKey(objectKey: threadKey, in: managedObjectContext)
         let postsVC: PostsPageViewController
         if let userID = userID, !userID.isEmpty {
             let userKey = UserKey(userID: userID, username: nil)

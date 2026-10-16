@@ -533,14 +533,7 @@ public final class ForumsClient {
             let threads = try result.upsert(into: backgroundContext)
             _ = try result.upsertAnnouncements(into: backgroundContext)
 
-            AwfulThread.fetch(in: backgroundContext) {
-                let threadIDsToIgnore = threads.map { $0.threadID }
-                $0.predicate = .and(
-                    .init("\(\AwfulThread.bookmarked) = YES"),
-                    .init("\(\AwfulThread.bookmarkListPage) >= \(page)"),
-                    .init("NOT(\(\AwfulThread.threadID) IN \(threadIDsToIgnore))")
-                )
-            }.forEach { $0.bookmarkListPage = 0 }
+            AwfulThread.clearStaleBookmarks(notIn: threads, fromPage: page, in: backgroundContext)
 
             try backgroundContext.save()
             return threads.map(\.objectID)

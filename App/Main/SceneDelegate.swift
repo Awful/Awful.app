@@ -493,12 +493,12 @@ private func makeUnpopViewController(for route: AwfulRoute, in context: NSManage
         let message = PrivateMessage.objectForKey(objectKey: PrivateMessageKey(messageID: messageID), in: context)
         return MessageViewController(privateMessage: message)
     case let .threadPage(threadID: threadID, page: page, _):
-        let thread = AwfulThread.objectForKey(objectKey: ThreadKey(threadID: threadID), in: context)
+        let thread = AwfulThread.persistedObjectForKey(objectKey: ThreadKey(threadID: threadID), in: context)
         let postsVC = PostsPageViewController(thread: thread)
         postsVC.loadPage(page, updatingCache: false, updatingLastReadPost: true)
         return postsVC
     case let .threadPageSingleUser(threadID: threadID, userID: userID, page: page, _):
-        let thread = AwfulThread.objectForKey(objectKey: ThreadKey(threadID: threadID), in: context)
+        let thread = AwfulThread.persistedObjectForKey(objectKey: ThreadKey(threadID: threadID), in: context)
         let user = User.objectForKey(objectKey: UserKey(userID: userID, username: nil), in: context)
         let postsVC = PostsPageViewController(thread: thread, author: user)
         postsVC.loadPage(page, updatingCache: false, updatingLastReadPost: true)

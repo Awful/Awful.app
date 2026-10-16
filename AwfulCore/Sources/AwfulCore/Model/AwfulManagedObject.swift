@@ -3,6 +3,9 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import CoreData
+import os
+
+private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "AwfulManagedObject")
 
 /// A slightly more convenient NSManagedObject for entities with a custom class.
 public class AwfulManagedObject: NSManagedObject {
@@ -121,6 +124,22 @@ extension Managed where Self: AwfulManagedObject {
         }
     }
     
+    /// Like `objectForKey(objectKey:in:)`, but saves the context when the lookup had to insert a new object. An unsaved object in one context is invisible to every other context, so e.g. a placeholder thread inserted into the main context would be a separate record from the one that a background scrape upserts for the same ID, and the two would then coexist in the store. Saving right away keeps the window for that as small as possible.
+    public static func persistedObjectForKey(
+        objectKey: AwfulObjectKey,
+        in context: NSManagedObjectContext
+    ) -> Self {
+        let object = objectForKey(objectKey: objectKey, in: context)
+        if object.isInserted {
+            do {
+                try context.save()
+            } catch {
+                logger.error("could not save newly inserted \(entityName) for \(String(describing: objectKey)): \(error)")
+            }
+        }
+        return object
+    }
+
     func applyObjectKey(objectKey: AwfulObjectKey) {
         for key in objectKey.keys {
             if let value = objectKey.value(forKey: key) as AnyObject? {

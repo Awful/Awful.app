@@ -584,7 +584,7 @@ final class NewReplyDraft: NSObject, ReplyDraft {
 
     convenience init?(coder: NSCoder) {
         guard let threadKey = coder.decodeObject(forKey: Keys.threadKey) as? ThreadKey else { return nil }
-        let thread = AwfulThread.objectForKey(objectKey: threadKey, in: AppDelegate.instance.managedObjectContext)
+        let thread = AwfulThread.persistedObjectForKey(objectKey: threadKey, in: AppDelegate.instance.managedObjectContext)
         let text = coder.decodeObject(forKey: Keys.text) as? NSAttributedString
         self.init(thread: thread, text: text)
         self.forumAttachment = coder.decodeObject(of: ForumAttachment.self, forKey: Keys.forumAttachment)

@@ -27,10 +27,12 @@ internal extension ThreadListScrapeResult {
             }).map { (UserID(rawValue: $0.userID)!, $0) },
             uniquingKeysWith: { $1 }
         )
+        // Nothing enforces one Thread record per threadID (an unsaved insert in one context can't be seen by another), so duplicates can exist. Sorting by lastModifiedDate makes the most recently modified record win below, and since the winner is the one this upsert modifies, it keeps winning on every later refresh instead of the choice flip-flopping between records.
         let existingThreads = Dictionary(
             AwfulThread.fetch(in: context) { request in
                 let threadIDs = self.threads.map { $0.id.rawValue }
                 request.predicate = .init("\(\AwfulThread.threadID) IN \(threadIDs)")
+                request.sortDescriptors = [.init(key: #keyPath(AwfulThread.lastModifiedDate), ascending: true)]
                 request.returnsObjectsAsFaults = false
             }.map { (ThreadID(rawValue: $0.threadID)!, $0) },
             uniquingKeysWith: { $1 }
@@ -155,5 +157,22 @@ internal extension ThreadListScrapeResult.Thread {
         }
 
         if !title.isEmpty, title != thread.title { thread.title = title }
+    }
+}
+
+internal extension AwfulThread {
+    /// Clears the bookmark list page of every bookmarked thread on page `page` or later that is not among `threads`, the threads just scraped from that page. The exclusion is by object rather than by threadID so that a duplicate record of a scraped thread gets cleared too, which keeps it out of the bookmarks list (and lets the cache pruner get rid of it eventually).
+    static func clearStaleBookmarks(
+        notIn threads: [AwfulThread],
+        fromPage page: Int,
+        in context: NSManagedObjectContext
+    ) {
+        fetch(in: context) {
+            $0.predicate = .and(
+                .init("\(\AwfulThread.bookmarked) = YES"),
+                .init("\(\AwfulThread.bookmarkListPage) >= \(page)"),
+                NSPredicate(format: "NOT (SELF IN %@)", threads)
+            )
+        }.forEach { $0.bookmarkListPage = 0 }
     }
 }
