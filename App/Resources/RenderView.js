@@ -53,6 +53,16 @@ const QUOTE_COLLAPSED_LINES = 3;
 /// How long a quote takes to collapse or expand when the user taps it. Its arrow's rotation in `_base.less` matches.
 const QUOTE_COLLAPSE_DURATION_MS = 300;
 
+// Holding a jumped-to post in place while content above it finishes loading; see `Awful.jumpToPostWithID` and `Awful.keepViewportSteady`.
+/// How long (ms) after a jump the jumped-to post is held in place against content loading above it. Long enough for slow images on a slow connection; short enough that a scroll the app makes later (scroll to end, say) isn't undone by a straggler.
+const SETTLING_JUMP_WINDOW = 10000;
+
+/// How long (ms) after one of our scrolls a scroll event can still be its echo. WKWebView agrees the scroll position between two processes, and a stale position has been seen coming back some 50 ms after a programmatic scroll; that must not count as the reader scrolling.
+const FOREIGN_SCROLL_GRACE = 300;
+
+/// How many frames after a correction the settling post's position is checked and put right again if a stale scroll position came back.
+const SETTLING_VERIFY_FRAMES = 20;
+
 // MARK: - Utility Functions
 
 /**
@@ -1517,6 +1527,8 @@ Awful.didToggleSpoiler = function(spoiler) {
  here would only scroll the reader to the top of the page (setting
  `location.hash` to "" does that, and a fragment with no element never scrolls
  later when the element arrives).
+
+ The post then settles: for a while after the jump, content above it finishing (images in posts revealed by Previous Posts or appended by endless scroll) is corrected for so the post stays put. See `Awful.keepViewportSteady`.
  */
 Awful.jumpToPostWithID = function(postID, animated, topOffset) {
   var post = document.getElementById(postID);
@@ -1530,11 +1542,116 @@ Awful.jumpToPostWithID = function(postID, animated, topOffset) {
   var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
   var targetPosition = rect.top + scrollTop - (topOffset || 0);
 
+  Awful.settlingJump = { post: post, topOffset: topOffset || 0, until: performance.now() + SETTLING_JUMP_WINDOW };
   if (animated) {
-    window.scrollTo({ top: targetPosition, behavior: 'smooth' });
+    Awful.beginSmoothScroll(targetPosition);
   } else {
-    window.scrollTo(0, targetPosition);
+    Awful.smoothScrollTarget = null;
+    Awful.scrollProgrammatically(function() { window.scrollTo(0, targetPosition); });
   }
+};
+
+
+/**
+ Runs `scroll`, which sets the scroll position, and notes when, so that the scroll events it causes aren't mistaken for the reader scrolling (see the scroll listener below).
+ */
+Awful.scrollProgrammatically = function(scroll) {
+  Awful.lastProgrammaticScrollTime = performance.now();
+  scroll();
+  Awful.lastProgrammaticScrollY = window.scrollY;
+};
+
+/**
+ Starts a smooth scroll to `top` and remembers where it's headed until it gets there (or the reader takes over), so that `Awful.keepViewportSteady` can move the destination along with any content that grows above it mid-animation rather than cutting the animation short.
+ */
+Awful.beginSmoothScroll = function(top) {
+  var maxTop = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+  Awful.smoothScrollTarget = Math.max(0, Math.min(top, maxTop));
+  Awful.scrollProgrammatically(function() { window.scrollTo({ top: Awful.smoothScrollTarget, behavior: 'smooth' }); });
+};
+
+/**
+ Forgets the settling jump: the reader (or the app) has moved on, and holding the post in place would fight them.
+ */
+Awful.cancelSettlingJump = function() {
+  Awful.settlingJump = null;
+  Awful.smoothScrollTarget = null;
+};
+
+// A smooth scroll has arrived once the position reaches its destination. A scroll that isn't one of ours (no programmatic scroll lately, no animation in flight, position not where we left it) is the reader or the app scrolling, and ends the settling.
+window.addEventListener('scroll', function() {
+  if (Awful.smoothScrollTarget !== null && Awful.smoothScrollTarget !== undefined) {
+    if (Math.abs(window.scrollY - Awful.smoothScrollTarget) <= 1) {
+      Awful.smoothScrollTarget = null;
+      Awful.lastProgrammaticScrollY = window.scrollY;
+    }
+    return;
+  }
+  if (Awful.settlingJump && performance.now() - (Awful.lastProgrammaticScrollTime || 0) > FOREIGN_SCROLL_GRACE && Math.abs(window.scrollY - (Awful.lastProgrammaticScrollY || 0)) > 1) {
+    Awful.cancelSettlingJump();
+  }
+}, { passive: true });
+
+['touchstart', 'wheel', 'keydown'].forEach(function(type) {
+  document.addEventListener(type, Awful.cancelSettlingJump, { passive: true, capture: true });
+});
+
+
+/**
+ Keeps what the reader is looking at where it is after content above the viewport has grown or shrunk by `delta`. WebKit's scroll anchoring doesn't cover these changes (it isn't correcting anything in the posts view as of iOS 26), so this is the posts view's own: see `Awful.redrawMeasuredPostsContaining`.
+
+ Corrections are applied once per animation frame, before that frame is painted, so nothing shows up out of place. While a jump is settling, the correction is whatever puts the jumped-to post back where the jump left it, rather than the sum of the deltas: WKWebView's scroll position is agreed between two processes, and when several things load within a few frames a programmatic scroll can be undone by a stale position coming back, or a post laid out at its new height before it could be measured. The post's actual position is the truth, so corrections are checked against it over the following frames too.
+
+ A smooth scroll still on its way to a post has its destination moved instead, so it lands on the post rather than stopping short of it.
+ */
+Awful.keepViewportSteady = function(delta) {
+  Awful.pendingViewportCorrection = (Awful.pendingViewportCorrection || 0) + (delta || 0);
+  if (!Awful.pendingViewportCorrection && !Awful.settlingJump) { return; }
+  if (Awful.viewportCorrectionFrame) { return; }
+  Awful.viewportCorrectionFrame = requestAnimationFrame(function() {
+    Awful.viewportCorrectionFrame = null;
+    var correction = Awful.pendingViewportCorrection || 0;
+    Awful.pendingViewportCorrection = 0;
+    var offset = Awful.settlingJumpOffset();
+    if (offset !== null) {
+      correction = offset;
+    }
+    if (Math.abs(correction) < 0.5) { return; }
+    if (Awful.smoothScrollTarget !== null && Awful.smoothScrollTarget !== undefined) {
+      Awful.beginSmoothScroll(Awful.smoothScrollTarget + correction);
+    } else {
+      Awful.scrollProgrammatically(function() { window.scrollBy(0, correction); });
+    }
+    Awful.verifySettlingJump(SETTLING_VERIFY_FRAMES);
+  });
+};
+
+/**
+ How far the settling jump's post has drifted from where the jump put it, or null when no jump is settling (none was made, it has lapsed, its post is gone) or it's still on its way there.
+ */
+Awful.settlingJumpOffset = function() {
+  var jump = Awful.settlingJump;
+  if (!jump) { return null; }
+  if (!jump.post.isConnected || performance.now() > jump.until) {
+    Awful.settlingJump = null;
+    return null;
+  }
+  if (Awful.smoothScrollTarget !== null && Awful.smoothScrollTarget !== undefined) { return null; }
+  return jump.post.getBoundingClientRect().top - jump.topOffset;
+};
+
+/**
+ Checks, on each of the next `frames` animation frames, that the settling jump's post is still where the jump put it, and scrolls it back if not. A correction (or the jump itself) can be undone a few frames later by a stale scroll position coming back from the other process; this catches that. Stops early if the jump stops settling.
+ */
+Awful.verifySettlingJump = function(frames) {
+  if (frames <= 0 || !Awful.settlingJump) { return; }
+  requestAnimationFrame(function() {
+    var offset = Awful.settlingJumpOffset();
+    if (offset !== null && Math.abs(offset) >= 0.5) {
+      Awful.scrollProgrammatically(function() { window.scrollBy(0, offset); });
+    }
+    Awful.verifySettlingJump(frames - 1);
+  });
 };
 
 
@@ -1586,6 +1703,10 @@ Awful.drawPostsBriefly = function(posts) {
     post.classList.add('awful-measuring');
     post.awfulDrawToken = token;
   });
+  // The height each post was drawn at. While a post is drawn, anything in it that loads lays out straight away, so a redraw in that window can't measure the post as it was from the document; this is what it was. See `Awful.redrawMeasuredPostsContaining`.
+  posts.forEach(function(post) {
+    post.awfulDrawnHeight = post.getBoundingClientRect().height;
+  });
 
   requestAnimationFrame(function() {
     requestAnimationFrame(function() {
@@ -1603,6 +1724,8 @@ Awful.drawPostsBriefly = function(posts) {
  Keeps measured posts' recorded heights up to date as their content arrives.
 
  A measured post is usually skipped again (it's offscreen) before its avatar, images and embeds finish loading, and a skipped post keeps the height WebKit recorded without them, so it would grow as the reader scrolls into it. Drawing it again whenever something in it loads or resizes (embeds resize their iframes through `style`) updates that height soon after the measuring, while the reader is most likely still. Posts never measured sit at their placeholder height until drawn anyway.
+
+ A redrawn post that sits entirely above the viewport (posts put back by Previous Posts, or measured on the way to a quoted post further down) grows right there, which would shove everything the reader is looking at down the screen: WebKit's scroll anchoring doesn't compensate for it, and nothing else would. So the scroll position moves by however much those posts changed, and the reader's post stays put.
  */
 Awful.redrawMeasuredPostsContaining = function(nodes) {
   var posts = new Set();
@@ -1613,7 +1736,25 @@ Awful.redrawMeasuredPostsContaining = function(nodes) {
       posts.add(post);
     }
   });
-  Awful.drawPostsBriefly(Array.from(posts));
+  var redrawing = Array.from(posts);
+  if (redrawing.length === 0) { return; }
+
+  // Each post's height before whatever just loaded or resized. A skipped post is still at the height WebKit remembered, so its box says. A post still drawn from an earlier redraw (its second image arriving within two frames of its first) has already laid the new content out by now, so the height it was drawn at stands in.
+  var before = redrawing.map(function(post) {
+    var rect = post.getBoundingClientRect();
+    var height = post.classList.contains('awful-measuring') && post.awfulDrawnHeight !== undefined ? post.awfulDrawnHeight : rect.height;
+    return { top: rect.top, height: height };
+  });
+  Awful.drawPostsBriefly(redrawing);
+
+  var growthAbove = 0;
+  redrawing.forEach(function(post, i) {
+    // Only posts wholly above the viewport; one straddling its top edge grows partly on screen, and there's no telling which side.
+    if (before[i].top + before[i].height <= 0) {
+      growthAbove += post.getBoundingClientRect().height - before[i].height;
+    }
+  });
+  Awful.keepViewportSteady(growthAbove);
 };
 
 document.addEventListener('load', function(event) {

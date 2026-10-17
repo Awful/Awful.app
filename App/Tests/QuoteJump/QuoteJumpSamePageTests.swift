@@ -23,7 +23,7 @@ import XCTest
 /// | S10 | tap quote → 70, scroll away, tap it again                                             | lands on 70 both times                    |
 /// | S11 | a real click on the quote link in the document (through WebKit's navigation delegate) | lands on 70                               |
 ///
-/// S3b and S9 document known defects and are marked `XCTExpectFailure`, so they pass while the defect stands and fail as soon as a fix lands (remove the marker then). Each failure message carries the observed landing: the target's offset, the post actually at the top, scroll position and how many images had loaded.
+/// Each failure message carries the observed landing: the target's offset, the post actually at the top, scroll position and how many images had loaded.
 @MainActor
 final class QuoteJumpSamePageTests: XCTestCase {
 
@@ -101,7 +101,6 @@ final class QuoteJumpSamePageTests: XCTestCase {
 
         XCTAssertEqual(page.hiddenPostsForTesting, 0)
         XCTAssertGreaterThanOrEqual(harness.imageServer.servedCount, 3, "the three slow images above the target loaded")
-        XCTExpectFailure("Known defect: images above the target finishing after the jump push it down and nothing re-scrolls (S3b)")
         try await harness.assertLanded(on: 50, in: page, "S3b: media above a revealed target shifted the landing")
     }
 
@@ -191,7 +190,6 @@ final class QuoteJumpSamePageTests: XCTestCase {
 
         // Post 115's two images, appended with page 3, answer 1.5 s after being asked for.
         await harness.settle(milliseconds: 2500, in: page)
-        XCTExpectFailure("Known defect: images above the target finishing after the jump push it down and nothing re-scrolls (S9)")
         try await harness.assertLanded(on: 118, in: page, "S9: media above the target in an appended page finishing after the jump shifted the landing")
     }
 
