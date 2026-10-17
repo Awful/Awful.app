@@ -1511,15 +1511,16 @@ Awful.didToggleSpoiler = function(spoiler) {
 
 /**
  Scrolls the identified post into view, accounting for the navigation bar inset
- (`topOffset`) and animating when `animated` is true. Falls back to hash navigation
- when the element isn't in the DOM (so a late-arriving post can still resolve).
+ (`topOffset`) and animating when `animated` is true. A post that isn't in the
+ document leaves the scroll position alone: callers that add posts (revealing
+ Previous Posts, say) wait for them to land before jumping, and a hash fallback
+ here would only scroll the reader to the top of the page (setting
+ `location.hash` to "" does that, and a fragment with no element never scrolls
+ later when the element arrives).
  */
 Awful.jumpToPostWithID = function(postID, animated, topOffset) {
   var post = document.getElementById(postID);
   if (!post) {
-    // If we previously jumped to this post, clear the hash so the same target jumps again.
-    window.location.hash = "";
-    window.location.hash = `#${postID}`;
     return;
   }
 

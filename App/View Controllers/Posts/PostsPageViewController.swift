@@ -794,15 +794,23 @@ final class PostsPageViewController: ViewController {
 
     /// Scroll the posts view so that a particular post is visible (if the post is on the current(ly loading) page).
     func scrollPostToVisible(_ post: Post) {
-        let i = posts.firstIndex(of: post)
-        if postsView.loadingView != nil || !webViewDidLoadOnce || i == nil {
-            jumpToPostIDAfterLoading = post.postID
+        if let i = posts.firstIndex(of: post), postsView.loadingView == nil, webViewDidLoadOnce {
+            revealIfHiddenThenJump(toPostAt: i, id: post.postID, animated: false)
         } else {
-            if let i = i , i < hiddenPosts {
-                showHiddenSeenPosts()
-            }
+            jumpToPostIDAfterLoading = post.postID
+        }
+    }
 
-            postsView.renderView.jumpToPost(identifiedBy: post.postID, topOffset: postsView.topInsetForPostFraming)
+    /// Scrolls to the post at index `i`, first putting the posts behind Previous Posts back if it's one of them. The reveal and the jump are one ordered operation: the jump only runs once the revealed posts are in the document, so it can't miss its target (or land a post height short of it, measuring before the prepend has shifted the page).
+    private func revealIfHiddenThenJump(toPostAt i: Int, id postID: String, animated: Bool) {
+        let needsReveal = i < hiddenPosts
+        let topOffset = postsView.topInsetForPostFraming
+        let renderView = postsView.renderView
+        Task { [weak self] in
+            if needsReveal {
+                await self?.showHiddenSeenPosts()
+            }
+            await renderView.jumpToPostThenWaitForPaint(identifiedBy: postID, animated: animated, topOffset: topOffset, waitingForPaint: false)
         }
     }
 
@@ -1309,7 +1317,7 @@ final class PostsPageViewController: ViewController {
         }
 
         postsView.topBar.showPreviousPosts = hiddenPosts == 0 ? nil : { [unowned self] in
-            self.showHiddenSeenPosts()
+            Task { await self.showHiddenSeenPosts() }
         }
         postsView.topBar.scrollToEnd = posts.isEmpty ? nil : { [unowned self] in
             self.scrollToBottom(nil)
@@ -1647,7 +1655,8 @@ final class PostsPageViewController: ViewController {
         performBookmarkToggle()
     }
 
-    private func showHiddenSeenPosts() {
+    /// Puts the posts behind Previous Posts back into the document. Returns once they're there, so a caller that then scrolls to one of them finds it; the state change itself happens before the first suspension.
+    private func showHiddenSeenPosts() async {
         // Defensive: if `posts` was replaced out from under a nonzero `hiddenPosts`, reveal
         // what's actually there rather than trap.
         let end = min(hiddenPosts, posts.count)
@@ -1655,7 +1664,7 @@ final class PostsPageViewController: ViewController {
 
         let html = (0..<end).map(renderedPostAtIndex).joined(separator: "\n")
         loadedHTML = nil
-        postsView.renderView.prependPostHTML(html)
+        await postsView.renderView.prependPostHTML(html)
     }
 
     @objc private func scrollToBottom(_ sender: UIKeyCommand?) {
@@ -3307,11 +3316,8 @@ extension PostsPageViewController: RenderViewDelegate {
             } else if case let .post(id: postID, _) = route,
                       let i = posts.firstIndex(where: { $0.postID == postID })
             {
-                if i < hiddenPosts {
-                    showHiddenSeenPosts()
-                }
                 noteScrollSinceRender()
-                postsView.renderView.jumpToPost(identifiedBy: postID, animated: true, topOffset: postsView.topInsetForPostFraming)
+                revealIfHiddenThenJump(toPostAt: i, id: postID, animated: true)
             } else {
                 openRoute(route)
             }

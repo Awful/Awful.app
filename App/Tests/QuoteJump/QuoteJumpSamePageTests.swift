@@ -23,7 +23,7 @@ import XCTest
 /// | S10 | tap quote → 70, scroll away, tap it again                                             | lands on 70 both times                    |
 /// | S11 | a real click on the quote link in the document (through WebKit's navigation delegate) | lands on 70                               |
 ///
-/// S3b, S4, S5 and S9 document known defects and are marked `XCTExpectFailure`, so they pass while the defect stands and fail as soon as a fix lands (remove the marker then). S3 documents an intermittent one with a non-strict marker, so it never fails until the marker is made strict. Each failure message carries the observed landing: the target's offset, the post actually at the top, scroll position and how many images had loaded.
+/// S3b, S4, S5 and S9 document known defects and are marked `XCTExpectFailure`, so they pass while the defect stands and fail as soon as a fix lands (remove the marker then). Each failure message carries the observed landing: the target's offset, the post actually at the top, scroll position and how many images had loaded.
 @MainActor
 final class QuoteJumpSamePageTests: XCTestCase {
 
@@ -87,10 +87,6 @@ final class QuoteJumpSamePageTests: XCTestCase {
         XCTAssertEqual(page.hiddenPostsForTesting, 0)
         let revealed = try await harness.isInDocument(index: 42, in: page)
         XCTAssert(revealed)
-        // Intermittent: `showHiddenSeenPosts` and the jump run as two separate tasks, each evaluating its own JavaScript, so the jump sometimes runs against a document the revealed posts haven't reached yet. Seen landing at the top of the page (the missing-element fallback sets `location.hash` to empty) and a post height short of the target. Non-strict so a run that happens to win the race doesn't fail; make it strict once the ordering is fixed.
-        let options = XCTExpectedFailure.Options()
-        options.isStrict = false
-        XCTExpectFailure("Known intermittent defect: revealing hidden posts and jumping to one of them aren't ordered (S3)", options: options)
         try await harness.assertLanded(on: 42, in: page)
     }
 

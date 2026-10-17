@@ -852,8 +852,8 @@ extension RenderView {
         }
     }
     
-    /// Insert some newly-rendered posts above all existing rendered posts.
-    func prependPostHTML(_ postHTML: String) {
+    /// Insert some newly-rendered posts above all existing rendered posts. Returns once they're in the document, so a caller can scroll to one of them straight after.
+    func prependPostHTML(_ postHTML: String) async {
         let escaped: String
         do {
             escaped = try escapeForEval(postHTML)
@@ -861,13 +861,11 @@ extension RenderView {
             logger.warning("could not JSON-escape the post HTML: \(error)")
             return
         }
-        
-        Task {
-            do {
-                try await webView.eval("if (window.Awful) Awful.prependPosts(\(escaped))")
-            } catch {
-                self.mentionError(error, explanation: "could not evaluate prependPosts")
-            }
+
+        do {
+            try await webView.eval("if (window.Awful) Awful.prependPosts(\(escaped))")
+        } catch {
+            mentionError(error, explanation: "could not evaluate prependPosts")
         }
     }
     
