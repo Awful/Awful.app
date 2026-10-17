@@ -23,7 +23,7 @@ import XCTest
 /// | S10 | tap quote → 70, scroll away, tap it again                                             | lands on 70 both times                    |
 /// | S11 | a real click on the quote link in the document (through WebKit's navigation delegate) | lands on 70                               |
 ///
-/// S3b, S4, S5 and S9 document known defects and are marked `XCTExpectFailure`, so they pass while the defect stands and fail as soon as a fix lands (remove the marker then). Each failure message carries the observed landing: the target's offset, the post actually at the top, scroll position and how many images had loaded.
+/// S3b and S9 document known defects and are marked `XCTExpectFailure`, so they pass while the defect stands and fail as soon as a fix lands (remove the marker then). Each failure message carries the observed landing: the target's offset, the post actually at the top, scroll position and how many images had loaded.
 @MainActor
 final class QuoteJumpSamePageTests: XCTestCase {
 
@@ -117,7 +117,6 @@ final class QuoteJumpSamePageTests: XCTestCase {
 
         try await harness.fireTweetsLoaded(in: page)
 
-        XCTExpectFailure("Known defect: didTapLink's same-page branch leaves jumpToPostIDAfterLoading staged, so the tweet-loaded re-jump goes back to the route's target (S4)")
         try await harness.assertLanded(on: 70, in: page, "S4: a tweet finishing after a same-page quote tap yanked the reader back to the staged route target")
     }
 
@@ -133,7 +132,6 @@ final class QuoteJumpSamePageTests: XCTestCase {
 
         try await harness.fireTweetsLoaded(in: page)
 
-        XCTExpectFailure("Known defect: didTapLink's same-page branch leaves anchorPostIDAfterLoading staged, so the tweet-loaded re-anchor goes back to the restoration anchor (S5)")
         try await harness.assertLanded(on: 70, in: page, "S5: a tweet finishing after a same-page quote tap re-anchored the reader to the restoration anchor")
     }
 

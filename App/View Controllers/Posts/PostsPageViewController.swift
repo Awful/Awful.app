@@ -802,7 +802,14 @@ final class PostsPageViewController: ViewController {
     }
 
     /// Scrolls to the post at index `i`, first putting the posts behind Previous Posts back if it's one of them. The reveal and the jump are one ordered operation: the jump only runs once the revealed posts are in the document, so it can't miss its target (or land a post height short of it, measuring before the prepend has shifted the page).
+    ///
+    /// The post also becomes the staged scroll target, replacing whatever the page arrived with (a route's post, a restoration anchor, a scroll fraction). The `DidFinishLoadingTweets` handler re-applies the staged target when embeds reflow the page, and until now it re-applied the old one, yanking the reader from the post they'd just jumped to back to wherever they were before the tap. Dragging abandons the target as usual (`cancelPendingScrollRestoration`).
     private func revealIfHiddenThenJump(toPostAt i: Int, id postID: String, animated: Bool) {
+        jumpToPostIDAfterLoading = postID
+        anchorPostIDAfterLoading = nil
+        anchorDeltaAfterLoading = nil
+        scrollToFractionAfterLoading = nil
+
         let needsReveal = i < hiddenPosts
         let topOffset = postsView.topInsetForPostFraming
         let renderView = postsView.renderView
