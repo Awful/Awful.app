@@ -19,8 +19,6 @@ import XCTest
 /// | C5 | C2, then tweets finish loading                                          | still on 95                                                     |
 /// | C6 | tap quote → a deleted post                                              | locating it fails; no page opens                                 |
 /// | C7 | the request that locates an uncached post                               | carries perpage=40 like every other posts request               |
-///
-/// C7 documents a known defect and is marked `XCTExpectFailure`, so it passes while the defect stands and fails as soon as a fix lands (remove the marker then).
 @MainActor
 final class QuoteJumpCrossPageTests: XCTestCase {
 
@@ -134,7 +132,6 @@ final class QuoteJumpCrossPageTests: XCTestCase {
         _ = try await harness.openViaPostRoute(toIndex: 95)
 
         let locate = try XCTUnwrap(locateRequests.first)
-        XCTExpectFailure("Known defect: ForumsClient.locatePost doesn't send perpage=40, unlike every other posts request (C7)")
         XCTAssert(locate.query?.contains("perpage=40") == true, "C7: the goto=post request omits perpage=40, so the Forums answer with a page number for the account's own posts-per-page setting: \(locate)")
     }
 }

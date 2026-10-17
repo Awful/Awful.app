@@ -1877,10 +1877,12 @@ public final class ForumsClient {
             return nil
         }
         do {
+            // `perpage` as on every other posts request: the page number in the redirect is relative to the posts-per-page it's asked for, and the app always shows 40 (`Post.page` assumes as much), whatever the account's Forums setting says.
             _ = try await fetch(method: .get, urlString: "showthread.php", parameters: [
                 "goto": "post",
                 "postid": postID,
                 "noseen": updateLastReadPost ? "0" : "1",
+                "perpage": "40",
             ], willRedirect: redirect)
         } catch URLError.cancelled {
             // ok so long as we got the info.
