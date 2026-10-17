@@ -355,6 +355,26 @@ final class PostsPageViewController: ViewController {
 
     var posts: [Post] = []
 
+    /// Opens a route that a tapped link resolves to when this page can't show it itself (e.g. a quoted post on another page). Normally the app's router; the quote-jump tests (App/Tests/QuoteJump) swap in a recorder, since the hosted test app has no `AppDelegate`.
+    var openRoute: (AwfulRoute) -> Void = { AppDelegate.instance.open(route: $0) }
+
+    #if DEBUG
+    /// Test hook: called each time a render has finished and any staged scroll target (post jump, restoration anchor or fraction) has been applied and painted. See App/Tests/QuoteJump.
+    var onDidFinishRenderingForTesting: (() -> Void)?
+
+    /// Test hooks exposing state the quote-jump tests assert on. See App/Tests/QuoteJump.
+    var stagedJumpPostIDForTesting: String? { jumpToPostIDAfterLoading }
+    var hiddenPostsForTesting: Int { hiddenPosts }
+    var renderViewForTesting: RenderView { postsView.renderView }
+    var topInsetForPostFramingForTesting: CGFloat { postsView.topInsetForPostFraming }
+    #endif
+
+    private func notifyDidFinishRenderingForTesting() {
+        #if DEBUG
+        onDidFinishRenderingForTesting?()
+        #endif
+    }
+
     var numberOfPages: Int {
         if let author = author {
             return Int(thread.filteredNumberOfPagesForAuthor(author))
@@ -3186,7 +3206,12 @@ extension PostsPageViewController: RenderViewDelegate {
 
         guard isAwaitingReveal else {
             if let scrollIntoPlace {
-                Task { await scrollIntoPlace() }
+                Task { [weak self] in
+                    await scrollIntoPlace()
+                    self?.notifyDidFinishRenderingForTesting()
+                }
+            } else {
+                notifyDidFinishRenderingForTesting()
             }
             finishRendering()
             return
@@ -3199,6 +3224,7 @@ extension PostsPageViewController: RenderViewDelegate {
             guard let self, self.renderGeneration == generation else { return }
             self.revealRenderView()
             self.finishRendering()
+            self.notifyDidFinishRenderingForTesting()
         }
     }
 
@@ -3287,7 +3313,7 @@ extension PostsPageViewController: RenderViewDelegate {
                 noteScrollSinceRender()
                 postsView.renderView.jumpToPost(identifiedBy: postID, animated: true, topOffset: postsView.topInsetForPostFraming)
             } else {
-                AppDelegate.instance.open(route: route)
+                openRoute(route)
             }
         } else if url.opensInBrowser {
             URLMenuPresenter(linkURL: url).presentInDefaultBrowser(fromViewController: self)

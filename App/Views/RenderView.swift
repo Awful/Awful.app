@@ -784,6 +784,13 @@ extension RenderView {
         }
     }
 
+    #if DEBUG
+    /// Test hook: evaluates JavaScript in the rendered document and returns its result. The quote-jump tests (App/Tests/QuoteJump) use it to read where posts sit on screen and to simulate embed events.
+    func evalForTesting(_ javaScript: String) async throws -> Any? {
+        try await webView.eval(javaScript)
+    }
+    #endif
+
     /// Turns each link with a `data-awful-linkified-image` attribute into a a proper `img` element.
     func loadLinkifiedImages() {
         Task {

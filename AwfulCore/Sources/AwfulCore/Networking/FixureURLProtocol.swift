@@ -27,6 +27,10 @@ private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: 
  This will intercept any requests to `forumdisplay.php` (i.e. to list the forums or the threads in a forum) and to `announcement.php` (i.e. to list the current announcements) and instead load the test fixture data in its place.
  
  Note that this URL protocol will do nothing in a WKWebView, which disallows custom futzing with http and https schemes.
+
+ ## Scripted threads
+
+ Independent of `enabledFixtures`, a ``ScriptedThread`` installed in ``scriptedThreads`` stands in for one whole thread: each page's `showthread.php` HTML, plus which page each post is on so `goto=post` requests redirect the way the Forums do (which is how `ForumsClient.locatePost` finds a post's page). While any scripted thread is installed, the other Forums pages a posts page load touches in passing (forum lists, member info, bookmarks) answer with an empty 200 so nothing reaches the network. This is what the quote-jump test harness in App/Tests/QuoteJump drives `PostsPageViewController` with. Every scripted request is appended to ``requestLog`` so tests can assert on what was asked for.
  */
 public final class FixtureURLProtocol: URLProtocol {
     
@@ -34,6 +38,68 @@ public final class FixtureURLProtocol: URLProtocol {
      Any fixtures added here will be loaded, causing relevant requests to be intercepted. Initially the set of enabled fixtures is empty, at which point this URL protocol does nothing.
      */
     public static var enabledFixtures: Set<Fixture> = []
+
+    /// A whole thread's worth of `showthread.php` pages, served in place of the Forums. See ``scriptedThreads``.
+    public struct ScriptedThread {
+        public var threadID: String
+
+        /// Page number to the full `showthread.php` HTML for that page, UTF-8 encoded.
+        public var pages: [Int: Data]
+
+        /// Post ID to the page it sits on, for answering `goto=post&postid=…` with the same redirect the Forums send.
+        public var postPages: [String: Int]
+
+        /// Where `goto=lastpost` redirects.
+        public var lastPage: Int
+
+        /// Where `goto=newpost` redirects.
+        public var firstUnreadPage: Int
+
+        public init(threadID: String, pages: [Int: Data], postPages: [String: Int], lastPage: Int, firstUnreadPage: Int) {
+            self.threadID = threadID
+            self.pages = pages
+            self.postPages = postPages
+            self.lastPage = lastPage
+            self.firstUnreadPage = firstUnreadPage
+        }
+    }
+
+    /// Scripted threads keyed by thread ID. While this is non-empty, Forums requests for `showthread.php` and the pages listed in ``scriptedPathPrefixes`` are answered here (see the class documentation); when it is empty, only ``enabledFixtures`` applies.
+    public static var scriptedThreads: [String: ScriptedThread] {
+        get { scriptingLock.withLock { _scriptedThreads } }
+        set { scriptingLock.withLock { _scriptedThreads = newValue } }
+    }
+
+    /// Every request answered in scripted mode, in order. Tests assert on these, e.g. that a `goto=post` request carried `perpage=40`.
+    public static var requestLog: [URL] {
+        scriptingLock.withLock { _requestLog }
+    }
+
+    /// Forgets all scripted threads and the request log.
+    public static func resetScripting() {
+        scriptingLock.withLock {
+            _scriptedThreads = [:]
+            _requestLog = []
+        }
+    }
+
+    /// Forums paths answered with an empty 200 while a scripted thread is installed, so stray requests during a posts page load (forum lists for the breadcrumbs, member info, bookmarks) never hit the network. `showthread.php` is handled separately.
+    static let scriptedPathPrefixes = ["/forumdisplay.php", "/member.php", "/announcement.php", "/bookmarkthreads.php", "/usercp.php", "/index.php"]
+
+    private static let scriptingLock = NSLock()
+    nonisolated(unsafe) private static var _scriptedThreads: [String: ScriptedThread] = [:]
+    nonisolated(unsafe) private static var _requestLog: [URL] = []
+
+    private static func logScriptedRequest(_ url: URL) {
+        scriptingLock.withLock { _requestLog.append(url) }
+    }
+
+    /// The request's URL when a scripted thread is installed and the request is one scripting answers; nil otherwise.
+    private static func scriptedURL(for request: URLRequest) -> URL? {
+        guard !scriptedThreads.isEmpty, let url = request.url else { return nil }
+        let isScriptedPath = url.path.hasPrefix("/showthread.php") || scriptedPathPrefixes.contains(where: { url.path.hasPrefix($0) })
+        return isScriptedPath ? url : nil
+    }
 
     public enum SimulatedCloudflareChallenge {
         case off
@@ -127,6 +193,11 @@ public final class FixtureURLProtocol: URLProtocol {
             return true
         }
 
+        if scriptedURL(for: request) != nil {
+            logger.debug("answering \(request) from a scripted thread")
+            return true
+        }
+
         if enabledFixtures.contains(where: { $0.matches(request) }) {
             logger.debug("we have a winner for \(request)!")
             return true
@@ -145,6 +216,12 @@ public final class FixtureURLProtocol: URLProtocol {
 
         if FixtureURLProtocol.shouldSimulateChallenge, let url = request.url {
             loadSimulatedCloudflareChallenge(for: url)
+            return
+        }
+
+        if let url = FixtureURLProtocol.scriptedURL(for: request) {
+            FixtureURLProtocol.logScriptedRequest(url)
+            loadScriptedResponse(for: url)
             return
         }
         
@@ -195,6 +272,118 @@ public final class FixtureURLProtocol: URLProtocol {
     public override func stopLoading() {
         // nothing to do here; everything happens in startLoading()
     }
+
+    // MARK: Scripted threads
+
+    private func loadScriptedResponse(for url: URL) {
+        let threads = FixtureURLProtocol.scriptedThreads
+        let queryItems = URLComponents(url: url, resolvingAgainstBaseURL: true)?.queryItems ?? []
+        func query(_ name: String) -> String? { queryItems.first(where: { $0.name == name })?.value }
+
+        guard url.path.hasPrefix("/showthread.php") else {
+            logger.debug("scripted: empty page for \(url)")
+            finishScripted(url: url, statusCode: 200, body: Data())
+            return
+        }
+
+        if query("action") == "setseen" {
+            finishScripted(url: url, statusCode: 200, body: Data())
+            return
+        }
+
+        if query("goto") == "post", let postID = query("postid") {
+            if let thread = threads.values.first(where: { $0.postPages[postID] != nil }), let page = thread.postPages[postID] {
+                logger.debug("scripted: post \(postID) is on page \(page) of thread \(thread.threadID), redirecting")
+                redirectScripted(from: url, threadID: thread.threadID, page: page, fragment: "post\(postID)")
+            } else {
+                logger.debug("scripted: post \(postID) is in no scripted thread, answering not found")
+                finishScriptedNotFound(url: url)
+            }
+            return
+        }
+
+        guard let threadID = query("threadid"), let thread = threads[threadID] else {
+            logger.debug("scripted: no scripted thread for \(url), answering not found")
+            finishScriptedNotFound(url: url)
+            return
+        }
+
+        switch query("goto") {
+        case "newpost":
+            redirectScripted(from: url, threadID: threadID, page: thread.firstUnreadPage, fragment: nil)
+            return
+        case "lastpost":
+            redirectScripted(from: url, threadID: threadID, page: thread.lastPage, fragment: nil)
+            return
+        default:
+            break
+        }
+
+        let pageNumber = query("pagenumber").flatMap { Int($0) } ?? 1
+        if let page = thread.pages[pageNumber] {
+            logger.debug("scripted: page \(pageNumber) of thread \(threadID)")
+            finishScripted(url: url, statusCode: 200, body: page)
+        } else {
+            logger.debug("scripted: thread \(threadID) has no page \(pageNumber)")
+            finishScripted(url: url, statusCode: 404, body: Data("<!DOCTYPE html><html><body><p>No scripted page \(pageNumber) for thread \(threadID).</p></body></html>".utf8))
+        }
+    }
+
+    /// Sends a 302 to the page's URL, shaped like the Forums' own redirects: `threadid` and `pagenumber` but no `perpage`, which `ForumsClient.listPosts` re-adds on redirect for exactly that reason. The response carries an empty body, so a client that refuses the redirect gets a 302 and nothing else.
+    private func redirectScripted(from url: URL, threadID: String, page: Int, fragment: String?) {
+        var components = URLComponents()
+        components.scheme = "https"
+        components.host = "forums.somethingawful.com"
+        components.path = "/showthread.php"
+        components.queryItems = [
+            URLQueryItem(name: "threadid", value: threadID),
+            URLQueryItem(name: "pagenumber", value: String(page)),
+        ]
+        components.fragment = fragment
+        let location = components.url!
+        let response = HTTPURLResponse(url: url, statusCode: 302, httpVersion: "HTTP/1.1", headerFields: [
+            "Location": location.absoluteString,
+            "Content-Type": "text/html; charset=utf-8",
+        ])!
+        client?.urlProtocol(self, wasRedirectedTo: URLRequest(url: location), redirectResponse: response)
+        client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
+        client?.urlProtocol(self, didLoad: Data())
+        client?.urlProtocolDidFinishLoading(self)
+    }
+
+    private func finishScripted(url: URL, statusCode: Int, body: Data) {
+        let response = HTTPURLResponse(url: url, statusCode: statusCode, httpVersion: "HTTP/1.1", headerFields: [
+            "Content-Type": "text/html; charset=utf-8",
+            "Content-Length": String(body.count),
+        ])!
+        client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
+        client?.urlProtocol(self, didLoad: body)
+        client?.urlProtocolDidFinishLoading(self)
+    }
+
+    /// Answers with the shape of the Forums' own "that doesn't exist" page: `body.standarderror` with `#content div.standard`, which `StandardErrorScrapeResult` turns into `ServerError.standard` so a lookup fails instead of scraping nothing.
+    private func finishScriptedNotFound(url: URL) {
+        finishScripted(url: url, statusCode: 200, body: Data(FixtureURLProtocol.notFoundPage.utf8))
+    }
+
+    private static let notFoundPage = """
+        <!DOCTYPE html>
+        <html lang="en">
+        <head><meta charset="utf-8"><title>Specified post was not found - The Something Awful Forums</title></head>
+        <body id="something_awful" class="standarderror">
+        <div id="container">
+        <div id="content">
+        <div class="standard">
+        <h2>Specified post was not found</h2>
+        <div class="inner">
+        <p>The post you are looking for does not exist. It may have been deleted, or it may never have existed. Please check the URL and try again.</p>
+        </div>
+        </div>
+        </div>
+        </div>
+        </body>
+        </html>
+        """
 
     /// Answers with the shape of a real Cloudflare managed challenge: a 403, the `cf-mitigated` header, and a minimal "Just a moment…" body carrying the markers `CloudflareChallenge` looks for.
     private func loadSimulatedCloudflareChallenge(for url: URL) {

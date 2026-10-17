@@ -111,7 +111,9 @@ public final class PageNavigationView: UIView {
         // Bar items always tint their images; a button only tints template images.
         let image = image?.withRenderingMode(.alwaysTemplate)
         button.configuration?.image = image
-        button.configurationUpdateHandler = { [unowned self] button in
+        // Weak, not unowned: UIKit runs this handler as the button leaves the view hierarchy during this view's deallocation, when `self` is already gone.
+        button.configurationUpdateHandler = { [weak self] button in
+            guard let self else { return }
             button.configuration?.baseForegroundColor = button.isEnabled
                 ? self.textColor
                 : self.textColor.withAlphaComponent(PageNumberView.disabledAlpha)
