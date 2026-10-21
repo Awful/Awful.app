@@ -117,6 +117,7 @@ final class AnnouncementViewController: ViewController {
         view.insertSubview(renderView, at: 0)
 
         renderView.registerMessage(RenderView.BuiltInMessage.DidTapAuthorHeader.self)
+        renderView.registerMessage(RenderView.BuiltInMessage.DidToggleQuoteCollapsed.self)
 
         announcementObserver = ManagedObjectObserver(object: announcement, didChange: { [weak self] (change) in
             guard let self = self else { return }
@@ -447,6 +448,11 @@ extension AnnouncementViewController: RenderViewDelegate {
         switch message {
         case let message as RenderView.BuiltInMessage.DidTapAuthorHeader:
             didTapAuthorHeaderInPost(at: message.postIndex, frame: message.frame)
+
+        case is RenderView.BuiltInMessage.DidToggleQuoteCollapsed:
+            if enableHaptics {
+                UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+            }
 
         default:
             logger.warning("ignoring unexpected JavaScript message: \(type(of: message).messageName)")

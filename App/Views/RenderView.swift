@@ -475,6 +475,23 @@ extension RenderView: WKScriptMessageHandler {
                 self.complete = complete
             }
         }
+
+        /// Sent from the web view when the user taps a quote's header or arrow to collapse or expand it.
+        struct DidToggleQuoteCollapsed: RenderViewMessage {
+            static let messageName = "didToggleQuoteCollapsed"
+
+            /// `true` when the quote is now collapsed, `false` when it's now expanded.
+            let collapsed: Bool
+
+            init?(rawMessage: WKScriptMessage, in renderView: RenderView) {
+                assert(rawMessage.name == Self.messageName)
+                guard let body = rawMessage.body as? [String: Any],
+                      let collapsed = body["collapsed"] as? Bool
+                else { return nil }
+
+                self.collapsed = collapsed
+            }
+        }
     }
 }
 

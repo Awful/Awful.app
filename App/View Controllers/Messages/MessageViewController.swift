@@ -233,6 +233,7 @@ final class MessageViewController: ViewController, ContentRefreshable {
         renderView.registerMessage(RenderView.BuiltInMessage.DidTapAuthorHeader.self)
         renderView.registerMessage(RenderView.BuiltInMessage.DidFinishLoadingTweets.self)
         renderView.registerMessage(RenderView.BuiltInMessage.FetchOEmbedFragment.self)
+        renderView.registerMessage(RenderView.BuiltInMessage.DidToggleQuoteCollapsed.self)
         
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(didLongPressWebView))
         longPress.delegate = self
@@ -480,7 +481,12 @@ extension MessageViewController: RenderViewDelegate {
             
         case let message as RenderView.BuiltInMessage.FetchOEmbedFragment:
             fetchOEmbed(url: message.url, id: message.id)
-            
+
+        case is RenderView.BuiltInMessage.DidToggleQuoteCollapsed:
+            if enableHaptics {
+                UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+            }
+
         default:
             let description = "\(message)"
             logger.warning("ignoring unexpected message \(description)")

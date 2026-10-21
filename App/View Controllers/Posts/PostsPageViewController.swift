@@ -266,6 +266,7 @@ final class PostsPageViewController: ViewController {
         postsView.renderView.registerMessage(RenderView.BuiltInMessage.DidTapAuthorHeader.self)
         postsView.renderView.registerMessage(RenderView.BuiltInMessage.FetchOEmbedFragment.self)
         postsView.renderView.registerMessage(RenderView.BuiltInMessage.ImageLoadProgress.self)
+        postsView.renderView.registerMessage(RenderView.BuiltInMessage.DidToggleQuoteCollapsed.self)
         postsView.toolbarWidthDidChange = { [unowned self] width in
             self.pageNavigationView.maximumWidth = max(0, width - Self.toolbarWidthBesidesPagingControls)
         }
@@ -3304,6 +3305,11 @@ extension PostsPageViewController: RenderViewDelegate {
             // Dismiss loading view when there are no images or all images are done (respecting any embed hold).
             if message.total == 0 || message.complete {
                 dismissLoadingViewAfterRender()
+            }
+
+        case is RenderView.BuiltInMessage.DidToggleQuoteCollapsed:
+            if enableHaptics {
+                UIImpactFeedbackGenerator(style: .medium).impactOccurred()
             }
 
         case is FYADFlagRequest:

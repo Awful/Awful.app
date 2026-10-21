@@ -51,7 +51,7 @@ const INTERSECTION_THRESHOLD_MIN = 0.000001;
 const QUOTE_COLLAPSED_LINES = 3;
 
 /// How long a quote takes to collapse or expand when the user taps it. Its arrow's rotation in `_base.less` matches.
-const QUOTE_COLLAPSE_DURATION_MS = 300;
+const QUOTE_COLLAPSE_DURATION_MS = 150;
 
 // Holding a jumped-to post in place while content above it finishes loading; see `Awful.jumpToPostWithID` and `Awful.keepViewportSteady`.
 /// How long (ms) after a jump the jumped-to post is held in place against content loading above it. Long enough for slow images on a slow connection; short enough that a scroll the app makes later (scroll to end, say) isn't undone by a straggler.
@@ -1175,7 +1175,13 @@ Awful.handleClickEvent = function(event) {
   // Tap a collapsible quote's header or arrow (but not its "so-and-so posted:" link) to collapse or expand it. A quote in a revealed spoiler takes the tap, rather than hiding the spoiler again.
   if (quoteHeader && !event.target.closest('a') && Awful.isSpoiled(quoteHeader)) {
     var quote = quoteHeader.parentElement;
-    Awful.setQuoteCollapsed(quote, !quote.classList.contains('collapsed'), true);
+    var collapsed = !quote.classList.contains('collapsed');
+    Awful.setQuoteCollapsed(quote, collapsed, true);
+    // Lets the app play haptic feedback for the tap, where it wants to.
+    var didToggleQuoteHandler = window.webkit?.messageHandlers?.didToggleQuoteCollapsed;
+    if (didToggleQuoteHandler) {
+      didToggleQuoteHandler.postMessage({ "collapsed": collapsed });
+    }
     event.preventDefault();
     return;
   }
