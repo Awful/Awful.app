@@ -1,17 +1,16 @@
 {
   "images" : [
     {
-      "filename" : "all their posts@1x.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "all their posts@2x.png",
+      "filename" : "all-their-posts@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "all their posts@3x.png",
+      "filename" : "all-their-posts@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
