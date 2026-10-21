@@ -42,6 +42,19 @@ final class CloudflareChallengeCoordinatorTests: XCTestCase {
         XCTAssertEqual(count, 1, "only one caller should present the challenge")
     }
 
+    func testCoordinatorWorksForAnyPromptType() async {
+        let coordinator = SharedPromptCoordinator<URL>()
+        let statusPage = URL(string: "https://maintenance.somethingawful.com/")!
+        let seen = Seen()
+        let retry = await coordinator.resolve(statusPage, requestStartedAt: Date(), handler: { url in
+            await seen.record(url)
+            return true
+        })
+        XCTAssertTrue(retry)
+        let urls = await seen.urls
+        XCTAssertEqual(urls, [statusPage])
+    }
+
     func testResponseFromBeforeClearanceJustRetries() async {
         let coordinator = CloudflareChallengeCoordinator()
         let calls = Counter()
@@ -120,4 +133,9 @@ private actor Gate {
 private actor Counter {
     private(set) var value = 0
     func increment() { value += 1 }
+}
+
+private actor Seen {
+    private(set) var urls: [URL] = []
+    func record(_ url: URL) { urls.append(url) }
 }

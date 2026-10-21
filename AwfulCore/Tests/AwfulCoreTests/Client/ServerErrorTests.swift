@@ -18,4 +18,9 @@ final class ServerErrorTests: XCTestCase {
         XCTAssertTrue(error.localizedDescription.contains("502"))
         XCTAssertTrue(error.localizedDescription.contains("8f1e2d3c4b5a6978-LHR"))
     }
+
+    func testForumsUnavailableNamesTheHost() {
+        let error = ServerError.forumsUnavailable(statusPageURL: URL(string: "https://maintenance.somethingawful.com/")!)
+        XCTAssertTrue(error.localizedDescription.contains("maintenance.somethingawful.com"))
+    }
 }

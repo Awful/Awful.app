@@ -33,6 +33,14 @@ public final class ForumsClient {
     public var cloudflareChallengeHandler: CloudflareChallengeCoordinator.Handler?
     private let challengeCoordinator = CloudflareChallengeCoordinator()
 
+    /**
+     Called (on the main actor) when the Forums redirect a request to another host, which is how an outage looks: every page bounces to a status page like `https://maintenance.somethingawful.com/`.
+
+     The parameter is the URL the Forums sent us to. Return `true` once the user has seen it and the original request should be retried once. Return `false` to fail the request with ``ServerError/forumsUnavailable(statusPageURL:)``. When unset, redirected requests fail immediately.
+     */
+    public var forumsUnavailableHandler: SharedPromptCoordinator<URL>.Handler?
+    private let outageCoordinator = SharedPromptCoordinator<URL>()
+
     /// Convenient singleton.
     public static let shared = ForumsClient()
     private init() {}
@@ -180,27 +188,73 @@ public final class ForumsClient {
     }
 
     /**
-     Sends a request, passing any Cloudflare challenge through ``cloudflareChallengeHandler`` and retrying once if it's cleared.
+     Sends a request, passing an outage redirect through ``forumsUnavailableHandler`` and any Cloudflare challenge through ``cloudflareChallengeHandler``, retrying once if the user clears either.
 
-     Every Forums request goes through here so a challenge is caught before its HTML reaches a scraper.
+     Every Forums request goes through here so neither reaches a scraper.
      */
     private func send(
         _ request: URLRequest,
         using session: URLSession,
         willRedirect: ((_ response: HTTPURLResponse, _ newRequest: URLRequest) async -> URLRequest?)? = nil
     ) async throws -> (Data, URLResponse) {
-        func perform() async throws -> (Data, URLResponse) {
-            if let willRedirect {
-                return try await session.data(for: request, willRedirect: willRedirect)
-            } else {
-                return try await session.data(for: request)
+        let forumsHost = baseURL?.host?.lowercased()
+        // Only page and form requests can tell us the Forums are down. Attachment and picture bytes are left alone, so a redirect to wherever they're hosted is followed as before.
+        let watchForOutage = session === urlSession && request.url?.host?.lowercased() == forumsHost
+
+        /// Performs the request, refusing to follow a redirect off the Forums host. Returns the URL that redirect pointed at, if there was one.
+        func perform() async throws -> (Data, URLResponse, offsiteRedirect: URL?) {
+            guard watchForOutage else {
+                let (data, response) = if let willRedirect {
+                    try await session.data(for: request, willRedirect: willRedirect)
+                } else {
+                    try await session.data(for: request)
+                }
+                return (data, response, nil)
             }
+
+            let offsite = OffsiteRedirect()
+            let (data, response) = try await session.data(for: request) { response, newRequest in
+                if let url = newRequest.url, url.host?.lowercased() != forumsHost {
+                    offsite.url = url
+                    return nil
+                }
+                return await willRedirect?(response, newRequest) ?? newRequest
+            }
+            return (data, response, offsite.url)
+        }
+
+        func databaseUnavailablePage(_ result: (Data, URLResponse, offsiteRedirect: URL?)) -> DatabaseUnavailableScrapeResult? {
+            guard watchForOutage else { return nil }
+            let contentType = (result.1 as? HTTPURLResponse)?.allHeaderFields["Content-Type"] as? String
+            return Self.databaseUnavailablePage(in: result.0, contentType: contentType)
+        }
+
+        /// The page to show the user when the Forums are down: where a redirect pointed, or the Forums' own "Database Unavailable" page at the request's URL. A POST's URL isn't worth revisiting, so the front page stands in for it.
+        func outageStatusPageURL(_ result: (Data, URLResponse, offsiteRedirect: URL?)) -> URL? {
+            if let redirect = result.offsiteRedirect { return redirect }
+            guard databaseUnavailablePage(result) != nil else { return nil }
+            return request.httpMethod == "POST" ? baseURL : request.url
         }
 
         let startedAt = Date()
-        let first = try await perform()
+        var first = try await perform()
+        if let statusPageURL = outageStatusPageURL(first) {
+            logger.info("Forums are down for \(request.httpMethod ?? "GET") \(request.url?.absoluteString ?? "?", privacy: .public); status page \(statusPageURL, privacy: .public)")
+            let retry = await outageCoordinator.resolve(statusPageURL, requestStartedAt: startedAt, handler: forumsUnavailableHandler)
+            if retry {
+                try Task.checkCancellation()
+                first = try await perform()
+            }
+            if let stillRedirected = first.offsiteRedirect {
+                throw ServerError.forumsUnavailable(statusPageURL: stillRedirected)
+            }
+            // Thrown here rather than left to checkServerErrors so that JSON endpoints, which never reach the scrapers, fail the same way as pages do.
+            if let page = databaseUnavailablePage(first) {
+                throw ServerError.databaseUnavailable(title: page.title, message: page.message)
+            }
+        }
         guard let challenge = CloudflareChallenge(request: request, response: first.1, data: first.0) else {
-            return first
+            return (first.0, first.1)
         }
 
         logger.info("Cloudflare challenge (\(challenge.statusCode)) for \(challenge.requestMethod) \(challenge.url, privacy: .public) ray=\(challenge.rayID ?? "-", privacy: .public)")
@@ -212,12 +266,21 @@ public final class ForumsClient {
 
         logger.info("Cloudflare challenge cleared; retrying \(challenge.requestMethod) \(challenge.url, privacy: .public) with cookies \(self.cloudflareCookieNames().joined(separator: ","), privacy: .public)")
         let second = try await perform()
+        if let statusPageURL = second.offsiteRedirect {
+            throw ServerError.forumsUnavailable(statusPageURL: statusPageURL)
+        }
         if let stillChallenged = CloudflareChallenge(request: request, response: second.1, data: second.0) {
             // One retry only. If the clearance didn't take, give up rather than loop.
             logger.error("Still challenged after clearance for \(stillChallenged.url, privacy: .public) ray=\(stillChallenged.rayID ?? "-", privacy: .public)")
             throw ServerError.cloudflareChallenge(url: stillChallenged.url)
         }
-        return second
+        return (second.0, second.1)
+    }
+
+    /// The Forums' "Database Unavailable" page, if that's what the response is. A cheap check for the body class keeps the full parse off the normal path, and the scraper then confirms it so a post that merely mentions the class name doesn't count.
+    static func databaseUnavailablePage(in data: Data, contentType: String?) -> DatabaseUnavailableScrapeResult? {
+        guard data.prefix(64 * 1024).range(of: Data("database_error".utf8)) != nil else { return nil }
+        return try? DatabaseUnavailableScrapeResult(HTMLDocument(data: data, contentTypeHeader: contentType), url: nil)
     }
 
     /// Names (never values) of the Cloudflare cookies currently held for the Forums, for logging.
@@ -2581,6 +2644,25 @@ extension Operation: Cancellable {}
 extension URLSessionTask: Cancellable {}
 
 
+/// Where a refused redirect pointed, handed from the URLSession delegate callback back to the request that installed it.
+private final class OffsiteRedirect: @unchecked Sendable {
+    private let lock = NSLock()
+    private var _url: URL?
+
+    var url: URL? {
+        get {
+            lock.lock()
+            defer { lock.unlock() }
+            return _url
+        }
+        set {
+            lock.lock()
+            defer { lock.unlock() }
+            _url = newValue
+        }
+    }
+}
+
 private typealias ParsedDocument = (document: HTMLDocument, url: URL?)
 
 private func parseHTML(data: Data, response: URLResponse) throws -> ParsedDocument {
@@ -2618,6 +2700,8 @@ public enum ServerError: LocalizedError {
     /// Cloudflare answered with a challenge that wasn't cleared (the user cancelled, or it didn't stick).
     case cloudflareChallenge(url: URL)
     case databaseUnavailable(title: String, message: String)
+    /// The Forums redirected the request to another host, which is how they announce downtime. The URL is the status page they sent us to, shown to the user as-is since its contents change with every outage.
+    case forumsUnavailable(statusPageURL: URL)
     /// An error status with a page none of the scrapers recognise. The Ray ID is present when Cloudflare served the response, which is what the Forums' staff need to trace it.
     case httpStatus(code: Int, cloudflareRayID: String?)
     case standard(title: String, message: String)
@@ -2631,6 +2715,9 @@ public enum ServerError: LocalizedError {
         case .databaseUnavailable(title: _, message: let message),
              .standard(title: _, message: let message):
             return message
+        case .forumsUnavailable(statusPageURL: let url):
+            let host = url.host ?? url.absoluteString
+            return String(localized: "The Forums are down right now. They sent us to \(host) instead.", bundle: .module)
         case .httpStatus(code: let code, cloudflareRayID: let rayID):
             let reason = HTTPURLResponse.localizedString(forStatusCode: code)
             var message = String(localized: "The Forums answered with HTTP \(code) (\(reason)).", bundle: .module)
@@ -2647,7 +2734,7 @@ public enum ServerError: LocalizedError {
             String(localized: "Congratulations! Please visit the Something Awful Forums website to learn why you were banned, to contact a mod or admin, to read the rules, or to reactivate your account.")
         case .cloudflareChallenge:
             String(localized: "Complete the verification when it appears, then try again.", bundle: .module)
-        case .databaseUnavailable, .httpStatus, .standard:
+        case .databaseUnavailable, .forumsUnavailable, .httpStatus, .standard:
             nil
         }
     }

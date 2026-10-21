@@ -135,6 +135,30 @@ public final class FixtureURLProtocol: URLProtocol {
         case .always: true
         }
     }
+
+    public enum SimulatedForumsOutage {
+        case off
+
+        /// Every Forums request gets a 302 to ``simulatedOutageStatusPageURL``, which is what the Forums do when they're down for maintenance.
+        case redirectToStatusPage
+
+        /// Every Forums request gets the Forums' own "Database Unavailable" page, a 503 served at the request's URL.
+        case databaseUnavailable
+    }
+
+    /**
+     Answers every Forums request the way the Forums do when they're down.
+
+     Independent of `enabledFixtures` and needs no fixture files, so the setup is one line in `AppDelegate.application(_:willFinishLaunchingWithOptions:)`:
+
+         FixtureURLProtocol.simulatedForumsOutage = .redirectToStatusPage
+
+     `ForumsStatusPageViewController` loads the status page in a web view, which this protocol can't intercept, so the real page shows (for `.databaseUnavailable` that's the live Forums). Set this back to `.off` in the debugger before closing the sheet to see the retry succeed.
+     */
+    public static var simulatedForumsOutage: SimulatedForumsOutage = .off
+
+    /// Where simulated outages redirect to. The real one as of October 2026.
+    public static let simulatedOutageStatusPageURL = URL(string: "https://maintenance.somethingawful.com/")!
     
     public struct Fixture: Hashable {
         fileprivate let basename: String
@@ -193,6 +217,11 @@ public final class FixtureURLProtocol: URLProtocol {
             return true
         }
 
+        if simulatedForumsOutage != .off {
+            logger.debug("simulating a Forums outage for \(request)")
+            return true
+        }
+
         if scriptedURL(for: request) != nil {
             logger.debug("answering \(request) from a scripted thread")
             return true
@@ -217,6 +246,19 @@ public final class FixtureURLProtocol: URLProtocol {
         if FixtureURLProtocol.shouldSimulateChallenge, let url = request.url {
             loadSimulatedCloudflareChallenge(for: url)
             return
+        }
+
+        if let url = request.url {
+            switch FixtureURLProtocol.simulatedForumsOutage {
+            case .off:
+                break
+            case .redirectToStatusPage:
+                loadSimulatedOutageRedirect(for: url)
+                return
+            case .databaseUnavailable:
+                loadSimulatedDatabaseUnavailablePage(for: url)
+                return
+            }
         }
 
         if let url = FixtureURLProtocol.scriptedURL(for: request) {
@@ -384,6 +426,44 @@ public final class FixtureURLProtocol: URLProtocol {
         </body>
         </html>
         """
+
+    /// Answers the way the Forums do during an outage: a 302 to the status page, with nothing in the body.
+    private func loadSimulatedOutageRedirect(for url: URL) {
+        let location = FixtureURLProtocol.simulatedOutageStatusPageURL
+        let response = HTTPURLResponse(url: url, statusCode: 302, httpVersion: "HTTP/1.1", headerFields: [
+            "Location": location.absoluteString,
+            "Content-Type": "text/html; charset=utf-8",
+        ])!
+        client?.urlProtocol(self, wasRedirectedTo: URLRequest(url: location), redirectResponse: response)
+        client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
+        client?.urlProtocol(self, didLoad: Data())
+        client?.urlProtocolDidFinishLoading(self)
+        logger.debug("done simulating Forums outage redirect for \(url)")
+    }
+
+    /// Answers with the shape of the Forums' "Database Unavailable" page (see the `database-unavailable.html` fixture): a 503 whose body carries the `database_error` class and the `#msg h1` that `DatabaseUnavailableScrapeResult` reads.
+    private func loadSimulatedDatabaseUnavailablePage(for url: URL) {
+        let body = """
+            <!DOCTYPE html>
+            <html>
+            <head><title>Database Unavailable</title></head>
+            <body id="something_awful" class="database_error">
+            <div id="closemsg"><div id="msg">
+            <h1>Database Unavailable!</h1>
+            The database is currently not available. You can try doing whatever it is you were trying to do again later. You do not need to notify anyone of your arrival at this page.
+            <div class="note">Simulated by FixtureURLProtocol.simulatedForumsOutage</div>
+            </div></div>
+            </body>
+            </html>
+            """
+        let response = HTTPURLResponse(url: url, statusCode: 503, httpVersion: "HTTP/1.1", headerFields: [
+            "Content-Type": "text/html; charset=utf-8",
+        ])!
+        client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
+        client?.urlProtocol(self, didLoad: Data(body.utf8))
+        client?.urlProtocolDidFinishLoading(self)
+        logger.debug("done simulating Database Unavailable page for \(url)")
+    }
 
     /// Answers with the shape of a real Cloudflare managed challenge: a 403, the `cf-mitigated` header, and a minimal "Just a moment…" body carrying the markers `CloudflareChallenge` looks for.
     private func loadSimulatedCloudflareChallenge(for url: URL) {

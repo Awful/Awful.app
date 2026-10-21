@@ -46,6 +46,9 @@
     "The connection dropped while posting. Your thread may already exist in the forum." : {
 
     },
+    "The Forums are down right now. They sent us to %@ instead." : {
+
+    },
     "The Forums answered with HTTP %lld (%@)." : {
 
     },

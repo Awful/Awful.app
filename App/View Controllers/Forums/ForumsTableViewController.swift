@@ -257,7 +257,7 @@ final class ForumsTableViewController: CollectionViewController, ContentRefresha
                 migrateFavoriteForumsFromSettings()
             } catch {
                 logger.error("Could not taxonomize forums: \(error)")
-                // Connection errors are left quiet because the list keeps showing cached forums, but when the Forums answered and still wouldn't serve (a Cloudflare challenge, an outage), the user needs to hear about it.
+                // Connection errors are left quiet because the list keeps showing cached forums, but when the Forums answered and still wouldn't serve (a Cloudflare challenge, a 5xx), the user needs to hear about it. An outage redirect stays quiet too, since the status page sheet already said it.
                 switch error as? ServerError {
                 case .cloudflareChallenge, .httpStatus:
                     if visible {

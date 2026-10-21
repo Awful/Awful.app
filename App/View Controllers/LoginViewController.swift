@@ -70,6 +70,10 @@ class LoginViewController: ViewController {
                 } else if let error = error as? ServerError, case .httpStatus = error {
                     title = String(localized: "Problem Logging In")
                     message = error.localizedDescription
+                } else if let error = error as? ServerError, case .forumsUnavailable = error {
+                    // The credentials never reached the Forums, so don't blame them.
+                    title = String(localized: "Problem Logging In")
+                    message = error.localizedDescription
                 } else {
                     title = String(localized: "Problem Logging In")
                     message = String(localized: "Double-check your username and password, then try again.")

@@ -25,6 +25,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     private var cancellables: Set<AnyCancellable> = []
     private lazy var cloudflareChallengePresenter = CloudflareChallengePresenter(window: { [weak self] in self?.window })
     @FoilDefaultStorage(Settings.darkMode) private var darkMode
+    private lazy var forumsStatusPagePresenter = ForumsStatusPagePresenter(window: { [weak self] in self?.window })
     private var dataStore: DataStore!
     @FoilDefaultStorage(Settings.defaultDarkThemeName) private var defaultDarkTheme
     @FoilDefaultStorage(Settings.defaultLightThemeName) private var defaultLightTheme
@@ -57,9 +58,14 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         ForumsClient.shared.cloudflareChallengeHandler = { [weak self] challenge in
             await self?.cloudflareChallengePresenter.resolve(challenge) ?? false
         }
+        ForumsClient.shared.forumsUnavailableHandler = { [weak self] statusPageURL in
+            await self?.forumsStatusPagePresenter.present(statusPageURL: statusPageURL) ?? false
+        }
 #if DEBUG
         // Uncomment to fake Cloudflare challenges until the stand-in sheet is verified (`.always` exercises the give-up path). See FixtureURLProtocol.
         // FixtureURLProtocol.simulatedCloudflareChallenge = .untilVerified
+        // Uncomment to fake a Forums outage, as a redirect to the maintenance page or as the Database Unavailable page. See FixtureURLProtocol.
+        // FixtureURLProtocol.simulatedForumsOutage = .redirectToStatusPage
 #endif
 
         URLCache.shared = {

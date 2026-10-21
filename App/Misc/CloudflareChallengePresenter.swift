@@ -24,7 +24,7 @@ final class CloudflareChallengePresenter {
             logger.info("app is in the background; not presenting challenge")
             return false
         }
-        guard let presenter = await presentableViewController() else {
+        guard let presenter = await window()?.sheetHostViewController() else {
             logger.warning("nowhere to present the challenge from")
             return false
         }
@@ -41,26 +41,5 @@ final class CloudflareChallengePresenter {
             nav.sheetPresentationController?.detents = [.large()]
             presenter.present(nav, animated: true)
         }
-    }
-
-    /// The topmost view controller that can host a sheet. Alerts can't present sheets, so a topmost alert is dismissed first, and an in-progress presentation or dismissal is waited out (briefly).
-    private func presentableViewController() async -> UIViewController? {
-        let deadline = Date().addingTimeInterval(2)
-        repeat {
-            guard let root = window()?.rootViewController else { return nil }
-            let top = root.topmostPresentedViewController
-
-            if let alert = top as? UIAlertController, let presenting = alert.presentingViewController {
-                await withCheckedContinuation { continuation in
-                    presenting.dismiss(animated: true) { continuation.resume() }
-                }
-                continue
-            }
-
-            let busy = top.isBeingPresented || top.isBeingDismissed || top.presentedViewController != nil
-            if !busy { return top }
-            try? await Task.sleep(nanoseconds: 250_000_000)
-        } while Date() < deadline
-        return nil
     }
 }

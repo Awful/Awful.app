@@ -290,6 +290,9 @@
 		C8BE3CFABA1B4371B058B77E /* URLCleaningTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7066513D77148949920CFF8 /* URLCleaningTextView.swift */; };
 		CF01C0DE2F0000010000A002 /* CloudflareChallengeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF01C0DE2F0000010000A001 /* CloudflareChallengeViewController.swift */; };
 		CF01C0DE2F0000010000A004 /* CloudflareChallengePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF01C0DE2F0000010000A003 /* CloudflareChallengePresenter.swift */; };
+		CF01C0DE2F0000010000B006 /* UIWindow+SheetHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF01C0DE2F0000010000B005 /* UIWindow+SheetHost.swift */; };
+		CF01C0DE2F0000010000B004 /* ForumsStatusPagePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF01C0DE2F0000010000B003 /* ForumsStatusPagePresenter.swift */; };
+		CF01C0DE2F0000010000B002 /* ForumsStatusPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF01C0DE2F0000010000B001 /* ForumsStatusPageViewController.swift */; };
 		D1A0C0DE00000000000000A2 /* RenderViewPerformance.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0C0DE00000000000000A1 /* RenderViewPerformance.swift */; };
 		D1A0C0DE00000000000000B2 /* PostsScrollPerformanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0C0DE00000000000000B1 /* PostsScrollPerformanceTests.swift */; };
 		DDDDDDDD0000000000000002 /* LepersColony.html.stencil in Resources */ = {isa = PBXBuildFile; fileRef = DDDDDDDD0000000000000001 /* LepersColony.html.stencil */; };
@@ -677,6 +680,9 @@
 		CD655B744799F99C60C2520D /* QuoteJumpFixture.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = QuoteJumpFixture.swift; sourceTree = "<group>"; };
 		CF01C0DE2F0000010000A001 /* CloudflareChallengeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudflareChallengeViewController.swift; sourceTree = "<group>"; };
 		CF01C0DE2F0000010000A003 /* CloudflareChallengePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudflareChallengePresenter.swift; sourceTree = "<group>"; };
+		CF01C0DE2F0000010000B005 /* UIWindow+SheetHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIWindow+SheetHost.swift"; sourceTree = "<group>"; };
+		CF01C0DE2F0000010000B003 /* ForumsStatusPagePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ForumsStatusPagePresenter.swift"; sourceTree = "<group>"; };
+		CF01C0DE2F0000010000B001 /* ForumsStatusPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ForumsStatusPageViewController.swift"; sourceTree = "<group>"; };
 		D1A0C0DE00000000000000A1 /* RenderViewPerformance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderViewPerformance.swift; sourceTree = "<group>"; };
 		D1A0C0DE00000000000000B1 /* PostsScrollPerformanceTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PostsScrollPerformanceTests.swift; sourceTree = "<group>"; };
 		D1B72B043CD766A22694272C /* quotejump-p3.html */ = {isa = PBXFileReference; includeInIndex = 1; name = "quotejump-p3.html"; path = "../../AwfulCore/Tests/AwfulCoreTests/Fixtures/quotejump-p3.html"; sourceTree = "<group>"; };
@@ -849,6 +855,8 @@
 				1CC256B61A39A6BE003FA7A8 /* AwfulBrowser.swift */,
 				1CF280972055EB9B00913149 /* AwfulRoute.swift */,
 				CF01C0DE2F0000010000A003 /* CloudflareChallengePresenter.swift */,
+				CF01C0DE2F0000010000B005 /* UIWindow+SheetHost.swift */,
+				CF01C0DE2F0000010000B003 /* ForumsStatusPagePresenter.swift */,
 				1C16FBF51CBDC65C00C88BD1 /* CaseInsensitiveMatching.swift */,
 				1C5C81BE22DA336A00EFD8A9 /* ChromeActivity.swift */,
 				1C25AC4E1F576BC600977D6F /* ContextObjectsDidChangeNotification.swift */,
@@ -1220,6 +1228,7 @@
 			children = (
 				1C6821A81F113A760083F204 /* AnnouncementViewController.swift */,
 				CF01C0DE2F0000010000A001 /* CloudflareChallengeViewController.swift */,
+				CF01C0DE2F0000010000B001 /* ForumsStatusPageViewController.swift */,
 				1C16FBB11CB86ACD00C88BD1 /* EmptyViewController.swift */,
 				1C29C3812258538A00E1217A /* Forums */,
 				1CBE1B0819CA050300510187 /* ImageViewController.swift */,
@@ -1961,6 +1970,9 @@
 				1CC256B71A39A6BE003FA7A8 /* AwfulBrowser.swift in Sources */,
 				CF01C0DE2F0000010000A002 /* CloudflareChallengeViewController.swift in Sources */,
 				CF01C0DE2F0000010000A004 /* CloudflareChallengePresenter.swift in Sources */,
+				CF01C0DE2F0000010000B006 /* UIWindow+SheetHost.swift in Sources */,
+				CF01C0DE2F0000010000B004 /* ForumsStatusPagePresenter.swift in Sources */,
+				CF01C0DE2F0000010000B002 /* ForumsStatusPageViewController.swift in Sources */,
 				1CF280982055EB9B00913149 /* AwfulRoute.swift in Sources */,
 				1CD9FB641D1A38030070C8C7 /* NigglyRefreshView.swift in Sources */,
 				1CF6786E201E8F45009A9640 /* MessageListCell.swift in Sources */,
