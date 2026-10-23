@@ -31,6 +31,7 @@ struct SmiliePickerView: View {
         ZStack {
             theme[color: "sheetBackgroundColor"]!
                 .ignoresSafeArea()
+                .onTapGesture(perform: dismissKeyboardIfSearchIsEmpty)
             
             VStack(spacing: 0) {
                 headerView
@@ -76,6 +77,16 @@ struct SmiliePickerView: View {
         }
         .padding()
         .background(theme[color: "sheetBackgroundColor"]!)
+        .contentShape(Rectangle())
+        .onTapGesture(perform: dismissKeyboardIfSearchIsEmpty)
+    }
+
+    /// Tapping outside the search field puts the keyboard away, but only while the field is empty. Once there's a search term the grid is showing results and a stray tap shouldn't collapse the keyboard mid-search. Return, the clear button, the pills and scrolling still dismiss it then.
+    /// Buttons inside the tapped area win over this gesture, so smilies and pills behave as before.
+    private func dismissKeyboardIfSearchIsEmpty() {
+        if viewModel.searchText.isEmpty {
+            isSearchFieldFocused = false
+        }
     }
     
     private var searchBar: some View {
@@ -139,6 +150,7 @@ struct SmiliePickerView: View {
                 }
             }
         }
+        .onTapGesture(perform: dismissKeyboardIfSearchIsEmpty)
     }
 
     private var scrollingSections: some View {
