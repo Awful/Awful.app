@@ -168,6 +168,11 @@ final class PostsPageViewController: ViewController {
     /// so until something really scrolls the bar stays at its opaque resting state.
     private var hasScrolledSinceRender = false
 
+    /// Whether the view has been laid out in a window, which is when the top inset for the bars
+    /// is known. Work that frames posts against it waits for this: see `onceLaidOutInWindow`.
+    private var hasLaidOutInWindow = false
+    private var laidOutInWindowWork: [@MainActor () -> Void] = []
+
     /// The nav bar rests opaque at the top until the page has content and something has scrolled it.
     var navigationBarRestsAtTop: Bool { isAwaitingRenderedContent || !hasScrolledSinceRender }
 
@@ -359,6 +364,8 @@ final class PostsPageViewController: ViewController {
     var hiddenPostsForTesting: Int { hiddenPosts }
     var renderViewForTesting: RenderView { postsView.renderView }
     var topInsetForPostFramingForTesting: CGFloat { postsView.topInsetForPostFraming }
+    /// Whether the current document has loaded, which comes before the render finishes (that waits for the page to be laid out in a window).
+    var webViewDidLoadOnceForTesting: Bool { webViewDidLoadOnce }
     #endif
 
     private func notifyDidFinishRenderingForTesting() {
@@ -569,9 +576,10 @@ final class PostsPageViewController: ViewController {
                 var stagedFraction = false
                 if reloadingSamePage || renderedCachedPosts,
                    self.scrollToFractionAfterLoading == nil,
-                   self.anchorPostIDAfterLoading == nil
+                   self.anchorPostIDAfterLoading == nil,
+                   let fraction = self.scrollFractionToKeepPlace
                 {
-                    self.scrollToFractionAfterLoading = self.postsView.renderView.scrollView.fractionalContentOffset.y
+                    self.scrollToFractionAfterLoading = fraction
                     stagedFraction = true
                 }
 
@@ -730,7 +738,7 @@ final class PostsPageViewController: ViewController {
             // Before the cached render has landed (a cold web content process can take longer
             // than the fetch), the staged restoration target still says where that is.
             if self.webViewDidLoadOnce {
-                let anchor = await self.postsView.renderView.topVisiblePost()
+                let anchor = await self.currentAnchorFromDocument()
                 guard self.page == page, !self.endlessScrollDidAppend else { return }
                 self.jumpToPostIDAfterLoading = nil
                 self.scrollToFractionAfterLoading = nil
@@ -743,7 +751,7 @@ final class PostsPageViewController: ViewController {
                 } else {
                     self.anchorPostIDAfterLoading = nil
                     self.anchorDeltaAfterLoading = nil
-                    self.scrollToFractionAfterLoading = self.postsView.renderView.scrollView.fractionalContentOffset.y
+                    self.scrollToFractionAfterLoading = self.scrollFractionToKeepPlace
                 }
             }
             self.hideRenderViewUntilScrolledIntoPlace()
@@ -2655,7 +2663,19 @@ final class PostsPageViewController: ViewController {
         // After appends the fraction describes the multi-page document, not the single page
         // restoration loads; the anchor carries position instead.
         guard !endlessScrollDidAppend else { return nil }
-        return postsView.renderView.scrollView.fractionalContentOffset.y
+        return scrollFractionToKeepPlace
+    }
+
+    /// The fraction to re-render at so the reader keeps their place, or nil when they are at the
+    /// top. At rest the offset sits in the band under the bars (negative, since the inset is ours
+    /// and not WebKit's), and before the document loads it reads as zero. A fraction from either
+    /// lands the top of a fresh document under the bars, because `jumpToFractionalOffset` scrolls
+    /// to it as a document coordinate, while a fresh document already rests at the top.
+    private var scrollFractionToKeepPlace: CGFloat? {
+        guard webViewDidLoadOnce else { return nil }
+        let scrollView = postsView.renderView.scrollView
+        guard scrollView.contentSize.height > 0, scrollView.contentOffset.y > 0 else { return nil }
+        return scrollView.fractionalContentOffset.y
     }
 
     /// `hiddenPosts` indexes the first loaded page's posts, so it only travels with a payload
@@ -2671,13 +2691,27 @@ final class PostsPageViewController: ViewController {
         return nil
     }
 
+    /// The topmost visible post and how far the reader has scrolled into it, measured from the
+    /// bottom of the bars, which `didFinishRenderingHTML` reproduces with
+    /// `topInsetForPostFraming - deltaY`.
+    ///
+    /// The document measures from its layout viewport, which WebKit keeps at the top of the
+    /// document while the scroll view rests anywhere in the band under the bars (the inset is
+    /// the app's, not WebKit's), and at the scroll offset once scrolled past 0. Adding the inset,
+    /// less whatever of the band is still above the offset, turns that into the distance from the bars.
+    private func currentAnchorFromDocument() async -> (postID: String, deltaY: CGFloat)? {
+        guard let anchor = await postsView.renderView.topVisiblePost() else { return nil }
+        let bandAboveOffset = min(postsView.renderView.scrollView.contentOffset.y, 0)
+        return (anchor.postID, anchor.deltaY + postsView.topInsetForPostFraming + bandAboveOffset)
+    }
+
     /// Caches the topmost-visible post asynchronously; read synchronously when iOS asks
     /// for a state-restoration activity.
     func refreshRestorationAnchor() {
         refreshAnchorTask?.cancel()
         refreshAnchorTask = Task { [weak self] in
             guard let self else { return }
-            let result = await self.postsView.renderView.topVisiblePost()
+            let result = await self.currentAnchorFromDocument()
             if Task.isCancelled { return }
             if let result {
                 self.cachedAnchorPostID = result.postID
@@ -2998,6 +3032,16 @@ final class PostsPageViewController: ViewController {
         updatePostsViewLayoutMargins()
         // Rotation, Dynamic Type and the like can move the toolbar under a banner that's up.
         BannerToastView.setBottomInset(bannerBottomInset, in: view)
+
+        if !hasLaidOutInWindow, view.window != nil {
+            // The margins just set only reach the scroll view's insets in the posts view's own
+            // layout pass, so run that now and the waiting work sees the real inset.
+            postsView.layoutIfNeeded()
+            hasLaidOutInWindow = true
+            let work = laidOutInWindowWork
+            laidOutInWindowWork = []
+            work.forEach { $0() }
+        }
     }
 
     override func viewSafeAreaInsetsDidChange() {
@@ -3203,25 +3247,49 @@ extension PostsPageViewController: RenderViewDelegate {
         let scrollIntoPlace: (() async -> Void)?
         if let postID = jumpToPostIDAfterLoading {
             noteScrollSinceRender()
-            let topOffset = postsView.topInsetForPostFraming
-            scrollIntoPlace = { await renderView.jumpToPostThenWaitForPaint(identifiedBy: postID, topOffset: topOffset) }
+            scrollIntoPlace = { [weak self] in
+                guard let self else { return }
+                await renderView.jumpToPostThenWaitForPaint(identifiedBy: postID, topOffset: self.postsView.topInsetForPostFraming)
+            }
         } else if let anchorID = anchorPostIDAfterLoading,
                   posts.contains(where: { $0.postID == anchorID })
         {
             // (chrome - deltaY) reproduces the saved scroll position. Staged values stay
             // set so the tweet-loaded callback can re-apply after layout shifts.
             noteScrollSinceRender()
-            let topOffset = postsView.topInsetForPostFraming - (anchorDeltaAfterLoading ?? 0)
-            scrollIntoPlace = { await renderView.jumpToPostThenWaitForPaint(identifiedBy: anchorID, topOffset: topOffset) }
-        } else if let newFractionalOffset = scrollToFractionAfterLoading {
-            if newFractionalOffset > 0 {
-                noteScrollSinceRender()
+            let delta = anchorDeltaAfterLoading ?? 0
+            scrollIntoPlace = { [weak self] in
+                guard let self else { return }
+                await renderView.jumpToPostThenWaitForPaint(identifiedBy: anchorID, topOffset: self.postsView.topInsetForPostFraming - delta)
             }
-            var fractionalOffset = renderView.scrollView.fractionalContentOffset
-            fractionalOffset.y = newFractionalOffset
-            scrollIntoPlace = { await renderView.scrollToFractionalOffsetThenWaitForPaint(fractionalOffset) }
+        } else if let fraction = scrollToFractionAfterLoading, fraction > 0 {
+            noteScrollSinceRender()
+            scrollIntoPlace = {
+                var fractionalOffset = renderView.scrollView.fractionalContentOffset
+                fractionalOffset.y = fraction
+                await renderView.scrollToFractionalOffsetThenWaitForPaint(fractionalOffset)
+            }
         } else {
+            // A fraction at or above the top (an older build's restoration payload, say) means the
+            // top, where a fresh document already rests. Scrolling to it would put the page under the bars.
+            scrollToFractionAfterLoading = nil
             scrollIntoPlace = nil
+        }
+
+        // Posts are framed against the top inset for the bars, which the page only has once it is
+        // laid out in a window. A restoration render can finish first, and a scroll framed then
+        // (against no inset) leaves the top of the page under the bars once the real one arrives.
+        let generation = renderGeneration
+        onceLaidOutInWindow { [weak self] in
+            guard let self, self.renderGeneration == generation else { return }
+            self.scrollIntoPlaceAndFinishRendering(scrollIntoPlace, generation: generation)
+        }
+    }
+
+    /// The rest of `didFinishRenderingHTML`, once the top inset is known: scrolls to the staged target, or settles a fresh document at the top, then finishes the render (at once, or once a hidden page is in place).
+    private func scrollIntoPlaceAndFinishRendering(_ scrollIntoPlace: (() async -> Void)?, generation: Int) {
+        if scrollIntoPlace == nil {
+            settleAtTopIfNudgedUnderBars()
         }
 
         guard isAwaitingReveal else {
@@ -3238,7 +3306,6 @@ extension PostsPageViewController: RenderViewDelegate {
         }
 
         // Hidden for restoration: show the page only once it's where the reader left it.
-        let generation = renderGeneration
         Task { [weak self] in
             await scrollIntoPlace?()
             guard let self, self.renderGeneration == generation else { return }
@@ -3246,6 +3313,28 @@ extension PostsPageViewController: RenderViewDelegate {
             self.finishRendering()
             self.notifyDidFinishRenderingForTesting()
         }
+    }
+
+    /// Runs `work` now if the view has been laid out in a window, otherwise once it first is.
+    private func onceLaidOutInWindow(_ work: @escaping @MainActor () -> Void) {
+        if hasLaidOutInWindow {
+            work()
+        } else {
+            laidOutInWindowWork.append(work)
+        }
+    }
+
+    /// A fresh document with no scroll target rests at the top, where WebKit put it at the inset it
+    /// saw when the load committed. An inset that has grown since leaves the top of the page under
+    /// the bars, and nothing has scrolled on purpose yet, so put it back. Anything past the band is left alone.
+    private func settleAtTopIfNudgedUnderBars() {
+        postsView.layoutIfNeeded()
+        let scrollView = postsView.renderView.scrollView
+        let restingY = -scrollView.adjustedContentInset.top
+        let y = scrollView.contentOffset.y
+        performanceTrace?.mark("render #\(renderGeneration): nothing staged, offset \(y), resting \(restingY), content height \(scrollView.contentSize.height)")
+        guard !hasScrolledSinceRender, y > restingY + 4, y <= 0 else { return }
+        scrollView.setContentOffset(CGPoint(x: scrollView.contentOffset.x, y: restingY), animated: false)
     }
 
     /// The rest of `didFinishRenderingHTML`, once the render is scrolled into place.

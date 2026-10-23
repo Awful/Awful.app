@@ -16,7 +16,7 @@ import XCTest
 final class PostsPageTestHarness {
 
     let window: UIWindow
-    let navigationController = UINavigationController()
+    let navigationController: UINavigationController
     let imageServer: LocalImageServer
 
     /// Routes the controller handed off because it couldn't show them itself (quotes of posts on other pages).
@@ -26,8 +26,10 @@ final class PostsPageTestHarness {
     private let context: NSManagedObjectContext
     private let restoredDefaults: [String: Any?]
 
-    /// - Parameter embedTweets: Off by default so the page never loads Twitter's widgets script from the network; `fireTweetsLoaded(in:)` simulates its "loaded" event, which the controller handles whatever the setting.
-    init(pageThree: QuoteJumpFixture.PageThreeVariant = .unread, embedTweets: Bool = false, endlessScroll: Bool = false) throws {
+    /// - Parameters:
+    ///   - embedTweets: Off by default so the page never loads Twitter's widgets script from the network; `fireTweetsLoaded(in:)` simulates its "loaded" event, which the controller handles whatever the setting.
+    ///   - appChrome: Hosts the page in the app's own `NavigationController` (its bar appearance, scroll-progress and Liquid Glass handling) instead of a plain `UINavigationController`, with the Reduce Liquid Glass setting and dark mode as given, so a scenario can run under the chrome a reader sees.
+    init(pageThree: QuoteJumpFixture.PageThreeVariant = .unread, embedTweets: Bool = false, endlessScroll: Bool = false, appChrome: (reduceLiquidGlass: Bool, darkMode: Bool)? = nil) throws {
         imageServer = try LocalImageServer()
 
         // A real `DataStore` rather than a bare in-memory context: its main context carries the observer that stamps `lastModifiedDate`, without which nothing the app inserts on the main context (a located post, say) can save.
@@ -52,15 +54,19 @@ final class PostsPageTestHarness {
             (Settings.frogAndGhostEnabled.key, false),
             (Settings.immersiveModeEnabled.key, false),
             (Settings.collapseLongQuotes.key, false),
-            (Settings.darkMode.key, false),
+            (Settings.darkMode.key, appChrome?.darkMode ?? false),
             (Settings.autoDarkTheme.key, false),
             (Settings.fontScale.key, 100.0),
+            (Settings.disableLiquidGlass.key, appChrome?.reduceLiquidGlass ?? false),
         ]
         let defaults = UserDefaults.standard
         restoredDefaults = Dictionary(uniqueKeysWithValues: settings.map { ($0.key, defaults.object(forKey: $0.key)) })
         for (key, value) in settings {
             defaults.set(value, forKey: key)
         }
+
+        // After the settings: the app's navigation controller reads Reduce Liquid Glass as it sets up its bars.
+        navigationController = appChrome == nil ? UINavigationController() : NavigationController()
 
         let frame = CGRect(x: 0, y: 0, width: 390, height: 844)
         if let scene = UIApplication.shared.connectedScenes.compactMap({ $0 as? UIWindowScene }).first {
@@ -113,10 +119,39 @@ final class PostsPageTestHarness {
 
     // MARK: Showing pages
 
-    /// Opens `page` of the fixture thread as navigating to it in the app does, returning once the render has finished and any staged scroll has been applied.
-    func openPage(_ page: Int, restoring: PendingPostsRestoration? = nil) async throws -> PostsPageViewController {
+    /// Opens `page` of the fixture thread as navigating to it in the app does, returning once the render has finished and any staged scroll has been applied. Pass `updatingCache: false` to render whatever is cached without fetching, as scene restoration does.
+    func openPage(_ page: Int, updatingCache: Bool = true, restoring: PendingPostsRestoration? = nil) async throws -> PostsPageViewController {
         let viewController = makeViewController()
-        viewController.loadPage(.specific(page), updatingCache: true, updatingLastReadPost: false, restoring: restoring)
+        viewController.loadPage(.specific(page), updatingCache: updatingCache, updatingLastReadPost: false, restoring: restoring)
+        install(viewController)
+        try await waitForRender(of: viewController)
+        return viewController
+    }
+
+    /// Opens `page` the way scene restoration does when the web view is quicker than the window: the page renders from the cache (and scrolls to its staged position) before it is in a window, and only then is it installed and laid out, so the top inset for the bars arrives after the scroll. `restoring` is applied as `restorePage` applies it; nil renders from the cache with nothing staged.
+    func openPageRenderedBeforeInstall(_ page: Int, restoring: PendingPostsRestoration?) async throws -> PostsPageViewController {
+        let viewController = makeViewController()
+        viewController.loadPage(.specific(page), updatingCache: false, updatingLastReadPost: false, restoring: restoring)
+        // Size the view as the window will, so the document lays out at its final width; what's missing is the window, and with it the safe area.
+        viewController.view.frame = window.bounds
+        try await waitUntil("the document to load before the page is in a window") { viewController.webViewDidLoadOnceForTesting }
+        // Whatever the page does with the document before it is in a window, let it.
+        await settle(milliseconds: 300, in: viewController)
+
+        // The render finishes once the page is laid out in a window (or finished already, if the page didn't wait); either way the loading view goes once it has.
+        var finishedRendering = false
+        viewController.onDidFinishRenderingForTesting = { finishedRendering = true }
+        install(viewController)
+        try await waitUntil("the render to finish once the page is in a window") { finishedRendering || !viewController.isAwaitingRenderedContent }
+        viewController.onDidFinishRenderingForTesting = nil
+        await waitForScrollToSettle(in: viewController)
+        return viewController
+    }
+
+    /// Opens the thread at its next unread page, as a tap in a thread list does (`showThreadFromList`). The scripted thread answers that with the fixture's first unread page.
+    func openNextUnread() async throws -> PostsPageViewController {
+        let viewController = makeViewController()
+        viewController.loadPage(.nextUnread, updatingCache: true, updatingLastReadPost: true)
         install(viewController)
         try await waitForRender(of: viewController)
         return viewController
@@ -285,7 +320,33 @@ final class PostsPageTestHarness {
         XCTFail("expected post \(index) at the top (inset \(inset)) but its top is at \(top); the top visible post is \(topVisible.map(String.init) ?? "none"), scrollY \(metrics.scrollY) of \(metrics.scrollHeight - metrics.innerHeight), location.hash \"\(hash)\", images served \(imageServer.servedCount). \(message)", file: file, line: line)
     }
 
+    /// Asserts that the page rests at its top, with nothing behind the bars: the scroll view sits at its resting offset (the negative of the top inset the posts page sets itself), and the first rendered post is at the top of the document.
+    ///
+    /// The native offset is the truth here, not `getBoundingClientRect()`. The inset is the app's, not WebKit's, so while the scroll view is anywhere in the band above offset 0 WebKit keeps its layout viewport at the top of the document: `window.scrollY` reads 0 and the first post's top reads 0 whether the page is flush under the bars or partly behind them. The failure message carries every offset involved.
+    func assertRestingAtTop(in viewController: PostsPageViewController, firstPost index: Int, tolerance: CGFloat = 4, _ message: String = "", file: StaticString = #filePath, line: UInt = #line) async throws {
+        let scrollView = viewController.renderViewForTesting.scrollView
+        let metrics = try await scrollMetrics(in: viewController)
+        guard let top = try await postTop(index: index, in: viewController) else {
+            XCTFail("post \(index) is not in the document. \(message)", file: file, line: line)
+            return
+        }
+        let detail = "post \(index) top \(top), window.scrollY \(metrics.scrollY), contentOffset.y \(scrollView.contentOffset.y), contentInset.top \(scrollView.contentInset.top), contentSize.height \(scrollView.contentSize.height)"
+        XCTAssertEqual(scrollView.contentOffset.y, -scrollView.contentInset.top, accuracy: tolerance, "expected the page flush under the bars, at its resting offset. \(message) \(detail)", file: file, line: line)
+        XCTAssertEqual(top, 0, accuracy: tolerance, "expected post \(index) at the top of the document. \(message) \(detail)", file: file, line: line)
+        XCTAssertLessThanOrEqual(metrics.scrollY, tolerance, "expected the document at its top from the web side too. \(message) \(detail)", file: file, line: line)
+    }
+
     // MARK: Waiting
+
+    /// Polls `condition` until it holds, or throws once `timeout` has passed.
+    func waitUntil(_ description: String, timeout: TimeInterval = 10, _ condition: @MainActor () async throws -> Bool) async throws {
+        let deadline = Date(timeIntervalSinceNow: timeout)
+        while Date() < deadline {
+            if try await condition() { return }
+            try? await Task.sleep(nanoseconds: 100_000_000)
+        }
+        throw HarnessError.timedOut(description)
+    }
 
     /// Waits until `window.scrollY` has stopped changing (smooth scrolls animate; layout shifts move it), or gives up after `timeout`.
     func waitForScrollToSettle(in viewController: PostsPageViewController, timeout: TimeInterval = 3) async {

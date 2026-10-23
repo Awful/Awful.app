@@ -99,8 +99,8 @@
 		1C42A2251FD46B4400F67BA1 /* ForumListDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C42A2241FD46B4400F67BA1 /* ForumListDataSource.swift */; };
 		1C42A2271FD47AEB00F67BA1 /* Forum+Presentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C42A2261FD47AEB00F67BA1 /* Forum+Presentation.swift */; };
 		1C4506C41A2BAB3800767306 /* Handoff.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4506C31A2BAB3800767306 /* Handoff.swift */; };
-		1C453EDE2336B694007AC6D0 /* MRProgressOverlayView+Confirmation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C453EDD2336B694007AC6D1 /* MRProgressOverlayView+Confirmation.swift */; };
 		1C453EDE2336B694007AC6CD /* UITextView+Selections.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C453EDD2336B694007AC6CD /* UITextView+Selections.swift */; };
+		1C453EDE2336B694007AC6D0 /* MRProgressOverlayView+Confirmation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C453EDD2336B694007AC6D1 /* MRProgressOverlayView+Confirmation.swift */; };
 		1C453F282338457A007AC6CD /* Stencil in Frameworks */ = {isa = PBXBuildFile; productRef = 1C453F272338457A007AC6CD /* Stencil */; };
 		1C453F46233849C2007AC6CD /* SafariActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C453F45233849C2007AC6CD /* SafariActivity.swift */; };
 		1C47122A2664CB8000E5AA74 /* Smilies in Frameworks */ = {isa = PBXBuildFile; productRef = 1C4712292664CB8000E5AA74 /* Smilies */; };
@@ -228,8 +228,8 @@
 		2DA10C022F1A2B3C00DE01AA /* PostLocator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA10C012F1A2B3C00DE01AA /* PostLocator.swift */; };
 		2DA10C032F1A2B3C00DE01AA /* UnpopStackTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA10C042F1A2B3C00DE01AA /* UnpopStackTests.swift */; };
 		2DA10C052F1A2B3C00DE01AA /* NavigationControllerNilShowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA10C062F1A2B3C00DE01AA /* NavigationControllerNilShowTests.swift */; };
-		2DA10C072F1A2B3C00DE01AA /* CopyURLActivityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA10C082F1A2B3C00DE01AA /* CopyURLActivityTests.swift */; };
 		2DA10C062F1A2B3C00DE01AB /* UITextViewReplaceSelectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA10C052F1A2B3C00DE01AB /* UITextViewReplaceSelectionTests.swift */; };
+		2DA10C072F1A2B3C00DE01AA /* CopyURLActivityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA10C082F1A2B3C00DE01AA /* CopyURLActivityTests.swift */; };
 		2DA10C082F1A2B3C00DE01AB /* UITextViewInsertAttachmentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA10C072F1A2B3C00DE01AB /* UITextViewInsertAttachmentTests.swift */; };
 		2DA10C122F1A2B3C00DE01AB /* TextAttachmentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA10C112F1A2B3C00DE01AB /* TextAttachmentTests.swift */; };
 		2DA10C142F1A2B3C00DE01AB /* DraftStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA10C132F1A2B3C00DE01AB /* DraftStoreTests.swift */; };
@@ -241,6 +241,7 @@
 		2DDCCE9F2F77A73E0011BCA2 /* CompositionToolbarContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DDCCE9D2F77A73E0011BCA2 /* CompositionToolbarContainer.swift */; };
 		2DDCCEA02F77A73E0011BCA2 /* ModernBBcodeToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DDCCE9E2F77A73E0011BCA2 /* ModernBBcodeToolbar.swift */; };
 		2DDCCEA12F77A73E0011BCA2 /* BBcodeTagHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DDCCE9C2F77A73E0011BCA2 /* BBcodeTagHelper.swift */; };
+		30438FD7684F0F1F725224B4 /* PageOpenRestsAtTopTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 595D6D55DCF5F2D27985CDF9 /* PageOpenRestsAtTopTests.swift */; };
 		306F740B2D90AA01000717BC /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 306F740A2D90AA01000717BC /* KeychainAccess */; };
 		30E0C51D2E35C89D0030DC0A /* AnimatedImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30E0C5162E35C89D0030DC0A /* AnimatedImageView.swift */; };
 		30E0C51E2E35C89D0030DC0A /* SmiliePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30E0C5192E35C89D0030DC0A /* SmiliePickerView.swift */; };
@@ -480,8 +481,8 @@
 		1C42A2241FD46B4400F67BA1 /* ForumListDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForumListDataSource.swift; sourceTree = "<group>"; };
 		1C42A2261FD47AEB00F67BA1 /* Forum+Presentation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Forum+Presentation.swift"; sourceTree = "<group>"; };
 		1C4506C31A2BAB3800767306 /* Handoff.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Handoff.swift; sourceTree = "<group>"; };
-		1C453EDD2336B694007AC6D1 /* MRProgressOverlayView+Confirmation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MRProgressOverlayView+Confirmation.swift"; sourceTree = "<group>"; };
 		1C453EDD2336B694007AC6CD /* UITextView+Selections.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextView+Selections.swift"; sourceTree = "<group>"; };
+		1C453EDD2336B694007AC6D1 /* MRProgressOverlayView+Confirmation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MRProgressOverlayView+Confirmation.swift"; sourceTree = "<group>"; };
 		1C453F4423384923007AC6CD /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		1C453F45233849C2007AC6CD /* SafariActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariActivity.swift; sourceTree = "<group>"; };
 		1C47122D2664CCE700E5AA74 /* Awful.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = Awful.xctestplan; sourceTree = SOURCE_ROOT; };
@@ -621,8 +622,8 @@
 		2DA10C042F1A2B3C00DE01AA /* UnpopStackTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnpopStackTests.swift; sourceTree = "<group>"; };
 		2DA10C052F1A2B3C00DE01AB /* UITextViewReplaceSelectionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITextViewReplaceSelectionTests.swift; sourceTree = "<group>"; };
 		2DA10C062F1A2B3C00DE01AA /* NavigationControllerNilShowTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationControllerNilShowTests.swift; sourceTree = "<group>"; };
-		2DA10C082F1A2B3C00DE01AA /* CopyURLActivityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopyURLActivityTests.swift; sourceTree = "<group>"; };
 		2DA10C072F1A2B3C00DE01AB /* UITextViewInsertAttachmentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITextViewInsertAttachmentTests.swift; sourceTree = "<group>"; };
+		2DA10C082F1A2B3C00DE01AA /* CopyURLActivityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopyURLActivityTests.swift; sourceTree = "<group>"; };
 		2DA10C112F1A2B3C00DE01AB /* TextAttachmentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextAttachmentTests.swift; sourceTree = "<group>"; };
 		2DA10C132F1A2B3C00DE01AB /* DraftStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DraftStoreTests.swift; sourceTree = "<group>"; };
 		2DA10C152F1A2B3C00DE01AB /* QuoteInsertionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuoteInsertionTests.swift; sourceTree = "<group>"; };
@@ -641,6 +642,7 @@
 		42AE548A3918EFF0316F0B4A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		48B3E874E458EB6BB48A6AB6 /* QuoteJumpCrossPageTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = QuoteJumpCrossPageTests.swift; sourceTree = "<group>"; };
 		4E054ACF51DECE3C0DD8FEBA /* quotejump-p3-seen109.html */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.html; name = "quotejump-p3-seen109.html"; path = "../../AwfulCore/Tests/AwfulCoreTests/Fixtures/quotejump-p3-seen109.html"; sourceTree = "<group>"; };
+		595D6D55DCF5F2D27985CDF9 /* PageOpenRestsAtTopTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PageOpenRestsAtTopTests.swift; sourceTree = "<group>"; };
 		70F025EEAFA2D5A0970320A9 /* quotejump-p1.html */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.html; name = "quotejump-p1.html"; path = "../../AwfulCore/Tests/AwfulCoreTests/Fixtures/quotejump-p1.html"; sourceTree = "<group>"; };
 		7E234BB9C8D26F461917D1C5 /* AwfulUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AwfulUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		83410EF119A582B8002CD019 /* DateFormatters.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateFormatters.swift; sourceTree = "<group>"; };
@@ -1361,11 +1363,12 @@
 				CD655B744799F99C60C2520D /* QuoteJumpFixture.swift */,
 				ECC3DA5377C4955A89A59170 /* QuoteJumpSamePageTests.swift */,
 				842EFC31873F799AFB2F1F19 /* README.md */,
+				595D6D55DCF5F2D27985CDF9 /* PageOpenRestsAtTopTests.swift */,
 			);
 			path = QuoteJump;
 			sourceTree = "<group>";
 		};
-		29B97314FDCFA39411CA2CEA /* Awful */ = {
+		29B97314FDCFA39411CA2CEA = {
 			isa = PBXGroup;
 			children = (
 				1C3857A115675AFE0078AF95 /* App */,
@@ -1671,13 +1674,13 @@
 				en,
 				Base,
 			);
-			mainGroup = 29B97314FDCFA39411CA2CEA /* Awful */;
+			mainGroup = 29B97314FDCFA39411CA2CEA;
 			packageReferences = (
 				1CCBDFF822CB02D500E1BE6A /* XCRemoteSwiftPackageReference "HTMLReader" */,
-				1C453F262338457A007AC6CD /* XCRemoteSwiftPackageReference "Stencil" */,
+				1C453F262338457A007AC6CD /* XCRemoteSwiftPackageReference "Stencil.git" */,
 				1CD72E65265C7FD600FF3BF4 /* XCRemoteSwiftPackageReference "FLAnimatedImage" */,
 				1C6B2A98272F992E00671F0C /* XCRemoteSwiftPackageReference "Nuke" */,
-				2D265F8D292CB447001336ED /* XCRemoteSwiftPackageReference "lottie-ios" */,
+				2D265F8D292CB447001336ED /* XCRemoteSwiftPackageReference "lottie-ios.git" */,
 				306F74092D90AA01000717BC /* XCRemoteSwiftPackageReference "KeychainAccess" */,
 			);
 			productRefGroup = 19C28FACFE9D520D11CA2CBB /* Products */;
@@ -1861,6 +1864,7 @@
 				5F3F6A286CEC3666C4B0CA37 /* QuoteJumpCrossPageTests.swift in Sources */,
 				EC63D4D37329D65032F3B93E /* QuoteJumpFixture.swift in Sources */,
 				8008DFA7A6077FE6CB47F45B /* QuoteJumpSamePageTests.swift in Sources */,
+				30438FD7684F0F1F725224B4 /* PageOpenRestsAtTopTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2319,7 +2323,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		1C453F262338457A007AC6CD /* XCRemoteSwiftPackageReference "Stencil" */ = {
+		1C453F262338457A007AC6CD /* XCRemoteSwiftPackageReference "Stencil.git" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/stencilproject/Stencil.git";
 			requirement = {
@@ -2351,7 +2355,7 @@
 				minimumVersion = 1.0.16;
 			};
 		};
-		2D265F8D292CB447001336ED /* XCRemoteSwiftPackageReference "lottie-ios" */ = {
+		2D265F8D292CB447001336ED /* XCRemoteSwiftPackageReference "lottie-ios.git" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/airbnb/lottie-ios.git";
 			requirement = {
@@ -2384,7 +2388,7 @@
 		};
 		1C453F272338457A007AC6CD /* Stencil */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 1C453F262338457A007AC6CD /* XCRemoteSwiftPackageReference "Stencil" */;
+			package = 1C453F262338457A007AC6CD /* XCRemoteSwiftPackageReference "Stencil.git" */;
 			productName = Stencil;
 		};
 		1C4712292664CB8000E5AA74 /* Smilies */ = {
@@ -2448,7 +2452,7 @@
 		};
 		2D265F8E292CB447001336ED /* Lottie */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 2D265F8D292CB447001336ED /* XCRemoteSwiftPackageReference "lottie-ios" */;
+			package = 2D265F8D292CB447001336ED /* XCRemoteSwiftPackageReference "lottie-ios.git" */;
 			productName = Lottie;
 		};
 		306F740A2D90AA01000717BC /* KeychainAccess */ = {

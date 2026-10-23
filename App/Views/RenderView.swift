@@ -302,6 +302,7 @@ extension RenderView: WKNavigationDelegate {
     
     func webView(_ webView: WKWebView, didCommit navigation: WKNavigation) {
         hasCommittedDocument = true
+        performanceTrace?.mark("webView didCommit navigation (content inset top \(scrollView.contentInset.top), offset \(scrollView.contentOffset.y))")
     }
 
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation) {

@@ -11,6 +11,7 @@ Tapping a quote should land the reader on the quoted post. If that post is on th
 | `LocalImageServer.swift` | A loopback HTTP server answering `GET /img/<name>.png?delay=<ms>&h=<px>` with a solid PNG after the given delay. This is how a scenario controls when media above a target finishes loading, and by how much it grows. `WKWebView` can't be served by a `URLProtocol`, hence a real socket. |
 | `QuoteJumpSamePageTests.swift` | Quotes of posts on the page already showing. Scenario table at the top of the file. |
 | `QuoteJumpCrossPageTests.swift` | Quotes of posts on other pages, driven the way `AwfulURLRouter` and `PostLocator` do it. Scenario table at the top of the file. |
+| `PageOpenRestsAtTopTests.swift` | Opening a page lands at its top rather than with the first post behind the bars: a cached page re-rendered shorter once the fetch hides read posts, a refresh at rest, a thread-list open at the next unread page, pages rendered before they are in a window (as restoration does), and a saved restoration anchor restored. Scenario table at the top of the file. |
 
 Supporting pieces elsewhere:
 
