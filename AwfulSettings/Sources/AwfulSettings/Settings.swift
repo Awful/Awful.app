@@ -137,6 +137,9 @@ public enum Settings {
     /// Send YouTube video links to the YouTube app (if installed).
     public static let openYouTubeLinksInYouTube = Setting(key: "open_youtube_links_in_youtube", default: true)
 
+    /// Freeze GIFs, avatars, videos and other animations in posts while the app is not the active one: another app frontmost on the Mac, or another window focused under iPad Stage Manager. See `RenderViewAnimationPauser`.
+    public static let pauseAnimationsWhenInactive = Setting(key: "pause_animations_when_inactive", default: true)
+
     /// Pull up from the bottom of a page of posts to go to the next page.
     public static let pullForNext = Setting(key: "pull_for_next", default: true)
 

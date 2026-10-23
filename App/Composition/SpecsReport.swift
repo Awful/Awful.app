@@ -176,6 +176,7 @@ extension SpecsReport {
         .init(Settings.loadImages),
         .init(Settings.openTwitterLinksInTwitter),
         .init(Settings.openYouTubeLinksInYouTube),
+        .init(Settings.pauseAnimationsWhenInactive),
         .init(Settings.pullForNext),
         .init(Settings.restoreLastThreadOnLaunch),
         .init(Settings.showAvatars),

@@ -593,10 +593,12 @@ Awful.embedTweets = function() {
       posts.forEach((post) => {
         const players = post.target.querySelectorAll(SELECTORS.LOTTIE_PLAYERS);
         players.forEach((lottiePlayer) => {
-          if (post.isIntersecting) {
-            lottiePlayer.play();
-          } else {
+          if (!post.isIntersecting) {
             lottiePlayer.pause();
+          } else if (Awful.animationsPaused) {
+            Awful.pauseWhileInactive(lottiePlayer);
+          } else {
+            lottiePlayer.play();
           }
         });
       });
@@ -2367,6 +2369,173 @@ Awful.setCollapseLongQuotes = function(collapseLongQuotes) {
 
 
 /**
+ Whether animations are currently frozen because the app's window is inactive. See `Awful.setAnimationsPaused`.
+ */
+Awful.animationsPaused = false;
+
+/**
+ Whether an image is (probably) an animated GIF: its URL's path ends in `.gif`. There's no DOM API for asking whether an image animates, so this is the heuristic. Tap-to-play GIFs count once playing, since their `src` is then the GIF; while posterized their `src` is a still image and they're left alone.
+
+ @param {HTMLImageElement} img
+ */
+Awful.isGIFImage = function(img) {
+  var src = img.currentSrc || img.src;
+  if (!src) { return false; }
+  if (/^data:image\/gif[;,]/i.test(src)) { return true; }
+  try {
+    return /\.gif$/i.test(new URL(src, document.baseURI).pathname);
+  } catch (error) {
+    return false;
+  }
+};
+
+/**
+ Layout and paint properties copied from a frozen image onto its stand-in canvas. Stylesheet rules that select on the element type (`img`, `.customTitle img:first-child`) can't match a canvas, so the image's computed values go on as inline styles instead.
+ */
+Awful.frozenGIFCopiedStyles = [
+  'display', 'vertical-align', 'float', 'clear', 'box-sizing',
+  'margin-top', 'margin-right', 'margin-bottom', 'margin-left',
+  'padding-top', 'padding-right', 'padding-bottom', 'padding-left',
+  'border-top-width', 'border-right-width', 'border-bottom-width', 'border-left-width',
+  'border-top-style', 'border-right-style', 'border-bottom-style', 'border-left-style',
+  'border-top-color', 'border-right-color', 'border-bottom-color', 'border-left-color',
+  'border-top-left-radius', 'border-top-right-radius', 'border-bottom-right-radius', 'border-bottom-left-radius',
+  'position', 'top', 'right', 'bottom', 'left', 'z-index',
+  'grid-row-start', 'grid-row-end', 'grid-column-start', 'grid-column-end', 'align-self', 'justify-self', 'order',
+  'flex-grow', 'flex-shrink', 'flex-basis',
+  'transform', 'transform-origin', 'opacity', 'box-shadow', 'object-fit', 'object-position', 'visibility'
+];
+
+/**
+ Replaces a loaded GIF with a canvas showing its current frame, so it stops animating (and WebKit stops decoding it). The canvas copies the image's classes, its computed layout styles and its layout box's size, so layout and styling don't change. Does nothing for an image that isn't a loaded GIF or is already frozen.
+
+ @param {HTMLImageElement} img
+ */
+Awful.freezeGIF = function(img) {
+  if (img.dataset.awfulFrozen || !img.complete || img.naturalWidth === 0 || !Awful.isGIFImage(img)) { return; }
+  if (img.offsetWidth === 0 || img.offsetHeight === 0) { return; }
+
+  var canvas = document.createElement('canvas');
+  canvas.width = img.naturalWidth;
+  canvas.height = img.naturalHeight;
+  canvas.className = img.className;
+  canvas.classList.add('awful-frozen-gif');
+  var computed = getComputedStyle(img);
+  Awful.frozenGIFCopiedStyles.forEach(function(property) {
+    canvas.style.setProperty(property, computed.getPropertyValue(property));
+  });
+  // The computed size, not getBoundingClientRect or offsetWidth: a transformed ancestor (custom titles are scaled down) scales the canvas too, so the already-scaled rect would shrink it twice, and offsetWidth rounds to whole pixels, which a scaled fraction then rounds differently. The computed value is the fractional layout size in the box-sizing copied above.
+  canvas.style.width = computed.getPropertyValue('width');
+  canvas.style.height = computed.getPropertyValue('height');
+  try {
+    canvas.getContext('2d').drawImage(img, 0, 0);
+  } catch (error) {
+    return;
+  }
+  img.insertAdjacentElement('afterend', canvas);
+  img.dataset.awfulFrozen = '1';
+  img.dataset.awfulFrozenDisplay = img.style.display;
+  img.style.display = 'none';
+};
+
+/**
+ Undoes `Awful.freezeGIF`. The GIF restarts from its first frame.
+
+ @param {HTMLImageElement} img
+ */
+Awful.thawGIF = function(img) {
+  if (!img.dataset.awfulFrozen) { return; }
+  var canvas = img.nextElementSibling;
+  if (canvas && canvas.classList.contains('awful-frozen-gif')) {
+    canvas.remove();
+  }
+  img.style.display = img.dataset.awfulFrozenDisplay || '';
+  delete img.dataset.awfulFrozenDisplay;
+  delete img.dataset.awfulFrozen;
+};
+
+/**
+ Pauses a video or Lottie player and marks it, so `Awful.resumeAfterInactive` knows to start it again. Callers check `Awful.isPlaying` first, so a player the user paused themselves stays paused on resume.
+
+ @param {HTMLMediaElement|Element} player
+ */
+Awful.pauseWhileInactive = function(player) {
+  player.dataset.awfulPausedForInactive = '1';
+  player.pause();
+};
+
+/**
+ Starts a video or Lottie player again if `Awful.pauseWhileInactive` paused it.
+
+ @param {HTMLMediaElement|Element} player
+ */
+Awful.resumeAfterInactive = function(player) {
+  if (!player.dataset.awfulPausedForInactive) { return; }
+  delete player.dataset.awfulPausedForInactive;
+  var playing = player.play();
+  // A video's play() returns a promise that rejects when autoplay isn't allowed. That's fine, the user can tap it.
+  if (playing && playing.catch) { playing.catch(function() {}); }
+};
+
+/**
+ Whether a video or Lottie player is playing right now.
+
+ @param {HTMLMediaElement|Element} player
+ */
+Awful.isPlaying = function(player) {
+  if (player instanceof HTMLMediaElement) {
+    return !player.paused && !player.ended;
+  }
+  return player.currentState === 'playing';
+};
+
+/**
+ Freezes (when `true`) or resumes (when `false`) everything that moves on its own: GIFs (avatars included), videos, and Lottie players. The native side calls this as the app becomes inactive and active. Idempotent, and remembered so GIFs that finish loading and players that start while paused are frozen too.
+
+ @param {boolean} paused
+ @returns {number} How many GIFs are frozen afterwards, for the native side's log.
+ */
+Awful.setAnimationsPaused = function(paused) {
+  Awful.animationsPaused = !!paused;
+
+  Array.prototype.forEach.call(document.querySelectorAll('img'), function(img) {
+    if (paused) {
+      Awful.freezeGIF(img);
+    } else {
+      Awful.thawGIF(img);
+    }
+  });
+
+  var players = document.querySelectorAll('video, ' + SELECTORS.LOTTIE_PLAYERS);
+  Array.prototype.forEach.call(players, function(player) {
+    if (typeof player.play !== 'function' || typeof player.pause !== 'function') { return; }
+    if (paused) {
+      if (Awful.isPlaying(player)) { Awful.pauseWhileInactive(player); }
+    } else {
+      Awful.resumeAfterInactive(player);
+    }
+  });
+
+  return document.querySelectorAll('canvas.awful-frozen-gif').length;
+};
+
+// A GIF that finishes loading while paused (lazy images below the fold, avatars shown via setShowAvatars) freezes right away.
+document.addEventListener('load', function(event) {
+  if (Awful.animationsPaused && event.target instanceof HTMLImageElement) {
+    Awful.freezeGIF(event.target);
+  }
+}, true);
+
+// A video or Lottie player that starts while paused (autoplay on a late embed, a ghost player created by embedTweets) pauses right away and resumes with the rest. Neither element's play event bubbles, hence the capture phase.
+document.addEventListener('play', function(event) {
+  var target = event.target;
+  if (Awful.animationsPaused && target instanceof Element && target.matches('video, ' + SELECTORS.LOTTIE_PLAYERS)) {
+    Awful.pauseWhileInactive(target);
+  }
+}, true);
+
+
+/**
  Updates the user-specified setting to show avatars.
 
  @param {boolean} showAvatars - `true` to show user avatars, `false` to hide user avatars.
@@ -2391,6 +2560,7 @@ Awful.setShowAvatars = function(showAvatars) {
   } else {
     var imgs = document.querySelectorAll('header img.avatar');
     Array.prototype.forEach.call(imgs, function(img) {
+      Awful.thawGIF(img);
       var header = img.closest('header');
       if (header) {
         header.dataset.awfulAvatar = img.getAttribute('src');

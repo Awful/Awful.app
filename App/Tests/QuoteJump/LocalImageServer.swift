@@ -3,10 +3,14 @@
 //  Copyright 2026 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import Foundation
+import ImageIO
 import Network
 import UIKit
+import UniformTypeIdentifiers
 
 /// A tiny HTTP server on the loopback interface that answers `GET /img/<name>.png?delay=<ms>&h=<px>` with a solid PNG `h` pixels tall, after `delay` milliseconds. The quotejump fixtures point their images here (see `Scripts/make-quotejump-fixtures.py`), so a scenario controls exactly when media above a jump target finishes loading and by how much it grows. `WKWebView` can't be served by a `URLProtocol`, hence a real socket.
+///
+/// `GET /img/<name>.gif` answers with a two frame animated GIF instead, for tests of GIF handling (`RenderViewAnimationPauseTests`).
 final class LocalImageServer {
 
     /// The server's origin, e.g. `http://127.0.0.1:54321`, for substituting into fixture HTML.
@@ -21,6 +25,7 @@ final class LocalImageServer {
     private var _servedCount = 0
     private var connections: [ObjectIdentifier: NWConnection] = [:]
     private var pngCache: [Int: Data] = [:]
+    private var gifCache: [Int: Data] = [:]
 
     /// Starts listening on an ephemeral port and returns once the port is known.
     init() throws {
@@ -114,10 +119,12 @@ final class LocalImageServer {
         let height = max(1, min(4000, query("h").flatMap { Int($0) } ?? 100))
         let delay = max(0, min(30_000, query("delay").flatMap { Int($0) } ?? 0))
 
-        let png = self.png(height: height)
+        let isGIF = components.path.lowercased().hasSuffix(".gif")
+        let body = isGIF ? self.gif(height: height) : self.png(height: height)
+        let contentType = isGIF ? "image/gif" : "image/png"
         queue.asyncAfter(deadline: .now() + .milliseconds(delay)) { [weak self] in
             guard let self else { return }
-            self.send(status: "200 OK", contentType: "image/png", body: png, on: connection) {
+            self.send(status: "200 OK", contentType: contentType, body: body, on: connection) {
                 self.lock.withLock { self._servedCount += 1 }
             }
         }
@@ -130,6 +137,28 @@ final class LocalImageServer {
             completion?()
             connection.cancel()
         })
+    }
+
+    /// A 200 pixel wide animated GIF with two differently coloured frames, looping forever, cached per height.
+    private func gif(height: Int) -> Data {
+        if let cached = gifCache[height] { return cached }
+        let data = NSMutableData()
+        guard let destination = CGImageDestinationCreateWithData(data, UTType.gif.identifier as CFString, 2, nil) else { return Data() }
+        CGImageDestinationSetProperties(destination, [kCGImagePropertyGIFDictionary: [kCGImagePropertyGIFLoopCount: 0]] as CFDictionary)
+        for color in [UIColor.red, UIColor.blue] {
+            let format = UIGraphicsImageRendererFormat()
+            format.scale = 1
+            format.opaque = true
+            let image = UIGraphicsImageRenderer(size: CGSize(width: 200, height: height), format: format).image { context in
+                color.setFill()
+                context.fill(CGRect(x: 0, y: 0, width: 200, height: height))
+            }
+            guard let cgImage = image.cgImage else { continue }
+            CGImageDestinationAddImage(destination, cgImage, [kCGImagePropertyGIFDictionary: [kCGImagePropertyGIFDelayTime: 0.1]] as CFDictionary)
+        }
+        CGImageDestinationFinalize(destination)
+        gifCache[height] = data as Data
+        return data as Data
     }
 
     /// A solid 200 pixel wide PNG, cached per height. 200 is narrower than any phone viewport, so the posts stylesheet's `max-width: 100%` never scales it and the rendered height is exactly `height` CSS pixels.

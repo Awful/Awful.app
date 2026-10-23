@@ -6,6 +6,7 @@ import AwfulCore
 import AwfulExtensions
 import AwfulSettings
 import AwfulTheming
+import Combine
 import os
 import UIKit
 @preconcurrency import WebKit
@@ -54,6 +55,11 @@ final class RenderView: UIView {
 
     /// Whether lottie-player.js may be injected. Views that never show the frog/ghost animations (e.g. the Leper's Colony) pass `false` to skip the ~400 KB script.
     private let includesLottiePlayer: Bool
+
+    /// Whether the page's GIFs, videos and Lottie players are frozen (see `setAnimationsPaused`). Remembered so a freshly rendered document, which starts with everything playing, is frozen again.
+    private var animationsPaused = false
+
+    private var animationPauser: RenderViewAnimationPauser?
 
     private lazy var webView: WKWebView = {
         let configuration = WKWebViewConfiguration()
@@ -132,6 +138,7 @@ final class RenderView: UIView {
         addSubview(webView)
 
         webView.configuration.userContentController.add(ScriptMessageHandlerWeakTrampoline(self), name: Self.textSelectionChangedMessageName)
+        animationPauser = RenderViewAnimationPauser(renderView: self)
         #if DEBUG
         if PostsPerformance.isProbeEnabled {
             webView.configuration.userContentController.add(ScriptMessageHandlerWeakTrampoline(self), name: PostsPerformance.reportMessageName)
@@ -303,6 +310,9 @@ extension RenderView: WKNavigationDelegate {
             self.webLoadSignpost = nil
         }
         performanceTrace?.mark("webView didFinish navigation")
+        if animationsPaused {
+            setAnimationsPaused(true)
+        }
         delegate?.didFinishRenderingHTML(in: self)
     }
     
@@ -1074,6 +1084,19 @@ extension RenderView {
             }
         }
     }
+
+    /// Freezes (when `true`) or resumes (when `false`) GIFs, avatars included, videos and Lottie players in the page. `RenderViewAnimationPauser` calls this as the app becomes inactive and active. The state carries over to subsequently rendered documents.
+    func setAnimationsPaused(_ paused: Bool) {
+        animationsPaused = paused
+        Task {
+            do {
+                let frozen = try await webView.eval("window.Awful ? Awful.setAnimationsPaused(\(paused ? "true" : "false")) : -1")
+                logger.debug("setAnimationsPaused(\(paused)): \(String(describing: frozen)) frozen GIFs")
+            } catch {
+                self.mentionError(error, explanation: "could not evaluate setAnimationsPaused")
+            }
+        }
+    }
     
     /// Replaces the theme CSS.
     func setThemeStylesheet(_ css: String) {
@@ -1176,6 +1199,69 @@ extension RenderView {
         }
         catch {
             // Already logged, so we're done here.
+        }
+    }
+}
+
+/**
+ Freezes a render view's animations while the app's window is not the active one, when the `pauseAnimationsWhenInactive` setting is on. Turning the setting off resumes a frozen page at once; turning it on while already inactive freezes it. Every `RenderView` owns one, so posts, private messages, announcements, profiles and the Leper's Colony all behave the same.
+
+ "Inactive" comes from `UIScene` activation notifications, in two flavours:
+
+ - On iPad and iPhone the render view's own window scene deactivates (Stage Manager focus moving to another app, the app switcher, Control Center). Classic Split View keeps both apps active, so nothing pauses there.
+ - On the Mac (Designed for iPad, and Mac Catalyst) the window scene stays `foregroundActive` while another app is frontmost. The only scene that changes state is the system's menu bar scene, which goes to the background when the app leaves the front and activates when it returns. With multiple scenes off, any scene that isn't the render view's is that one, so on the Mac its activation stands in for the app's.
+ */
+@MainActor
+private final class RenderViewAnimationPauser {
+
+    private weak var renderView: RenderView?
+    @FoilDefaultStorage(Settings.pauseAnimationsWhenInactive) private var pauseAnimationsWhenInactive
+    private var cancellables: Set<AnyCancellable> = []
+
+    private static let runsOnMac = ProcessInfo.processInfo.isiOSAppOnMac || ProcessInfo.processInfo.isMacCatalystApp
+
+    init(renderView: RenderView) {
+        self.renderView = renderView
+
+        NotificationCenter.default.publisher(for: UIScene.willDeactivateNotification)
+            .receive(on: RunLoop.main)
+            .sink { [weak self] in self?.sceneActivationDidChange($0, isActive: false) }
+            .store(in: &cancellables)
+
+        NotificationCenter.default.publisher(for: UIScene.didActivateNotification)
+            .receive(on: RunLoop.main)
+            .sink { [weak self] in self?.sceneActivationDidChange($0, isActive: true) }
+            .store(in: &cancellables)
+
+        $pauseAnimationsWhenInactive
+            .dropFirst()
+            .receive(on: RunLoop.main)
+            .sink { [weak self] enabled in
+                guard let self, let renderView = self.renderView else { return }
+                renderView.setAnimationsPaused(enabled && !self.appIsActive)
+            }
+            .store(in: &cancellables)
+    }
+
+    /// Whether the app's window counts as active right now, by the same rules as the notifications: every connected scene is `foregroundActive` on the Mac, the render view's own scene elsewhere.
+    private var appIsActive: Bool {
+        if Self.runsOnMac {
+            return UIApplication.shared.connectedScenes.allSatisfy { $0.activationState == .foregroundActive }
+        }
+        return renderView?.window?.windowScene?.activationState == .foregroundActive
+    }
+
+    private func sceneActivationDidChange(_ notification: Notification, isActive: Bool) {
+        guard let renderView, let scene = notification.object as? UIScene else { return }
+        let isRenderViewScene = scene === renderView.window?.windowScene
+        // Another scene's activation only means anything on the Mac (see the type comment).
+        guard isRenderViewScene || Self.runsOnMac else { return }
+        logger.debug("\(isRenderViewScene ? "window" : "other") scene \(isActive ? "activated" : "will deactivate"), pause setting on: \(self.pauseAnimationsWhenInactive)")
+        if isActive {
+            // Always resume, in case the setting was turned off while frozen.
+            renderView.setAnimationsPaused(false)
+        } else if pauseAnimationsWhenInactive {
+            renderView.setAnimationsPaused(true)
         }
     }
 }

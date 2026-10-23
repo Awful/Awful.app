@@ -71,7 +71,7 @@ public struct SettingsView: View {
         Form {
             AccountSection(avatarURL: avatarURL, currentUsername: currentUsername, logOut: logOut)
             FeedbackSection(goToAwfulThread: goToAwfulThread)
-            PostsSection(isPad: isPad)
+            PostsSection(isMac: isMac, isPad: isPad)
             PostingSection(authenticateImgurAccount: authenticateImgurAccount)
             ThreadsSection()
             if hasRegularSizeClassInLandscape {
@@ -180,6 +180,7 @@ private struct FeedbackSection: View {
 }
 
 private struct PostsSection: View {
+    let isMac: Bool
     let isPad: Bool
     @AppStorage(Settings.autoplayGIFs) private var alwaysAnimateGIFs
     @AppStorage(Settings.confirmBeforeReplying) private var alwaysPreviewNewPosts
@@ -194,6 +195,7 @@ private struct PostsSection: View {
     @AppStorage(Settings.hidePostMetadataForReader) private var hidePostMetadataForReader
     @AppStorage(Settings.immersiveModeEnabled) private var immersiveModeEnabled
     @AppStorage(Settings.loadImages) private var loadImages
+    @AppStorage(Settings.pauseAnimationsWhenInactive) private var pauseAnimationsWhenInactive
     @AppStorage(Settings.showAvatars) private var showAvatars
 
     var body: some View {
@@ -203,6 +205,9 @@ private struct PostsSection: View {
             Stepper("Scale Text \(fontScale.formatted())%", bundle: .module, value: $fontScale, in: 50...200, step: 10)
             Toggle("Always Preview New Posts", bundle: .module, isOn: $alwaysPreviewNewPosts)
             Toggle("Always Animate GIFs", bundle: .module, isOn: $alwaysAnimateGIFs)
+            if isPad || isMac {
+                Toggle("Pause Animations When Inactive", bundle: .module, isOn: $pauseAnimationsWhenInactive)
+            }
             Toggle("Collapse Long Quotes", bundle: .module, isOn: $collapseLongQuotes)
             Toggle("Embed Bluesky Posts", bundle: .module, isOn: $embedBlueskyPosts)
             Toggle("Embed Tweets", bundle: .module, isOn: $embedTweets)
