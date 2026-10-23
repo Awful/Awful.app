@@ -121,10 +121,14 @@ final class MessageViewController: ViewController, ContentRefreshable {
     
     @objc private func didLongPressWebView(_ sender: UILongPressGestureRecognizer) {
         guard sender.state == .began else { return }
+        presentInterestingElementsMenu(at: sender.location(in: renderView))
+    }
 
+    /// Shared by long press and right-click (see `RenderView.BuiltInMessage.DidRequestContextMenu`).
+    private func presentInterestingElementsMenu(at location: CGPoint, style: URLMenuPresenter.Style = .actionSheet) {
         Task {
-            let elements = await renderView.interestingElements(at: sender.location(in: renderView))
-            _ = URLMenuPresenter.presentInterestingElements(elements, from: self, renderView: self.renderView)
+            let elements = await renderView.interestingElements(at: location)
+            _ = URLMenuPresenter.presentInterestingElements(elements, from: self, renderView: self.renderView, style: style)
         }
     }
     
@@ -135,13 +139,6 @@ final class MessageViewController: ViewController, ContentRefreshable {
         }
     }
     
-    /// Shows the author-header menu on tap; see `HiddenMenuButton`.
-    private lazy var hiddenMenuButton: HiddenMenuButton = {
-        let button = HiddenMenuButton()
-        renderView.addSubview(button)
-        return button
-    }()
-
     private func showUserActions(from rect: CGRect) {
         guard let user = privateMessage.from else { return }
 
@@ -165,7 +162,7 @@ final class MessageViewController: ViewController, ContentRefreshable {
             if rect.isNull {
                 rect = CGRect(origin: .zero, size: CGSize(width: renderView.bounds.width, height: 1))
             }
-            hiddenMenuButton.show(menu: menu, from: rect)
+            renderView.showMenu(menu, from: rect)
         }
     }
 
@@ -234,6 +231,7 @@ final class MessageViewController: ViewController, ContentRefreshable {
         renderView.registerMessage(RenderView.BuiltInMessage.DidFinishLoadingTweets.self)
         renderView.registerMessage(RenderView.BuiltInMessage.FetchOEmbedFragment.self)
         renderView.registerMessage(RenderView.BuiltInMessage.DidToggleQuoteCollapsed.self)
+        renderView.registerMessage(RenderView.BuiltInMessage.DidRequestContextMenu.self)
         
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(didLongPressWebView))
         longPress.delegate = self
@@ -478,6 +476,9 @@ extension MessageViewController: RenderViewDelegate {
         switch message {
         case let didTapHeader as RenderView.BuiltInMessage.DidTapAuthorHeader:
             showUserActions(from: didTapHeader.frame)
+
+        case let message as RenderView.BuiltInMessage.DidRequestContextMenu:
+            presentInterestingElementsMenu(at: message.location, style: .contextMenu(at: message.location))
             
         case let message as RenderView.BuiltInMessage.FetchOEmbedFragment:
             fetchOEmbed(url: message.url, id: message.id)

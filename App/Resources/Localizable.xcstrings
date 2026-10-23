@@ -675,6 +675,30 @@
     "Hide Sidebar" : {
       "comment" : "Sidebar toggle accessibility label"
     },
+    "image-action.error.not-an-image" : {
+      "comment" : "Error shown when Copy Image or Save Image downloads something that isn't an image.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The download wasn't an image."
+          }
+        }
+      }
+    },
+    "image-action.error.photos-access" : {
+      "comment" : "Error shown when Save Image is refused photo library access.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Awful isn't allowed to add to your photo library. You can change that in Settings."
+          }
+        }
+      }
+    },
     "image-upload.generic-error-title" : {
       "comment" : "Title of a generic error uploading an image.",
       "extractionState" : "migrated",
@@ -890,6 +914,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Open in YouTube"
+          }
+        }
+      }
+    },
+    "link-action.save-image" : {
+      "comment" : "Title of button that saves an image to the photo library.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save Image"
           }
         }
       }

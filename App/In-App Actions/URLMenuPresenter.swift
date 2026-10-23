@@ -12,6 +12,140 @@ import UIKit
 
 private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "URLMenuPresenter")
 
+/// One entry in a menu, independent of how the menu is drawn.
+private struct MenuItem {
+    let title: String
+    let handler: () -> Void
+}
+
+/// Draws the items as an action sheet or as a native menu anchored to `sourceRect` in `sourceView`.
+private func presentMenu(_ items: [MenuItem], title: String?, message: String? = nil, style: URLMenuPresenter.Style, from presenter: UIViewController, fromRect sourceRect: CGRect, inView sourceView: RenderView) {
+    switch style {
+    case .actionSheet:
+        var actions = items.map { item in UIAlertAction.default(title: item.title, handler: item.handler) }
+        actions.append(.cancel())
+        let alert = UIAlertController(title: title, message: message, actionSheetActions: actions)
+        // Anchor before presenting: on the Mac the popover reads its anchor as presentation starts.
+        if let popover = alert.popoverPresentationController {
+            popover.sourceRect = sourceRect
+            popover.sourceView = sourceView
+        }
+        presenter.present(alert, animated: true)
+
+    case let .contextMenu(at: point):
+        let actions = items.map { item in UIAction(title: item.title) { _ in item.handler() } }
+        let menu = UIMenu(title: title ?? "", subtitle: message, children: actions)
+        // Drop down from the cursor, as a Mac menu does, rather than from the element's frame.
+        let anchor = CGRect(origin: point, size: .zero).insetBy(dx: -1, dy: -1)
+        sourceView.showMenu(menu, from: anchor)
+    }
+}
+
+/// Adds or removes the smilie from favorites, when it's one the app knows.
+private func smilieFavoriteItem(for smilie: PostedSmilie) -> MenuItem? {
+    guard let storedSmilie = SmilieDataStore.shared.fetchSmilie(text: smilie.text) else { return nil }
+    let format = storedSmilie.metadata.isFavorite ? LocalizedString("smilie-action.remove-from-favorites") : LocalizedString("smilie-action.add-to-favorites")
+    return MenuItem(title: String(format: format, storedSmilie.text)) {
+        if storedSmilie.metadata.isFavorite {
+            storedSmilie.metadata.removeFromFavoritesUpdatingSubsequentIndices()
+        } else {
+            storedSmilie.metadata.addToFavorites()
+        }
+        try! storedSmilie.managedObjectContext?.save()
+    }
+}
+
+private func openImage(_ imageURL: URL, from presenter: UIViewController) {
+    let preview = ImageViewController(imageURL: imageURL)
+    preview.title = presenter.title
+    presenter.present(preview, animated: true)
+}
+
+private func shareURL(_ url: URL, from presenter: UIViewController, fromRect sourceRect: CGRect, inView sourceView: UIView) {
+    let activityVC = UIActivityViewController(activityItems: [url], applicationActivities: nil)
+    if let popover = activityVC.popoverPresentationController {
+        popover.sourceRect = sourceRect
+        popover.sourceView = sourceView
+    }
+    presenter.present(activityVC, animated: true)
+}
+
+/// Copy Image and Save Image for an image we only know the URL of. The web view's copy of the bytes isn't reachable from here, so they come from a fresh download.
+private func imageDataItems(for imageURL: URL, presenter: UIViewController) -> [MenuItem] {
+    var items: [MenuItem] = []
+
+    items.append(MenuItem(title: LocalizedString("link-action.copy-image")) {
+        Task { @MainActor in
+            do {
+                let data = try await fetchImageData(imageURL)
+                guard copyImageToPasteboard(data) else { throw ImageActionError.notAnImage }
+            } catch {
+                presentImageActionError(error, from: presenter)
+            }
+        }
+    })
+
+    switch PHPhotoLibrary.authorizationStatus(for: .addOnly) {
+    case .authorized, .limited, .notDetermined:
+        items.append(MenuItem(title: LocalizedString("link-action.save-image")) {
+            Task { @MainActor in
+                do {
+                    let data = try await fetchImageData(imageURL)
+                    guard imageUTI(data) != nil else { throw ImageActionError.notAnImage }
+                    try await saveImageToPhotos(data)
+                } catch {
+                    presentImageActionError(error, from: presenter)
+                }
+            }
+        })
+    case .denied, .restricted:
+        break
+    @unknown default:
+        break
+    }
+
+    return items
+}
+
+private enum ImageActionError: LocalizedError {
+    case notAnImage
+    case photosAccessDenied
+
+    var errorDescription: String? {
+        switch self {
+        case .notAnImage: return LocalizedString("image-action.error.not-an-image")
+        case .photosAccessDenied: return LocalizedString("image-action.error.photos-access")
+        }
+    }
+}
+
+private func fetchImageData(_ url: URL) async throws -> Data {
+    var request = URLRequest(url: url)
+    request.addValue("image/*", forHTTPHeaderField: "Accept")
+    let (data, response) = try await URLSession.shared.data(for: request)
+    if let response = response as? HTTPURLResponse, !(200...299).contains(response.statusCode) {
+        throw URLError(.badServerResponse)
+    }
+    return data
+}
+
+/// Adds the image to the photo library as-is, so GIFs stay animated.
+private func saveImageToPhotos(_ data: Data) async throws {
+    let status = await PHPhotoLibrary.requestAuthorization(for: .addOnly)
+    guard status == .authorized || status == .limited else { throw ImageActionError.photosAccessDenied }
+    try await PHPhotoLibrary.shared().performChanges {
+        PHAssetCreationRequest.forAsset().addResource(with: .photo, data: data, options: nil)
+    }
+}
+
+@MainActor
+private func presentImageActionError(_ error: Error, from presenter: UIViewController) {
+    logger.error("image action failed: \(error)")
+    let alert = UIAlertController(title: LocalizedString("save-action.error"), message: error.localizedDescription, preferredStyle: .alert)
+    alert.addAction(.ok())
+    presenter.present(alert, animated: true)
+}
+
 private enum _URLMenuPresenter {
     case link(url: URL, imageURL: URL?, smilie: PostedSmilie?)
     case video(url: URL)
@@ -61,8 +195,8 @@ private enum _URLMenuPresenter {
         }
     }
     
-    func present(fromViewController presenter: UIViewController, fromRect sourceRect: CGRect, inView sourceView: UIView) {
-        var actions: [UIAlertAction] = []
+    func present(fromViewController presenter: UIViewController, fromRect sourceRect: CGRect, inView sourceView: RenderView, style: URLMenuPresenter.Style) {
+        var items: [MenuItem] = []
         let title: String?
         let message: String?
         switch self {
@@ -74,7 +208,7 @@ private enum _URLMenuPresenter {
             let route = try? AwfulRoute(linkURL)
             
             if browsers.contains(.awful) && (route != nil || isHTTP) {
-                actions.append(.default(title: LocalizedString("link-action.open-in-awful")) {
+                items.append(MenuItem(title: LocalizedString("link-action.open-in-awful")) {
                     if let route = try? AwfulRoute(linkURL) {
                         AppDelegate.instance.open(route: route)
                     } else {
@@ -92,116 +226,82 @@ private enum _URLMenuPresenter {
                 } else {
                     title = LocalizedString("link-action.open-in-default-browser")
                 }
-                actions.append(.default(title: title) { UIApplication.shared.open(linkURL) })
+                items.append(MenuItem(title: title) { UIApplication.shared.open(linkURL) })
             }
                     
             if browsers.contains(.chrome) && isHTTP {
-                actions.append(.default(title: LocalizedString("link-action.open-in-chrome")) {
+                items.append(MenuItem(title: LocalizedString("link-action.open-in-chrome")) {
                     UIApplication.shared.open(chromifyURL(linkURL))
                 })
             }
                     
             if browsers.contains(.firefox) && isHTTP {
-                actions.append(.default(title: LocalizedString("link-action.open-in-firefox")) {
+                items.append(MenuItem(title: LocalizedString("link-action.open-in-firefox")) {
                     UIApplication.shared.open(firefoxifyURL(linkURL))
                 })
             }
 
             if browsers.contains(.brave) && isHTTP {
-                actions.append(.default(title: LocalizedString("link-action.open-in-brave")) {
+                items.append(MenuItem(title: LocalizedString("link-action.open-in-brave")) {
                     UIApplication.shared.open(bravifyURL(linkURL))
                 })
             }
 
             if browsers.contains(.edge) && isHTTP {
-                actions.append(.default(title: LocalizedString("link-action.open-in-edge")) {
+                items.append(MenuItem(title: LocalizedString("link-action.open-in-edge")) {
                     UIApplication.shared.open(edgifyURL(linkURL))
                 })
             }
             
-            actions.append(.default(title: LocalizedString("link-action.copy-url")) {
+            items.append(MenuItem(title: LocalizedString("link-action.copy-url")) {
                 UIPasteboard.general.coercedURL = linkURL
             })
             
-            actions.append(.default(title: LocalizedString("link-action.share-url")) {
-                let objectsToShare = [linkURL]
-                let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: nil)
-                presenter.present(activityVC, animated: true)
-
-                if let popover = activityVC.popoverPresentationController {
-                    popover.sourceRect = sourceRect
-                    popover.sourceView = sourceView
-                }
+            items.append(MenuItem(title: LocalizedString("link-action.share-url")) {
+                shareURL(linkURL, from: presenter, fromRect: sourceRect, inView: sourceView)
             })
 
             if let imageURL {
-                actions.append(.default(title: LocalizedString("link-action.open-image")) {
-                    let preview = ImageViewController(imageURL: imageURL)
-                    preview.title = presenter.title
-                    presenter.present(preview, animated: true, completion: nil)
+                items.append(MenuItem(title: LocalizedString("link-action.open-image")) {
+                    openImage(imageURL, from: presenter)
                 })
                 
-                actions.append(.default(title: LocalizedString("link-action.copy-image-url")) {
+                items.append(MenuItem(title: LocalizedString("link-action.copy-image-url")) {
                     UIPasteboard.general.coercedURL = imageURL
                 })
+
+                items += imageDataItems(for: imageURL, presenter: presenter)
             }
 
-            if let smilie {
-                if let storedSmilie = SmilieDataStore.shared.fetchSmilie(text: smilie.text) {
-                    let format = storedSmilie.metadata.isFavorite ? LocalizedString("smilie-action.remove-from-favorites") : LocalizedString("smilie-action.add-to-favorites")
-
-                    actions.append(.default(title: String(format: format, storedSmilie.text)) {
-                        if storedSmilie.metadata.isFavorite {
-                            storedSmilie.metadata.removeFromFavoritesUpdatingSubsequentIndices()
-                        } else {
-                            storedSmilie.metadata.addToFavorites()
-                        }
-                        try! storedSmilie.managedObjectContext?.save()
-                    })
-                    message = nil
-                } else {
-                    message = smilie.text
-                }
-            } else {
+            if let smilie, let favorite = smilieFavoriteItem(for: smilie) {
+                items.append(favorite)
                 message = nil
+            } else {
+                message = smilie?.text
             }
 
         case let .video(rawURL):
             if let videoURL = VideoURL(rawURL) {
                 title = videoURL.unembeddedURL.absoluteString
                 message = nil
-                actions.append(.default(title: LocalizedString("link-action.open")) {
+                items.append(MenuItem(title: LocalizedString("link-action.open")) {
                     AwfulBrowser.presentBrowserForURL(videoURL.unembeddedURL, fromViewController: presenter)
                 })
-                actions.append(.default(title: videoURL.actionTitle) {
+                items.append(MenuItem(title: videoURL.actionTitle) {
                     UIApplication.shared.open(videoURL.actionURL)
                 })
-                actions.append(.default(title: LocalizedString("link-action.share-url")) {
-                    let items = [videoURL.unembeddedURL]
-                    let activityVC = UIActivityViewController(activityItems: items, applicationActivities: nil)
-                    presenter.present(activityVC, animated: true)
-
-                    if let popover = activityVC.popoverPresentationController {
-                        popover.sourceRect = sourceRect
-                        popover.sourceView = sourceView
-                    }
+                items.append(MenuItem(title: LocalizedString("link-action.share-url")) {
+                    shareURL(videoURL.unembeddedURL, from: presenter, fromRect: sourceRect, inView: sourceView)
                 })
             } else {
                 (title, message) = (nil, nil)
-                actions.append(.default(title: LocalizedString("link-action.copy-url")) {
+                items.append(MenuItem(title: LocalizedString("link-action.copy-url")) {
                     UIPasteboard.general.coercedURL = rawURL
                 })
             }
         }
         
-        actions.append(.cancel())
-        let alert = UIAlertController(title: title, message: message, actionSheetActions: actions)
-        presenter.present(alert, animated: true)
-
-        if let popover = alert.popoverPresentationController {
-            popover.sourceRect = sourceRect
-            popover.sourceView = sourceView
-        }
+        presentMenu(items, title: title, message: message, style: style, from: presenter, fromRect: sourceRect, inView: sourceView)
     }
     
     fileprivate enum VideoURL {
@@ -443,12 +543,18 @@ final class URLMenuPresenter: NSObject {
         menuPresenter.presentInDefaultBrowser(fromViewController: presenter)
     }
     
-    func present(fromViewController presenter: UIViewController, fromRect sourceRect: CGRect, inView sourceView: UIView) {
-        menuPresenter.present(fromViewController: presenter, fromRect: sourceRect, inView: sourceView)
+    /// How a menu is drawn. A long press on iOS gets the usual action sheet. A right-click gets a native menu, like the one the system would show, dropping down from the click (a point in the source view's coordinates).
+    enum Style {
+        case actionSheet
+        case contextMenu(at: CGPoint)
+    }
+
+    func present(fromViewController presenter: UIViewController, fromRect sourceRect: CGRect, inView sourceView: RenderView, style: Style = .actionSheet) {
+        menuPresenter.present(fromViewController: presenter, fromRect: sourceRect, inView: sourceView, style: style)
     }
     
-    // Convenience function.
-    class func presentInterestingElements(_ elements: [RenderView.InterestingElement], from presentingViewController: UIViewController, renderView: RenderView) -> Bool {
+    /// Presents whatever menu suits the elements. A long press (`.actionSheet`) on an image that isn't a link opens the image viewer with no menu, as iOS always has; a right-click (`.contextMenu`) gets a menu for it instead.
+    class func presentInterestingElements(_ elements: [RenderView.InterestingElement], from presentingViewController: UIViewController, renderView: RenderView, style: Style = .actionSheet) -> Bool {
         var imageFrame: CGRect?
         var imageURL: URL?
         var smilie: PostedSmilie?
@@ -464,49 +570,46 @@ final class URLMenuPresenter: NSObject {
         for case let .spoiledLink(frame: frame, url: unresolved) in elements {
             if let resolved = URL(string: unresolved.absoluteString, relativeTo: ForumsClient.shared.baseURL) {
                 let presenter = URLMenuPresenter(linkURL: resolved, imageURL: imageURL, smilie: smilie)
-                presenter.present(fromViewController: presentingViewController, fromRect: frame, inView: renderView)
+                presenter.present(fromViewController: presentingViewController, fromRect: frame, inView: renderView, style: style)
                 return true
             }
         }
 
-        if let smilie = smilie {
+        let imageRect = imageFrame?.insetBy(dx: -6, dy: -6) ?? renderView.bounds
+
+        if let smilie {
             // Just a smilie, nothing else.
-            var actions: [UIAlertAction] = []
-            if let storedSmilie = SmilieDataStore.shared.fetchSmilie(text: smilie.text) {
-                let format = storedSmilie.metadata.isFavorite ? LocalizedString("smilie-action.remove-from-favorites") : LocalizedString("smilie-action.add-to-favorites")
+            var items: [MenuItem] = []
+            if let favorite = smilieFavoriteItem(for: smilie) {
+                items.append(favorite)
+            }
 
-                actions.append(.default(title: String(format: format, storedSmilie.text)) {
-                    if storedSmilie.metadata.isFavorite {
-                        storedSmilie.metadata.removeFromFavoritesUpdatingSubsequentIndices()
-                    } else {
-                        storedSmilie.metadata.addToFavorites()
-                    }
-                    try! storedSmilie.managedObjectContext?.save()
+            if let imageURL {
+                items.append(MenuItem(title: LocalizedString("link-action.open-image")) {
+                    openImage(imageURL, from: presentingViewController)
                 })
             }
 
-            if let imageURL = imageURL {
-                actions.append(.default(title: LocalizedString("link-action.open-image")) {
-                    let preview = ImageViewController(imageURL: imageURL)
-                    preview.title = presentingViewController.title
-                    presentingViewController.present(preview, animated: true)
-                })
+            presentMenu(items, title: nil, message: smilie.text, style: style, from: presentingViewController, fromRect: imageRect, inView: renderView)
+            return true
+        } else if let imageURL {
+            if case .actionSheet = style {
+                openImage(imageURL, from: presentingViewController)
+                return true
             }
 
-            actions.append(.cancel())
-            let actionSheet = UIAlertController(message: smilie.text, actionSheetActions: actions)
-            presentingViewController.present(actionSheet, animated: true)
-
-            if let popover = actionSheet.popoverPresentationController {
-                if let imageFrame {
-                    popover.sourceRect = imageFrame.insetBy(dx: -6, dy: -6)
-                }
-                popover.sourceView = renderView
-            }
-        } else if let imageURL = imageURL {
-            let preview = ImageViewController(imageURL: imageURL)
-            preview.title = presentingViewController.title
-            presentingViewController.present(preview, animated: true)
+            var items: [MenuItem] = []
+            items.append(MenuItem(title: LocalizedString("link-action.open-image")) {
+                openImage(imageURL, from: presentingViewController)
+            })
+            items.append(MenuItem(title: LocalizedString("link-action.copy-image-url")) {
+                UIPasteboard.general.coercedURL = imageURL
+            })
+            items += imageDataItems(for: imageURL, presenter: presentingViewController)
+            items.append(MenuItem(title: LocalizedString("link-action.share-url")) {
+                shareURL(imageURL, from: presentingViewController, fromRect: imageRect, inView: renderView)
+            })
+            presentMenu(items, title: imageURL.absoluteString, style: style, from: presentingViewController, fromRect: imageRect, inView: renderView)
             return true
         }
         
@@ -514,14 +617,14 @@ final class URLMenuPresenter: NSObject {
             if let resolved = URL(string: unresolved.absoluteString, relativeTo: ForumsClient.shared.baseURL) {
                 let path = resolved.path.lowercased()
                 if path.hasSuffix(".mp4") {
-                    var actions: [UIAlertAction] = []
-                    actions.append(.default(title: LocalizedString("link-action.copy-url")) {
+                    var items: [MenuItem] = []
+                    items.append(MenuItem(title: LocalizedString("link-action.copy-url")) {
                         UIPasteboard.general.coercedURL = resolved
                     })
                     
                     switch PHPhotoLibrary.authorizationStatus(for: .addOnly) {
                     case .authorized, .limited, .notDetermined:
-                        actions.append(.default(title: LocalizedString("save-action.save-video")) {
+                        items.append(MenuItem(title: LocalizedString("save-action.save-video")) {
                             downloadVideoAndSaveToPhotos(resolved, renderView: renderView) { error in
                                 if let error = error {
                                     DispatchQueue.main.async {
@@ -552,14 +655,10 @@ final class URLMenuPresenter: NSObject {
                     @unknown default:
                         break
                     }
-                    actions.append(.cancel())
-                    let actionSheet = UIAlertController(actionSheetActions: actions)
-                    presentingViewController.present(actionSheet, animated: true)
-                    actionSheet.popoverPresentationController?.sourceRect = frame
-                    actionSheet.popoverPresentationController?.sourceView = renderView
+                    presentMenu(items, title: nil, style: style, from: presentingViewController, fromRect: frame, inView: renderView)
                 } else {
                     let presenter = URLMenuPresenter(videoURL: resolved)
-                    presenter.present(fromViewController: presentingViewController, fromRect: frame, inView: renderView)
+                    presenter.present(fromViewController: presentingViewController, fromRect: frame, inView: renderView, style: style)
                 }
                 return true
             }

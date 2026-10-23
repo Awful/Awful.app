@@ -267,6 +267,7 @@ final class PostsPageViewController: ViewController {
         postsView.renderView.registerMessage(RenderView.BuiltInMessage.FetchOEmbedFragment.self)
         postsView.renderView.registerMessage(RenderView.BuiltInMessage.ImageLoadProgress.self)
         postsView.renderView.registerMessage(RenderView.BuiltInMessage.DidToggleQuoteCollapsed.self)
+        postsView.renderView.registerMessage(RenderView.BuiltInMessage.DidRequestContextMenu.self)
         postsView.toolbarWidthDidChange = { [unowned self] width in
             self.pageNavigationView.maximumWidth = max(0, width - Self.toolbarWidthBesidesPagingControls)
         }
@@ -275,16 +276,6 @@ final class PostsPageViewController: ViewController {
             AppDelegate.instance.open(route: .forum(id: forum.forumID))
         }
         return postsView
-    }()
-
-    /// A hidden button that we misuse to show a proper iOS context menu on tap (as opposed to long-tap).
-    private lazy var hiddenMenuButton: HiddenMenuButton = {
-        let postActionButton = HiddenMenuButton()
-        if #available(iOS 16.0, *) {
-            postActionButton.preferredMenuElementOrder = .fixed
-        }
-        postsView.addSubview(postActionButton)
-        return postActionButton
     }()
 
     private struct FYADFlagRequest: RenderViewMessage {
@@ -1744,10 +1735,14 @@ final class PostsPageViewController: ViewController {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
 
-        let location = sender.location(in: postsView.renderView)
+        presentInterestingElementsMenu(at: sender.location(in: postsView.renderView))
+    }
+
+    /// Shared by long press and right-click (see `RenderView.BuiltInMessage.DidRequestContextMenu`).
+    private func presentInterestingElementsMenu(at location: CGPoint, style: URLMenuPresenter.Style = .actionSheet) {
         Task {
             let elements = await postsView.renderView.interestingElements(at: location)
-            _ = URLMenuPresenter.presentInterestingElements(elements, from: self, renderView: self.postsView.renderView)
+            _ = URLMenuPresenter.presentInterestingElements(elements, from: self, renderView: self.postsView.renderView, style: style)
         }
     }
 
@@ -1878,7 +1873,7 @@ final class PostsPageViewController: ViewController {
             return UIMenu(title: "", image: nil, identifier: nil, options: [.displayInline], children: [tempMenu])
         }()
 
-        hiddenMenuButton.show(menu: userActionMenu, from: frame)
+        postsView.renderView.showMenu(userActionMenu, from: frame)
     }
 
     private func shareURL(action: UIAction) {
@@ -2535,7 +2530,7 @@ final class PostsPageViewController: ViewController {
             return UIMenu(title: "", image: nil, identifier: nil, options: [.displayInline], children: postActions)
         }()
 
-        hiddenMenuButton.show(menu: postActionMenu, from: frame)
+        postsView.renderView.showMenu(postActionMenu, from: frame)
     }
     
     private func fetchOEmbed(url: URL, id: String) {
@@ -3275,6 +3270,9 @@ extension PostsPageViewController: RenderViewDelegate {
 
         case let message as RenderView.BuiltInMessage.DidTapPostActionButton:
             didTapActionButtonWithRect(message.frame, forPostAtIndex: message.postIndex)
+
+        case let message as RenderView.BuiltInMessage.DidRequestContextMenu:
+            presentInterestingElementsMenu(at: message.location, style: .contextMenu(at: message.location))
 
         case is RenderView.BuiltInMessage.DidFinishLoadingTweets:
             if let postID = jumpToPostIDAfterLoading {

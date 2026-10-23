@@ -7,12 +7,13 @@ import UIKit
 /// Adds a "Copy URL" activity. Place the target URL in a `Box` before adding it to `activityItems` and no other activities will see or attempt to use the URL.
 final class CopyURLActivity: UIActivity {
 
-    /// Wraps a URL so that only the `CopyURLActivity` will try to use it.
-    final class Box {
+    /// Wraps a URL so that only the `CopyURLActivity` will try to use it. Subclasses NSObject because the Mac share sheet (NSSharingServicePicker) calls `valueForKey:` on every activity item, which aborts on a plain Swift object.
+    final class Box: NSObject {
         fileprivate let url: URL
 
         init(_ url: URL) {
             self.url = url
+            super.init()
         }
     }
 
@@ -38,5 +39,6 @@ final class CopyURLActivity: UIActivity {
     
     override func perform() {
         UIPasteboard.general.coercedURL = url
+        activityDidFinish(true)
     }
 }

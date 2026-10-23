@@ -33,6 +33,17 @@ final class RenderView: UIView {
 
     private static let textSelectionChangedMessageName = "textSelectionChanged"
 
+    /// Shows a native menu anchored to `rect`, in the render view's coordinate system. Web content has no real control to attach a menu to, so an invisible button is moved over the rect and fired; see `HiddenMenuButton`.
+    func showMenu(_ menu: UIMenu, from rect: CGRect) {
+        hiddenMenuButton.show(menu: menu, from: rect)
+    }
+
+    private lazy var hiddenMenuButton: HiddenMenuButton = {
+        let button = HiddenMenuButton()
+        addSubview(button)
+        return button
+    }()
+
     /// The page load being timed, if any. Web view milestones and probe reports are logged against it.
     var performanceTrace: PostsPerformance.Trace?
 
@@ -490,6 +501,24 @@ extension RenderView: WKScriptMessageHandler {
                 else { return nil }
 
                 self.collapsed = collapsed
+            }
+        }
+
+        /// Sent from the web view when the user right-clicks an image, link or video. WebKit handles the secondary click itself, so a native gesture recognizer never sees it.
+        struct DidRequestContextMenu: RenderViewMessage {
+            static let messageName = "didRequestContextMenu"
+
+            /// Where the click landed, in the render view's coordinate system.
+            let location: CGPoint
+
+            init?(rawMessage: WKScriptMessage, in renderView: RenderView) {
+                assert(rawMessage.name == Self.messageName)
+                guard let body = rawMessage.body as? [String: Any],
+                      let x = body["x"] as? Double,
+                      let y = body["y"] as? Double
+                else { return nil }
+
+                location = renderView.convertToRenderView(webDocumentPoint: CGPoint(x: x, y: y))
             }
         }
     }

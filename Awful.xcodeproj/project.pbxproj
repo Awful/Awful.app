@@ -226,6 +226,7 @@
 		2DA10C022F1A2B3C00DE01AA /* PostLocator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA10C012F1A2B3C00DE01AA /* PostLocator.swift */; };
 		2DA10C032F1A2B3C00DE01AA /* UnpopStackTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA10C042F1A2B3C00DE01AA /* UnpopStackTests.swift */; };
 		2DA10C052F1A2B3C00DE01AA /* NavigationControllerNilShowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA10C062F1A2B3C00DE01AA /* NavigationControllerNilShowTests.swift */; };
+		2DA10C072F1A2B3C00DE01AA /* CopyURLActivityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA10C082F1A2B3C00DE01AA /* CopyURLActivityTests.swift */; };
 		2DA10C062F1A2B3C00DE01AB /* UITextViewReplaceSelectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA10C052F1A2B3C00DE01AB /* UITextViewReplaceSelectionTests.swift */; };
 		2DA10C082F1A2B3C00DE01AB /* UITextViewInsertAttachmentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA10C072F1A2B3C00DE01AB /* UITextViewInsertAttachmentTests.swift */; };
 		2DA10C122F1A2B3C00DE01AB /* TextAttachmentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA10C112F1A2B3C00DE01AB /* TextAttachmentTests.swift */; };
@@ -291,9 +292,9 @@
 		C8BE3CFABA1B4371B058B77E /* URLCleaningTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7066513D77148949920CFF8 /* URLCleaningTextView.swift */; };
 		CF01C0DE2F0000010000A002 /* CloudflareChallengeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF01C0DE2F0000010000A001 /* CloudflareChallengeViewController.swift */; };
 		CF01C0DE2F0000010000A004 /* CloudflareChallengePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF01C0DE2F0000010000A003 /* CloudflareChallengePresenter.swift */; };
-		CF01C0DE2F0000010000B006 /* UIWindow+SheetHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF01C0DE2F0000010000B005 /* UIWindow+SheetHost.swift */; };
-		CF01C0DE2F0000010000B004 /* ForumsStatusPagePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF01C0DE2F0000010000B003 /* ForumsStatusPagePresenter.swift */; };
 		CF01C0DE2F0000010000B002 /* ForumsStatusPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF01C0DE2F0000010000B001 /* ForumsStatusPageViewController.swift */; };
+		CF01C0DE2F0000010000B004 /* ForumsStatusPagePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF01C0DE2F0000010000B003 /* ForumsStatusPagePresenter.swift */; };
+		CF01C0DE2F0000010000B006 /* UIWindow+SheetHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF01C0DE2F0000010000B005 /* UIWindow+SheetHost.swift */; };
 		D1A0C0DE00000000000000A2 /* RenderViewPerformance.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0C0DE00000000000000A1 /* RenderViewPerformance.swift */; };
 		D1A0C0DE00000000000000B2 /* PostsScrollPerformanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0C0DE00000000000000B1 /* PostsScrollPerformanceTests.swift */; };
 		DDDDDDDD0000000000000002 /* LepersColony.html.stencil in Resources */ = {isa = PBXBuildFile; fileRef = DDDDDDDD0000000000000001 /* LepersColony.html.stencil */; };
@@ -575,7 +576,7 @@
 		1CF6786D201E8F45009A9640 /* MessageListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageListCell.swift; sourceTree = "<group>"; };
 		1CFC99691BD3F402001180A7 /* PostsPageRefreshArrowView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostsPageRefreshArrowView.swift; sourceTree = "<group>"; };
 		1D6058910D05DD3D006BFB54 /* AwfulDebug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AwfulDebug.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		22E7C196275C32B2608FC88B /* quotejump-p2.html */ = {isa = PBXFileReference; includeInIndex = 1; name = "quotejump-p2.html"; path = "../../AwfulCore/Tests/AwfulCoreTests/Fixtures/quotejump-p2.html"; sourceTree = "<group>"; };
+		22E7C196275C32B2608FC88B /* quotejump-p2.html */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.html; name = "quotejump-p2.html"; path = "../../AwfulCore/Tests/AwfulCoreTests/Fixtures/quotejump-p2.html"; sourceTree = "<group>"; };
 		23029040E83EA73A253ACB85 /* SidebarAlignmentTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SidebarAlignmentTests.swift; sourceTree = "<group>"; };
 		2D0BB35827F440AF00242D2A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2D19BA3229C330A2009DD94F /* mainthrobber60.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = mainthrobber60.json; sourceTree = "<group>"; };
@@ -614,8 +615,9 @@
 		2D921268292F588100B16011 /* platinum-member.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "platinum-member.png"; sourceTree = "<group>"; };
 		2DA10C012F1A2B3C00DE01AA /* PostLocator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostLocator.swift; sourceTree = "<group>"; };
 		2DA10C042F1A2B3C00DE01AA /* UnpopStackTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnpopStackTests.swift; sourceTree = "<group>"; };
-		2DA10C062F1A2B3C00DE01AA /* NavigationControllerNilShowTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationControllerNilShowTests.swift; sourceTree = "<group>"; };
 		2DA10C052F1A2B3C00DE01AB /* UITextViewReplaceSelectionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITextViewReplaceSelectionTests.swift; sourceTree = "<group>"; };
+		2DA10C062F1A2B3C00DE01AA /* NavigationControllerNilShowTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationControllerNilShowTests.swift; sourceTree = "<group>"; };
+		2DA10C082F1A2B3C00DE01AA /* CopyURLActivityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopyURLActivityTests.swift; sourceTree = "<group>"; };
 		2DA10C072F1A2B3C00DE01AB /* UITextViewInsertAttachmentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITextViewInsertAttachmentTests.swift; sourceTree = "<group>"; };
 		2DA10C112F1A2B3C00DE01AB /* TextAttachmentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextAttachmentTests.swift; sourceTree = "<group>"; };
 		2DA10C132F1A2B3C00DE01AB /* DraftStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DraftStoreTests.swift; sourceTree = "<group>"; };
@@ -634,11 +636,11 @@
 		331315F1D8261A5D757E8D2D /* OfferedPollToastStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OfferedPollToastStore.swift; sourceTree = "<group>"; };
 		42AE548A3918EFF0316F0B4A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		48B3E874E458EB6BB48A6AB6 /* QuoteJumpCrossPageTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = QuoteJumpCrossPageTests.swift; sourceTree = "<group>"; };
-		4E054ACF51DECE3C0DD8FEBA /* quotejump-p3-seen109.html */ = {isa = PBXFileReference; includeInIndex = 1; name = "quotejump-p3-seen109.html"; path = "../../AwfulCore/Tests/AwfulCoreTests/Fixtures/quotejump-p3-seen109.html"; sourceTree = "<group>"; };
-		70F025EEAFA2D5A0970320A9 /* quotejump-p1.html */ = {isa = PBXFileReference; includeInIndex = 1; name = "quotejump-p1.html"; path = "../../AwfulCore/Tests/AwfulCoreTests/Fixtures/quotejump-p1.html"; sourceTree = "<group>"; };
+		4E054ACF51DECE3C0DD8FEBA /* quotejump-p3-seen109.html */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.html; name = "quotejump-p3-seen109.html"; path = "../../AwfulCore/Tests/AwfulCoreTests/Fixtures/quotejump-p3-seen109.html"; sourceTree = "<group>"; };
+		70F025EEAFA2D5A0970320A9 /* quotejump-p1.html */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.html; name = "quotejump-p1.html"; path = "../../AwfulCore/Tests/AwfulCoreTests/Fixtures/quotejump-p1.html"; sourceTree = "<group>"; };
 		7E234BB9C8D26F461917D1C5 /* AwfulUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AwfulUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		83410EF119A582B8002CD019 /* DateFormatters.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateFormatters.swift; sourceTree = "<group>"; };
-		842EFC31873F799AFB2F1F19 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; path = README.md; sourceTree = "<group>"; };
+		842EFC31873F799AFB2F1F19 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		8C0F4F541682CCFA00E25D7E /* macinyos-heading-center.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "macinyos-heading-center.png"; sourceTree = "<group>"; };
 		8C0F4F551682CCFA00E25D7E /* macinyos-heading-right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "macinyos-heading-right.png"; sourceTree = "<group>"; };
 		8C299D6F16877AE9001B9D96 /* winpos95-heading-left.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "winpos95-heading-left.png"; sourceTree = "<group>"; };
@@ -682,12 +684,12 @@
 		CD655B744799F99C60C2520D /* QuoteJumpFixture.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = QuoteJumpFixture.swift; sourceTree = "<group>"; };
 		CF01C0DE2F0000010000A001 /* CloudflareChallengeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudflareChallengeViewController.swift; sourceTree = "<group>"; };
 		CF01C0DE2F0000010000A003 /* CloudflareChallengePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudflareChallengePresenter.swift; sourceTree = "<group>"; };
+		CF01C0DE2F0000010000B001 /* ForumsStatusPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForumsStatusPageViewController.swift; sourceTree = "<group>"; };
+		CF01C0DE2F0000010000B003 /* ForumsStatusPagePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForumsStatusPagePresenter.swift; sourceTree = "<group>"; };
 		CF01C0DE2F0000010000B005 /* UIWindow+SheetHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIWindow+SheetHost.swift"; sourceTree = "<group>"; };
-		CF01C0DE2F0000010000B003 /* ForumsStatusPagePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ForumsStatusPagePresenter.swift"; sourceTree = "<group>"; };
-		CF01C0DE2F0000010000B001 /* ForumsStatusPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ForumsStatusPageViewController.swift"; sourceTree = "<group>"; };
 		D1A0C0DE00000000000000A1 /* RenderViewPerformance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderViewPerformance.swift; sourceTree = "<group>"; };
 		D1A0C0DE00000000000000B1 /* PostsScrollPerformanceTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PostsScrollPerformanceTests.swift; sourceTree = "<group>"; };
-		D1B72B043CD766A22694272C /* quotejump-p3.html */ = {isa = PBXFileReference; includeInIndex = 1; name = "quotejump-p3.html"; path = "../../AwfulCore/Tests/AwfulCoreTests/Fixtures/quotejump-p3.html"; sourceTree = "<group>"; };
+		D1B72B043CD766A22694272C /* quotejump-p3.html */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.html; name = "quotejump-p3.html"; path = "../../AwfulCore/Tests/AwfulCoreTests/Fixtures/quotejump-p3.html"; sourceTree = "<group>"; };
 		D66E79F765D494CC3B86C9DA /* LocalImageServer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LocalImageServer.swift; sourceTree = "<group>"; };
 		DDDDDDDD0000000000000001 /* LepersColony.html.stencil */ = {isa = PBXFileReference; explicitFileType = text.html; fileEncoding = 4; path = LepersColony.html.stencil; sourceTree = "<group>"; };
 		DDDDDDDD0000000000000009 /* ModernToolbarActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModernToolbarActions.swift; sourceTree = "<group>"; };
@@ -1139,6 +1141,7 @@
 				1C26000C2026092300000002 /* RenderedPostsFingerprintTests.swift */,
 				2DA10C042F1A2B3C00DE01AA /* UnpopStackTests.swift */,
 				2DA10C062F1A2B3C00DE01AA /* NavigationControllerNilShowTests.swift */,
+				2DA10C082F1A2B3C00DE01AA /* CopyURLActivityTests.swift */,
 				2DA10C052F1A2B3C00DE01AB /* UITextViewReplaceSelectionTests.swift */,
 				2DA10C072F1A2B3C00DE01AB /* UITextViewInsertAttachmentTests.swift */,
 				2DA10C112F1A2B3C00DE01AB /* TextAttachmentTests.swift */,
@@ -1353,11 +1356,10 @@
 				ECC3DA5377C4955A89A59170 /* QuoteJumpSamePageTests.swift */,
 				842EFC31873F799AFB2F1F19 /* README.md */,
 			);
-			name = QuoteJump;
 			path = QuoteJump;
 			sourceTree = "<group>";
 		};
-		29B97314FDCFA39411CA2CEA = {
+		29B97314FDCFA39411CA2CEA /* Awful */ = {
 			isa = PBXGroup;
 			children = (
 				1C3857A115675AFE0078AF95 /* App */,
@@ -1630,7 +1632,6 @@
 					};
 					1C66A9EE19DD3939001B9A41 = {
 						CreatedOnToolsVersion = 6.0.1;
-						DevelopmentTeam = 9RR6L9X39A;
 						LastSwiftMigration = 0900;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
@@ -1641,13 +1642,11 @@
 					};
 					1C9AEBC2210C3B2200C9A567 = {
 						CreatedOnToolsVersion = 10.0;
-						DevelopmentTeam = 9RR6L9X39A;
 						LastSwiftMigration = 1000;
 						ProvisioningStyle = Automatic;
 						TestTargetID = 1D6058900D05DD3D006BFB54;
 					};
 					1D6058900D05DD3D006BFB54 = {
-						DevelopmentTeam = 9RR6L9X39A;
 						LastSwiftMigration = 1000;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
@@ -1666,13 +1665,13 @@
 				en,
 				Base,
 			);
-			mainGroup = 29B97314FDCFA39411CA2CEA;
+			mainGroup = 29B97314FDCFA39411CA2CEA /* Awful */;
 			packageReferences = (
 				1CCBDFF822CB02D500E1BE6A /* XCRemoteSwiftPackageReference "HTMLReader" */,
-				1C453F262338457A007AC6CD /* XCRemoteSwiftPackageReference "Stencil.git" */,
+				1C453F262338457A007AC6CD /* XCRemoteSwiftPackageReference "Stencil" */,
 				1CD72E65265C7FD600FF3BF4 /* XCRemoteSwiftPackageReference "FLAnimatedImage" */,
 				1C6B2A98272F992E00671F0C /* XCRemoteSwiftPackageReference "Nuke" */,
-				2D265F8D292CB447001336ED /* XCRemoteSwiftPackageReference "lottie-ios.git" */,
+				2D265F8D292CB447001336ED /* XCRemoteSwiftPackageReference "lottie-ios" */,
 				306F74092D90AA01000717BC /* XCRemoteSwiftPackageReference "KeychainAccess" */,
 			);
 			productRefGroup = 19C28FACFE9D520D11CA2CBB /* Products */;
@@ -1844,6 +1843,7 @@
 				1C26000C2026092300000001 /* RenderedPostsFingerprintTests.swift in Sources */,
 				2DA10C032F1A2B3C00DE01AA /* UnpopStackTests.swift in Sources */,
 				2DA10C052F1A2B3C00DE01AA /* NavigationControllerNilShowTests.swift in Sources */,
+				2DA10C072F1A2B3C00DE01AA /* CopyURLActivityTests.swift in Sources */,
 				2DA10C062F1A2B3C00DE01AB /* UITextViewReplaceSelectionTests.swift in Sources */,
 				2DA10C082F1A2B3C00DE01AB /* UITextViewInsertAttachmentTests.swift in Sources */,
 				2DA10C122F1A2B3C00DE01AB /* TextAttachmentTests.swift in Sources */,
@@ -2311,7 +2311,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		1C453F262338457A007AC6CD /* XCRemoteSwiftPackageReference "Stencil.git" */ = {
+		1C453F262338457A007AC6CD /* XCRemoteSwiftPackageReference "Stencil" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/stencilproject/Stencil.git";
 			requirement = {
@@ -2343,7 +2343,7 @@
 				minimumVersion = 1.0.16;
 			};
 		};
-		2D265F8D292CB447001336ED /* XCRemoteSwiftPackageReference "lottie-ios.git" */ = {
+		2D265F8D292CB447001336ED /* XCRemoteSwiftPackageReference "lottie-ios" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/airbnb/lottie-ios.git";
 			requirement = {
@@ -2376,7 +2376,7 @@
 		};
 		1C453F272338457A007AC6CD /* Stencil */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 1C453F262338457A007AC6CD /* XCRemoteSwiftPackageReference "Stencil.git" */;
+			package = 1C453F262338457A007AC6CD /* XCRemoteSwiftPackageReference "Stencil" */;
 			productName = Stencil;
 		};
 		1C4712292664CB8000E5AA74 /* Smilies */ = {
@@ -2440,7 +2440,7 @@
 		};
 		2D265F8E292CB447001336ED /* Lottie */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 2D265F8D292CB447001336ED /* XCRemoteSwiftPackageReference "lottie-ios.git" */;
+			package = 2D265F8D292CB447001336ED /* XCRemoteSwiftPackageReference "lottie-ios" */;
 			productName = Lottie;
 		};
 		306F740A2D90AA01000717BC /* KeychainAccess */ = {

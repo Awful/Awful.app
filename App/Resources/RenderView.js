@@ -2449,6 +2449,17 @@ Awful.setThemeStylesheet = function(css) {
 
 document.body.addEventListener('click', Awful.handleClickEvent);
 
+// Right-click (the Mac, or a pointer on iPad) asks the native side for the same menu a long press shows. Only over an image, link or video though, so the system's text menu still works elsewhere.
+document.addEventListener('contextmenu', function(event) {
+  var handler = window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.didRequestContextMenu;
+  if (!handler) { return; }
+  var interesting = Awful.interestingElementsAtPoint(event.clientX, event.clientY);
+  if (interesting.spoiledImageURL || interesting.spoiledLink || interesting.spoiledVideo) {
+    event.preventDefault();
+    handler.postMessage({ "x": event.clientX, "y": event.clientY });
+  }
+});
+
 
 // Listen for taps on the profile screen's rows.
 var contact = document.getElementById('contact');

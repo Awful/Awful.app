@@ -32,13 +32,6 @@ final class AnnouncementViewController: ViewController {
 
     private var messageViewController: MessageComposeViewController?
 
-    /// Shows the author-header menu on tap; see `HiddenMenuButton`.
-    private lazy var hiddenMenuButton: HiddenMenuButton = {
-        let button = HiddenMenuButton()
-        renderView.addSubview(button)
-        return button
-    }()
-
     private lazy var renderView: RenderView = {
         let renderView = RenderView(frame: CGRect(origin: .zero, size: view.bounds.size))
         renderView.delegate = self
@@ -296,7 +289,7 @@ final class AnnouncementViewController: ViewController {
                 }
             }))
 
-        hiddenMenuButton.show(menu: UIMenu(children: actions), from: frame)
+        renderView.showMenu(UIMenu(children: actions), from: frame)
     }
     
     // MARK: Gunk

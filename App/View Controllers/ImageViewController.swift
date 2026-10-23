@@ -89,21 +89,28 @@ final class ImageViewController: UIViewController {
     @IBAction private func didTapAction(_ sender: UIButton) {
         rootView.cancelHideOverlayAfterDelay()
 
+        var activityItems: [Any] = [CopyURLActivity.Box(imageURL)]
+        if let data = image?.data {
+            activityItems.append(data)
+        }
+        // The Mac share sheet (NSSharingServicePicker) doesn't recognize raw Data as an image, so without a UIImage it offers almost no services. iOS sniffs the Data fine and would list everything twice if given both.
+        if ProcessInfo.processInfo.isiOSAppOnMac, let uiImage = image?.uiImage {
+            activityItems.append(uiImage)
+        }
+
         let activityViewController = UIActivityViewController(
-            activityItems: [
-                CopyURLActivity.Box(imageURL),
-                image?.data as Any?,
-            ].compactMap { $0 },
+            activityItems: activityItems,
             applicationActivities: [CopyImageActivity(), CopyURLActivity()])
    
         // Only use our copy buttons
         activityViewController.excludedActivityTypes = [.copyToPasteboard]
-        
-        present(activityViewController, animated: true)
+
+        // The Mac reads the anchor when presentation starts, so this has to come before present().
         if let popover = activityViewController.popoverPresentationController {
             popover.sourceView = sender
             popover.sourceRect = sender.bounds
         }
+        present(activityViewController, animated: true)
     }
 
     @objc private func didTapTogglePresentation() {
@@ -562,6 +569,15 @@ private enum DecodedImage {
         switch self {
         case let .animated(animatedImage): return animatedImage.size
         case let .static(image: image, _): return image.size
+        case .error: return nil
+        }
+    }
+
+    /// A still image: the poster frame for an animated image.
+    var uiImage: UIImage? {
+        switch self {
+        case let .animated(animatedImage): return animatedImage.posterImage
+        case let .static(image: image, _): return image
         case .error: return nil
         }
     }
