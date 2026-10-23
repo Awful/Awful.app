@@ -596,10 +596,8 @@ final class PostsPageViewController: ViewController {
 
                 self.updateUserInterface()
 
-                if let lastPost = self.posts.last, updateLastReadPost {
-                    if self.thread.seenPosts < lastPost.threadIndex {
-                        self.thread.seenPosts = lastPost.threadIndex
-                    }
+                if let lastPost = self.posts.last, updateLastReadPost, self.thread.seenPosts < lastPost.threadIndex {
+                    self.recordSeenPosts(upTo: lastPost.threadIndex)
                 }
 
                 self.postsView.endRefreshing()
@@ -728,7 +726,7 @@ final class PostsPageViewController: ViewController {
             self.posts = result.posts
             self.configureUserActivityIfPossible()
             if let lastPost = self.posts.last, updateLastReadPost, self.thread.seenPosts < lastPost.threadIndex {
-                self.thread.seenPosts = lastPost.threadIndex
+                self.recordSeenPosts(upTo: lastPost.threadIndex)
             }
             // Clamp first: a shorter fetched page could leave `hiddenPosts` past the end.
             if self.hiddenPosts >= self.posts.count {
@@ -1317,6 +1315,16 @@ final class PostsPageViewController: ViewController {
         }
     }
 
+    /// Records how far the thread has been read and saves straight away. Left unsaved, the value would survive the merge of the next thread list refresh and beat the Forums' own count, which must win.
+    private func recordSeenPosts(upTo index: Int32) {
+        thread.seenPosts = index
+        do {
+            try thread.managedObjectContext?.save()
+        } catch {
+            logger.error("could not save seen posts for thread \(self.thread.threadID): \(error)")
+        }
+    }
+
     private func updateUserInterface() {
         title = thread.title?.collapsingWhitespace()
 
@@ -1576,7 +1584,7 @@ final class PostsPageViewController: ViewController {
         }
 
         if let lastPost = chunk.last, thread.seenPosts < lastPost.threadIndex {
-            thread.seenPosts = lastPost.threadIndex
+            recordSeenPosts(upTo: lastPost.threadIndex)
         }
         updateUserInterface()
         configureUserActivityIfPossible()
@@ -1915,7 +1923,7 @@ final class PostsPageViewController: ViewController {
             await dismiss(animated: false)
             do {
                 try await ForumsClient.shared.markThreadAsSeenUpTo(selectedPost!)
-                selectedPost!.thread?.seenPosts = selectedPost!.threadIndex
+                recordSeenPosts(upTo: selectedPost!.threadIndex)
                 loadedHTML = nil
                 postsView.renderView.markReadUpToPost(identifiedBy: selectedPost!.postID)
 

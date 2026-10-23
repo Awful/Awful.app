@@ -127,12 +127,21 @@ extension UIContextMenuConfiguration {
         }
         var markThreadUnread: UIMenuElement? {
             guard thread.beenSeen else { return nil }
+            // Saved straight away so the next list refresh's count from the Forums replaces it instead of losing to an unsaved local change in the merge.
+            func saveSeenPosts() {
+                do {
+                    try thread.managedObjectContext?.save()
+                } catch {
+                    logger.error("could not save seen posts for thread \(thread.threadID): \(error)")
+                }
+            }
             return UIAction(
                 title: NSLocalizedString("Mark Unread", comment: ""),
                 image: UIImage(named: "mark-as-unread")!.withRenderingMode(.alwaysTemplate),
                 handler: { action in
                     let oldSeen = thread.seenPosts
                     thread.seenPosts = 0
+                    saveSeenPosts()
                     Task {
                         do {
                             try await ForumsClient.shared.markUnread(thread)
@@ -141,6 +150,7 @@ extension UIContextMenuConfiguration {
                                 logger.error("could not mark thread \(thread.threadID) unread from table view context menu: \(error)")
                                 if thread.seenPosts == 0 {
                                     thread.seenPosts = oldSeen
+                                    saveSeenPosts()
                                 }
                                 let alert = UIAlertController(networkError: error)
                                 presenter.present(alert, animated: true)
