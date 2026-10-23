@@ -2216,7 +2216,15 @@ extension NavigationController: UIGestureRecognizerDelegate {
 }
 
 extension NavigationController: UINavigationControllerDelegate {
+    /// UIKit calls the show delegate methods with a nil view controller when a stack is emptied
+    /// (`viewControllers = []`, which the split view's collapse does), nonnull annotation or not.
+    /// The optimizer takes the non-optional parameter as never nil, so a plain optional check compiles away. The bit cast keeps it.
+    private static func nonNil(_ viewController: UIViewController) -> UIViewController? {
+        unsafeBitCast(viewController, to: UIViewController?.self)
+    }
+
     func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
+        guard let viewController = Self.nonNil(viewController) else { return }
 
         let vcTheme: Theme
         if let themeableViewController = viewController as? Themeable {
@@ -2358,6 +2366,8 @@ extension NavigationController: UINavigationControllerDelegate {
         }
 
         pushAnimationInProgress = false
+
+        guard let viewController = Self.nonNil(viewController) else { return }
 
         if #available(iOS 26.0, *) {
             releaseVerticalBarItemColors(of: viewController)

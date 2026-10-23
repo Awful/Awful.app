@@ -225,6 +225,7 @@
 		2D921269292F588100B16011 /* platinum-member.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D921268292F588100B16011 /* platinum-member.png */; };
 		2DA10C022F1A2B3C00DE01AA /* PostLocator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA10C012F1A2B3C00DE01AA /* PostLocator.swift */; };
 		2DA10C032F1A2B3C00DE01AA /* UnpopStackTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA10C042F1A2B3C00DE01AA /* UnpopStackTests.swift */; };
+		2DA10C052F1A2B3C00DE01AA /* NavigationControllerNilShowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA10C062F1A2B3C00DE01AA /* NavigationControllerNilShowTests.swift */; };
 		2DA10C062F1A2B3C00DE01AB /* UITextViewReplaceSelectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA10C052F1A2B3C00DE01AB /* UITextViewReplaceSelectionTests.swift */; };
 		2DA10C082F1A2B3C00DE01AB /* UITextViewInsertAttachmentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA10C072F1A2B3C00DE01AB /* UITextViewInsertAttachmentTests.swift */; };
 		2DA10C122F1A2B3C00DE01AB /* TextAttachmentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA10C112F1A2B3C00DE01AB /* TextAttachmentTests.swift */; };
@@ -613,6 +614,7 @@
 		2D921268292F588100B16011 /* platinum-member.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "platinum-member.png"; sourceTree = "<group>"; };
 		2DA10C012F1A2B3C00DE01AA /* PostLocator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostLocator.swift; sourceTree = "<group>"; };
 		2DA10C042F1A2B3C00DE01AA /* UnpopStackTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnpopStackTests.swift; sourceTree = "<group>"; };
+		2DA10C062F1A2B3C00DE01AA /* NavigationControllerNilShowTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationControllerNilShowTests.swift; sourceTree = "<group>"; };
 		2DA10C052F1A2B3C00DE01AB /* UITextViewReplaceSelectionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITextViewReplaceSelectionTests.swift; sourceTree = "<group>"; };
 		2DA10C072F1A2B3C00DE01AB /* UITextViewInsertAttachmentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITextViewInsertAttachmentTests.swift; sourceTree = "<group>"; };
 		2DA10C112F1A2B3C00DE01AB /* TextAttachmentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextAttachmentTests.swift; sourceTree = "<group>"; };
@@ -1136,6 +1138,7 @@
 				1C26000A2026050100000002 /* SceneRestorationFallbackTests.swift */,
 				1C26000C2026092300000002 /* RenderedPostsFingerprintTests.swift */,
 				2DA10C042F1A2B3C00DE01AA /* UnpopStackTests.swift */,
+				2DA10C062F1A2B3C00DE01AA /* NavigationControllerNilShowTests.swift */,
 				2DA10C052F1A2B3C00DE01AB /* UITextViewReplaceSelectionTests.swift */,
 				2DA10C072F1A2B3C00DE01AB /* UITextViewInsertAttachmentTests.swift */,
 				2DA10C112F1A2B3C00DE01AB /* TextAttachmentTests.swift */,
@@ -1840,6 +1843,7 @@
 				1C26000A2026050100000001 /* SceneRestorationFallbackTests.swift in Sources */,
 				1C26000C2026092300000001 /* RenderedPostsFingerprintTests.swift in Sources */,
 				2DA10C032F1A2B3C00DE01AA /* UnpopStackTests.swift in Sources */,
+				2DA10C052F1A2B3C00DE01AA /* NavigationControllerNilShowTests.swift in Sources */,
 				2DA10C062F1A2B3C00DE01AB /* UITextViewReplaceSelectionTests.swift in Sources */,
 				2DA10C082F1A2B3C00DE01AB /* UITextViewInsertAttachmentTests.swift in Sources */,
 				2DA10C122F1A2B3C00DE01AB /* TextAttachmentTests.swift in Sources */,
