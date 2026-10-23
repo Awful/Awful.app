@@ -32,7 +32,7 @@ struct SmilieGridItem: View {
     }
     @State private var decoded: DecodedImage = .pending
     
-    private let itemSize: CGFloat = 90
+    private let itemSize: CGFloat = 68
     
     private var shouldUseAnimatedView: Bool {
         guard let imageUTI = smilie.imageUTI else { 

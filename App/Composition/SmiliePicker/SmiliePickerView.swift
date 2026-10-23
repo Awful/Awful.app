@@ -12,7 +12,8 @@ struct SmiliePickerView: View {
     @SwiftUI.Environment(\.theme) private var theme: Theme
     @SwiftUI.Environment(\.horizontalSizeClass) private var horizontalSizeClass
     // Uniform pill height, scales with Dynamic Type
-    @ScaledMetric(relativeTo: .subheadline) private var pillHeight: CGFloat = 50
+    @ScaledMetric(relativeTo: .subheadline) private var pillHeight: CGFloat = 34
+    @FocusState private var isSearchFieldFocused: Bool
 
     let onSmilieSelected: (Smilie) -> Void
     
@@ -71,6 +72,7 @@ struct SmiliePickerView: View {
                     .foregroundColor(.white)
                     .cornerRadius(8)
             }
+            .buttonStyle(SmilieButtonStyle())
         }
         .padding()
         .background(theme[color: "sheetBackgroundColor"]!)
@@ -93,11 +95,19 @@ struct SmiliePickerView: View {
                     .accentColor(theme[color: "tintColor"]!)
                     .autocapitalization(.none)
                     .disableAutocorrection(true)
+                    .focused($isSearchFieldFocused)
+                    .submitLabel(.search)
+                    // Results already update live as the text changes, so Return only
+                    // needs to put the keyboard away and give the grid its space back.
+                    .onSubmit { isSearchFieldFocused = false }
             }
             
             if !viewModel.searchText.isEmpty {
                 Button(action: {
                     viewModel.searchText = ""
+                    // Clearing means the search is over: drop the keyboard so the
+                    // category pills and grid aren't hidden behind it.
+                    isSearchFieldFocused = false
                 }) {
                     Image(systemName: "xmark.circle.fill")
                         .foregroundColor(theme[color: "sheetTextColor"]!.opacity(0.7))
@@ -145,6 +155,7 @@ struct SmiliePickerView: View {
             }
             .padding(.horizontal)
         }
+        .dismissesKeyboardOnScroll()
     }
 
     private var categoryTitles: [String] {
@@ -187,14 +198,15 @@ struct SmiliePickerView: View {
             }
             .padding(.horizontal)
         }
-        // Size to the two rows' content height; without this the surrounding layout
-        // can compress the scroller and clip the bottom row
+        // Size to the two rows' content height. Without this the surrounding layout
+        // can compress the scroller and clip the bottom row.
         .fixedSize(horizontal: false, vertical: true)
         .padding(.bottom, 8)
     }
 
     private func categoryPill(_ title: String, proxy: ScrollViewProxy, maxWidth: CGFloat) -> some View {
         Button(action: {
+            isSearchFieldFocused = false
             // Deferring past the button's own transaction keeps scrollTo reliable on iOS 15
             DispatchQueue.main.async {
                 withAnimation {
@@ -219,11 +231,16 @@ struct SmiliePickerView: View {
                     Capsule()
                         .fill(pillBackgroundColor)
                         .overlay(
+                            // strokeBorder keeps the line inside the pill. A centred stroke
+                            // hangs half a point outside it, which the row's scroll view clips.
                             Capsule()
-                                .stroke(pillStrokeColor, lineWidth: 1)
+                                .strokeBorder(pillStrokeColor, lineWidth: 1)
                         )
                 )
         }
+        // The capsule above is the pill's only chrome. With the default button style the
+        // Button Shapes accessibility setting draws a second, system capsule behind it.
+        .buttonStyle(SmilieButtonStyle())
     }
 
     private var pillBackgroundColor: Color {
@@ -239,7 +256,7 @@ struct SmiliePickerView: View {
     private var searchResultsSection: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text("Search Results")
-                .font(.title3)
+                .font(.subheadline)
                 .fontWeight(.bold)
                 .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                 .foregroundColor(theme[color: "sheetTextColor"]!)
@@ -270,7 +287,7 @@ struct SmiliePickerView: View {
         VStack(alignment: .leading, spacing: 10) {
             HStack {
                 Text(recentlyUsedSectionTitle)
-                    .font(.title3)
+                    .font(.subheadline)
                     .fontWeight(.bold)
                     .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                     .foregroundColor(theme[color: "sheetTextColor"]!)
@@ -280,13 +297,13 @@ struct SmiliePickerView: View {
             
             smilieGrid(viewModel.recentlyUsedSmilies)
         }
-        // Section identity is the title; the category pills scroll to it.
+        // Section identity is the title, which the category pills scroll to.
         .id(recentlyUsedSectionTitle)
     }
     
     private var allSmiliesSection: some View {
         VStack(alignment: .leading, spacing: 20) {
-            // Section identity is the title; the category pills scroll to it. It has to be the
+            // Section identity is the title, which the category pills scroll to. It has to be the
             // `ForEach` identity itself: an `.id` nested inside the row isn't found by
             // `scrollTo` on the iOS 27 simulator.
             ForEach(Array(viewModel.allSmilies.enumerated()), id: \.element.title) { index, section in
@@ -298,7 +315,7 @@ struct SmiliePickerView: View {
                     }
 
                     Text(section.title)
-                        .font(.title3)
+                        .font(.subheadline)
                         .fontWeight(.bold)
                         .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                         .foregroundColor(theme[color: "sheetTextColor"]!)
@@ -354,8 +371,22 @@ struct SmiliePickerView: View {
                     .foregroundColor(.white)
                     .cornerRadius(8)
             }
+            .buttonStyle(SmilieButtonStyle())
             
             Spacer()
+        }
+    }
+}
+
+private extension View {
+    /// Puts the keyboard away as soon as the user starts scrolling. The modifier is iOS 16+.
+    /// On iOS 15 the Return key, clear button and category pills still dismiss it.
+    @ViewBuilder
+    func dismissesKeyboardOnScroll() -> some View {
+        if #available(iOS 16, *) {
+            scrollDismissesKeyboard(.immediately)
+        } else {
+            self
         }
     }
 }
