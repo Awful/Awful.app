@@ -18,9 +18,8 @@ final class CopyImageActivity: UIActivity {
 
     // MARK: UIActivity
 
-    override var activityType: UIActivity.ActivityType {
-        .init("com.awfulapp.Awful.CopyImage")
-    }
+    static let activityType = UIActivity.ActivityType("com.awfulapp.Awful.CopyImage")
+    override var activityType: UIActivity.ActivityType { Self.activityType }
 
     override class var activityCategory: UIActivity.Category { .action }
 

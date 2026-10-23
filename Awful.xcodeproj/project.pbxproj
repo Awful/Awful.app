@@ -98,6 +98,7 @@
 		1C42A2251FD46B4400F67BA1 /* ForumListDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C42A2241FD46B4400F67BA1 /* ForumListDataSource.swift */; };
 		1C42A2271FD47AEB00F67BA1 /* Forum+Presentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C42A2261FD47AEB00F67BA1 /* Forum+Presentation.swift */; };
 		1C4506C41A2BAB3800767306 /* Handoff.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4506C31A2BAB3800767306 /* Handoff.swift */; };
+		1C453EDE2336B694007AC6D0 /* MRProgressOverlayView+Confirmation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C453EDD2336B694007AC6D1 /* MRProgressOverlayView+Confirmation.swift */; };
 		1C453EDE2336B694007AC6CD /* UITextView+Selections.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C453EDD2336B694007AC6CD /* UITextView+Selections.swift */; };
 		1C453F282338457A007AC6CD /* Stencil in Frameworks */ = {isa = PBXBuildFile; productRef = 1C453F272338457A007AC6CD /* Stencil */; };
 		1C453F46233849C2007AC6CD /* SafariActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C453F45233849C2007AC6CD /* SafariActivity.swift */; };
@@ -477,6 +478,7 @@
 		1C42A2241FD46B4400F67BA1 /* ForumListDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForumListDataSource.swift; sourceTree = "<group>"; };
 		1C42A2261FD47AEB00F67BA1 /* Forum+Presentation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Forum+Presentation.swift"; sourceTree = "<group>"; };
 		1C4506C31A2BAB3800767306 /* Handoff.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Handoff.swift; sourceTree = "<group>"; };
+		1C453EDD2336B694007AC6D1 /* MRProgressOverlayView+Confirmation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MRProgressOverlayView+Confirmation.swift"; sourceTree = "<group>"; };
 		1C453EDD2336B694007AC6CD /* UITextView+Selections.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextView+Selections.swift"; sourceTree = "<group>"; };
 		1C453F4423384923007AC6CD /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		1C453F45233849C2007AC6CD /* SafariActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariActivity.swift; sourceTree = "<group>"; };
@@ -1112,6 +1114,7 @@
 				1C3E181C224FAE9500BD88E5 /* SmilieDataStore+Query.swift */,
 				1C3E181A224FAE1200BD88E5 /* SmilieDataStore+Shared.swift */,
 				1CC58F5C1B5AC4330016EE83 /* UIKit.swift */,
+				1C453EDD2336B694007AC6D1 /* MRProgressOverlayView+Confirmation.swift */,
 				1C453EDD2336B694007AC6CD /* UITextView+Selections.swift */,
 			);
 			path = Extensions;
@@ -2006,6 +2009,7 @@
 				ACF0FEB1000000000000FE04 /* KeyboardShortcutsViewController.swift in Sources */,
 				1C8F6809222B7940007E61ED /* SecondaryThreadTagPickerCell.swift in Sources */,
 				1C16FBA81CB5C62C00C88BD1 /* TextAttachment.swift in Sources */,
+				1C453EDE2336B694007AC6D0 /* MRProgressOverlayView+Confirmation.swift in Sources */,
 				1C453EDE2336B694007AC6CD /* UITextView+Selections.swift in Sources */,
 				1C16FBD71CBAA00200C88BD1 /* PostsPageTopBar.swift in Sources */,
 				1CC256B31A3876F7003FA7A8 /* CompositionViewController.swift in Sources */,

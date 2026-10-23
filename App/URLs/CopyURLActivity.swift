@@ -19,9 +19,8 @@ final class CopyURLActivity: UIActivity {
 
     // MARK: UIActivity
     
-    override var activityType: UIActivity.ActivityType {
-        .init("com.awfulapp.Awful.CopyURL")
-    }
+    static let activityType = UIActivity.ActivityType("com.awfulapp.Awful.CopyURL")
+    override var activityType: UIActivity.ActivityType { Self.activityType }
     
     override class var activityCategory: UIActivity.Category { .action }
     override var activityTitle: String? { LocalizedString("copy-url.title") }

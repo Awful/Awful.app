@@ -5,6 +5,7 @@
 import AwfulSettings
 import AwfulTheming
 import FLAnimatedImage
+import MRProgress
 import os
 import ScrollViewDelegateMultiplexer
 import UIKit
@@ -104,6 +105,18 @@ final class ImageViewController: UIViewController {
    
         // Only use our copy buttons
         activityViewController.excludedActivityTypes = [.copyToPasteboard]
+
+        activityViewController.completionWithItemsHandler = { [weak self] activityType, completed, _, _ in
+            guard completed, let self else { return }
+            switch activityType {
+            case CopyImageActivity.activityType:
+                MRProgressOverlayView.flashConfirmation(LocalizedString("copy-action.copied-image"), in: self.view, from: self)
+            case CopyURLActivity.activityType:
+                MRProgressOverlayView.flashConfirmation(LocalizedString("copy-action.copied-url"), in: self.view, from: self)
+            default:
+                break
+            }
+        }
 
         // The Mac reads the anchor when presentation starts, so this has to come before present().
         if let popover = activityViewController.popoverPresentationController {

@@ -543,6 +543,54 @@
     "Copy URL" : {
 
     },
+    "copy-action.copied-image" : {
+      "comment" : "Confirmation shown after an image is copied to the pasteboard.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copied Image"
+          }
+        }
+      }
+    },
+    "copy-action.copied-image-url" : {
+      "comment" : "Confirmation shown after an image's URL is copied to the pasteboard.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copied Image URL"
+          }
+        }
+      }
+    },
+    "copy-action.copied-url" : {
+      "comment" : "Confirmation shown after a URL is copied to the pasteboard.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copied URL"
+          }
+        }
+      }
+    },
+    "copy-action.copying-image" : {
+      "comment" : "Progress shown while an image downloads before being copied.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copying Image…"
+          }
+        }
+      }
+    },
     "copy-url.title" : {
       "comment" : "The default title of the \"copy URL\" share action.",
       "extractionState" : "migrated",
@@ -1651,6 +1699,30 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Save Video"
+          }
+        }
+      }
+    },
+    "save-action.saved-image" : {
+      "comment" : "Confirmation shown after an image is saved to the photo library.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saved Image"
+          }
+        }
+      }
+    },
+    "save-action.saving-image" : {
+      "comment" : "Progress shown while an image downloads before being saved.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saving Image…"
           }
         }
       }

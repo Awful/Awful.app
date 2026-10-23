@@ -12,17 +12,17 @@ import UIKit
 
 private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "URLMenuPresenter")
 
-/// One entry in a menu, independent of how the menu is drawn.
+/// One entry in a menu, independent of how the menu is drawn. Handlers run on the main actor, since UIKit invokes them there and they present UI.
 private struct MenuItem {
     let title: String
-    let handler: () -> Void
+    let handler: @MainActor () -> Void
 }
 
 /// Draws the items as an action sheet or as a native menu anchored to `sourceRect` in `sourceView`.
 private func presentMenu(_ items: [MenuItem], title: String?, message: String? = nil, style: URLMenuPresenter.Style, from presenter: UIViewController, fromRect sourceRect: CGRect, inView sourceView: RenderView) {
     switch style {
     case .actionSheet:
-        var actions = items.map { item in UIAlertAction.default(title: item.title, handler: item.handler) }
+        var actions = items.map { item in UIAlertAction.default(title: item.title) { MainActor.assumeIsolated(item.handler) } }
         actions.append(.cancel())
         let alert = UIAlertController(title: title, message: message, actionSheetActions: actions)
         // Anchor before presenting: on the Mac the popover reads its anchor as presentation starts.
@@ -33,7 +33,7 @@ private func presentMenu(_ items: [MenuItem], title: String?, message: String? =
         presenter.present(alert, animated: true)
 
     case let .contextMenu(at: point):
-        let actions = items.map { item in UIAction(title: item.title) { _ in item.handler() } }
+        let actions = items.map { item in UIAction(title: item.title) { _ in MainActor.assumeIsolated(item.handler) } }
         let menu = UIMenu(title: title ?? "", subtitle: message, children: actions)
         // Drop down from the cursor, as a Mac menu does, rather than from the element's frame.
         let anchor = CGRect(origin: point, size: .zero).insetBy(dx: -1, dy: -1)
@@ -55,6 +55,13 @@ private func smilieFavoriteItem(for smilie: PostedSmilie) -> MenuItem? {
     }
 }
 
+/// Copies the URL and flashes a confirmation over the view.
+@MainActor
+private func copyURL(_ url: URL, confirmation: String = LocalizedString("copy-action.copied-url"), in view: UIView, from presenter: UIViewController) {
+    UIPasteboard.general.coercedURL = url
+    MRProgressOverlayView.flashConfirmation(confirmation, in: view, from: presenter)
+}
+
 private func openImage(_ imageURL: URL, from presenter: UIViewController) {
     let preview = ImageViewController(imageURL: imageURL)
     preview.title = presenter.title
@@ -71,14 +78,16 @@ private func shareURL(_ url: URL, from presenter: UIViewController, fromRect sou
 }
 
 /// Copy Image and Save Image for an image we only know the URL of. The web view's copy of the bytes isn't reachable from here, so they come from a fresh download.
-private func imageDataItems(for imageURL: URL, presenter: UIViewController) -> [MenuItem] {
+private func imageDataItems(for imageURL: URL, in view: UIView, from presenter: UIViewController) -> [MenuItem] {
     var items: [MenuItem] = []
 
     items.append(MenuItem(title: LocalizedString("link-action.copy-image")) {
         Task { @MainActor in
             do {
-                let data = try await fetchImageData(imageURL)
-                guard copyImageToPasteboard(data) else { throw ImageActionError.notAnImage }
+                try await MRProgressOverlayView.showProgress(LocalizedString("copy-action.copying-image"), completedTitle: LocalizedString("copy-action.copied-image"), in: view, from: presenter) {
+                    let data = try await fetchImageData(imageURL)
+                    guard copyImageToPasteboard(data) else { throw ImageActionError.notAnImage }
+                }
             } catch {
                 presentImageActionError(error, from: presenter)
             }
@@ -90,9 +99,11 @@ private func imageDataItems(for imageURL: URL, presenter: UIViewController) -> [
         items.append(MenuItem(title: LocalizedString("link-action.save-image")) {
             Task { @MainActor in
                 do {
-                    let data = try await fetchImageData(imageURL)
-                    guard imageUTI(data) != nil else { throw ImageActionError.notAnImage }
-                    try await saveImageToPhotos(data)
+                    try await MRProgressOverlayView.showProgress(LocalizedString("save-action.saving-image"), completedTitle: LocalizedString("save-action.saved-image"), in: view, from: presenter) {
+                        let data = try await fetchImageData(imageURL)
+                        guard imageUTI(data) != nil else { throw ImageActionError.notAnImage }
+                        try await saveImageToPhotos(data)
+                    }
                 } catch {
                     presentImageActionError(error, from: presenter)
                 }
@@ -254,7 +265,7 @@ private enum _URLMenuPresenter {
             }
             
             items.append(MenuItem(title: LocalizedString("link-action.copy-url")) {
-                UIPasteboard.general.coercedURL = linkURL
+                copyURL(linkURL, in: sourceView, from: presenter)
             })
             
             items.append(MenuItem(title: LocalizedString("link-action.share-url")) {
@@ -267,10 +278,10 @@ private enum _URLMenuPresenter {
                 })
                 
                 items.append(MenuItem(title: LocalizedString("link-action.copy-image-url")) {
-                    UIPasteboard.general.coercedURL = imageURL
+                    copyURL(imageURL, confirmation: LocalizedString("copy-action.copied-image-url"), in: sourceView, from: presenter)
                 })
 
-                items += imageDataItems(for: imageURL, presenter: presenter)
+                items += imageDataItems(for: imageURL, in: sourceView, from: presenter)
             }
 
             if let smilie, let favorite = smilieFavoriteItem(for: smilie) {
@@ -296,7 +307,7 @@ private enum _URLMenuPresenter {
             } else {
                 (title, message) = (nil, nil)
                 items.append(MenuItem(title: LocalizedString("link-action.copy-url")) {
-                    UIPasteboard.general.coercedURL = rawURL
+                    copyURL(rawURL, in: sourceView, from: presenter)
                 })
             }
         }
@@ -603,9 +614,9 @@ final class URLMenuPresenter: NSObject {
                 openImage(imageURL, from: presentingViewController)
             })
             items.append(MenuItem(title: LocalizedString("link-action.copy-image-url")) {
-                UIPasteboard.general.coercedURL = imageURL
+                copyURL(imageURL, confirmation: LocalizedString("copy-action.copied-image-url"), in: renderView, from: presentingViewController)
             })
-            items += imageDataItems(for: imageURL, presenter: presentingViewController)
+            items += imageDataItems(for: imageURL, in: renderView, from: presentingViewController)
             items.append(MenuItem(title: LocalizedString("link-action.share-url")) {
                 shareURL(imageURL, from: presentingViewController, fromRect: imageRect, inView: renderView)
             })
@@ -619,7 +630,7 @@ final class URLMenuPresenter: NSObject {
                 if path.hasSuffix(".mp4") {
                     var items: [MenuItem] = []
                     items.append(MenuItem(title: LocalizedString("link-action.copy-url")) {
-                        UIPasteboard.general.coercedURL = resolved
+                        copyURL(resolved, in: renderView, from: presentingViewController)
                     })
                     
                     switch PHPhotoLibrary.authorizationStatus(for: .addOnly) {
