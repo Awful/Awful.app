@@ -883,17 +883,17 @@ final class NavigationController: UINavigationController, Themeable {
         releaseVerticalBarItemColors(of: viewController)
     }
 
-    /// On the folded iPhone Duo, UIKit moves some bar items into the vertical bar, by no rule it
-    /// exposes (see `VerticalBar`). There they sit on glass over the content, not on the bar, so
-    /// the bar colour baked or tinted into them doesn't read: hand them back to the system. Only an
-    /// item's frame says where it ended up, so this runs again once layout has placed them.
+    /// On the iPhone Duo, UIKit moves some bar items off the navigation bar, by no rule it exposes (see `VerticalBar`): into the vertical bar when folded, and below the status bar in the detail column's top trailing corner when unfolded. There they sit on glass over the content, not on the bar, so the bar colour baked or tinted into them doesn't read: hand them back to the system. Only an item's frame says where it ended up, so this runs again once layout has placed them.
     @available(iOS 26.0, *)
     private func releaseVerticalBarItemColors(of viewController: UIViewController?) {
         guard let viewController, VerticalBar.isActive(in: traitCollection) else { return }
         for item in navigationBarItems(of: viewController) where item.customView == nil && item.image != nil {
             guard item.hasBakedGlassGlyph || item.tintColor != nil else { continue }
-            guard let frame = item.frame(in: view), !frame.isEmpty,
-                  !navigationBar.frame.intersects(frame) else { continue }
+            guard let frame = item.frame(in: view) else { continue }
+            // An item still growing in from zero size at the last layout pass is already placed, and an empty frame never intersects the bar, so below the bar is checked on its own.
+            let isBelowBar = frame.minY >= navigationBar.frame.maxY
+            let isBesideBar = !frame.isEmpty && !navigationBar.frame.intersects(frame)
+            guard isBelowBar || isBesideBar else { continue }
             item.setGlassGlyph(bakedColor: nil, tint: nil)
         }
     }
@@ -909,6 +909,14 @@ final class NavigationController: UINavigationController, Themeable {
         return image
     }
 
+    /// Folding the iPhone Duo moves the status bar and the back button between the navigation bar and the vertical bar (see `isBarInVerticalBar`). A scrolled bar is already untinted.
+    @objc private func verticalBarDidChange() {
+        setNeedsStatusBarAppearanceUpdate()
+        if !isScrolledFromTop, let textColor = theme[uicolor: "navigationBarTextColor"] {
+            awfulNavigationBar.tintColor = restingNavigationBarTint(textColor)
+        }
+    }
+
     func statusBarEnterLightBackground() {
         isDarkContentBackground = false
         setNeedsStatusBarAppearanceUpdate()
@@ -920,9 +928,9 @@ final class NavigationController: UINavigationController, Themeable {
     }
 
     override var preferredStatusBarStyle: UIStatusBarStyle {
-        // On the folded iPhone Duo the status bar sits in the vertical bar beside the content,
-        // never over the navigation bar, so it follows the content's mode whatever the bar does.
-        if VerticalBar.isActive(in: traitCollection) {
+        // On the folded iPhone Duo the status bar sits in the vertical bar beside the content, never over the navigation bar, so it follows the content's mode whatever the bar does. Unfolded it sits over this bar, which only a screen with a scroll view beneath it rests opaque, so any other screen leaves it over the content too.
+        let screen = topViewController as? NavigationBarScrollTransitioning
+        if VerticalBar.isActive(in: traitCollection), isBarInVerticalBar || screen?.navigationBarScrollView == nil {
             return theme.userInterfaceStyle == .dark ? .lightContent : .darkContent
         }
 
@@ -932,7 +940,6 @@ final class NavigationController: UINavigationController, Themeable {
         // (`ContentContrastSampler`) decide, and the theme's mode covers the rest. The same
         // goes when the screen has slid the bar away itself (immersive mode), which is the only
         // way the status bar ends up over the content under Reduce Liquid Glass.
-        let screen = topViewController as? NavigationBarScrollTransitioning
         if #available(iOS 26.0, *), LiquidGlass.usesGlassNavigationBar, isScrolledFromTop || screen?.isStatusBarOverContent == true {
             if let color = screen?.statusBarContentColor {
                 return color == .black ? .darkContent : .lightContent
@@ -1025,8 +1032,7 @@ final class NavigationController: UINavigationController, Themeable {
 
         themeDidChange()
 
-        // Folding the iPhone Duo moves the status bar between the top and the vertical bar.
-        VerticalBar.registerForChanges(self, action: #selector(setNeedsStatusBarAppearanceUpdate))
+        VerticalBar.registerForChanges(self, action: #selector(verticalBarDidChange))
 
         interactivePopGestureRecognizer?.delegate = self
         // iOS 26's swipe-from-anywhere pop never begins by itself in these navigation controllers (and UIKit also treats the back button as hidden once replaceSidebarBarButtonItems swaps in a custom-view item). Sharing the edge pop's delegate lets it begin under the same conditions.
@@ -1859,6 +1865,13 @@ final class NavigationController: UINavigationController, Themeable {
         lastAppliedScrollProgress = -1
     }
 
+    /// Puts the bar at its opaque resting state for the top screen, for a screen restyling it while shown. The screen's own scroll sync then takes the bar to its real offset.
+    @available(iOS 26.0, *)
+    func resetBarToRestingState() {
+        invalidateScrollProgressCache()
+        updateNavigationBarTintForScrollProgress(NSNumber(value: 0.0))
+    }
+
     @objc func updateNavigationBarTintForScrollProgress(_ progress: NSNumber) {
         guard #available(iOS 26.0, *), LiquidGlass.usesGlassNavigationBar else { return }
 
@@ -1909,9 +1922,7 @@ final class NavigationController: UINavigationController, Themeable {
         awfulNavigationBar.contentBlurAlpha = usesContentBlur(topViewController as? NavigationBarScrollTransitioning) ? snappedProgress : 0
         awfulNavigationBar.contentBlurUserInterfaceStyle = contentBlurUserInterfaceStyle
 
-        // The screen beneath the top one owns the back button's item; its explicit tint is
-        // what screens set for the resting state (see PostsPageViewController.
-        // configureNavigationBarForLiquidGlass), so it follows the scroll here too.
+        // The screen beneath the top one owns the back button's item, so its tint follows the scroll along with the bar's.
         let backItem = viewControllers.dropLast().last?.navigationItem.backBarButtonItem
 
         if progressValue < ScrollProgress.atTop {
@@ -2073,7 +2084,7 @@ final class NavigationController: UINavigationController, Themeable {
         if progress < ScrollProgress.atTop {
             // At the top the glass circles read as the bar, so text items take the theme's bar
             // text colour (image items are baked; see applyGlassRestingState).
-            awfulNavigationBar.tintColor = theme[uicolor: "navigationBarTextColor"] ?? .label
+            awfulNavigationBar.tintColor = restingNavigationBarTint(theme[uicolor: "navigationBarTextColor"] ?? .label)
         } else if progress > ScrollProgress.fullyScrolled {
             // Over the content, hand the tint back to the system so the platters pick white or
             // black from what is beneath them.
@@ -2171,7 +2182,7 @@ final class NavigationController: UINavigationController, Themeable {
         awfulNavigationBar.compactScrollEdgeAppearance = appearance
         awfulNavigationBar.verticalBarTopFillColor = theme[uicolor: "navigationBarTintColor"]
 
-        awfulNavigationBar.tintColor = textColor
+        awfulNavigationBar.tintColor = restingNavigationBarTint(textColor)
 
         awfulNavigationBar.setNeedsLayout()
         awfulNavigationBar.layoutIfNeeded()
@@ -2261,7 +2272,7 @@ extension NavigationController: UINavigationControllerDelegate {
         if !isScrolledFromTop {
             guard let textColor = vcTheme[uicolor: "navigationBarTextColor"] else { return }
 
-            awfulNavigationBar.tintColor = textColor
+            awfulNavigationBar.tintColor = restingNavigationBarTint(textColor)
 
             // On iOS 26 iPhone, the liquid glass system handles button
             // colors dynamically. On iPad sidebar, glass-on-glass is

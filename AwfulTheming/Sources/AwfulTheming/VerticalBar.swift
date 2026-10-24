@@ -13,6 +13,8 @@ import UIKit
 /// The workarounds for it key off `isActive(in:)`, so none of them apply on any other device or
 /// posture. (RootTabBarController checks the tab bar's own shape instead, since what it works
 /// around is UIKit's handling of a side-mounted tab bar.)
+///
+/// Unfolded, the Duo reports a vertical bar for the split view's detail column too, though its navigation bar stays at the top with the status bar over its trailing end. Workarounds for the folded layout alone check `UINavigationController.isBarInVerticalBar` instead.
 public enum VerticalBar {
 
     /// True when the system places a vertical bar in this trait environment.
@@ -70,6 +72,19 @@ public extension UIBarButtonItem {
     /// is the one that reads.
     func setBackButtonTint(_ color: UIColor?, in traitCollection: UITraitCollection) {
         tintColor = VerticalBar.isActive(in: traitCollection) ? nil : color
+    }
+}
+
+public extension UINavigationController {
+
+    /// True when the status bar and the back button sit in the vertical bar beside the content, on glass, rather than over and on the navigation bar: the folded iPhone Duo. The unfolded detail column reports a vertical bar too, but it's never in a collapsed split view.
+    var isBarInVerticalBar: Bool {
+        VerticalBar.isActive(in: traitCollection) && splitViewController?.isCollapsed != false
+    }
+
+    /// The navigation bar's tint while it rests at the top: `color`, or the system's while `isBarInVerticalBar`, since the system back button there inherits it.
+    func restingNavigationBarTint(_ color: UIColor) -> UIColor? {
+        isBarInVerticalBar ? nil : color
     }
 }
 

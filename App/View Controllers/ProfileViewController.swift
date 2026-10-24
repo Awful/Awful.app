@@ -87,10 +87,6 @@ final class ProfileViewController: ViewController {
         renderView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         renderView.scrollView.contentInsetAdjustmentBehavior = .never
         renderView.scrollView.delegate = self
-
-        if #available(iOS 26.0, *), LiquidGlass.usesGlassNavigationBar {
-            configureNavigationBarForLiquidGlass()
-        }
     }
     
     override func themeDidChange() {
@@ -103,9 +99,7 @@ final class ProfileViewController: ViewController {
         super.viewWillAppear(animated)
 
         if #available(iOS 26.0, *), LiquidGlass.usesGlassNavigationBar {
-            if let navController = navigationController as? NavigationController {
-                navController.updateNavigationBarTintForScrollProgress(NSNumber(value: 0.0))
-            }
+            (navigationController as? NavigationController)?.resetBarToRestingState()
         }
 
         if presentingViewController != nil && navigationController?.viewControllers.count == 1 {
@@ -151,55 +145,6 @@ final class ProfileViewController: ViewController {
         renderView.scrollView.contentInset.bottom = view.safeAreaInsets.bottom
         renderView.scrollView.scrollIndicatorInsets = renderView.scrollView.contentInset
         renderView.scrollView.relayoutNavigationBarPlatterBackdrop()
-    }
-
-    @available(iOS 26.0, *)
-    private func configureNavigationBarForLiquidGlass() {
-        guard let navigationBar = navigationController?.navigationBar else { return }
-        guard let navController = navigationController as? NavigationController else { return }
-
-        if let awfulNavigationBar = navigationBar as? NavigationBar {
-            awfulNavigationBar.bottomBorderColor = .clear
-        }
-
-        let appearance = UINavigationBarAppearance()
-        appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = theme["navigationBarTintColor"]
-        appearance.shadowColor = nil
-        appearance.shadowImage = nil
-
-        let textColor: UIColor = theme["navigationBarTextColor"]!
-        appearance.titleTextAttributes = [
-            NSAttributedString.Key.foregroundColor: textColor,
-            NSAttributedString.Key.font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .semibold)
-        ]
-
-        let buttonFont = UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .regular)
-        let buttonAttributes: [NSAttributedString.Key: Any] = [
-            .foregroundColor: textColor,
-            .font: buttonFont
-        ]
-        appearance.buttonAppearance.normal.titleTextAttributes = buttonAttributes
-        appearance.buttonAppearance.highlighted.titleTextAttributes = buttonAttributes
-        appearance.doneButtonAppearance.normal.titleTextAttributes = buttonAttributes
-        appearance.doneButtonAppearance.highlighted.titleTextAttributes = buttonAttributes
-        appearance.backButtonAppearance.normal.titleTextAttributes = buttonAttributes
-        appearance.backButtonAppearance.highlighted.titleTextAttributes = buttonAttributes
-
-        if let backImage = UIImage(named: "back")?.withRenderingMode(.alwaysTemplate) {
-            appearance.setBackIndicatorImage(backImage, transitionMaskImage: backImage)
-        }
-
-        navigationBar.standardAppearance = appearance
-        navigationBar.scrollEdgeAppearance = appearance
-        navigationBar.compactAppearance = appearance
-        navigationBar.compactScrollEdgeAppearance = appearance
-
-        navigationBar.tintColor = textColor
-
-        navController.updateNavigationBarTintForScrollProgress(NSNumber(value: 0.0))
-
-        navigationBar.setNeedsLayout()
     }
 
     private func renderProfile() {

@@ -6,10 +6,14 @@ import AwfulExtensions
 import AwfulSettings
 import UIKit
 
-/// Forwards status bar style questions to its first view controller; tells delegate when split view controller will transition to a new size.
+/// Forwards status bar style questions to the view controller the status bar sits over, and tells its delegate when the split view controller will transition to a new size.
 class AwfulSplitViewController: UISplitViewController {
 
     override var childForStatusBarStyle : UIViewController? {
+        // An expanded split view on iPhone is the unfolded iPhone Duo, which puts the status bar in the detail column's top trailing corner. On iPad it starts over the sidebar.
+        if UIDevice.current.userInterfaceIdiom == .phone, !isCollapsed, viewControllers.count > 1 {
+            return viewControllers.last
+        }
         return viewControllers.first as UIViewController?
     }
 
@@ -48,6 +52,11 @@ class AwfulSplitViewController: UISplitViewController {
         with coordinator: UIViewControllerTransitionCoordinator
     ) {
         super.viewWillTransition(to: size, with: coordinator)
+
+        // Folding or unfolding the iPhone Duo changes which column `childForStatusBarStyle` picks.
+        coordinator.animate(alongsideTransition: nil) { [weak self] _ in
+            self?.setNeedsStatusBarAppearanceUpdate()
+        }
 
         let delegate = self.delegate as? AwfulSplitViewControllerDelegate
         delegate?.splitView(self, viewWillTransitionToSize: size, with: coordinator)

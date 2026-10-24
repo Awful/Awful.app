@@ -2792,15 +2792,10 @@ final class PostsPageViewController: ViewController {
         }
 
         if #available(iOS 26.0, *), LiquidGlass.isEnabled {
-            // The bar rests opaque while it is restyled here and by the navigation controller
-            // below, so the title takes the theme's bar colour to match. The sync at the end
-            // brings the bar and the title back to the real scroll offset together, and the
-            // sampled colour is dropped first because the page background it was measured
-            // against has just changed.
+            // The bar rests opaque while the navigation controller restyles it below, so the title takes the theme's bar colour to match. The sync at the end brings the bar and the title back to the real scroll offset together, and the sampled colour is dropped first because the page background it was measured against has just changed.
             navigationItem.updateTitleLabelTextColor(forScrollProgress: 0, theme: theme)
             titleContrastSampler.reset()
             statusBarContrastSampler.reset()
-            configureNavigationBarForLiquidGlass()
         } else {
             navigationItem.titleLabel.textColor = Theme.defaultTheme()[uicolor: "navigationBarTextColor"] ?? .label
         }
@@ -2808,11 +2803,8 @@ final class PostsPageViewController: ViewController {
         // Update navigation bar button colors (only when the system isn't drawing glass buttons)
         if !LiquidGlass.isEnabled {
             composeItem.tintColor = theme["navigationBarTextColor"]
-            // Ensure the navigation bar itself uses the correct tint color for the back button
-            navigationController?.navigationBar.tintColor = theme["navigationBarTextColor"]
         }
-        
-        // Also trigger the navigation controller's theme change to update back button appearance
+
         if let navController = navigationController as? NavigationController {
             navController.themeDidChange()
         }
@@ -3066,81 +3058,13 @@ final class PostsPageViewController: ViewController {
         return UIFont.preferredFontForTextStyle(.callout, fontName: nil, sizeAdjustment: sizeAdjustment, weight: weight)
     }
 
-    @available(iOS 26.0, *)
-    private func configureNavigationBarForLiquidGlass() {
-        guard let navigationBar = navigationController?.navigationBar else { return }
-        guard let navController = navigationController as? NavigationController else { return }
-
-        // Hide the custom bottom border from NavigationBar for liquid glass effect
-        if let awfulNavigationBar = navigationBar as? NavigationBar {
-            awfulNavigationBar.bottomBorderColor = .clear
-            // Keep the bar's trait in lockstep with the forum theme when this method restyles
-            // the bar outside NavigationController's willShow path. This is the resting state,
-            // so it takes the theme's bar style as the navigation controller does; the scroll
-            // sync below hands it to the content's mode once scrolled.
-            awfulNavigationBar.overrideUserInterfaceStyle = theme.navigationBarUserInterfaceStyle
-        }
-        // Start with opaque background - NavigationController will handle the transition to clear on scroll
-        let appearance = UINavigationBarAppearance()
-        appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = theme["navigationBarTintColor"]
-        appearance.shadowColor = nil
-        appearance.shadowImage = nil
-
-        let textColor: UIColor = theme["navigationBarTextColor"] ?? .label
-        appearance.titleTextAttributes = [
-            NSAttributedString.Key.foregroundColor: textColor,
-            NSAttributedString.Key.font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .semibold)
-        ]
-
-        let buttonFont = UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .regular)
-        let buttonAttributes: [NSAttributedString.Key: Any] = [
-            .foregroundColor: textColor,
-            .font: buttonFont
-        ]
-        appearance.buttonAppearance.normal.titleTextAttributes = buttonAttributes
-        appearance.buttonAppearance.highlighted.titleTextAttributes = buttonAttributes
-        appearance.doneButtonAppearance.normal.titleTextAttributes = buttonAttributes
-        appearance.doneButtonAppearance.highlighted.titleTextAttributes = buttonAttributes
-        appearance.backButtonAppearance.normal.titleTextAttributes = buttonAttributes
-        appearance.backButtonAppearance.highlighted.titleTextAttributes = buttonAttributes
-
-        // Set the back indicator image with template mode
-        if let backImage = UIImage(named: "back")?.withRenderingMode(.alwaysTemplate) {
-            appearance.setBackIndicatorImage(backImage, transitionMaskImage: backImage)
-        }
-
-        // Apply to all states
-        navigationBar.standardAppearance = appearance
-        navigationBar.scrollEdgeAppearance = appearance
-        navigationBar.compactAppearance = appearance
-        navigationBar.compactScrollEdgeAppearance = appearance
-
-        // Set tintColor AFTER applying appearance to ensure back button uses theme color. The
-        // glass circles behind the buttons read as the bar at the top (NavigationBarScrollTransitioning),
-        // so the theme's own bar text colour goes on them. This is the resting state only: once
-        // scrolled, NavigationController.updateNavigationBarTintForScrollProgress nils the bar's
-        // tint and the back item's (set below) so the system colours them from the content.
-        navigationBar.tintColor = textColor
-
-        // Force the navigation controller to start at scroll position 0 (top)
-        // This will also update tintColor based on scroll position if needed
-        navController.updateNavigationBarTintForScrollProgress(NSNumber(value: 0.0))
-
-        navigationBar.setNeedsLayout()
-
-        if let previousVC = navigationController?.viewControllers.dropLast().last {
-            previousVC.navigationItem.backBarButtonItem?.setBackButtonTint(textColor, in: traitCollection)
-        }
-    }
-
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
         if #available(iOS 26.0, *), LiquidGlass.isEnabled {
             // Style the bar before the push animates, not from `title`'s setter, which landed
             // mid-transition and rebuilt the bar under the animating back button.
-            configureNavigationBarForLiquidGlass()
+            (navigationController as? NavigationController)?.resetBarToRestingState()
             // Reappearing over a scrolled page (e.g. after a modal) keeps the transparent bar.
             postsView.syncNavigationBarScrollProgress()
         }

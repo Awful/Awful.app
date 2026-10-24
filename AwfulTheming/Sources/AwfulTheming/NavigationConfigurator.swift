@@ -56,7 +56,7 @@ public struct NavigationConfigurator: UIViewControllerRepresentable {
                 navAppearance.doneButtonAppearance.highlighted.titleTextAttributes = buttonAttrs
                 navAppearance.backButtonAppearance.normal.titleTextAttributes = buttonAttrs
                 navAppearance.backButtonAppearance.highlighted.titleTextAttributes = buttonAttrs
-                navigationController.navigationBar.tintColor = textColor
+                navigationController.navigationBar.tintColor = navigationController.restingNavigationBarTint(textColor)
 
                 if #available(iOS 26.0, *), LiquidGlass.isEnabled {
                     // Nothing scrolls beneath this bar, so the glass bar-button circles take
