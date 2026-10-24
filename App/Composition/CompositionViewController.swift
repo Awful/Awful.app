@@ -99,15 +99,24 @@ final class CompositionViewController: ViewController, ModernToolbarActionHandli
         // area and its own textContainerInset provides the gap below the nav bar.
         textViewTopConstraint = _textView.topAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.topAnchor)
 
+        let safeArea = containerView.safeAreaLayoutGuide
+        for card in [attachmentPreviewView, attachmentEditView] as [UIView] {
+            attachmentCardEdgeConstraints += [
+                card.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 12),
+                card.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -12),
+            ]
+            attachmentCardSafeAreaConstraints += [
+                card.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 12),
+                card.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -12),
+            ]
+        }
+        updateAttachmentCardInsets()
+
         NSLayoutConstraint.activate([
-            attachmentPreviewView.topAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.topAnchor, constant: 8),
-            attachmentPreviewView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 12),
-            attachmentPreviewView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -12),
+            attachmentPreviewView.topAnchor.constraint(equalTo: safeArea.topAnchor, constant: 8),
             attachmentPreviewHeightConstraint,
 
-            attachmentEditView.topAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.topAnchor, constant: 8),
-            attachmentEditView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 12),
-            attachmentEditView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -12),
+            attachmentEditView.topAnchor.constraint(equalTo: safeArea.topAnchor, constant: 8),
             attachmentEditHeightConstraint,
 
             textViewTopConstraint,
@@ -125,6 +134,17 @@ final class CompositionViewController: ViewController, ModernToolbarActionHandli
             }
         }
         _textView.inputAccessoryView = toolbarContainer
+    }
+
+    private var attachmentCardEdgeConstraints: [NSLayoutConstraint] = []
+    private var attachmentCardSafeAreaConstraints: [NSLayoutConstraint] = []
+
+    /// The attachment cards keep to the safe area on the folded iPhone Duo so they stay clear of
+    /// the vertical bar (see `VerticalBar`), and span the full width everywhere else.
+    @objc private func updateAttachmentCardInsets() {
+        let usesSafeArea = VerticalBar.isActive(in: traitCollection)
+        NSLayoutConstraint.deactivate(usesSafeArea ? attachmentCardEdgeConstraints : attachmentCardSafeAreaConstraints)
+        NSLayoutConstraint.activate(usesSafeArea ? attachmentCardSafeAreaConstraints : attachmentCardEdgeConstraints)
     }
 
     fileprivate var keyboardAvoider: ScrollViewKeyboardAvoider?
@@ -278,6 +298,8 @@ final class CompositionViewController: ViewController, ModernToolbarActionHandli
 
         barBackdrop.frame = view.bounds
 
+        VerticalBar.registerForChanges(self, action: #selector(updateAttachmentCardInsets))
+
         keyboardAvoider = ScrollViewKeyboardAvoider(textView)
         // Re-scroll once the insets settle, in case text was inserted while the keyboard was
         // still animating up (e.g. pasting an image right after the picker dismisses).
@@ -423,5 +445,10 @@ final class CompositionTextView: URLCleaningTextView, CompositionHidesMenuItems 
         }
         
         return super.canPerformAction(action, withSender: sender)
+    }
+
+    override func safeAreaInsetsDidChange() {
+        super.safeAreaInsetsDidChange()
+        updateVerticalBarTextInsets()
     }
 }

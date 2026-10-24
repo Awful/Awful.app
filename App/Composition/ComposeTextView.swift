@@ -2,6 +2,7 @@
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import AwfulTheming
 import UIKit
 
 /// A text view suitable for composing replies, posts, and private messages.
@@ -51,5 +52,10 @@ final class ComposeTextView: URLCleaningTextView, CompositionHidesMenuItems {
     override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
         guard !hidesBuiltInMenuItems else { return false }
         return super.canPerformAction(action, withSender: sender)
+    }
+
+    override func safeAreaInsetsDidChange() {
+        super.safeAreaInsetsDidChange()
+        updateVerticalBarTextInsets()
     }
 }

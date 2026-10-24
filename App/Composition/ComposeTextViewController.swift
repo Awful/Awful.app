@@ -97,6 +97,7 @@ class ComposeTextViewController: ViewController, ModernToolbarActionHandling {
             
             customViewWidthConstraint?.isActive = false
             customViewWidthConstraint = nil
+            customViewLeadingConstraint = nil
         }
         didSet {
             if let old = oldValue as? UIView , customView == nil {
@@ -109,7 +110,8 @@ class ComposeTextViewController: ViewController, ModernToolbarActionHandling {
             
             textView.textContainerInset.top += customView.bounds.height
             
-            textView.leadingAnchor.constraint(equalTo: customView.leadingAnchor).isActive = true
+            customViewLeadingConstraint = customView.leadingAnchor.constraint(equalTo: textView.leadingAnchor)
+            customViewLeadingConstraint?.isActive = true
             textView.topAnchor.constraint(equalTo: customView.topAnchor).isActive = true
             customView.heightAnchor.constraint(equalToConstant: customView.bounds.height).isActive = true
             customViewWidthConstraint = customView.widthAnchor.constraint(equalToConstant: view.bounds.width)
@@ -122,6 +124,7 @@ class ComposeTextViewController: ViewController, ModernToolbarActionHandling {
     }
     
     fileprivate var customViewWidthConstraint: NSLayoutConstraint?
+    fileprivate var customViewLeadingConstraint: NSLayoutConstraint?
     
     weak var delegate: ComposeTextViewControllerDelegate?
     
@@ -411,7 +414,10 @@ class ComposeTextViewController: ViewController, ModernToolbarActionHandling {
         super.viewWillLayoutSubviews()
         
         if let constraint = customViewWidthConstraint , view.bounds.width > 0 {
-            constraint.constant = view.bounds.width
+            // Keeps the fields clear of the vertical bar, as the text view does for the text.
+            let insets = view.verticalBarInsets
+            constraint.constant = view.bounds.width - insets.left - insets.right
+            customViewLeadingConstraint?.constant = insets.left
             
             // If our view wasn't already in the hierarchy when the custom view was added, we didn't know how wide to make the custom view. Now we do.
             constraint.isActive = true

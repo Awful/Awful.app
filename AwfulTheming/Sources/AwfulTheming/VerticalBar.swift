@@ -40,6 +40,29 @@ public enum VerticalBar {
     }
 }
 
+public extension UIView {
+
+    /// The side safe area insets while there's a vertical bar, zero otherwise. For content laid out
+    /// edge to edge that has to keep clear of the bar on the folded iPhone Duo only.
+    var verticalBarInsets: UIEdgeInsets {
+        guard VerticalBar.isActive(in: traitCollection) else { return .zero }
+        return UIEdgeInsets(top: 0, left: safeAreaInsets.left, bottom: 0, right: safeAreaInsets.right)
+    }
+}
+
+public extension UITextView {
+
+    /// Keeps the text clear of the vertical bar. A text view only scrolls vertically, so UIKit
+    /// never insets it by a side safe area and the text would wrap under the bar. Call from
+    /// `safeAreaInsetsDidChange`, which runs as the iPhone Duo folds or unfolds.
+    func updateVerticalBarTextInsets() {
+        let insets = verticalBarInsets
+        guard textContainerInset.left != insets.left || textContainerInset.right != insets.right else { return }
+        textContainerInset.left = insets.left
+        textContainerInset.right = insets.right
+    }
+}
+
 public extension UIBarButtonItem {
 
     /// Tints a back button item for the navigation bar, except while there's a vertical bar: the
