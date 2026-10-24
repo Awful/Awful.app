@@ -168,6 +168,9 @@ final class PostsPageViewController: ViewController {
     /// so until something really scrolls the bar stays at its opaque resting state.
     private var hasScrolledSinceRender = false
 
+    /// Whether the current document opened at the top with nothing staged and nothing has scrolled it since, so it stays at its resting offset. See `settleAtTop`.
+    private var keepsRestingAtTop = false
+
     /// Whether the view has been laid out in a window, which is when the top inset for the bars
     /// is known. Work that frames posts against it waits for this: see `onceLaidOutInWindow`.
     private var hasLaidOutInWindow = false
@@ -180,6 +183,7 @@ final class PostsPageViewController: ViewController {
     /// programmatic scroll so the bar follows the offset it lands on.
     func noteScrollSinceRender() {
         hasScrolledSinceRender = true
+        keepsRestingAtTop = false
     }
 
     func threadActionsMenu() -> UIMenu {
@@ -838,8 +842,7 @@ final class PostsPageViewController: ViewController {
         // new document instead of scrolling the old one, and a render starting after this one
         // can't count on keeping the old document.
         if !keepingUnchangedDocument {
-            webViewDidLoadOnce = false
-            hasScrolledSinceRender = false
+            resetDocumentState()
             loadedHTML = nil
         }
         renderGeneration += 1
@@ -954,11 +957,17 @@ final class PostsPageViewController: ViewController {
                 }
                 return false
             }
-            webViewDidLoadOnce = false
-            hasScrolledSinceRender = false
+            resetDocumentState()
         }
         loadedHTML = nil
         return true
+    }
+
+    /// Forgets how far the current document got with loading and scrolling, as it's about to be replaced.
+    private func resetDocumentState() {
+        webViewDidLoadOnce = false
+        hasScrolledSinceRender = false
+        keepsRestingAtTop = false
     }
 
     /// Loads a render's HTML once the document is erased, unless a newer render has started in the meantime.
@@ -3213,7 +3222,7 @@ extension PostsPageViewController: RenderViewDelegate {
     /// The rest of `didFinishRenderingHTML`, once the top inset is known: scrolls to the staged target, or settles a fresh document at the top, then finishes the render (at once, or once a hidden page is in place).
     private func scrollIntoPlaceAndFinishRendering(_ scrollIntoPlace: (() async -> Void)?, generation: Int) {
         if scrollIntoPlace == nil {
-            settleAtTopIfNudgedUnderBars()
+            settleAtTop()
         }
 
         guard isAwaitingReveal else {
@@ -3248,17 +3257,36 @@ extension PostsPageViewController: RenderViewDelegate {
         }
     }
 
-    /// A fresh document with no scroll target rests at the top, where WebKit put it at the inset it
-    /// saw when the load committed. An inset that has grown since leaves the top of the page under
-    /// the bars, and nothing has scrolled on purpose yet, so put it back. Anything past the band is left alone.
-    private func settleAtTopIfNudgedUnderBars() {
+    /// A fresh document with nothing staged opens at its resting offset at the top and stays there until something scrolls it. Any other offset is left over from before it loaded: WebKit puts a new document at the inset it saw when the load committed, which may have grown since, and erasing the previous document clamps its offset to what fits the blank page (the toolbar's height, for a page that was scrolled down), which WebKit sometimes keeps for the new one.
+    private func settleAtTop() {
         postsView.layoutIfNeeded()
         let scrollView = postsView.renderView.scrollView
-        let restingY = -scrollView.adjustedContentInset.top
-        let y = scrollView.contentOffset.y
-        performanceTrace?.mark("render #\(renderGeneration): nothing staged, offset \(y), resting \(restingY), content height \(scrollView.contentSize.height)")
-        guard !hasScrolledSinceRender, y > restingY + 4, y <= 0 else { return }
-        scrollView.setContentOffset(CGPoint(x: scrollView.contentOffset.x, y: restingY), animated: false)
+        performanceTrace?.mark("render #\(renderGeneration): nothing staged, offset \(scrollView.contentOffset.y), resting \(restingOffsetY), content height \(scrollView.contentSize.height)")
+        guard !hasScrolledSinceRender else { return }
+        keepsRestingAtTop = true
+        if scrollView.contentOffset.y > restingOffsetY + 4 {
+            moveToRestingOffset()
+        }
+    }
+
+    /// WebKit (as of iOS 27) sometimes moves a document resting at the top to its scroll position zero well after it has loaded, as posts below are measured, say. That ignores the inset the posts page sets for the bars and leaves the top of the page under them, so put it back. See `settleAtTop`.
+    func keepRestingAtTopIfReset() {
+        let scrollView = postsView.renderView.scrollView
+        guard keepsRestingAtTop, !scrollView.isTracking, !scrollView.isDecelerating,
+              abs(scrollView.contentOffset.y) < 0.5, restingOffsetY < -0.5
+        else { return }
+        performanceTrace?.mark("render #\(renderGeneration): reset to scroll position zero, back to resting \(restingOffsetY)")
+        moveToRestingOffset()
+    }
+
+    /// The offset of a page resting at its top, flush under the bars.
+    private var restingOffsetY: CGFloat {
+        -postsView.renderView.scrollView.adjustedContentInset.top
+    }
+
+    private func moveToRestingOffset() {
+        let scrollView = postsView.renderView.scrollView
+        scrollView.setContentOffset(CGPoint(x: scrollView.contentOffset.x, y: restingOffsetY), animated: false)
     }
 
     /// The rest of `didFinishRenderingHTML`, once the render is scrolled into place.

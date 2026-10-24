@@ -106,6 +106,11 @@ final class PostsPageTestHarness {
         try context.save()
     }
 
+    /// Serves `variant` for page three from now on, as the Forums would once the reader's seen posts change (say, after posting a reply).
+    func servePageThree(_ variant: QuoteJumpFixture.PageThreeVariant) throws {
+        FixtureURLProtocol.scriptedThreads[QuoteJumpFixture.threadID] = try QuoteJumpFixture.scriptedThread(imageBase: imageServer.baseURL, pageThree: variant)
+    }
+
     /// Fetches pages into the store without showing them, so a scenario can start with a post already cached (as `PostLocator.cachedPostsPageViewController` requires).
     func cachePages(_ pages: [Int]) async throws {
         for page in pages {
@@ -129,7 +134,9 @@ final class PostsPageTestHarness {
     }
 
     /// Opens `page` the way scene restoration does when the web view is quicker than the window: the page renders from the cache (and scrolls to its staged position) before it is in a window, and only then is it installed and laid out, so the top inset for the bars arrives after the scroll. `restoring` is applied as `restorePage` applies it; nil renders from the cache with nothing staged.
-    func openPageRenderedBeforeInstall(_ page: Int, restoring: PendingPostsRestoration?) async throws -> PostsPageViewController {
+    ///
+    /// `leftoverOffset`, when given, is put on the scroll view once the document has loaded, as WebKit sometimes leaves the offset the erased previous document was clamped to.
+    func openPageRenderedBeforeInstall(_ page: Int, restoring: PendingPostsRestoration?, leftoverOffset: CGFloat? = nil) async throws -> PostsPageViewController {
         let viewController = makeViewController()
         viewController.loadPage(.specific(page), updatingCache: false, updatingLastReadPost: false, restoring: restoring)
         // Size the view as the window will, so the document lays out at its final width; what's missing is the window, and with it the safe area.
@@ -137,6 +144,10 @@ final class PostsPageTestHarness {
         try await waitUntil("the document to load before the page is in a window") { viewController.webViewDidLoadOnceForTesting }
         // Whatever the page does with the document before it is in a window, let it.
         await settle(milliseconds: 300, in: viewController)
+        if let leftoverOffset {
+            let scrollView = viewController.renderViewForTesting.scrollView
+            scrollView.contentOffset = CGPoint(x: scrollView.contentOffset.x, y: leftoverOffset)
+        }
 
         // The render finishes once the page is laid out in a window (or finished already, if the page didn't wait); either way the loading view goes once it has.
         var finishedRendering = false
@@ -152,6 +163,15 @@ final class PostsPageTestHarness {
     func openNextUnread() async throws -> PostsPageViewController {
         let viewController = makeViewController()
         viewController.loadPage(.nextUnread, updatingCache: true, updatingLastReadPost: true)
+        install(viewController)
+        try await waitForRender(of: viewController)
+        return viewController
+    }
+
+    /// Opens the thread at its last post, as the Last Post button does (`goToLastPost`).
+    func openLastPost() async throws -> PostsPageViewController {
+        let viewController = makeViewController()
+        viewController.goToLastPost()
         install(viewController)
         try await waitForRender(of: viewController)
         return viewController
@@ -250,6 +270,22 @@ final class PostsPageTestHarness {
         await waitForScrollToSettle(in: viewController)
     }
 
+    /// Presents a sheet over the page the way the reply composer is presented, returning once it's up.
+    func presentComposeSheet(over viewController: PostsPageViewController) async {
+        let sheet = UINavigationController(rootViewController: UIViewController())
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+            viewController.present(sheet, animated: true) { continuation.resume() }
+        }
+    }
+
+    /// Scrolls the page as far down as it goes, as a reader who has read to the end would leave it.
+    func scrollToBottom(in viewController: PostsPageViewController) async {
+        let scrollView = viewController.renderViewForTesting.scrollView
+        viewController.noteScrollSinceRender()
+        scrollView.setContentOffset(CGPoint(x: scrollView.contentOffset.x, y: maxContentOffsetY(in: viewController)), animated: false)
+        await waitForScrollToSettle(in: viewController)
+    }
+
     /// Models the reader starting to drag, which abandons any staged scroll target.
     func drag(in viewController: PostsPageViewController) {
         viewController.cancelPendingScrollRestoration()
@@ -305,8 +341,23 @@ final class PostsPageTestHarness {
         return ScrollMetrics(scrollY: CGFloat(numbers[0].doubleValue), scrollHeight: CGFloat(numbers[1].doubleValue), innerHeight: CGFloat(numbers[2].doubleValue))
     }
 
-    /// Asserts that the reader is looking at the post at `index`: its top edge sits at the top inset (within `tolerance` points), or the document is scrolled as far as it goes and the post is on screen.
+    /// The furthest down the scroll view rests: its bottom edge at the end of the content, or at the top for content shorter than the viewport.
+    func maxContentOffsetY(in viewController: PostsPageViewController) -> CGFloat {
+        let scrollView = viewController.renderViewForTesting.scrollView
+        let insets = scrollView.adjustedContentInset
+        return max(-insets.top, scrollView.contentSize.height + insets.bottom - scrollView.bounds.height)
+    }
+
+    /// Asserts that the scroll view isn't past the end of its content. WebKit's own `window.scrollY` stays within the document either way, so this reads the native offset, which is what the reader sees: past the end, the bottom of the page sits partway up the screen above blank space.
+    func assertNotOverscrolled(in viewController: PostsPageViewController, tolerance: CGFloat = 4, _ message: String = "", file: StaticString = #filePath, line: UInt = #line) {
+        let scrollView = viewController.renderViewForTesting.scrollView
+        let maxY = maxContentOffsetY(in: viewController)
+        XCTAssertLessThanOrEqual(scrollView.contentOffset.y, maxY + tolerance, "expected the page no further down than its end, but contentOffset.y is \(scrollView.contentOffset.y) with the end at \(maxY) (contentSize.height \(scrollView.contentSize.height), bounds.height \(scrollView.bounds.height), adjustedContentInset \(scrollView.adjustedContentInset)). \(message)", file: file, line: line)
+    }
+
+    /// Asserts that the reader is looking at the post at `index`: its top edge sits at the top inset (within `tolerance` points), or the document is scrolled as far as it goes and the post is on screen. Either way the page must not be scrolled past its end.
     func assertLanded(on index: Int, in viewController: PostsPageViewController, tolerance: CGFloat = 4, _ message: String = "", file: StaticString = #filePath, line: UInt = #line) async throws {
+        assertNotOverscrolled(in: viewController, tolerance: tolerance, message, file: file, line: line)
         let inset = topInset(of: viewController)
         guard let top = try await postTop(index: index, in: viewController) else {
             XCTFail("post \(index) is not in the document. \(message)", file: file, line: line)

@@ -100,6 +100,14 @@ final class QuoteJumpFixtureScrapingTests: XCTestCase {
         XCTAssertEqual(result.posts[29].id.rawValue, postID(forIndex: 110))
     }
 
+    func testPageThreeSeenThroughOneHundredNineteen() throws {
+        let result = try scrapePage("quotejump-p3-seen119", expectingPage: 3)
+        XCTAssertEqual(result.posts.prefix(39).filter(\.hasBeenSeen).count, 39, "posts 81-119 are seen")
+        XCTAssertFalse(result.posts[39].hasBeenSeen, "post 120 is unseen")
+        XCTAssertEqual(result.jumpToPostIndex, 39, "post 120 is the first unseen post, at offset 39")
+        XCTAssertEqual(result.posts[39].id.rawValue, postID(forIndex: 120))
+    }
+
     func testPostIDsAreUniqueAcrossTheThread() throws {
         let pages = try ["quotejump-p1", "quotejump-p2", "quotejump-p3"].map { try scrapeHTMLFixture(PostsPageScrapeResult.self, named: $0) }
         let ids = pages.flatMap { $0.posts.map(\.id.rawValue) }

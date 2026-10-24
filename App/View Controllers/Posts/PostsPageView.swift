@@ -870,6 +870,8 @@ extension PostsPageView: ScrollViewDelegateExtras {
             return
         }
 
+        postsPageViewController?.keepRestingAtTopIfReset()
+
         let info = ScrollViewInfo(refreshControlHeight: refreshControlContainer.bounds.height, scrollView: scrollView)
 
         // Update refreshControlState first, then decide if we care about topBarState.

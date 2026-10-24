@@ -20,6 +20,10 @@ import XCTest
 /// | O4  | restored from the cache at the top (anchored to post 110), rendered before the page is in a window  | post 110 at the top inset |
 /// | O5  | rendered from the cache with nothing staged before the page is in a window                           | post 81 at the top inset  |
 /// | O6  | page 2 opened at post 60, quote tapped to 70, the anchor the app would save then restored on a new page 2 | post 70 back at the top inset |
+/// | O7  | read to the bottom of page 3, then a reply posted from the compose sheet: the page reloads at its next unread post (the reply) as the sheet goes away | post 120 at the top inset |
+/// | O7a | the same under the app's own navigation controller with Reduce Liquid Glass and dark mode on, as reported | the same |
+/// | O8  | rendered from the cache with nothing staged, left scrolled down by the toolbar's height as WebKit leaves the erased previous document | post 81 at the top inset |
+/// | O9  | a page resting at the top that WebKit later moves to its scroll position zero, as it does on iOS 27 once posts below are measured | post 110 back at the top inset |
 @MainActor
 final class PageOpenRestsAtTopTests: XCTestCase {
 
@@ -110,6 +114,54 @@ final class PageOpenRestsAtTopTests: XCTestCase {
         let restoration = PendingPostsRestoration(scrollFraction: nil, hiddenPosts: page.currentHiddenPosts, anchorPostID: anchor.postID, anchorDelta: anchor.deltaY)
         let restored = try await harness.openPage(2, restoring: restoration)
         try await harness.assertLanded(on: 70, in: restored, "O6: restoring the anchor saved with post 70 at the top (anchor \(anchor.postID), delta \(anchor.deltaY))")
+    }
+
+    func testO7_reloadAfterPostingAReplyRestsAtTop() async throws {
+        try makeHarness()
+        try await reloadAfterPostingAReplyRestsAtTop("O7")
+    }
+
+    func testO7a_reloadAfterPostingAReplyRestsAtTopUnderAppChrome() async throws {
+        try makeHarness(appChrome: true)
+        try await reloadAfterPostingAReplyRestsAtTop("O7a")
+    }
+
+    /// Erasing a page that was scrolled down clamps its offset to what fits the blank page, the toolbar's height. WebKit sometimes keeps that offset for the next document, so a page opened after posting a reply showed from partway down its first post.
+    func testO8_freshDocumentLeftScrolledDownRestsAtTop() async throws {
+        try makeHarness()
+        try await harness.cachePages([3])
+        let page = try await harness.openPageRenderedBeforeInstall(3, restoring: nil, leftoverOffset: 82)
+        try await harness.assertRestingAtTop(in: page, firstPost: 81, "O8: the offset left over from the erased document was kept")
+    }
+
+    /// WebKit's scroll position zero is the top of the document, which ignores the inset the posts page sets for the bars. On iOS 27 WebKit sometimes moves a page there well after it has loaded.
+    func testO9_restingPageResetToScrollPositionZeroReturnsToRest() async throws {
+        try makeHarness()
+        let page = try await harness.openNextUnread()
+        try await harness.assertRestingAtTop(in: page, firstPost: 110, "the page opens at rest")
+
+        let scrollView = page.renderViewForTesting.scrollView
+        scrollView.contentOffset = CGPoint(x: scrollView.contentOffset.x, y: 0)
+        await harness.settle(milliseconds: 100, in: page)
+        try await harness.assertRestingAtTop(in: page, firstPost: 110, "O9: the reset left the top of the page under the bars")
+    }
+
+    private func reloadAfterPostingAReplyRestsAtTop(_ scenario: String, file: StaticString = #filePath, line: UInt = #line) async throws {
+        let page = try await harness.openPage(3)
+        try await harness.waitUntil("the fetch to hide the read posts") { page.hiddenPostsForTesting == 29 }
+        await harness.settle(milliseconds: 2000, in: page)
+        await harness.scrollToBottom(in: page)
+        await harness.presentComposeSheet(over: page)
+
+        // What the reply workspace's completion does once the reply is posted: reload at the next unread post, now the reply, and dismiss the sheet.
+        try harness.servePageThree(.seenThrough119)
+        page.loadPage(.nextUnread, updatingCache: true, updatingLastReadPost: true)
+        page.dismiss(animated: true, completion: nil)
+        try await harness.waitForRender(of: page)
+        try await harness.waitUntil("the reload to hide every post but the reply") { page.hiddenPostsForTesting == 39 && page.presentedViewController == nil }
+        await harness.settle(milliseconds: 1000, in: page)
+
+        try await harness.assertRestingAtTop(in: page, firstPost: 120, "\(scenario): the reload after posting", file: file, line: line)
     }
 
     private func cachedPageReRenderedWithPostsHiddenRestsAtTop(_ scenario: String, file: StaticString = #filePath, line: UInt = #line) async throws {

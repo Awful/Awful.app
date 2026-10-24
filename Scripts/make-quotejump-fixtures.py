@@ -10,6 +10,7 @@ writes, into AwfulCore/Tests/AwfulCoreTests/Fixtures/:
     quotejump-p2.html          page 2, posts 41-80, seen through post 59
     quotejump-p3.html          page 3, posts 81-120, none seen (the reader has read through 59)
     quotejump-p3-seen109.html  page 3 as it looks once the reader has read through post 109
+    quotejump-p3-seen119.html  page 3 as it looks once the reader has read through post 119, as after posting the last reply
 
 The thread is 9000001 in forum 1. Post IDs are 900000000 + page * 100 + index on page, so post 50 (page 2, 10th post) is 900000210; `post_id()` below is the single source of truth and QuoteJumpFixture.swift in the tests mirrors it.
 
@@ -35,6 +36,7 @@ The strategic posts (numbers are index in thread):
     110  page 3   plain                      first unseen post in the seen109 variant
     115  page 3   two tall slow images       media above a cross-page target among unread posts
     118  page 3   plain                      cross-page target among unread posts
+    120  page 3   filler                     the last post, short, and the first unseen post in the seen119 variant
 """
 
 import argparse
@@ -315,6 +317,7 @@ VARIANTS = [
     ("quotejump-p2.html", 2, 59),
     ("quotejump-p3.html", 3, 59),
     ("quotejump-p3-seen109.html", 3, 109),
+    ("quotejump-p3-seen119.html", 3, 119),
 ]
 
 

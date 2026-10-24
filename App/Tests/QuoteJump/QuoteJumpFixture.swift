@@ -12,15 +12,17 @@ enum QuoteJumpFixture {
     static let postsPerPage = 40
     static let pageCount = 3
 
-    /// Which page-three file to serve: as the reader who has read through post 59 sees it (nothing on page three seen), or as one who has read through post 109 sees it.
+    /// Which page-three file to serve: as the reader who has read through post 59 sees it (nothing on page three seen), as one who has read through post 109 sees it, or as one who has read through post 119 sees it (the last post unread, as after posting it).
     enum PageThreeVariant {
         case unread
         case seenThrough109
+        case seenThrough119
 
         var fixtureName: String {
             switch self {
             case .unread: return "quotejump-p3"
             case .seenThrough109: return "quotejump-p3-seen109"
+            case .seenThrough119: return "quotejump-p3-seen119"
             }
         }
     }
@@ -80,7 +82,7 @@ enum QuoteJumpFixture {
             ],
             postPages: postPages,
             lastPage: pageCount,
-            firstUnreadPage: pageThree == .seenThrough109 ? 3 : 2
+            firstUnreadPage: pageThree == .unread ? 2 : 3
         )
     }
 

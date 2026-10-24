@@ -8,7 +8,7 @@ import UIKit
 import WebKit
 import XCTest
 
-/// `RenderView.setAnimationsPaused` freezes GIFs by standing a canvas of the current frame in for each one. These tests render pages against a real `WKWebView` and read back what the document looks like: a bare page with a GIF avatar, GIFs in the post body (one bordered, one inside a scaled-down custom title) and a PNG, and the real posts stylesheet in the iPad layout.
+/// `RenderView.setAnimationsPaused` freezes GIFs by standing a canvas in for each one, and covers the web view with a snapshot taken just before so each GIF holds the frame it was on (a canvas can only draw a GIF's first frame). These tests render pages against a real `WKWebView` and read back what the document looks like: a bare page with a GIF avatar, GIFs in the post body (one bordered, one inside a scaled-down custom title) and a PNG, and the real posts stylesheet in the iPad layout.
 @MainActor
 final class RenderViewAnimationPauseTests: XCTestCase {
 
@@ -124,6 +124,43 @@ final class RenderViewAnimationPauseTests: XCTestCase {
         try await waitForFrozenGIFs(4)
         let paused = try await eval("Awful.animationsPaused") as? Bool
         XCTAssertEqual(paused, true)
+    }
+
+    func testPausingCoversTheWebViewWithASnapshotUntilResumed() async throws {
+        try await render(pageHTML)
+        renderView.setAnimationsPaused(true)
+        try await waitForFrozenGIFs(4)
+        let snapshotView = try XCTUnwrap(renderView.pausedSnapshotViewForTesting, "pausing covers the web view")
+        XCTAssertTrue(snapshotView.superview === renderView)
+        XCTAssertEqual(snapshotView.frame, renderView.webViewFrameForTesting)
+        XCTAssertNotNil(snapshotView.image)
+
+        renderView.setAnimationsPaused(false)
+        try await waitForFrozenGIFs(0)
+        try await waitUntil("the snapshot to be removed") { self.renderView.pausedSnapshotViewForTesting == nil }
+        XCTAssertNil(snapshotView.superview)
+    }
+
+    func testScrollingWhilePausedRemovesTheSnapshot() async throws {
+        try await render(pageHTML)
+        renderView.setAnimationsPaused(true)
+        try await waitForFrozenGIFs(4)
+        XCTAssertNotNil(renderView.pausedSnapshotViewForTesting)
+
+        // The Mac scrolls an inactive window without activating it, which would leave the snapshot showing the wrong part of the page.
+        let scrollView = renderView.scrollView
+        scrollView.contentOffset = CGPoint(x: scrollView.contentOffset.x, y: scrollView.contentOffset.y + 20)
+        XCTAssertNil(renderView.pausedSnapshotViewForTesting)
+    }
+
+    func testResumingBeforeTheSnapshotArrivesLeavesNothingCovered() async throws {
+        try await render(pageHTML)
+        renderView.setAnimationsPaused(true)
+        renderView.setAnimationsPaused(false)
+        try await Task.sleep(nanoseconds: 500_000_000)
+        XCTAssertNil(renderView.pausedSnapshotViewForTesting)
+        let frozen = try await eval("document.querySelectorAll('canvas.awful-frozen-gif').length") as? NSNumber
+        XCTAssertEqual(frozen, 0)
     }
 
     /// The real posts markup and stylesheet, in the iPad layout: a header avatar, a post body GIF, and a custom title whose first image is the avatar (what the iPad and Mac layout shows when custom titles are on).

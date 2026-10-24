@@ -61,6 +61,15 @@ final class RenderView: UIView {
 
     private var animationPauser: RenderViewAnimationPauser?
 
+    /// While animations are paused, a snapshot of the web view taken just before they froze, covering it. Frozen GIFs can only show their first frame (see `Awful.freezeGIF`), so this keeps each one on the frame it was showing. Removed once anything would make it stale.
+    private var pausedSnapshotView: UIImageView?
+
+    /// Removes `pausedSnapshotView` when the reader scrolls (the Mac's scroll wheel works on an inactive window) or the content changes size.
+    private var pausedSnapshotObservations: [NSKeyValueObservation] = []
+
+    /// Bumped by every `setAnimationsPaused`, so a snapshot that arrives after a later call is dropped.
+    private var animationPauseGeneration = 0
+
     private lazy var webView: WKWebView = {
         let configuration = WKWebViewConfiguration()
 
@@ -163,6 +172,9 @@ final class RenderView: UIView {
             webViewFrame.size.width -= safeAreaInsets.left + safeAreaInsets.right
         }
         webView.frame = webViewFrame
+        if let pausedSnapshotView, pausedSnapshotView.frame != webViewFrame {
+            removePausedSnapshot()
+        }
     }
     
     deinit {
@@ -302,6 +314,7 @@ extension RenderView: WKNavigationDelegate {
     
     func webView(_ webView: WKWebView, didCommit navigation: WKNavigation) {
         hasCommittedDocument = true
+        removePausedSnapshot()
         performanceTrace?.mark("webView didCommit navigation (content inset top \(scrollView.contentInset.top), offset \(scrollView.contentOffset.y))")
     }
 
@@ -1087,20 +1100,79 @@ extension RenderView {
     }
 
     /// Freezes (when `true`) or resumes (when `false`) GIFs, avatars included, videos and Lottie players in the page. `RenderViewAnimationPauser` calls this as the app becomes inactive and active. The state carries over to subsequently rendered documents.
+    ///
+    /// Pausing first covers the web view with a snapshot of what's on screen, so GIFs hold the frame they were showing rather than the first frame their frozen stand-ins draw. Resuming uncovers it once the GIFs are back, and each picks up from the frame it held.
     func setAnimationsPaused(_ paused: Bool) {
+        let startsPause = paused && !animationsPaused
         animationsPaused = paused
+        animationPauseGeneration += 1
+        let generation = animationPauseGeneration
         Task {
+            if startsPause {
+                await coverWithPausedSnapshot()
+                guard generation == animationPauseGeneration else { return }
+            }
             do {
                 let frozen = try await webView.eval("window.Awful ? Awful.setAnimationsPaused(\(paused ? "true" : "false")) : -1")
                 logger.debug("setAnimationsPaused(\(paused)): \(String(describing: frozen)) frozen GIFs")
             } catch {
                 self.mentionError(error, explanation: "could not evaluate setAnimationsPaused")
             }
+            if !paused {
+                await waitForNextPaint()
+                guard generation == animationPauseGeneration else { return }
+                removePausedSnapshot()
+            }
         }
     }
+
+    private func coverWithPausedSnapshot() async {
+        let scrollView = webView.scrollView
+        let frame = webView.frame
+        let contentOffset = scrollView.contentOffset
+        let configuration = WKSnapshotConfiguration()
+        configuration.afterScreenUpdates = false
+        let image: UIImage? = await withCheckedContinuation { continuation in
+            webView.takeSnapshot(with: configuration) { image, _ in continuation.resume(returning: image) }
+        }
+        // Scrolling, a layout change or a resume while the snapshot was being taken would leave it stale already.
+        guard let image, animationsPaused, webView.frame == frame, scrollView.contentOffset == contentOffset else { return }
+
+        removePausedSnapshot()
+        let snapshotView = UIImageView(image: image)
+        snapshotView.frame = webView.frame
+        insertSubview(snapshotView, aboveSubview: webView)
+        pausedSnapshotView = snapshotView
+        pausedSnapshotObservations = [
+            removesPausedSnapshot(onChangeOf: \.contentOffset),
+            removesPausedSnapshot(onChangeOf: \.contentSize),
+        ]
+    }
+
+    private func removesPausedSnapshot<Value: Equatable>(onChangeOf keyPath: KeyPath<UIScrollView, Value>) -> NSKeyValueObservation {
+        webView.scrollView.observe(keyPath, options: [.old, .new]) { [weak self] _, change in
+            guard change.oldValue != change.newValue else { return }
+            MainActor.assumeIsolated { self?.removePausedSnapshot() }
+        }
+    }
+
+    private func removePausedSnapshot() {
+        pausedSnapshotObservations = []
+        pausedSnapshotView?.removeFromSuperview()
+        pausedSnapshotView = nil
+    }
+
+    #if DEBUG
+    /// Test hook: the snapshot covering the web view while animations are paused, if any.
+    var pausedSnapshotViewForTesting: UIImageView? { pausedSnapshotView }
+
+    /// Test hook: the web view's frame, which the paused snapshot covers.
+    var webViewFrameForTesting: CGRect { webView.frame }
+    #endif
     
     /// Replaces the theme CSS.
     func setThemeStylesheet(_ css: String) {
+        removePausedSnapshot()
         let escaped: String
         do {
             escaped = try escapeForEval(css)
@@ -1120,6 +1192,7 @@ extension RenderView {
 
     /// Sets the `dark` class on `<body>`, for styles that depend on the theme's mode rather than the theme itself.
     func setDarkMode(_ dark: Bool) {
+        removePausedSnapshot()
         Task {
             do {
                 _ = try await webView.eval("if (window.Awful) Awful.setDarkMode(\(dark))")

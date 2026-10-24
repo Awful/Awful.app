@@ -2407,7 +2407,9 @@ Awful.frozenGIFCopiedStyles = [
 ];
 
 /**
- Replaces a loaded GIF with a canvas showing its current frame, so it stops animating (and WebKit stops decoding it). The canvas copies the image's classes, its computed layout styles and its layout box's size, so layout and styling don't change. Does nothing for an image that isn't a loaded GIF or is already frozen.
+ Replaces a loaded GIF with a canvas, so it stops animating (and WebKit stops decoding it). The canvas copies the image's classes, its computed layout styles and its layout box's size, so layout and styling don't change. Does nothing for an image that isn't a loaded GIF or is already frozen.
+
+ `drawImage` only ever draws an animated image's first frame, so that's what the canvas shows. The native side covers the web view with a snapshot taken just before freezing, so the reader sees the frame each GIF was on instead.
 
  @param {HTMLImageElement} img
  */
@@ -2439,7 +2441,7 @@ Awful.freezeGIF = function(img) {
 };
 
 /**
- Undoes `Awful.freezeGIF`. The GIF restarts from its first frame.
+ Undoes `Awful.freezeGIF`. WebKit doesn't advance a hidden GIF, so it carries on from the frame it was on when frozen.
 
  @param {HTMLImageElement} img
  */
