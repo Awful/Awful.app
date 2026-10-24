@@ -310,7 +310,7 @@ public final class SearchResultsViewController: ViewController {
     /// knocks the screen's title off centre.
     private lazy var newSearchItem: UIBarButtonItem = {
         let item = UIBarButtonItem(
-            image: UIImage(systemName: "plus.magnifyingglass"),
+            image: UIImage(named: "new-search") ?? UIImage(systemName: "plus.magnifyingglass"),
             style: .plain, target: self, action: #selector(didTapNewSearch))
         item.accessibilityLabel = String(localized: "New Search", bundle: .module)
         return item

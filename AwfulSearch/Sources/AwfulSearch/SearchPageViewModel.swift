@@ -525,11 +525,6 @@ final class SearchPageViewModel: ObservableObject {
         }
     }
 
-    /// Whether there's anything for ``resetSearch()`` to throw away.
-    static func hasSomethingToClear(_ state: SearchState, results: [SearchResult]) -> Bool {
-        !state.query.isEmpty || !results.isEmpty || !state.resultInfo.isEmpty
-    }
-
     /// Starts over with an empty search in the same scope, forgetting the last search so it isn't
     /// restored next time search is opened.
     func resetSearch() {

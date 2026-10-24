@@ -244,7 +244,7 @@ final class PostsPageViewController: ViewController {
         if LastSearchStore.hasStoredResults || hasResultsBelow {
             children.append(UIAction(
                 title: "Search results",
-                image: UIImage(systemName: "text.magnifyingglass"),
+                image: UIImage(named: "search-results")!.withRenderingMode(.alwaysTemplate),
                 identifier: .init("lastSearchResults"),
                 handler: { [unowned self] in lastSearchResults(action: $0) }
             ))
