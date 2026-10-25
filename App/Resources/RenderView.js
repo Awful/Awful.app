@@ -1630,6 +1630,8 @@ Awful.keepViewportSteady = function(delta) {
     if (Math.abs(correction) < 0.5) { return; }
     if (Awful.smoothScrollTarget !== null && Awful.smoothScrollTarget !== undefined) {
       Awful.beginSmoothScroll(Awful.smoothScrollTarget + correction);
+    } else if (offset !== null) {
+      Awful.putSettlingJumpBack(offset);
     } else {
       Awful.scrollProgrammatically(function() { window.scrollBy(0, correction); });
     }
@@ -1659,10 +1661,20 @@ Awful.verifySettlingJump = function(frames) {
   requestAnimationFrame(function() {
     var offset = Awful.settlingJumpOffset();
     if (offset !== null && Math.abs(offset) >= 0.5) {
-      Awful.scrollProgrammatically(function() { window.scrollBy(0, offset); });
+      Awful.putSettlingJumpBack(offset);
     }
     Awful.verifySettlingJump(frames - 1);
   });
+};
+
+/**
+ Scrolls the settling jump's post back to where the jump put it, given how far it has drifted (`Awful.settlingJumpOffset`).
+
+ The scroll is to an absolute position, never by the offset. The offset is measured against this process's scroll position, which can be a stale one the other process has already moved past. A relative scroll is applied to the position that process has, so it lands twice as far as it should, and the next check sees it overshoot the other way. The post's place in the document is the same however stale the scroll position, so scrolling to it is right either way, and repeating it changes nothing.
+ */
+Awful.putSettlingJumpBack = function(offset) {
+  var target = window.scrollY + offset;
+  Awful.scrollProgrammatically(function() { window.scrollTo(0, target); });
 };
 
 
