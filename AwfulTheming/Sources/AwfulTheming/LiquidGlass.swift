@@ -37,18 +37,22 @@ public enum LiquidGlass {
 public extension UIViewController {
     /// True on iOS 26+ while this screen is in the iPad split view's sidebar column, whatever "Reduce Liquid Glass" says. That setting only swaps the app's own bar appearances, while UIKit keeps rendering the sidebar column as a flat glass panel (vibrancy-tinted labels and buttons, asymmetric title layout), so the sidebar mitigations key off this rather than `LiquidGlass.isEnabled`.
     ///
-    /// A window narrow enough to collapse the split view makes the tab bar controller the whole screen, styled like the iPhone's, so this goes false then. It's also false before the screen joins the tab bar controller, which is why a screen building its bar items from it adopts `PadSidebarAdapting` to build them again.
+    /// A window narrow enough to collapse the split view makes the tab bar controller the whole screen, styled like the iPhone's, so this goes false then. It's also false before the screen joins the tab bar controller, which is why a screen building its bar items from it adopts `PadSidebarAdapting` to build them again. `splitViewController` is nil during initial setup (the tab bar controller joins the split view after its children are configured), which counts as expanded. The idiom is the device's, as a trait collection's is unspecified until it reaches a window.
     var isInPadSidebar: Bool {
         guard #available(iOS 26.0, *) else { return false }
-        return traitCollection.userInterfaceIdiom == .pad
+        return UIDevice.current.userInterfaceIdiom == .pad
             && tabBarController != nil
             && splitViewController?.isCollapsed != true
     }
 }
 
-/// A screen whose bar items differ in the iPad sidebar (see `isInPadSidebar`). Its navigation controller calls `padSidebarDidChange()` as it appears and whenever the split view collapses or expands, before restyling the bar around the screen's items.
+/// A screen whose bar items differ in the iPad sidebar (see `isInPadSidebar`). As it appears, and whenever the split view collapses or expands, its navigation controller calls `padSidebarDidChange()` if `isInPadSidebar` no longer matches `barButtonItemsAreForPadSidebar`, before restyling the bar around the screen's items.
 @MainActor
-public protocol PadSidebarAdapting: AnyObject {
+public protocol PadSidebarAdapting: UIViewController {
+    /// Whether the screen's bar items were last built for the iPad sidebar.
+    var barButtonItemsAreForPadSidebar: Bool { get }
+
+    /// Rebuilds the screen's bar items for where it is now.
     func padSidebarDidChange()
 }
 

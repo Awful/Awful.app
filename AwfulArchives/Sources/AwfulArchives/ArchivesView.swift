@@ -266,7 +266,7 @@ public final class ArchivesHostingController: UIHostingController<AnyView> {
     /// On iPad the medium detent is too short to fit the whole form (the bottom "Return to Live Forums" button gets cut off on iPad mini), so open at the large detent there, unless the window is narrow enough to be laid out like an iPhone. iPhone keeps the medium default and can still drag up.
     public override func viewIsAppearing(_ animated: Bool) {
         super.viewIsAppearing(animated)
-        if let traits = view.window?.traitCollection, traits.userInterfaceIdiom == .pad, traits.horizontalSizeClass != .compact {
+        if view.window?.traitCollection.isRegularWidthPad == true {
             sheetPresentationController?.selectedDetentIdentifier = .large
         }
     }

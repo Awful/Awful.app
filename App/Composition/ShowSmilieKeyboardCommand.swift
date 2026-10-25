@@ -6,6 +6,7 @@ import os
 import Smilies
 import SwiftUI
 import UIKit
+import AwfulExtensions
 import AwfulSettings
 import AwfulTheming
 
@@ -93,7 +94,7 @@ final class ShowSmilieKeyboardCommand: NSObject {
         if let sheet = hostingController.sheetPresentationController {
             sheet.detents = [UISheetPresentationController.Detent.medium(), UISheetPresentationController.Detent.large()]
             // The medium-detent sheet is too small on iPad, so start at full height there, unless the window is narrow enough to be laid out like an iPhone.
-            if let traits = textView.window?.traitCollection, traits.userInterfaceIdiom == .pad, traits.horizontalSizeClass != .compact {
+            if textView.window?.traitCollection.isRegularWidthPad == true {
                 sheet.selectedDetentIdentifier = .large
             }
             sheet.prefersGrabberVisible = true

@@ -48,8 +48,7 @@ final class ResourceURLSchemeHandler: NSObject, WKURLSchemeHandler {
     private func findBundledURL(_ resource: Resource, displayScale: CGFloat) throws -> URL {
         let possibleBundledURLs = resource
             .paths(forDisplayScale: displayScale)
-            .map { Bundle.main.url(forResource: $0, withExtension: nil) }
-            .compactMap { $0 }
+            .compactMap { Bundle.main.url(forResource: $0, withExtension: nil) }
 
         guard let resourceURL = possibleBundledURLs.first else {
             throw NSError(domain: NSURLErrorDomain, code: NSURLErrorBadURL, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"])
@@ -113,7 +112,7 @@ private struct Resource {
         uti?.conforms(to: .image) ?? false
     }
 
-    fileprivate var uti: UTType? {
+    private var uti: UTType? {
         UTType(filenameExtension: (path as NSString).pathExtension)
     }
 

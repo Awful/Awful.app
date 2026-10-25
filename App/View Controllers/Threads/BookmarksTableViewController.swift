@@ -649,17 +649,15 @@ final class BookmarksTableViewController: HostedCollectionViewController {
         themeDidChange()
     }
 
-    /// Whether the bar items were last built for the iPad sidebar (see `isInPadSidebar`).
-    private var barButtonItemsAreForPadSidebar = false
+    private(set) var barButtonItemsAreForPadSidebar = false
 
     private func updateBarButtonItems() {
-        let isInPadSidebar = isInPadSidebar
         barButtonItemsAreForPadSidebar = isInPadSidebar
-        setupFilterButton(forPadSidebar: isInPadSidebar)
-        setupSearchButton(forPadSidebar: isInPadSidebar)
+        setupFilterButton(forPadSidebar: barButtonItemsAreForPadSidebar)
+        setupSearchButton(forPadSidebar: barButtonItemsAreForPadSidebar)
 
         if #available(iOS 26.0, *),
-           isInPadSidebar,
+           barButtonItemsAreForPadSidebar,
            let filterHosting = filterButton.customView,
            let searchHosting = searchButton.customView {
             // Combine the two right-side icons into a single customView so
@@ -755,6 +753,8 @@ final class BookmarksTableViewController: HostedCollectionViewController {
                 button.tintAdjustmentMode = .normal
             }
 
+            // Matches the theme mode `themeDidChange` set, for a button rebuilt as the split view collapses.
+            button.overrideUserInterfaceStyle = overrideUserInterfaceStyle
             filterButtonView = button
             filterButton = UIBarButtonItem(customView: button)
         }
@@ -1282,9 +1282,7 @@ extension BookmarksTableViewController {
 
 extension BookmarksTableViewController: PadSidebarAdapting {
     func padSidebarDidChange() {
-        guard isInPadSidebar != barButtonItemsAreForPadSidebar else { return }
         updateBarButtonItems()
-        filterButtonView?.overrideUserInterfaceStyle = overrideUserInterfaceStyle
         updateButtonColors()
     }
 }

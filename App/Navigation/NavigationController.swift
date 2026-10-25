@@ -940,14 +940,11 @@ final class NavigationController: UINavigationController, Themeable {
         viewControllers.forEach(updateBarMinimization(for:))
     }
 
-    /// True for a nav controller that is a column of the iPad sidebar: one inside the tab bar controller while the split view is expanded. A window narrow enough to collapse the split view makes the tab bar controller the whole screen, and its nav controllers look like the iPhone's. `splitViewController` is nil during initial setup (the tab bar is added to the split view after its child nav controllers are configured), which counts as expanded until `refreshSidebarChrome` finds out otherwise.
+    /// True for a nav controller that is a column of the iPad sidebar (see `isInPadSidebar`), until `refreshSidebarChrome` finds out otherwise.
     ///
     /// A screen that belongs in the detail column (the posts page) only tops a sidebar column's stack while the split view collapses, before `isCollapsed` says so, so that stack isn't a sidebar column either. Styling it as one would swap the page's title for the sidebar's.
     private var isSidebarNavigationController: Bool {
-        UIDevice.current.userInterfaceIdiom == .pad
-            && tabBarController != nil
-            && splitViewController?.isCollapsed != true
-            && (topViewController as? HasSplitViewPreference)?.prefersSecondaryViewController != true
+        isInPadSidebar && (topViewController as? HasSplitViewPreference)?.prefersSecondaryViewController != true
     }
 
     /// Whether the sidebar chrome has gone on since `removeSidebarChrome` last took it off, so a split view collapse knows to undo it.
@@ -963,7 +960,7 @@ final class NavigationController: UINavigationController, Themeable {
     func refreshSidebarChrome() {
         guard isViewLoaded else { return }
         // Screens rebuild their own bar items first, so the sidebar chrome goes on (or comes off) around the ones that stay.
-        for case let screen as PadSidebarAdapting in viewControllers {
+        for case let screen as PadSidebarAdapting in viewControllers where screen.isInPadSidebar != screen.barButtonItemsAreForPadSidebar {
             screen.padSidebarDidChange()
         }
         if #available(iOS 26.0, *) {
@@ -1002,15 +999,9 @@ final class NavigationController: UINavigationController, Themeable {
     private func restoreBarButtonItems(replacedForSidebarIn viewController: UIViewController) {
         let navigationItem = viewController.navigationItem
         func restored(_ items: [UIBarButtonItem]) -> [UIBarButtonItem]? {
-            var originals: [UIBarButtonItem] = []
-            for item in items {
-                if let standIn = item as? SidebarStandInBarButtonItem {
-                    if let original = standIn.original {
-                        originals.append(original)
-                    }
-                } else {
-                    originals.append(item)
-                }
+            let originals = items.compactMap { item in
+                guard let standIn = item as? SidebarStandInBarButtonItem else { return item }
+                return standIn.original
             }
             return originals.isEmpty ? nil : originals
         }

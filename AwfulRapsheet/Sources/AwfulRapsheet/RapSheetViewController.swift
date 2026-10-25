@@ -72,12 +72,9 @@ public final class RapSheetViewController: ViewController, ContentRefreshable {
     /// and a message.
     public override var title: String? {
         didSet {
-            // Sized to the text (rather than stretched between the bar items, as the posts page's
-            // two-line label is) so UIKit centres it in the bar like the system title it replaces.
             let label = navigationItem.titleLabel
-            label.text = title
-            label.autoresizingMask = []
             label.fitsToText = true
+            label.text = title
         }
     }
 
@@ -670,8 +667,7 @@ public final class RapSheetViewController: ViewController, ContentRefreshable {
 
     // MARK: - Navigation bar
 
-    /// Whether the bar items were last built for the iPad sidebar (see `isInPadSidebar`).
-    private var barButtonItemsAreForPadSidebar = false
+    public private(set) var barButtonItemsAreForPadSidebar = false
 
     /// Builds the Refresh + Filter icon pair, mirroring `ForumsTableViewController`'s Search + ⋯ combo.
     /// Right-bar items are ordered right-to-left, so Refresh ends up left of Filter (and both left of Done,
@@ -891,14 +887,16 @@ public final class RapSheetViewController: ViewController, ContentRefreshable {
     }
 }
 
-// MARK: - NavigationBarScrollTransitioning
+// MARK: - PadSidebarAdapting
 
 extension RapSheetViewController: PadSidebarAdapting {
     public func padSidebarDidChange() {
-        guard isViewLoaded, isInPadSidebar != barButtonItemsAreForPadSidebar else { return }
+        guard isViewLoaded else { return }
         updateRightBarButtons()
     }
 }
+
+// MARK: - NavigationBarScrollTransitioning
 
 extension RapSheetViewController: NavigationBarScrollTransitioning {
     public var navigationBarScrollView: UIScrollView? { renderView.scrollView }

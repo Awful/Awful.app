@@ -302,8 +302,7 @@ final class ForumsTableViewController: CollectionViewController, ContentRefresha
         }()
     }
 
-    /// Whether the bar items were last built for the iPad sidebar (see `isInPadSidebar`).
-    private var barButtonItemsAreForPadSidebar = false
+    private(set) var barButtonItemsAreForPadSidebar = false
 
     private func updateEditingState(favoriteCount: Int) {
         navigationItem.setLeftBarButton(favoriteCount > 0 ? editBarButton.item : nil, animated: true)
@@ -627,7 +626,6 @@ private let tableSeparatorLeftMargin: CGFloat = 46
 
 extension ForumsTableViewController: PadSidebarAdapting {
     func padSidebarDidChange() {
-        guard isInPadSidebar != barButtonItemsAreForPadSidebar else { return }
         updateRightBarButtons()
         updateEditingState(favoriteCount: favoriteForumCountObserver.count)
         updateButtonColors()

@@ -12,9 +12,21 @@ public final class NavigationTitleLabel: UILabel {
         didSet { updateStyle() }
     }
 
-    /// Keeps the title to one line sized to its text, so the bar centres it like the system title.
+    /// Keeps the title to one line sized to its text, rather than stretched between the bar items, so the bar centres it like the system title.
     public var fitsToText = false {
-        didSet { updateStyle() }
+        didSet {
+            guard fitsToText != oldValue else { return }
+            autoresizingMask = fitsToText ? [] : [.flexibleWidth, .flexibleHeight]
+            updateStyle()
+        }
+    }
+
+    public override var text: String? {
+        didSet {
+            if fitsToText {
+                sizeToFit()
+            }
+        }
     }
 
     public override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
