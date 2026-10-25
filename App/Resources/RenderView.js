@@ -1537,11 +1537,13 @@ Awful.didToggleSpoiler = function(spoiler) {
  later when the element arrives).
 
  The post then settles: for a while after the jump, content above it finishing (images in posts revealed by Previous Posts or appended by endless scroll) is corrected for so the post stays put. See `Awful.keepViewportSteady`.
+
+ Returns true when the post sits so near the top of the document that framing it asks for a position at or above the top, which the scroll clamps to the top. False otherwise, including when the post isn't in the document.
  */
 Awful.jumpToPostWithID = function(postID, animated, topOffset) {
   var post = document.getElementById(postID);
   if (!post) {
-    return;
+    return false;
   }
 
   Awful.renderPostsAbove(post);
@@ -1557,6 +1559,7 @@ Awful.jumpToPostWithID = function(postID, animated, topOffset) {
     Awful.smoothScrollTarget = null;
     Awful.scrollProgrammatically(function() { window.scrollTo(0, targetPosition); });
   }
+  return targetPosition <= 0;
 };
 
 

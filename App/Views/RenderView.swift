@@ -836,22 +836,27 @@ extension RenderView {
     }
 
     /// Like `jumpToPost(identifiedBy:animated:topOffset:)`, but returns once the new offset has been painted.
-    func jumpToPostThenWaitForPaint(identifiedBy postID: String, animated: Bool = false, topOffset: CGFloat, waitingForPaint: Bool = true) async {
+    ///
+    /// - Returns: Whether framing the post asked for a position at or above the top of the document, so the scroll stopped at the top instead. WebKit's top is its scroll position zero, which ignores a top content inset.
+    @discardableResult
+    func jumpToPostThenWaitForPaint(identifiedBy postID: String, animated: Bool = false, topOffset: CGFloat, waitingForPaint: Bool = true) async -> Bool {
         let escapedPostID: String
         do {
             escapedPostID = try escapeForEval(postID)
         } catch {
             logger.warning("could not JSON-escape the post ID: \(error)")
-            return
+            return false
         }
+        var reachedTop = false
         do {
-            try await webView.eval("if (window.Awful) Awful.jumpToPostWithID(\(escapedPostID), \(animated), \(topOffset))")
+            reachedTop = try await webView.eval("window.Awful ? Awful.jumpToPostWithID(\(escapedPostID), \(animated), \(topOffset)) : false") as? Bool ?? false
         } catch {
             mentionError(error, explanation: "could not evaluate jumpToPostWithID")
         }
         if waitingForPaint {
             await waitForNextPaint()
         }
+        return reachedTop
     }
 
     #if DEBUG

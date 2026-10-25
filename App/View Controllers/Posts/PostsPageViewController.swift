@@ -168,7 +168,7 @@ final class PostsPageViewController: ViewController {
     /// so until something really scrolls the bar stays at its opaque resting state.
     private var hasScrolledSinceRender = false
 
-    /// Whether the current document opened at the top with nothing staged and nothing has scrolled it since, so it stays at its resting offset. See `settleAtTop`.
+    /// Whether the current document opened at the top (with nothing staged, or restored to a reader who left it there) and nothing has scrolled it since, so it stays at its resting offset. See `settleAtTop`.
     private var keepsRestingAtTop = false
 
     /// Whether the view has been laid out in a window, which is when the top inset for the bars
@@ -3171,13 +3171,10 @@ extension PostsPageViewController: RenderViewDelegate {
         } else if let anchorID = anchorPostIDAfterLoading,
                   posts.contains(where: { $0.postID == anchorID })
         {
-            // (chrome - deltaY) reproduces the saved scroll position. Staged values stay
-            // set so the tweet-loaded callback can re-apply after layout shifts.
+            // Staged values stay set so the tweet-loaded callback can re-apply after layout shifts.
             noteScrollSinceRender()
-            let delta = anchorDeltaAfterLoading ?? 0
             scrollIntoPlace = { [weak self] in
-                guard let self else { return }
-                await renderView.jumpToPostThenWaitForPaint(identifiedBy: anchorID, topOffset: self.postsView.topInsetForPostFraming - delta)
+                await self?.jumpToRestorationAnchor(identifiedBy: anchorID)
             }
         } else if let fraction = scrollToFractionAfterLoading, fraction > 0 {
             noteScrollSinceRender()
@@ -3253,6 +3250,15 @@ extension PostsPageViewController: RenderViewDelegate {
         }
     }
 
+    /// Puts the staged anchor post where the reader left it: (chrome - deltaY) reproduces the saved scroll position. A page left resting at its top saves its first post at no offset, which asks for a position above the document's top. WebKit stops that at its scroll position zero, which ignores the inset for the bars, so the page goes to its resting offset instead and stays there like a fresh one (see `settleAtTop`).
+    private func jumpToRestorationAnchor(identifiedBy anchorID: String, waitingForPaint: Bool = true) async {
+        let delta = anchorDeltaAfterLoading ?? 0
+        let reachedTop = await postsView.renderView.jumpToPostThenWaitForPaint(identifiedBy: anchorID, topOffset: postsView.topInsetForPostFraming - delta, waitingForPaint: waitingForPaint)
+        guard reachedTop, anchorPostIDAfterLoading == anchorID else { return }
+        keepsRestingAtTop = true
+        moveToRestingOffset()
+    }
+
     /// WebKit (as of iOS 27) sometimes moves a document resting at the top to its scroll position zero well after it has loaded, as posts below are measured, say. That ignores the inset the posts page sets for the bars and leaves the top of the page under them, so put it back. See `settleAtTop`.
     func keepRestingAtTopIfReset() {
         let scrollView = postsView.renderView.scrollView
@@ -3313,11 +3319,9 @@ extension PostsPageViewController: RenderViewDelegate {
                 // target is abandoned in `cancelPendingScrollRestoration()` once the user
                 // begins dragging, so this never fights a user scroll.
                 noteScrollSinceRender()
-                let delta = anchorDeltaAfterLoading ?? 0
-                postsView.renderView.jumpToPost(
-                    identifiedBy: anchorID,
-                    topOffset: postsView.topInsetForPostFraming - delta
-                )
+                Task { [weak self] in
+                    await self?.jumpToRestorationAnchor(identifiedBy: anchorID, waitingForPaint: false)
+                }
             } else if let fraction = scrollToFractionAfterLoading, fraction > 0 {
                 noteScrollSinceRender()
                 var offset = postsView.renderView.scrollView.fractionalContentOffset
