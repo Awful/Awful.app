@@ -285,6 +285,9 @@ final class SidebarTitleView: UIView {
     /// The text's natural width, measured once per title/font change.
     private var naturalTextWidth: CGFloat = 0
 
+    /// The screen's own title view this one stands in for (the posts page's two-line label, say), put back when the split view collapses and the sidebar styling comes off.
+    var replacedTitleView: UIView?
+
     /// The hosting view's edge constraints: `layoutSubviews()` places the text by setting their constants, the bar having clamped this view to the span between its item clusters.
     private var hostingLeadingConstraint: NSLayoutConstraint?
     private var hostingTrailingConstraint: NSLayoutConstraint?
@@ -934,10 +937,13 @@ final class NavigationController: UINavigationController, Themeable {
     }
 
     /// True for a nav controller that is a column of the iPad sidebar: one inside the tab bar controller while the split view is expanded. A window narrow enough to collapse the split view makes the tab bar controller the whole screen, and its nav controllers look like the iPhone's. `splitViewController` is nil during initial setup (the tab bar is added to the split view after its child nav controllers are configured), which counts as expanded until `refreshSidebarChrome` finds out otherwise.
+    ///
+    /// A screen that belongs in the detail column (the posts page) only tops a sidebar column's stack while the split view collapses, before `isCollapsed` says so, so that stack isn't a sidebar column either. Styling it as one would swap the page's title for the sidebar's.
     private var isSidebarNavigationController: Bool {
         UIDevice.current.userInterfaceIdiom == .pad
             && tabBarController != nil
             && splitViewController?.isCollapsed != true
+            && (topViewController as? HasSplitViewPreference)?.prefersSecondaryViewController != true
     }
 
     /// Whether the sidebar chrome has gone on since `removeSidebarChrome` last took it off, so a split view collapse knows to undo it.
@@ -976,6 +982,11 @@ final class NavigationController: UINavigationController, Themeable {
             updateSharedBackgroundVisibility(for: topVC)
         }
         isStyledAsSidebar = false
+        // That put the bar at its resting state, so a screen already scrolled (the posts page the collapse brought over) takes it back to its real offset, as `didShow` does.
+        if LiquidGlass.usesGlassNavigationBar, let screen = topViewController as? NavigationBarScrollProgressProviding {
+            invalidateScrollProgressCache()
+            screen.resyncNavigationBarScrollProgress()
+        }
     }
 
     /// Undoes `replaceSidebarBarButtonItems` and the sidebar's title view.
@@ -1001,8 +1012,8 @@ final class NavigationController: UINavigationController, Themeable {
         if let rights = navigationItem.rightBarButtonItems, rights.contains(where: { $0 is SidebarStandInBarButtonItem }) {
             navigationItem.rightBarButtonItems = restored(rights)
         }
-        if navigationItem.titleView is SidebarTitleView {
-            navigationItem.titleView = nil
+        if let sidebarTitleView = navigationItem.titleView as? SidebarTitleView {
+            navigationItem.titleView = sidebarTitleView.replacedTitleView
         }
     }
 
@@ -1279,6 +1290,7 @@ final class NavigationController: UINavigationController, Themeable {
             } else {
                 let titleView = SidebarTitleView(title: topVC.title ?? "", color: textColor, roundedFont: roundedFont)
                 titleView.sizeToFit()
+                titleView.replacedTitleView = topVC.navigationItem.titleView
                 topVC.navigationItem.titleView = titleView
             }
 
