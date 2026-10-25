@@ -4,26 +4,50 @@
 
 import UIKit
 
+/// The label `UINavigationItem.titleLabel` puts in the bar. On iPhone it shows two smaller lines. On iPad it shows one larger line, except in a window narrow enough to be compact width, where it takes the iPhone style, restyling itself as the window resizes.
+public final class NavigationTitleLabel: UILabel {
+
+    /// The theme the post title font sizes and weights come from.
+    public var theme: Theme = .defaultTheme() {
+        didSet { updateStyle() }
+    }
+
+    /// Keeps the title to one line sized to its text, so the bar centres it like the system title.
+    public var fitsToText = false {
+        didSet { updateStyle() }
+    }
+
+    public override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        if traitCollection.horizontalSizeClass != previousTraitCollection?.horizontalSizeClass {
+            updateStyle()
+        }
+    }
+
+    fileprivate func updateStyle() {
+        // The device decides first, so an iPhone keeps its style even where it's regular width (a large iPhone in landscape, the unfolded iPhone Duo). A size class that isn't known yet, before the label is in a window, counts as wide.
+        let usesPadStyle = UIDevice.current.userInterfaceIdiom == .pad && traitCollection.horizontalSizeClass != .compact
+        let keySuffix = usesPadStyle ? "Pad" : "Phone"
+        let sizeAdjustment = theme[double: "postTitleFontSizeAdjustment\(keySuffix)"] ?? (usesPadStyle ? 0 : -1)
+        let weight = theme["postTitleFontWeight\(keySuffix)"].flatMap(FontWeight.init(rawValue:))?.weight ?? .semibold
+        font = UIFont.preferredFontForTextStyle(.callout, fontName: nil, sizeAdjustment: sizeAdjustment, weight: weight)
+        numberOfLines = fitsToText || usesPadStyle ? 1 : 2
+        if fitsToText {
+            sizeToFit()
+        }
+    }
+}
+
 public extension UINavigationItem {
-    /// A replacement label for the title that shows two lines on iPhone. The web-content
-    /// screens (posts, a message, the rap sheet) colour it through `updateTitleLabelTextColor`
-    /// as the iOS 26 glass bar goes transparent; the system title is coloured by the navigation
-    /// controller's appearance instead.
-    var titleLabel: UILabel {
-        let label: UILabel = (titleView as? UILabel) ?? {
-            let theme = Theme.defaultTheme()
-            let label = UILabel(frame: CGRect(x: 0, y: 0, width: 375, height: 44))
+    /// A replacement label for the title, two lines on iPhone and in a narrow iPad window (see `NavigationTitleLabel`). The web-content screens (posts, a message, the rap sheet) colour it through `updateTitleLabelTextColor` as the iOS 26 glass bar goes transparent. The system title is coloured by the navigation controller's appearance instead.
+    var titleLabel: NavigationTitleLabel {
+        let label: NavigationTitleLabel = (titleView as? NavigationTitleLabel) ?? {
+            let label = NavigationTitleLabel(frame: CGRect(x: 0, y: 0, width: 375, height: 44))
             label.autoresizingMask = [.flexibleWidth, .flexibleHeight]
             label.textAlignment = .center
-            label.textColor = theme["navigationBarTextColor"]!
+            label.textColor = label.theme["navigationBarTextColor"]!
             label.accessibilityTraits.insert(.header)
-            switch UIDevice.current.userInterfaceIdiom {
-            case .pad:
-                label.font = UIFont.preferredFontForTextStyle(.callout, fontName: nil, sizeAdjustment: theme[double: "postTitleFontSizeAdjustmentPad"]!, weight: FontWeight(rawValue: theme["postTitleFontWeightPad"]!)!.weight)
-            default:
-                label.font = UIFont.preferredFontForTextStyle(.callout, fontName: nil, sizeAdjustment: theme[double: "postTitleFontSizeAdjustmentPhone"]!, weight: FontWeight(rawValue: theme["postTitleFontWeightPhone"]!)!.weight)
-                label.numberOfLines = 2
-            }
+            label.updateStyle()
             return label
         }()
         // Sometimes the titleView is removed from the navigation bar. Seems related to the app moving to/from the background? Its superview becomes `nil` even though it's still the navigation item's `titleView`. Simply setting `titleView` again isn't enough in that scenario, we need to `nil` it out first.

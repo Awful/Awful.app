@@ -2318,7 +2318,7 @@ final class PostsPageViewController: ViewController {
 
         self.dismiss(animated: false) {
             let rapSheetVC = RapSheetViewController(user: self.selectedUser!, handlers: .awful)
-            if UIDevice.current.userInterfaceIdiom == .pad {
+            if self.presentsSecondaryScreensAsSheets {
                 self.present(rapSheetVC.enclosingNavigationController, animated: true, completion: nil)
             } else {
                 self.navigationController?.pushViewController(rapSheetVC, animated: true)
@@ -2794,11 +2794,7 @@ final class PostsPageViewController: ViewController {
         }
 
         navigationItem.titleLabel.text = title
-        navigationItem.titleLabel.font = fontForPostTitle(from: theme, idiom: UIDevice.current.userInterfaceIdiom)
-
-        if UIDevice.current.userInterfaceIdiom == .phone {
-            navigationItem.titleLabel.numberOfLines = 2
-        }
+        navigationItem.titleLabel.theme = theme
 
         if #available(iOS 26.0, *), LiquidGlass.isEnabled {
             // The bar rests opaque while the navigation controller restyles it below, so the title takes the theme's bar colour to match. The sync at the end brings the bar and the title back to the real scroll offset together, and the sampled colour is dropped first because the page background it was measured against has just changed.
@@ -3053,18 +3049,6 @@ final class PostsPageViewController: ViewController {
     private func updatePostsViewLayoutMargins() {
         // See commentary in `viewDidLoad()` about our layout strategy here. tl;dr layout margins were the highest-level approach available on all versions of iOS that Awful supported, so we'll use them exclusively to represent the safe area. Probably not necessary anymore.
         postsView.layoutMargins = view.safeAreaInsets
-    }
-
-    /// Safely retrieves font configuration from the theme with fallback defaults
-    private func fontForPostTitle(from theme: Theme, idiom: UIUserInterfaceIdiom) -> UIFont {
-        let sizeAdjustmentKey = idiom == .pad ? "postTitleFontSizeAdjustmentPad" : "postTitleFontSizeAdjustmentPhone"
-        let weightKey = idiom == .pad ? "postTitleFontWeightPad" : "postTitleFontWeightPhone"
-
-        let sizeAdjustment = theme[double: sizeAdjustmentKey] ?? (idiom == .pad ? 0 : -1)
-        let weightString = theme[weightKey] ?? "semibold"
-        let weight = FontWeight(rawValue: weightString)?.weight ?? .semibold
-
-        return UIFont.preferredFontForTextStyle(.callout, fontName: nil, sizeAdjustment: sizeAdjustment, weight: weight)
     }
 
     override func viewWillAppear(_ animated: Bool) {

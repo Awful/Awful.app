@@ -167,7 +167,7 @@ final class MessageViewController: ViewController, ContentRefreshable {
     }
 
     private func showUserScreen(_ viewController: UIViewController) {
-        if UIDevice.current.userInterfaceIdiom == .pad {
+        if presentsSecondaryScreensAsSheets {
             present(viewController.enclosingNavigationController, animated: true, completion: nil)
         } else {
             navigationController?.pushViewController(viewController, animated: true)

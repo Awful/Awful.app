@@ -76,9 +76,8 @@ public final class RapSheetViewController: ViewController, ContentRefreshable {
             // two-line label is) so UIKit centres it in the bar like the system title it replaces.
             let label = navigationItem.titleLabel
             label.text = title
-            label.numberOfLines = 1
             label.autoresizingMask = []
-            label.sizeToFit()
+            label.fitsToText = true
         }
     }
 

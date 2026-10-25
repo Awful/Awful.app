@@ -253,9 +253,14 @@ final class LepersFilterHostingController: UIHostingController<AnyView> {
         if let sheet = sheetPresentationController {
             sheet.detents = [.medium(), .large()]
             sheet.prefersGrabberVisible = true
-            if UIDevice.current.userInterfaceIdiom == .pad {
-                sheet.selectedDetentIdentifier = .large
-            }
+        }
+    }
+
+    /// On iPad the medium detent is too short for the form, so open at the large detent there, unless the window is narrow enough to be laid out like an iPhone.
+    override func viewIsAppearing(_ animated: Bool) {
+        super.viewIsAppearing(animated)
+        if let traits = view.window?.traitCollection, traits.userInterfaceIdiom == .pad, traits.horizontalSizeClass != .compact {
+            sheetPresentationController?.selectedDetentIdentifier = .large
         }
     }
 

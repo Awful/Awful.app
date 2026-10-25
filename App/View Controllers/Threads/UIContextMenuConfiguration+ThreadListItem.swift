@@ -167,7 +167,7 @@ extension UIContextMenuConfiguration {
                 image: UIImage(named: "user-profile")!.withRenderingMode(.alwaysTemplate),
                 handler: { action in
                     let profile = ProfileViewController(user: author)
-                    if presenter.traitCollection.userInterfaceIdiom == .pad {
+                    if presenter.presentsSecondaryScreensAsSheets {
                         presenter.present(profile.enclosingNavigationController, animated: true)
                     } else {
                         presenter.navigationController?.pushViewController(profile, animated: true)

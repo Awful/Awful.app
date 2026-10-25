@@ -525,7 +525,7 @@ final class ForumsTableViewController: CollectionViewController, ContentRefresha
 
     @objc private func showGlossary() {
         let glossary = GlossaryHostingController()
-        if traitCollection.userInterfaceIdiom == .pad {
+        if presentsSecondaryScreensAsSheets {
             glossary.modalPresentationStyle = .pageSheet
         } else {
             glossary.modalPresentationStyle = .fullScreen

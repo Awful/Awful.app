@@ -149,6 +149,11 @@ extension UITableView {
 }
 
 extension UIViewController {
+    /// Whether this screen opens other screens (a profile, a rap sheet) as sheets rather than pushing them: on iPad, except where its split view has collapsed to one column in a narrow window and it behaves like an iPhone. iPhones always push, including a large one in landscape or the unfolded iPhone Duo.
+    var presentsSecondaryScreensAsSheets: Bool {
+        traitCollection.userInterfaceIdiom == .pad && splitViewController?.isCollapsed != true
+    }
+
     /// Returns the view controller's navigation controller, lazily creating a NavigationController if needed. Created navigation controllers adopt the modalPresentationStyle of the view controller.
     var enclosingNavigationController: UINavigationController {
         if let nav = navigationController { return nav }

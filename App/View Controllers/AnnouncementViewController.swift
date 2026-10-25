@@ -281,7 +281,7 @@ final class AnnouncementViewController: ViewController {
             handler: { [weak self] _ in
                 guard let self else { return }
                 let rapSheetVC = RapSheetViewController(user: user, handlers: .awful)
-                if self.traitCollection.userInterfaceIdiom == .pad || self.navigationController == nil {
+                if self.presentsSecondaryScreensAsSheets || self.navigationController == nil {
                     self.present(rapSheetVC.enclosingNavigationController, animated: true)
                 }
                 else {
