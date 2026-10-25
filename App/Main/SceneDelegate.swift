@@ -180,6 +180,8 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // `background`). `willResignActive` runs synchronously on the main queue as part
         // of the resign transition, so we catch the state earlier.
         snapshotFallback(for: scene)
+
+        appDelegateIfLoaded?.sceneWillResignActive()
     }
 
     func sceneDidEnterBackground(_ scene: UIScene) {
@@ -203,9 +205,7 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneDidBecomeActive(_ scene: UIScene) {
         guard let appDelegate = appDelegateIfLoaded else { return }
 
-        // Sync dark mode with system appearance on every foreground entry. The old
-        // `applicationDidBecomeActive` path no longer fires under the scene lifecycle.
-        appDelegate.automaticallyUpdateDarkModeEnabledIfNecessary()
+        appDelegate.sceneDidBecomeActive()
 
         guard !didProcessConnectionLaunch else { return }
         didProcessConnectionLaunch = true

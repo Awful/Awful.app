@@ -156,16 +156,18 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
 
-    func applicationWillResignActive(_ application: UIApplication) {
+    /// Called by `SceneDelegate`, as UIKit doesn't send `applicationWillResignActive` to an app using the scene lifecycle.
+    func sceneWillResignActive() {
         SmilieKeyboardSetIsAwfulAppActive(false)
 
         updateShortcutItems()
     }
 
-    func applicationDidBecomeActive(_ application: UIApplication) {
+    /// Called by `SceneDelegate`, as UIKit doesn't send `applicationDidBecomeActive` to an app using the scene lifecycle.
+    func sceneDidBecomeActive() {
         SmilieKeyboardSetIsAwfulAppActive(true)
-        
-        // Screen brightness may have changed while the app wasn't paying attention.
+
+        // The system appearance may have changed while the app wasn't paying attention.
         automaticallyUpdateDarkModeEnabledIfNecessary()
     }
     
