@@ -222,15 +222,15 @@ extension LoginViewController {
         let options = UIView.AnimationOptions(rawValue: UInt(curve.uintValue) << 16)
         UIView.animate(withDuration: duration.doubleValue, delay: 0, options: options, animations: {
             let keyboardFrame = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
-            if self.view.window != nil {
-                let windowKeyboardFrame = self.view.window!.convert(keyboardFrame, from: nil)
-                let localKeyboardFrame = self.view.convert(windowKeyboardFrame, from: nil)
+            if let window = self.view.window, let screen = notification.object as? UIScreen ?? window.windowScene?.screen {
+                // The frame is in screen coordinates, which aren't the window's when it doesn't fill the screen (Split View, Stage Manager).
+                let localKeyboardFrame = self.view.convert(keyboardFrame, from: screen.coordinateSpace)
                 let insetBottom = localKeyboardFrame.intersection(self.view.bounds).height
 
                 self.scrollView.contentInset.bottom = insetBottom
                 self.scrollView.verticalScrollIndicatorInsets.bottom = insetBottom
             }
-            
+
         }, completion: nil)
     }
 }

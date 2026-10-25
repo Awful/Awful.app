@@ -63,6 +63,10 @@ img {
   max-width: 100%;
 }
 
+// Text and controls keep clear of a side safe area (the vertical bar on the folded iPhone Duo, the notch in landscape), while backgrounds run the full width beneath it.
+@inset-left: env(safe-area-inset-left);
+@inset-right: env(safe-area-inset-right);
+
 /* First section: avatar, custom title, "about me", profile image. */
 
 /* Avatar and custom title. */
@@ -70,6 +74,8 @@ header {
 	color: #fff;
 	text-shadow: 1px 1px 1px #000;
 	padding: 1em;
+	padding-left: calc(1em + @inset-left);
+	padding-right: calc(1em + @inset-right);
 	background: rgba(0,0,0,.5);
   
   .bbc-center {
@@ -80,12 +86,16 @@ header {
 /* About me. */
 p {
   margin: 1em;
+  margin-left: calc(1em + @inset-left);
+  margin-right: calc(1em + @inset-right);
 }
 
 /* Profile image (users with plat can include one). */
 section > img {
   display: block;
   margin: 1em auto;
+  padding-left: @inset-left;
+  padding-right: @inset-right;
 }
 
 /* Rap Sheet and Post History buttons, side by side under the profile. */
@@ -93,6 +103,8 @@ section > img {
   display: flex;
   gap: 0.75em;
   margin: 1em;
+  margin-left: calc(1em + @inset-left);
+  margin-right: calc(1em + @inset-right);
 
   button {
     flex: 1;
@@ -148,6 +160,7 @@ table caption {
   color: #fff;
   background: hsl(200, 2%, 69%) repeat-x;
   padding: 0.2em 0.5em;
+  padding-left: calc(0.5em + @inset-left);
   
   .dark & {
     background: #151515;
@@ -160,13 +173,14 @@ tr {
 
 th {
   text-align: left;
-  padding-left: 1em;
+  padding-left: calc(1em + @inset-left);
   width: 50%;
 }
 
 /* Blue Settings.app-like text for the current value. */
 td {
   color: hsl(217, 40%, 37%);
+  padding-right: @inset-right;
   
   .dark & {
     color: hsl(209, 100%, 72%);

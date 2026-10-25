@@ -61,21 +61,17 @@ final class ThreadTagPickerViewController: ViewController {
     func present(from presentingViewController: UIViewController, sourceView: UIView) {
         presentingView = view
         
-        let presentedViewController: UIViewController
-        if UIDevice.current.userInterfaceIdiom == .pad {
-            presentedViewController = self
-        } else {
-            presentedViewController = enclosingNavigationController
-        }
+        // A picker an earlier sheet wrapped stays in that navigation controller.
+        let presentedViewController = navigationController ?? self
         presentedViewController.modalPresentationStyle = .popover
-        presentingViewController.present(presentedViewController, animated: true)
-        
+        // Before presenting, so the delegate is asked about adapting to a sheet.
         if let popover = presentedViewController.popoverPresentationController {
             popover.delegate = self
             popover.permittedArrowDirections = [.up, .down]
             popover.sourceRect = sourceView.bounds
             popover.sourceView = sourceView
         }
+        presentingViewController.present(presentedViewController, animated: true)
     }
     
     func dismiss() {
@@ -239,6 +235,11 @@ extension ThreadTagPickerViewController: UIPopoverPresentationControllerDelegate
     
     func popoverPresentationControllerDidDismissPopover(_ popoverPresentationController: UIPopoverPresentationController) {
         delegate?.didDismissPicker(self)
+    }
+
+    /// Wraps the picker in a navigation controller when the popover adapts to a sheet, as it does at any compact width, so the sheet shows the picker's Cancel and Done buttons.
+    func presentationController(_ controller: UIPresentationController, viewControllerForAdaptivePresentationStyle style: UIModalPresentationStyle) -> UIViewController? {
+        navigationController == nil ? enclosingNavigationController : nil
     }
 }
 
