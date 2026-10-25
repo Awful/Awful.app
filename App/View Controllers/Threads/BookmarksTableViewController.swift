@@ -644,11 +644,22 @@ final class BookmarksTableViewController: HostedCollectionViewController {
         tabBarItem.image = UIImage(named: "bookmarks")
         tabBarItem.selectedImage = UIImage(named: "bookmarks-filled")
 
-        setupFilterButton()
-        setupSearchButton()
+        updateBarButtonItems()
+
+        themeDidChange()
+    }
+
+    /// Whether the bar items were last built for the iPad sidebar (see `isInPadSidebar`).
+    private var barButtonItemsAreForPadSidebar = false
+
+    private func updateBarButtonItems() {
+        let isInPadSidebar = isInPadSidebar
+        barButtonItemsAreForPadSidebar = isInPadSidebar
+        setupFilterButton(forPadSidebar: isInPadSidebar)
+        setupSearchButton(forPadSidebar: isInPadSidebar)
 
         if #available(iOS 26.0, *),
-           LiquidGlass.affectsPadSidebar,
+           isInPadSidebar,
            let filterHosting = filterButton.customView,
            let searchHosting = searchButton.customView {
             // Combine the two right-side icons into a single customView so
@@ -667,8 +678,6 @@ final class BookmarksTableViewController: HostedCollectionViewController {
             navigationItem.leftBarButtonItem = editBarButton.item
             navigationItem.rightBarButtonItems = [filterButton, searchButton]
         }
-
-        themeDidChange()
     }
 
     private static func makeLayout(separatorLeadingInset: CGFloat, separatorColor: UIColor?) -> UICollectionViewLayout {
@@ -718,11 +727,11 @@ final class BookmarksTableViewController: HostedCollectionViewController {
         collectionView.setCollectionViewLayout(layout, animated: false)
     }
 
-    private func setupFilterButton() {
+    private func setupFilterButton(forPadSidebar: Bool) {
         let label = LocalizedString("bookmarks.filter.button.accessibility-label")
 
         if #available(iOS 26.0, *),
-           LiquidGlass.affectsPadSidebar,
+           forPadSidebar,
            let image = UIImage(systemName: "line.3.horizontal.decrease") {
             // iPad sidebar on iOS 26 renders bar buttons inside a glass panel,
             // which tints UIButton images via vibrancy. Use the SwiftUI
@@ -734,6 +743,7 @@ final class BookmarksTableViewController: HostedCollectionViewController {
                 target: self,
                 action: #selector(filterButtonTapped)
             )
+            filterButtonView = nil
             filterButton = UIBarButtonItem(customView: hosting)
         } else {
             let button = UIButton(type: .system)
@@ -750,11 +760,11 @@ final class BookmarksTableViewController: HostedCollectionViewController {
         }
     }
 
-    private func setupSearchButton() {
+    private func setupSearchButton(forPadSidebar: Bool) {
         let label = LocalizedString("bookmarks.search.button.accessibility-label")
 
         if #available(iOS 26.0, *),
-           LiquidGlass.affectsPadSidebar,
+           forPadSidebar,
            let image = UIImage(named: "search") {
             let hosting = NavigationController.makeSidebarImageHostingView(
                 image: image,
@@ -762,6 +772,7 @@ final class BookmarksTableViewController: HostedCollectionViewController {
                 target: self,
                 action: #selector(searchButtonTapped)
             )
+            searchButtonView = nil
             searchButton = UIBarButtonItem(customView: hosting)
         } else {
             let button = UIButton(type: .system)
@@ -893,7 +904,7 @@ final class BookmarksTableViewController: HostedCollectionViewController {
 
         // The iOS 26 paths — glass on, or the iPad sidebar's hosting views with glass reduced —
         // show an active filter/search by dimming; the classic path recolors instead.
-        let dimsActiveButtons = LiquidGlass.isEnabled || LiquidGlass.affectsPadSidebar
+        let dimsActiveButtons = LiquidGlass.isEnabled || barButtonItemsAreForPadSidebar
         let filterAlpha: CGFloat = dimsActiveButtons && (isFilterActive || isFilterMenuOpen) ? 0.5 : 1.0
         let searchAlpha: CGFloat = dimsActiveButtons && isSearchVisible ? 0.5 : 1.0
         filterButton?.customView?.alpha = filterAlpha
@@ -1266,6 +1277,15 @@ extension BookmarksTableViewController {
             configuration.preferredMenuElementOrder = .fixed
         }
         return configuration
+    }
+}
+
+extension BookmarksTableViewController: PadSidebarAdapting {
+    func padSidebarDidChange() {
+        guard isInPadSidebar != barButtonItemsAreForPadSidebar else { return }
+        updateBarButtonItems()
+        filterButtonView?.overrideUserInterfaceStyle = overrideUserInterfaceStyle
+        updateButtonColors()
     }
 }
 

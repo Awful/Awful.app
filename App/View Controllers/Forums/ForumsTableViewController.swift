@@ -302,6 +302,9 @@ final class ForumsTableViewController: CollectionViewController, ContentRefresha
         }()
     }
 
+    /// Whether the bar items were last built for the iPad sidebar (see `isInPadSidebar`).
+    private var barButtonItemsAreForPadSidebar = false
+
     private func updateEditingState(favoriteCount: Int) {
         navigationItem.setLeftBarButton(favoriteCount > 0 ? editBarButton.item : nil, animated: true)
 
@@ -417,8 +420,9 @@ final class ForumsTableViewController: CollectionViewController, ContentRefresha
     /// floated over its icon, the arrangement Lepers uses.
     private func updateRightBarButtons() {
         let canSearch = canSendPrivateMessages
+        barButtonItemsAreForPadSidebar = isInPadSidebar
 
-        if #available(iOS 26.0, *), LiquidGlass.affectsPadSidebar,
+        if #available(iOS 26.0, *), barButtonItemsAreForPadSidebar,
            let moreImage = UIImage(systemName: "ellipsis") {
             // 17pt like Lepers' symbols: the hosting view scales the glyph to fill its box, so an
             // SF symbol at the 20pt default reads heavier than the 20pt Search asset beside it.
@@ -620,6 +624,15 @@ final class ForumsTableViewController: CollectionViewController, ContentRefresha
 
 private let tableBottomMargin: CGFloat = 14
 private let tableSeparatorLeftMargin: CGFloat = 46
+
+extension ForumsTableViewController: PadSidebarAdapting {
+    func padSidebarDidChange() {
+        guard isInPadSidebar != barButtonItemsAreForPadSidebar else { return }
+        updateRightBarButtons()
+        updateEditingState(favoriteCount: favoriteForumCountObserver.count)
+        updateButtonColors()
+    }
+}
 
 extension ForumsTableViewController: ForumListDataSourceDelegate {
     func themeForCells(in dataSource: ForumListDataSource) -> Theme {

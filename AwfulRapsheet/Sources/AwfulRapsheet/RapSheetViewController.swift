@@ -670,6 +670,9 @@ public final class RapSheetViewController: ViewController, ContentRefreshable {
 
     // MARK: - Navigation bar
 
+    /// Whether the bar items were last built for the iPad sidebar (see `isInPadSidebar`).
+    private var barButtonItemsAreForPadSidebar = false
+
     /// Builds the Refresh + Filter icon pair, mirroring `ForumsTableViewController`'s Search + ⋯ combo.
     /// Right-bar items are ordered right-to-left, so Refresh ends up left of Filter (and both left of Done,
     /// where there is one).
@@ -678,6 +681,7 @@ public final class RapSheetViewController: ViewController, ContentRefreshable {
     /// `ForumsTableViewController` — pack both icons into a single customView stack there, routing them
     /// through `makeSidebarImageHostingView` so the glass sidebar doesn't mis-tint them.
     private func updateRightBarButtons() {
+        barButtonItemsAreForPadSidebar = isInPadSidebar
         // Presented as the root of our own navigation controller, so Done is the only way out.
         let doneItems = presentingViewController != nil && navigationController?.viewControllers.count == 1
             ? [doneItem]
@@ -698,7 +702,7 @@ public final class RapSheetViewController: ViewController, ContentRefreshable {
         let filterImage = UIImage(systemName: "line.3.horizontal.decrease", withConfiguration: filterConfiguration)
         let refreshImage = UIImage(systemName: "arrow.clockwise")
 
-        if #available(iOS 26.0, *), LiquidGlass.affectsPadSidebar {
+        if #available(iOS 26.0, *), barButtonItemsAreForPadSidebar {
             // The iPad glass sidebar tints plain UIButton images via vibrancy, so route both icons through
             // the SwiftUI `.glassEffect(.identity)` hosting view to preserve the theme's tint.
             var arranged: [UIView] = []
@@ -888,6 +892,13 @@ public final class RapSheetViewController: ViewController, ContentRefreshable {
 }
 
 // MARK: - NavigationBarScrollTransitioning
+
+extension RapSheetViewController: PadSidebarAdapting {
+    public func padSidebarDidChange() {
+        guard isViewLoaded, isInPadSidebar != barButtonItemsAreForPadSidebar else { return }
+        updateRightBarButtons()
+    }
+}
 
 extension RapSheetViewController: NavigationBarScrollTransitioning {
     public var navigationBarScrollView: UIScrollView? { renderView.scrollView }

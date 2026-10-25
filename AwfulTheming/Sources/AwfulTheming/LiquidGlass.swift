@@ -14,15 +14,6 @@ public enum LiquidGlass {
         return !UserDefaults.standard.bool(forKey: Settings.disableLiquidGlass.key)
     }
 
-    /// True on iOS 26+ iPad regardless of "Reduce Liquid Glass". That setting only swaps the
-    /// app's own bar appearances; UIKit keeps rendering the split view's sidebar column as a
-    /// flat glass panel (vibrancy-tinted labels and buttons, asymmetric title layout), so the
-    /// sidebar mitigations must key off this rather than `isEnabled`.
-    public static var affectsPadSidebar: Bool {
-        guard #available(iOS 26.0, *) else { return false }
-        return UIDevice.current.userInterfaceIdiom == .pad
-    }
-
     /// True on iOS 26+ regardless of "Reduce Liquid Glass". That setting hides the shared glass
     /// background behind the app's own bar button items (the iPad sidebar hides it whatever the
     /// setting, since iOS 27 started drawing platters there), but the system back button doesn't
@@ -41,6 +32,24 @@ public enum LiquidGlass {
     /// soft scroll-edge blur. An opaque bar instead leaves the one platter the app can't hide —
     /// the system back button's — stuck pale on a dark bar, with no API to tone it.
     public static var usesGlassNavigationBar: Bool { affectsBarButtonPlatters }
+}
+
+public extension UIViewController {
+    /// True on iOS 26+ while this screen is in the iPad split view's sidebar column, whatever "Reduce Liquid Glass" says. That setting only swaps the app's own bar appearances, while UIKit keeps rendering the sidebar column as a flat glass panel (vibrancy-tinted labels and buttons, asymmetric title layout), so the sidebar mitigations key off this rather than `LiquidGlass.isEnabled`.
+    ///
+    /// A window narrow enough to collapse the split view makes the tab bar controller the whole screen, styled like the iPhone's, so this goes false then. It's also false before the screen joins the tab bar controller, which is why a screen building its bar items from it adopts `PadSidebarAdapting` to build them again.
+    var isInPadSidebar: Bool {
+        guard #available(iOS 26.0, *) else { return false }
+        return traitCollection.userInterfaceIdiom == .pad
+            && tabBarController != nil
+            && splitViewController?.isCollapsed != true
+    }
+}
+
+/// A screen whose bar items differ in the iPad sidebar (see `isInPadSidebar`). Its navigation controller calls `padSidebarDidChange()` as it appears and whenever the split view collapses or expands, before restyling the bar around the screen's items.
+@MainActor
+public protocol PadSidebarAdapting: AnyObject {
+    func padSidebarDidChange()
 }
 
 /// Identifies the background view installed by `setLegacyOpaqueBackground(color:)`.

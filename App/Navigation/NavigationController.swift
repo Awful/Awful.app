@@ -139,8 +139,10 @@ final class GlassTextBarButtonView: UIView {
 final class EditBarButton {
     private weak var viewController: UIViewController?
     private var glassView: UIView?
-    /// Built once: Forums swaps the item in and out as its favourite count changes, and the same item keeps what the navigation controller set on it (`hidesSharedBackground`, tint).
+    /// Built once per kind (sidebar or not): Forums swaps the item in and out as its favourite count changes, and the same item keeps what the navigation controller set on it (`hidesSharedBackground`, tint).
     private var glassItem: UIBarButtonItem?
+    /// Whether `glassItem` was built for the iPad sidebar.
+    private var glassItemIsForPadSidebar = false
 
     init(for viewController: UIViewController) {
         self.viewController = viewController
@@ -153,11 +155,12 @@ final class EditBarButton {
             glassItem = nil
             return viewController.editButtonItem
         }
-        if let glassItem {
+        let isInPadSidebar = viewController.isInPadSidebar
+        if let glassItem, glassItemIsForPadSidebar == isInPadSidebar {
             return glassItem
         }
         let view: GlassTextBarButtonView
-        if LiquidGlass.affectsPadSidebar {
+        if isInPadSidebar {
             // The sidebar bar stays opaque, so the label reads the theme colour from the environment, and sits flush like the sidebar's other hosted items.
             view = GlassTextBarButtonView(
                 title: Self.title(isEditing: viewController.isEditing),
@@ -178,6 +181,7 @@ final class EditBarButton {
         glassView = view
         let item = UIBarButtonItem(customView: view)
         glassItem = item
+        glassItemIsForPadSidebar = isInPadSidebar
         return item
     }
 
@@ -188,7 +192,7 @@ final class EditBarButton {
 
     /// `bakedColor` is the theme's bar text colour while the bar rests on the screen (see NavigationBarScrollTransitioning), or nil once scrolled, when the label takes the mode colour the adaptive glass wants. The iPad sidebar's label follows the theme on its own.
     func setGlassGlyphColor(_ bakedColor: UIColor?, theme: Theme) {
-        guard #available(iOS 26.0, *), !LiquidGlass.affectsPadSidebar,
+        guard #available(iOS 26.0, *), !glassItemIsForPadSidebar,
               let view = glassView as? GlassTextBarButtonView else { return }
         view.update(color: bakedColor ?? theme.glassContentTextColor)
     }
@@ -958,6 +962,10 @@ final class NavigationController: UINavigationController, Themeable {
     /// Puts the sidebar chrome (title placement, toggle, opaque bar) on or takes it off to match `isSidebarNavigationController`, after a layout the appearance callbacks don't cover: a size transition that collapses or expands the split view.
     func refreshSidebarChrome() {
         guard isViewLoaded else { return }
+        // Screens rebuild their own bar items first, so the sidebar chrome goes on (or comes off) around the ones that stay.
+        for case let screen as PadSidebarAdapting in viewControllers {
+            screen.padSidebarDidChange()
+        }
         if #available(iOS 26.0, *) {
             if isSidebarNavigationController {
                 applySidebarAppearanceIfNeeded(with: theme)
