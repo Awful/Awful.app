@@ -299,6 +299,11 @@ private final class SidebarTrailingClusterBarButtonItem: UIBarButtonItem {
 /// `leftBarButtonItems` on repeat passes.
 private final class DetailSidebarToggleBarButtonItem: UIBarButtonItem {}
 
+/// An item `replaceSidebarBarButtonItems` put on a screen in the iPad sidebar, keeping the screen's own item it stands in for so that can go back when the split view collapses. No `original` means the sidebar added the item itself (the back button, the title spacer).
+private final class SidebarStandInBarButtonItem: UIBarButtonItem {
+    var original: UIBarButtonItem?
+}
+
 // MARK: - Sidebar Title View
 
 /// A titleView that uses SwiftUI Text with `.glassEffect(.identity)` to bypass
@@ -871,7 +876,7 @@ final class NavigationController: UINavigationController, Themeable {
 
         // Any tab-hosted screen whose scroll view just took the bar's trait (the lists, the
         // Lepers rap sheet) needs the tab bar looking elsewhere; pushed screens hide the tab bar.
-        if screen?.navigationBarScrollView != nil, tabBarController != nil, UIDevice.current.userInterfaceIdiom != .pad {
+        if screen?.navigationBarScrollView != nil, tabBarController != nil, !isSidebarNavigationController {
             installTabBarTraitBackdrop(for: viewController)
         }
 
@@ -1047,17 +1052,13 @@ final class NavigationController: UINavigationController, Themeable {
         // A tab's root screen arrives without a willShow, so catch it here.
         viewControllers.forEach(updateBarMinimization(for:))
 
-        if #available(iOS 26.0, *) {
-            applySidebarAppearanceIfNeeded(with: theme)
-        }
+        refreshSidebarChrome()
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        if #available(iOS 26.0, *) {
-            applySidebarAppearanceIfNeeded(with: theme)
-        }
+        refreshSidebarChrome()
     }
 
     func themeDidChange() {
@@ -1076,13 +1077,15 @@ final class NavigationController: UINavigationController, Themeable {
         viewControllers.forEach(updateBarMinimization(for:))
     }
 
-    /// True for a nav controller that is a column of the iPad sidebar. A nav controller inside
-    /// the tab bar controller is always a sidebar column on iPad; `splitViewController` isn't
-    /// consulted because it's nil during initial setup (the tab bar is added to the split view
-    /// AFTER its child nav controllers are configured).
+    /// True for a nav controller that is a column of the iPad sidebar: one inside the tab bar controller while the split view is expanded. A window narrow enough to collapse the split view makes the tab bar controller the whole screen, and its nav controllers look like the iPhone's. `splitViewController` is nil during initial setup (the tab bar is added to the split view after its child nav controllers are configured), which counts as expanded until `refreshSidebarChrome` finds out otherwise.
     private var isSidebarNavigationController: Bool {
-        UIDevice.current.userInterfaceIdiom == .pad && tabBarController != nil
+        UIDevice.current.userInterfaceIdiom == .pad
+            && tabBarController != nil
+            && splitViewController?.isCollapsed != true
     }
+
+    /// Whether the sidebar chrome has gone on since `removeSidebarChrome` last took it off, so a split view collapse knows to undo it.
+    private var isStyledAsSidebar = false
 
     /// Whether the app's own bar button items go without their shared glass background: under
     /// Reduce Liquid Glass everywhere, and in the iPad sidebar regardless of that setting. iOS 26
@@ -1093,12 +1096,60 @@ final class NavigationController: UINavigationController, Themeable {
         !LiquidGlass.isEnabled || isSidebarNavigationController
     }
 
-    /// Re-applies the sidebar chrome (title placement, toggle) after a layout the appearance
-    /// callbacks don't cover — a size transition that collapses or expands the split view.
+    /// Puts the sidebar chrome (title placement, toggle, opaque bar) on or takes it off to match `isSidebarNavigationController`, after a layout the appearance callbacks don't cover: a size transition that collapses or expands the split view.
     func refreshSidebarChrome() {
         guard isViewLoaded else { return }
         if #available(iOS 26.0, *) {
-            applySidebarAppearanceIfNeeded(with: theme)
+            if isSidebarNavigationController {
+                applySidebarAppearanceIfNeeded(with: theme)
+            } else if isStyledAsSidebar {
+                removeSidebarChrome()
+            }
+        }
+    }
+
+    /// Takes the sidebar chrome off a stack the split view collapsed into the whole screen, giving each screen back its own bar items and the bar its iPhone appearance.
+    @available(iOS 26.0, *)
+    private func removeSidebarChrome() {
+        awfulNavigationBar.forcedTintColor = nil
+        view.tintColor = nil
+        for viewController in viewControllers {
+            updateSidebarToggleItem(for: viewController)
+            restoreBarButtonItems(replacedForSidebarIn: viewController)
+        }
+        let topTheme = (topViewController as? Themeable)?.theme ?? theme
+        updateNavigationBarAppearance(with: topTheme, for: topViewController)
+        if let topVC = topViewController {
+            updateSharedBackgroundVisibility(for: topVC)
+        }
+        isStyledAsSidebar = false
+    }
+
+    /// Undoes `replaceSidebarBarButtonItems` and the sidebar's title view.
+    @available(iOS 26.0, *)
+    private func restoreBarButtonItems(replacedForSidebarIn viewController: UIViewController) {
+        let navigationItem = viewController.navigationItem
+        func restored(_ items: [UIBarButtonItem]) -> [UIBarButtonItem]? {
+            var originals: [UIBarButtonItem] = []
+            for item in items {
+                if let standIn = item as? SidebarStandInBarButtonItem {
+                    if let original = standIn.original {
+                        originals.append(original)
+                    }
+                } else {
+                    originals.append(item)
+                }
+            }
+            return originals.isEmpty ? nil : originals
+        }
+        if let lefts = navigationItem.leftBarButtonItems, lefts.contains(where: { $0 is SidebarStandInBarButtonItem }) {
+            navigationItem.leftBarButtonItems = restored(lefts)
+        }
+        if let rights = navigationItem.rightBarButtonItems, rights.contains(where: { $0 is SidebarStandInBarButtonItem }) {
+            navigationItem.rightBarButtonItems = restored(rights)
+        }
+        if navigationItem.titleView is SidebarTitleView {
+            navigationItem.titleView = nil
         }
     }
 
@@ -1357,6 +1408,7 @@ final class NavigationController: UINavigationController, Themeable {
     @available(iOS 26.0, *)
     private func applySidebarAppearanceIfNeeded(with theme: Theme) {
         guard isSidebarNavigationController else { return }
+        isStyledAsSidebar = true
 
         let textColor = theme[uicolor: "navigationBarTextColor"] ?? .label
 
@@ -1561,30 +1613,28 @@ final class NavigationController: UINavigationController, Themeable {
             let isEditButton = title == "Edit" || title == "Done"
                 || item === viewController.editButtonItem
 
+            let standIn: SidebarStandInBarButtonItem
             if isEditButton {
-                return makeEditBarButtonItem(for: viewController)
-            }
-
-            if !title.isEmpty {
-                return makeTextBarButtonItem(
+                standIn = makeEditBarButtonItem(for: viewController)
+            } else if !title.isEmpty {
+                standIn = makeTextBarButtonItem(
                     title: title,
                     target: item.target as AnyObject?,
                     action: item.action
                 )
-            }
-
-            // Image-based items — wrap in SwiftUI with .glassEffect(.identity)
-            // to bypass vibrancy, same as text items.
-            if let image = item.image {
-                return makeImageBarButtonItem(
+            } else if let image = item.image {
+                // Image-based items: wrap in SwiftUI with .glassEffect(.identity) to bypass vibrancy, same as text items.
+                standIn = makeImageBarButtonItem(
                     image: image,
                     accessibilityLabel: item.accessibilityLabel,
                     target: item.target as AnyObject?,
                     action: item.action
                 )
+            } else {
+                return item
             }
-
-            return item
+            standIn.original = item
+            return standIn
         }
 
         // Replace single items
@@ -1645,7 +1695,7 @@ final class NavigationController: UINavigationController, Themeable {
             // A lone leading item is fine even though the trailing cluster
             // is wider: SidebarTitleView re-centers its content on the bar
             // in layoutSubviews, whatever the item clusters weigh.
-            let backButton = UIBarButtonItem(customView: backHosting)
+            let backButton = SidebarStandInBarButtonItem(customView: backHosting)
             viewController.navigationItem.leftBarButtonItems = [backButton]
         }
 
@@ -1658,7 +1708,7 @@ final class NavigationController: UINavigationController, Themeable {
         // only: pushed SwiftUI screens must keep their leading slot empty
         // or their SwiftUI back button disappears.
         if !hasExistingLeft, viewControllers.first === viewController {
-            let hairline = UIBarButtonItem(customView: UIView(frame: CGRect(x: 0, y: 0, width: 1, height: 44)))
+            let hairline = SidebarStandInBarButtonItem(customView: UIView(frame: CGRect(x: 0, y: 0, width: 1, height: 44)))
             viewController.navigationItem.leftBarButtonItems = [hairline]
         }
     }
@@ -1690,7 +1740,7 @@ final class NavigationController: UINavigationController, Themeable {
         title: String,
         target: AnyObject?,
         action: Selector?
-    ) -> UIBarButtonItem {
+    ) -> SidebarStandInBarButtonItem {
         let content = SidebarButtonView(title: title) {
             if let target = target as? NSObject, let action {
                 target.perform(action, with: nil)
@@ -1699,7 +1749,7 @@ final class NavigationController: UINavigationController, Themeable {
         let hosting = UIHostingController(rootView: AnyView(content))
         hosting.view.backgroundColor = .clear
         hosting.view.sizeToFit()
-        return UIBarButtonItem(customView: hosting.view)
+        return SidebarStandInBarButtonItem(customView: hosting.view)
     }
 
     /// Creates a custom-view stand-in for a screen's plain system `editButtonItem`, for
@@ -1707,7 +1757,7 @@ final class NavigationController: UINavigationController, Themeable {
     /// tapped; a screen that changes its editing state some other way should use
     /// `EditBarButton` so it can call `setEditing(_:)`.
     @available(iOS 26.0, *)
-    private func makeEditBarButtonItem(for viewController: UIViewController) -> UIBarButtonItem {
+    private func makeEditBarButtonItem(for viewController: UIViewController) -> SidebarStandInBarButtonItem {
         let isEditing = viewController.isEditing
         // The action needs the view it lives in; hold it weakly so the view doesn't retain itself.
         final class ViewRef { weak var view: GlassTextBarButtonView? }
@@ -1723,7 +1773,7 @@ final class NavigationController: UINavigationController, Themeable {
             ref.view?.update(title: EditBarButton.title(isEditing: vc.isEditing), weight: vc.isEditing ? .bold : .regular)
         }
         ref.view = view
-        return UIBarButtonItem(customView: view)
+        return SidebarStandInBarButtonItem(customView: view)
     }
 
     /// Creates a custom-view bar button item for an image button, using SwiftUI
@@ -1734,14 +1784,14 @@ final class NavigationController: UINavigationController, Themeable {
         accessibilityLabel: String?,
         target: AnyObject?,
         action: Selector?
-    ) -> UIBarButtonItem {
+    ) -> SidebarStandInBarButtonItem {
         let hostingView = Self.makeSidebarImageHostingView(
             image: image,
             accessibilityLabel: accessibilityLabel,
             target: target,
             action: action
         )
-        return UIBarButtonItem(customView: hostingView)
+        return SidebarStandInBarButtonItem(customView: hostingView)
     }
 
     /// Builds a UIHostingController-hosted view wrapping `SidebarImageButtonView`
@@ -1875,10 +1925,9 @@ final class NavigationController: UINavigationController, Themeable {
     @objc func updateNavigationBarTintForScrollProgress(_ progress: NSNumber) {
         guard #available(iOS 26.0, *), LiquidGlass.usesGlassNavigationBar else { return }
 
-        // On iPad/macOS, only the detail column does the glass scroll transition.
-        // The sidebar (primary) keeps its opaque themed nav bar.
-        if UIDevice.current.userInterfaceIdiom == .pad, tabBarController != nil {
-            return // sidebar/primary — keep opaque
+        // The sidebar keeps its opaque themed nav bar. Only the detail column, or a collapsed split view's single column, does the glass scroll transition.
+        if isSidebarNavigationController {
+            return
         }
 
         // Reduce Liquid Glass never lets the bar go clear: it stays at the resting state.
@@ -2137,6 +2186,9 @@ final class NavigationController: UINavigationController, Themeable {
 
         let textColor = theme[uicolor: "navigationBarTextColor"] ?? .label
         let isSidebar = isSidebarNavigationController
+        if isSidebar {
+            isStyledAsSidebar = true
+        }
         let backImage: UIImage?
         let buttonTitleColor: UIColor?
         if #available(iOS 26.0, *), LiquidGlass.usesGlassNavigationBar, !isSidebar {
@@ -2293,9 +2345,7 @@ extension NavigationController: UINavigationControllerDelegate {
             if needsManualButtonTint {
                 // On iPad sidebar with iOS 26, replace text-based items with
                 // custom-view equivalents to bypass glass vibrancy.
-                if #available(iOS 26.0, *),
-                   UIDevice.current.userInterfaceIdiom == .pad,
-                   tabBarController != nil {
+                if #available(iOS 26.0, *), isSidebarNavigationController {
                     replaceSidebarBarButtonItems(for: viewController)
                 } else {
                     let buttonTintColor: UIColor
