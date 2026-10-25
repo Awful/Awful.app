@@ -9,10 +9,7 @@ import UIKit
 
 // MARK: - Sidebar Glass Bypass Views
 
-/// A SwiftUI button with `.glassEffect(.identity)` that bypasses the glass
-/// panel's vibrancy compositing for bar button items in the sidebar.
-/// Reads `navigationBarTextColor` from the theme environment so the color
-/// updates automatically when the user switches themes.
+/// A SwiftUI button with `.glassEffect(.identity)` that bypasses the glass panel's vibrancy compositing for bar button items in the sidebar. Reads `navigationBarTextColor` from the theme environment so the color updates automatically when the user switches themes.
 @available(iOS 26.0, *)
 private struct SidebarButtonView: View {
     let title: String
@@ -37,8 +34,7 @@ private struct SidebarButtonView: View {
     }
 }
 
-/// A SwiftUI image button with `.glassEffect(.identity)` that bypasses the
-/// glass panel's vibrancy compositing. Reads color from the theme environment.
+/// A SwiftUI image button with `.glassEffect(.identity)` that bypasses the glass panel's vibrancy compositing. Reads color from the theme environment.
 @available(iOS 26.0, *)
 private struct SidebarImageButtonView: View {
     let image: Image
@@ -66,15 +62,9 @@ private struct SidebarImageButtonView: View {
 
 // MARK: - Glass Text Bar Button
 
-/// A custom-view stand-in for a text bar button item (such as `editButtonItem`) on the iOS 26
-/// glass bar. The system item's label is composited through the platter's vibrancy, which
-/// tints it with the bar colour behind; hosting the text under `.glassEffect(.identity)`
-/// draws it in the given colour, the way the baked image items are.
+/// A custom-view stand-in for a text bar button item (such as `editButtonItem`) on the iOS 26 glass bar. The system item's label is composited through the platter's vibrancy, which tints it with the bar colour behind. Hosting the text under `.glassEffect(.identity)` draws it in the given colour, the way the baked image items are.
 ///
-/// On the iPhone bar the colour follows the scroll state (see `update(color:)`), and the
-/// label is inset so the platter keeps its pill shape. The iPad sidebar has neither: its bar
-/// stays opaque, so a nil `color` reads the theme's bar text colour from the environment
-/// instead, and the sidebar's own item spacing does without the inset.
+/// On the iPhone bar the colour follows the scroll state (see `update(color:)`), and the label is inset so the platter keeps its pill shape. The iPad sidebar has neither: its bar stays opaque, so a nil `color` reads the theme's bar text colour from the environment instead, and the sidebar's own item spacing does without the inset.
 @available(iOS 26.0, *)
 final class GlassTextBarButtonView: UIView {
     private let hostingController: UIHostingController<AnyView>
@@ -143,20 +133,13 @@ final class GlassTextBarButtonView: UIView {
     override var intrinsicContentSize: CGSize { frame.size }
 }
 
-/// A screen's Edit/Done bar button: the system `editButtonItem`, or on iOS 26 a
-/// `GlassTextBarButtonView` stand-in. Call `setEditing(_:)` from the screen's
-/// `setEditing(_:animated:)` and `setGlassGlyphColor(_:theme:)` alongside its other glass
-/// glyph updates.
+/// A screen's Edit/Done bar button: the system `editButtonItem`, or on iOS 26 a `GlassTextBarButtonView` stand-in. Call `setEditing(_:)` from the screen's `setEditing(_:animated:)` and `setGlassGlyphColor(_:theme:)` alongside its other glass glyph updates.
 ///
-/// The stand-in serves the iPad sidebar too, where the glass panel's vibrancy would otherwise
-/// tint the system item's label: `NavigationController.replaceSidebarBarButtonItems` leaves
-/// custom-view items alone, so this one owns the label and keeps it in step with the editing
-/// state (Edit ↔ Done) on both idioms.
+/// The stand-in serves the iPad sidebar too, where the glass panel's vibrancy would otherwise tint the system item's label: `NavigationController.replaceSidebarBarButtonItems` leaves custom-view items alone, so this one owns the label and keeps it in step with the editing state (Edit ↔ Done) on both idioms.
 final class EditBarButton {
     private weak var viewController: UIViewController?
     private var glassView: UIView?
-    /// Built once: Forums swaps the item in and out as its favourite count changes, and the same
-    /// item keeps what the navigation controller set on it (`hidesSharedBackground`, tint).
+    /// Built once: Forums swaps the item in and out as its favourite count changes, and the same item keeps what the navigation controller set on it (`hidesSharedBackground`, tint).
     private var glassItem: UIBarButtonItem?
 
     init(for viewController: UIViewController) {
@@ -175,8 +158,7 @@ final class EditBarButton {
         }
         let view: GlassTextBarButtonView
         if LiquidGlass.affectsPadSidebar {
-            // The sidebar bar stays opaque, so the label reads the theme colour from the
-            // environment, and sits flush like the sidebar's other hosted items.
+            // The sidebar bar stays opaque, so the label reads the theme colour from the environment, and sits flush like the sidebar's other hosted items.
             view = GlassTextBarButtonView(
                 title: Self.title(isEditing: viewController.isEditing),
                 weight: viewController.isEditing ? .bold : .regular,
@@ -204,9 +186,7 @@ final class EditBarButton {
         view.update(title: Self.title(isEditing: isEditing), weight: isEditing ? .bold : .regular)
     }
 
-    /// `bakedColor` is the theme's bar text colour while the bar rests on the screen (see
-    /// NavigationBarScrollTransitioning); nil once scrolled, when the label takes the mode colour
-    /// the adaptive glass wants. The iPad sidebar's label follows the theme on its own.
+    /// `bakedColor` is the theme's bar text colour while the bar rests on the screen (see NavigationBarScrollTransitioning), or nil once scrolled, when the label takes the mode colour the adaptive glass wants. The iPad sidebar's label follows the theme on its own.
     func setGlassGlyphColor(_ bakedColor: UIColor?, theme: Theme) {
         guard #available(iOS 26.0, *), !LiquidGlass.affectsPadSidebar,
               let view = glassView as? GlassTextBarButtonView else { return }
@@ -227,19 +207,14 @@ final class EditBarButton {
     }
 }
 
-/// A screen's plain text bar button (Cancel, Send, Preview…). On iOS 26 the system item's label
-/// is composited through a bar-button platter's vibrancy, which washes it into the bar colour
-/// behind, so the item gets a `GlassTextBarButtonView` stand-in that keeps the colour it is
-/// given — the text equivalent of baking an image item's glyph.
+/// A screen's plain text bar button (Cancel, Send, Preview…). On iOS 26 the system item's label is composited through a bar-button platter's vibrancy, which washes it into the bar colour behind, so the item gets a `GlassTextBarButtonView` stand-in that keeps the colour it is given, the text equivalent of baking an image item's glyph.
 ///
-/// Use `item` wherever the plain item went, including for `title` and `isEnabled`: the stand-in
-/// follows both. Screens hand the resting colour along from their
-/// `NavigationBarScrollTransitioning.updateGlassBarButtonGlyphs(color:)`.
+/// Use `item` wherever the plain item went, including for `title` and `isEnabled`: the stand-in follows both. Screens hand the resting colour along from their `NavigationBarScrollTransitioning.updateGlassBarButtonGlyphs(color:)`.
 final class GlassTextBarButton {
     let item: UIBarButtonItem
     private var glassView: UIView?
     private var observations: [NSKeyValueObservation] = []
-    /// The colour the label rests at; nil until the bar first styles the screen.
+    /// The colour the label rests at, or nil until the bar first styles the screen.
     private var bakedColor: UIColor?
 
     init(title: String, weight: Font.Weight = .regular, action: @escaping () -> Void) {
@@ -259,8 +234,7 @@ final class GlassTextBarButton {
         ]
     }
 
-    /// The theme's bar text colour while the bar rests opaque on the screen, nil once scrolled —
-    /// see `NavigationBarScrollTransitioning`.
+    /// The theme's bar text colour while the bar rests opaque on the screen, or nil once scrolled (see `NavigationBarScrollTransitioning`).
     func setGlassGlyphColor(_ color: UIColor?, theme: Theme) {
         bakedColor = color ?? theme.glassContentTextColor
         applyColor(isEnabled: item.isEnabled)
@@ -281,22 +255,15 @@ final class GlassTextBarButton {
 
 // MARK: - Sidebar Toggle
 
-/// The iPad sidebar bar's trailing cluster: the screen's own trailing custom views and the app's
-/// "hide sidebar" glyph (standing in for the system toggle), laid out as one custom view so
-/// every neighbouring pair is `NavigationController.sidebarClusterSpacing` apart. Keeps what it
-/// took from the screen so the cluster can be taken apart again when the toggle goes away, and
-/// is a subclass so it can be recognised in `rightBarButtonItems` on repeat passes.
+/// The iPad sidebar bar's trailing cluster: the screen's own trailing custom views and the app's "hide sidebar" glyph (standing in for the system toggle), laid out as one custom view so every neighbouring pair is `NavigationController.sidebarClusterSpacing` apart. Keeps what it took from the screen so the cluster can be taken apart again when the toggle goes away, and is a subclass so it can be recognised in `rightBarButtonItems` on repeat passes.
 private final class SidebarTrailingClusterBarButtonItem: UIBarButtonItem {
     /// The screen's right items as they were before clustering, in their original order.
     var originalItems: [UIBarButtonItem] = []
-    /// Screens that had already packed icons into a horizontal stack: the stack and the views
-    /// lifted out of it, to be put back on unclustering.
+    /// Screens that had already packed icons into a horizontal stack: the stack and the views lifted out of it, to be put back on unclustering.
     var flattenedStacks: [(stack: UIStackView, views: [UIView])] = []
 }
 
-/// The app's own "show sidebar" item on the iPad detail column's bar, standing in for the system
-/// one on every screen in that column. A subclass only so the item can be recognised in
-/// `leftBarButtonItems` on repeat passes.
+/// The app's own "show sidebar" item on the iPad detail column's bar, standing in for the system one on every screen in that column. A subclass only so the item can be recognised in `leftBarButtonItems` on repeat passes.
 private final class DetailSidebarToggleBarButtonItem: UIBarButtonItem {}
 
 /// An item `replaceSidebarBarButtonItems` put on a screen in the iPad sidebar, keeping the screen's own item it stands in for so that can go back when the split view collapses. No `original` means the sidebar added the item itself (the back button, the title spacer).
@@ -306,19 +273,9 @@ private final class SidebarStandInBarButtonItem: UIBarButtonItem {
 
 // MARK: - Sidebar Title View
 
-/// A titleView that uses SwiftUI Text with `.glassEffect(.identity)` to bypass
-/// the glass panel's vibrancy compositing that tints UILabel text colors.
+/// A titleView that uses SwiftUI Text with `.glassEffect(.identity)` to bypass the glass panel's vibrancy compositing that tints UILabel text colors.
 ///
-/// Centring is the view's own job, by one rule for every bar width: the view claims all the
-/// width the bar will give it — the span between the leading and trailing item clusters —
-/// and at layout time puts the text on the bar's centre when the whole text fits there
-/// without touching a cluster, otherwise as close to the bar's centre as the span allows,
-/// truncating only when the span can't hold it at all. Nothing here assumes a device, a
-/// column width or which items a screen has: the geometry is re-measured on every pass, so a
-/// rotation, a multitasking resize or a screen rebuilding its items lands on the same rule.
-/// (UIKit's own centring gives up as soon as a centred title would come near a cluster and
-/// shoves it into the middle of the leftover span, which on a lopsided bar is well off the
-/// bar's centre.)
+/// Centring is the view's own job, by one rule for every bar width: the view claims all the width the bar will give it (the span between the leading and trailing item clusters) and at layout time puts the text on the bar's centre when the whole text fits there without touching a cluster, otherwise as close to the bar's centre as the span allows, truncating only when the span can't hold it at all. Nothing here assumes a device, a column width or which items a screen has: the geometry is re-measured on every pass, so a rotation, a multitasking resize or a screen rebuilding its items lands on the same rule. (UIKit's own centring gives up as soon as a centred title would come near a cluster and shoves it into the middle of the leftover span, which on a lopsided bar is well off the bar's centre.)
 @available(iOS 26.0, *)
 final class SidebarTitleView: UIView {
     private var hostingController: UIHostingController<AnyView>?
@@ -328,16 +285,14 @@ final class SidebarTitleView: UIView {
     /// The text's natural width, measured once per title/font change.
     private var naturalTextWidth: CGFloat = 0
 
-    /// The hosting view's edge constraints: `layoutSubviews()` places the text by setting their
-    /// constants, the bar having clamped this view to the span between its item clusters.
+    /// The hosting view's edge constraints: `layoutSubviews()` places the text by setting their constants, the bar having clamped this view to the span between its item clusters.
     private var hostingLeadingConstraint: NSLayoutConstraint?
     private var hostingTrailingConstraint: NSLayoutConstraint?
 
     // Mid-transition the bar sits deeper: transition hosts add ~3 levels.
     private static let maxBarSearchDepth = 16
     private static let placementEpsilon: CGFloat = 0.5
-    /// The least the text keeps clear of the nearest item on either side. A spacing, not a
-    /// position: it is the same on every bar width.
+    /// The least the text keeps clear of the nearest item on either side. A spacing, not a position: it is the same on every bar width.
     private static let clusterGap: CGFloat = 8
 
     init(title: String, color: UIColor, roundedFont: Bool) {
@@ -371,15 +326,13 @@ final class SidebarTitleView: UIView {
             .lineLimit(1)
             .truncationMode(.tail)
 
-        // The natural width is what the placement rule needs; measure the bare text, since the
-        // hosted content below stretches to whatever it is given.
+        // The natural width is what the placement rule needs. Measure the bare text, since the hosted content below stretches to whatever it is given.
         let measuring = UIHostingController(rootView: AnyView(baseText))
         naturalTextWidth = ceil(measuring.sizeThatFits(in: CGSize(
             width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude
         )).width)
 
-        // Spacers so the text centres in whatever width the constraints leave it; a text wider
-        // than that collapses them and truncates.
+        // Spacers so the text centres in whatever width the constraints leave it. A text wider than that collapses them and truncates.
         let content = AnyView(
             HStack(spacing: 0) {
                 Spacer(minLength: 0)
@@ -393,8 +346,7 @@ final class SidebarTitleView: UIView {
         let hosting = UIHostingController(rootView: content)
         hosting.view.backgroundColor = .clear
         hosting.view.translatesAutoresizingMaskIntoConstraints = false
-        // Don't let the bar's safe area leak into the SwiftUI content, which would inset the
-        // HStack on one side and put the text off the centre the constraints define.
+        // Don't let the bar's safe area leak into the SwiftUI content, which would inset the HStack on one side and put the text off the centre the constraints define.
         hosting.safeAreaRegions = []
         addSubview(hosting.view)
 
@@ -419,9 +371,7 @@ final class SidebarTitleView: UIView {
     }
 
     override var intrinsicContentSize: CGSize {
-        // Claim a width larger than any bar will ever be: UINavigationBar clamps the title view
-        // to the width available between its item clusters, which is the span the placement
-        // rule wants to work in.
+        // Claim a width larger than any bar will ever be: UINavigationBar clamps the title view to the width available between its item clusters, which is the span the placement rule wants to work in.
         let height = hostingController?.view.intrinsicContentSize.height ?? 0
         return CGSize(width: 10000, height: height)
     }
@@ -431,8 +381,7 @@ final class SidebarTitleView: UIView {
         frame.size = CGSize(width: naturalTextWidth, height: height)
     }
 
-    /// The bar can settle this view's frame before it is in a window and not touch it again,
-    /// so the placement (which needs the bar's geometry) has to be revisited on attach.
+    /// The bar can settle this view's frame before it is in a window and not touch it again, so the placement (which needs the bar's geometry) has to be revisited on attach.
     override func didMoveToWindow() {
         super.didMoveToWindow()
         setNeedsLayout()
@@ -449,18 +398,9 @@ final class SidebarTitleView: UIView {
         return nil
     }
 
-    /// The x-range, in this view's coordinates, the text may occupy: from the nearest item on
-    /// the leading side to the nearest on the trailing side, each kept `clusterGap` clear. The
-    /// items are read off the bar's navigation item (their custom views, which every sidebar
-    /// item has), so the range follows whatever the screen has put in the bar. The span the bar
-    /// granted this view stops well short of the items — that padding is what the text is
-    /// allowed to run into — and stands in for a side that has no items at all, so a missing
-    /// cluster is never mistaken for free space.
+    /// The x-range, in this view's coordinates, the text may occupy: from the nearest item on the leading side to the nearest on the trailing side, each kept `clusterGap` clear. The items are read off the bar's navigation item (their custom views, which every sidebar item has), so the range follows whatever the screen has put in the bar. The span the bar granted this view stops well short of the items (that padding is what the text is allowed to run into) and stands in for a side that has no items at all, so a missing cluster is never mistaken for free space.
     ///
-    /// Each item is measured by its slot (`itemSlotView`), not its custom view: the bar grows a
-    /// custom view into its 44pt slot over several layout passes, and a placement read off the
-    /// half-grown view drifted the title until the next unrelated bar layout (the first thread
-    /// open, typically) put it right.
+    /// Each item is measured by its slot (`itemSlotView`), not its custom view: the bar grows a custom view into its 44pt slot over several layout passes, and a placement read off the half-grown view drifted the title until the next unrelated bar layout (the first thread open, typically) put it right.
     private func allowedTextRange(in bar: UINavigationBar) -> ClosedRange<CGFloat> {
         var minX: CGFloat?
         var maxX: CGFloat?
@@ -484,10 +424,7 @@ final class SidebarTitleView: UIView {
         return lower <= upper ? lower...upper : bounds.midX...bounds.midX
     }
 
-    /// The slot the bar laid a custom-view item out in: the wrapper the bar puts directly around
-    /// the custom view, which has its final width from the bar's first pass while the custom
-    /// view inside it is still being resized. No higher: the bar's group containers above the
-    /// wrapper can be wider than the item and would pull the title off centre.
+    /// The slot the bar laid a custom-view item out in: the wrapper the bar puts directly around the custom view, which has its final width from the bar's first pass while the custom view inside it is still being resized. No higher: the bar's group containers above the wrapper can be wider than the item and would pull the title off centre.
     private func itemSlotView(for customView: UIView, in bar: UINavigationBar) -> UIView {
         guard let wrapper = customView.superview, wrapper !== bar, !isDescendant(of: wrapper) else {
             return customView
@@ -495,39 +432,28 @@ final class SidebarTitleView: UIView {
         return wrapper
     }
 
-    /// The range the last placement used; a change schedules one more pass so the placement
-    /// converges on the items' settled frames (see `layoutSubviews`).
+    /// The range the last placement used. A change schedules one more pass so the placement converges on the items' settled frames (see `layoutSubviews`).
     private var lastPlacedRange: ClosedRange<CGFloat>?
 
-    /// Places the text: centred on the bar when the whole text fits there within
-    /// `allowedTextRange`, else slid toward the bar's centre until it meets the range's edge,
-    /// else filling the range (and truncating).
+    /// Places the text: centred on the bar when the whole text fits there within `allowedTextRange`, else slid toward the bar's centre until it meets the range's edge, else filling the range (and truncating).
     ///
-    /// Updating the constants here is loop-safe: this view's own frame is imposed by the bar's
-    /// frame-based layout and `intrinsicContentSize` is a constant, so the edit dirties only
-    /// this view — one extra pass recomputes an identical placement, lands inside the epsilon,
-    /// and stops.
+    /// Updating the constants here is loop-safe: this view's own frame is imposed by the bar's frame-based layout and `intrinsicContentSize` is a constant, so the edit dirties only this view. One extra pass recomputes an identical placement, lands inside the epsilon, and stops.
     override func layoutSubviews() {
         super.layoutSubviews()
         guard bounds.width > 0,
               window != nil,
               let leading = hostingLeadingConstraint,
               let trailing = hostingTrailingConstraint,
-              // No bar reachable (mid-transition/detached): keep the current placement — resetting
-              // would visibly jump, and the next pass in a settled hierarchy recomputes it anyway.
+              // No bar reachable (mid-transition/detached): keep the current placement. Resetting would visibly jump, and the next pass in a settled hierarchy recomputes it anyway.
               let bar = enclosingNavigationBar()
         else { return }
 
         let barCenterX = convert(CGPoint(x: bar.bounds.midX, y: 0), from: bar).x
-        // Staged at a transitional offset (the bar animates title views in from the side):
-        // leave the placement alone rather than swing the text around mid-animation. A settled
-        // span is always within half a bar of the bar's centre.
+        // Staged at a transitional offset (the bar animates title views in from the side): leave the placement alone rather than swing the text around mid-animation. A settled span is always within half a bar of the bar's centre.
         guard abs(barCenterX - bounds.midX) <= bar.bounds.width / 2 else { return }
 
         let range = allowedTextRange(in: bar)
-        // The items' frames can still be moving in the pass that placed the text (the bar sizes
-        // its item views across passes). Re-check on the next turn whenever the range moved;
-        // once two passes agree, nothing is scheduled, so this settles rather than loops.
+        // The items' frames can still be moving in the pass that placed the text (the bar sizes its item views across passes). Re-check on the next turn whenever the range moved. Once two passes agree, nothing is scheduled, so this settles rather than loops.
         if lastPlacedRange != range {
             lastPlacedRange = range
             DispatchQueue.main.async { [weak self] in self?.setNeedsLayout() }
@@ -535,12 +461,10 @@ final class SidebarTitleView: UIView {
         let textWidth = min(naturalTextWidth, range.upperBound - range.lowerBound)
         let half = textWidth / 2
         let centerX = min(max(barCenterX, range.lowerBound + half), range.upperBound - half)
-        // Insets from this view's own edges; negative where the text runs into the bar's
-        // padding beyond the span it granted (the view doesn't clip).
+        // Insets from this view's own edges, negative where the text runs into the bar's padding beyond the span it granted (the view doesn't clip).
         var leftInset = centerX - half
         var rightInset = bounds.width - (centerX + half)
-        // The constants attach to leading/trailing anchors, which flip sides in right-to-left
-        // layout; the insets are in x-coordinates.
+        // The constants attach to leading/trailing anchors, which flip sides in right-to-left layout, while the insets are in x-coordinates.
         if effectiveUserInterfaceLayoutDirection == .rightToLeft {
             swap(&leftInset, &rightInset)
         }
@@ -556,8 +480,7 @@ final class SidebarTitleView: UIView {
  Navigation controller with special powers:
 
  - Theming support.
- - Custom navbar class `NavigationBar`.
- - Shows and hides the toolbar depending on whether the view controller has toolbar items.
+ - Custom bar classes `NavigationBar` and `Toolbar`.
  - On iPhone, allows swiping from the *right* screen edge (or, on iOS 26+, leftward from anywhere) to unpop a view controller.
  */
 final class NavigationController: UINavigationController, Themeable {
@@ -590,8 +513,7 @@ final class NavigationController: UINavigationController, Themeable {
             guard let self else { return }
             if #available(iOS 26.0, *) {
                 self.repairBarButtonItemsAfterLayout()
-                // The title places itself against the items' actual frames, which a bar layout
-                // may have moved without touching the title view's own frame.
+                // The title places itself against the items' actual frames, which a bar layout may have moved without touching the title view's own frame.
                 (self.topViewController?.navigationItem.titleView as? SidebarTitleView)?.setNeedsLayout()
             }
         }
@@ -606,15 +528,9 @@ final class NavigationController: UINavigationController, Themeable {
         fatalError("init(coder:) has not been implemented")
     }
 
-    /// Routes describing the swipe-from-right-edge "unpop" stack, used by `SceneDelegate` to
-    /// preserve it across cold launches. View controllers that don't conform to
-    /// `RestorableLocation` (or whose `restorationRoute` is nil) are dropped, since the scene
-    /// activity can only carry route-shaped data.
+    /// Routes describing the swipe-from-right-edge "unpop" stack, used by `SceneDelegate` to preserve it across cold launches. View controllers that don't conform to `RestorableLocation` (or whose `restorationRoute` is nil) are dropped, since the scene activity can only carry route-shaped data.
     ///
-    /// The stack is consumed from the end, so an entry that can't be saved makes everything below
-    /// it unreachable too. This truncates there rather than dropping entries individually: keeping
-    /// non-adjacent survivors would leave a restored unpop pushing a view controller that wasn't
-    /// the next one up.
+    /// The stack is consumed from the end, so an entry that can't be saved makes everything below it unreachable too. This truncates there rather than dropping entries individually: keeping non-adjacent survivors would leave a restored unpop pushing a view controller that wasn't the next one up.
     var unpopRoutes: [AwfulRoute] {
         guard let handler = unpopHandler else { return [] }
         let restorable = handler.viewControllers
@@ -624,9 +540,7 @@ final class NavigationController: UINavigationController, Themeable {
         return restorable.compactMap { ($0 as? RestorableLocation)?.restorationRoute }
     }
 
-    /// Replaces the unpop stack contents with the given view controllers without performing any
-    /// navigation. Caller is responsible for constructing the view controllers (typically from
-    /// previously saved `unpopRoutes`).
+    /// Replaces the unpop stack contents with the given view controllers without performing any navigation. Caller is responsible for constructing the view controllers (typically from previously saved `unpopRoutes`).
     func setUnpopStack(_ viewControllers: [UIViewController]) {
         unpopHandler?.viewControllers = viewControllers
     }
@@ -658,11 +572,9 @@ final class NavigationController: UINavigationController, Themeable {
     }
 
     var theme: Theme {
-        // Get theme from the top view controller if it's Themeable
         if let themeableVC = topViewController as? Themeable {
             return themeableVC.theme
         }
-        // Fallback to default theme
         return Theme.defaultTheme()
     }
     
@@ -673,19 +585,13 @@ final class NavigationController: UINavigationController, Themeable {
 
     // MARK: Scroll-driven appearance caches
     //
-    // `updateNavigationBarTintForScrollProgress` rebuilds a UINavigationBarAppearance on
-    // every scroll delta above 0.005. Cache the expensive pieces so scroll-driven updates
-    // don't re-allocate/redraw identical resources each frame.
+    // `updateNavigationBarTintForScrollProgress` rebuilds a UINavigationBarAppearance on every scroll delta above 0.005. Cache the expensive pieces so scroll-driven updates don't re-allocate/redraw identical resources each frame.
     private var cachedGradientImage: UIImage?
     private var cachedGradientImageColor: UIColor?
     private lazy var cachedBackIndicatorTemplate: UIImage? = UIImage(named: "back")?.withRenderingMode(.alwaysTemplate)
     private var cachedBackIndicatorsByColor: [UIColor: UIImage] = [:]
 
-    /// The back chevron with `color` baked in, for the bar resting at the top: glass vibrancy
-    /// ignores `tintColor` on the dark circles the bar shows there (see
-    /// NavigationBarScrollTransitioning). Once scrolled the chevron goes back to the template
-    /// (`cachedBackIndicatorTemplate`) with no tint, so the back button's platter picks white or
-    /// black from the content beneath it, as the other image bar buttons already do.
+    /// The back chevron with `color` baked in, for the bar resting at the top: glass vibrancy ignores `tintColor` on the dark circles the bar shows there (see NavigationBarScrollTransitioning). Once scrolled the chevron goes back to the template (`cachedBackIndicatorTemplate`) with no tint, so the back button's platter picks white or black from the content beneath it, as the other image bar buttons already do.
     private func backIndicatorImage(tinted color: UIColor) -> UIImage? {
         if let cached = cachedBackIndicatorsByColor[color] {
             return cached
@@ -701,16 +607,9 @@ final class NavigationController: UINavigationController, Themeable {
         return strip
     }()
 
-    /// What the root tab bar observes instead of the list, on iOS 26. There the tab bar resolves
-    /// its glass's light/dark from the scroll view it observes for the bottom edge, and left to
-    /// itself it picks the list — which carries the navigation bar's dark trait while the bar
-    /// rests opaque (`applyNavigationBarPlatterBackdrop`), flashing the tab bar dark at launch in
-    /// a light theme. This inert scroll view has no override, so it resolves to the tab bar
-    /// controller's own pin.
+    /// What the root tab bar observes instead of the list, on iOS 26. There the tab bar resolves its glass's light/dark from the scroll view it observes for the bottom edge, and left to itself it picks the list, which carries the navigation bar's dark trait while the bar rests opaque (`applyNavigationBarPlatterBackdrop`), flashing the tab bar dark at launch in a light theme. This inert scroll view has no override, so it resolves to the tab bar controller's own pin.
     ///
-    /// iOS 27 ignores this registration and reads the tab root's own view instead, which for the
-    /// list screens is the list. So on 27 the list is simply never given the bar's trait (the
-    /// bar's circles read the bar's own trait there; see `applyNavigationBarPlatterBackdrop`).
+    /// iOS 27 ignores this registration and reads the tab root's own view instead, which for the list screens is the list. So on 27 the list is simply never given the bar's trait (the bar's circles read the bar's own trait there, see `applyNavigationBarPlatterBackdrop`).
     private lazy var tabBarTraitBackdrop: UIScrollView = {
         let backdrop = UIScrollView()
         backdrop.isScrollEnabled = false
@@ -763,21 +662,12 @@ final class NavigationController: UINavigationController, Themeable {
         return backdrop
     }()
 
-    /// Under Reduce Liquid Glass the list stays out from under the opaque bar but keeps running
-    /// under the root tab bar, as it does with Liquid Glass on.
+    /// Under Reduce Liquid Glass the list stays out from under the opaque bar but keeps running under the root tab bar, as it does with Liquid Glass on.
     private static let listEdgesUnderOpaqueBar: UIRectEdge = [.left, .right, .bottom]
 
-    /// A collection view can't hand the bar a usable backdrop: its cells scroll over anything we
-    /// put under the bar, and its capture ignores our own subviews entirely (verified by pixel
-    /// sampling with a navy view covering the whole visible area, above every cell and below the
-    /// scroll indicators). So under Reduce Liquid Glass the list is kept out from under the bar
-    /// (`edgesForExtendedLayout`) and this inert scroll view takes its place there — clear, so the
-    /// capture samples rather than flattening to a colour, with one bar-coloured strip for it to
-    /// sample. The opaque bar hides it.
+    /// A collection view can't hand the bar a usable backdrop: its cells scroll over anything we put under the bar, and its capture ignores our own subviews entirely (verified by pixel sampling with a navy view covering the whole visible area, above every cell and below the scroll indicators). So under Reduce Liquid Glass the list is kept out from under the bar (`edgesForExtendedLayout`) and this inert scroll view takes its place there. It is clear, so the capture samples rather than flattening to a colour, with one bar-coloured strip for it to sample. The opaque bar hides it.
     ///
-    /// It is sized to the bar alone, and the list keeps `.bottom`: the root tab bar takes its
-    /// light/dark from what is beneath it, and a full-height decoy carrying the bar's dark trait
-    /// is not what it should find there (see `tabBarTraitBackdrop`).
+    /// It is sized to the bar alone, and the list keeps `.bottom`: the root tab bar takes its light/dark from what is beneath it, and a full-height decoy carrying the bar's dark trait is not what it should find there (see `tabBarTraitBackdrop`).
     @available(iOS 26.0, *)
     private func installListPlatterBackdrop(for viewController: UIViewController, theme: Theme) {
         // The list has to stop at the bar, or it is the one UIKit picks and samples.
@@ -798,17 +688,14 @@ final class NavigationController: UINavigationController, Themeable {
         }
     }
 
-    /// The part of the navigation controller's view under the bar. The controller's own safe
-    /// area stops at the status bar, but the platters sit in the bar below it, so this is sized
-    /// to the bar instead.
+    /// The part of the navigation controller's view under the bar. The controller's own safe area stops at the status bar, but the platters sit in the bar below it, so this is sized to the bar instead.
     @available(iOS 26.0, *)
     private var listPlatterBackdropFrame: CGRect {
         let barBottom = max(navigationBar.frame.maxY, view.safeAreaInsets.top)
         return CGRect(x: 0, y: 0, width: view.bounds.width, height: barBottom)
     }
 
-    /// Re-fits the backdrop after a bounds change (rotation): it has to keep covering the bar and
-    /// nothing else, and an inert scroll view has to keep `contentSize` in step with its bounds.
+    /// Re-fits the backdrop after a bounds change (rotation): it has to keep covering the bar and nothing else, and an inert scroll view has to keep `contentSize` in step with its bounds.
     @available(iOS 26.0, *)
     private func layoutListPlatterBackdrop() {
         guard listPlatterBackdrop.superview === view else { return }
@@ -817,8 +704,7 @@ final class NavigationController: UINavigationController, Themeable {
         listPlatterBackdropStrip.frame = listPlatterBackdrop.bounds
     }
 
-    /// Undoes `installListPlatterBackdrop` when Liquid Glass is switched back on, so the list goes
-    /// back to scrolling under the translucent bar and driving the platters itself.
+    /// Undoes `installListPlatterBackdrop` when Liquid Glass is switched back on, so the list goes back to scrolling under the translucent bar and driving the platters itself.
     @available(iOS 26.0, *)
     private func removeListPlatterBackdrop(for viewController: UIViewController) {
         if viewController.contentScrollView(for: .top) === listPlatterBackdrop {
@@ -833,26 +719,13 @@ final class NavigationController: UINavigationController, Themeable {
         }
     }
 
-    /// iOS 26 glass bar-button circles take their light/dark from the scroll view beneath the
-    /// bar (or from the bar's own trait when nothing scrolls beneath it), and their glyphs ignore
-    /// tintColor on dark glass. At the top, make the screen's scroll view read as the bar (dark
-    /// glass on a dark bar, even in a light theme) and bake the theme's bar text colour into its
-    /// glyphs; once scrolled, hand both back to the content.
+    /// iOS 26 glass bar-button circles take their light/dark from the scroll view beneath the bar (or from the bar's own trait when nothing scrolls beneath it), and their glyphs ignore tintColor on dark glass. At the top, make the screen's scroll view read as the bar (dark glass on a dark bar, even in a light theme) and bake the theme's bar text colour into its glyphs. Once scrolled, hand both back to the content.
     @available(iOS 26.0, *)
     private func applyGlassRestingState(atTop: Bool, for viewController: UIViewController?, theme: Theme) {
         guard let viewController else { return }
         let screen = viewController as? NavigationBarScrollTransitioning
 
-        // Under the transparent bar, the automatic edge effect resolved to the soft fade on
-        // iOS 26 but to the hard cutoff on iOS 27 (lists and web views alike); ask for the fade.
-        // A screen that slides the bar away (the posts page in immersive mode) hides it whatever
-        // the setting and brings its own top treatment: the bar's content blur under Liquid Glass
-        // (see NavigationBar.contentBlurAlpha), the immersive mode's safe-area gradient under
-        // Reduce. The effect belongs to the scroll view, so immersive mode can't slide it away
-        // with the bar, and it spans the whole top inset. Under Reduce Liquid Glass the bar stays
-        // opaque at every offset, so (as on the iPad sidebar) the fade has nothing to blend into
-        // and just reads as a blurred band below the bar: hide it. Otherwise the web views keep
-        // it, like the lists.
+        // Under the transparent bar, the automatic edge effect resolved to the soft fade on iOS 26 but to the hard cutoff on iOS 27 (lists and web views alike), so ask for the fade. A screen that slides the bar away (the posts page in immersive mode) hides it whatever the setting and brings its own top treatment: the bar's content blur under Liquid Glass (see NavigationBar.contentBlurAlpha), the immersive mode's safe-area gradient under Reduce. The effect belongs to the scroll view, so immersive mode can't slide it away with the bar, and it spans the whole top inset. Under Reduce Liquid Glass the bar stays opaque at every offset, so (as on the iPad sidebar) the fade has nothing to blend into and just reads as a blurred band below the bar: hide it. Otherwise the web views keep it, like the lists.
         if let scrollView = screen?.navigationBarScrollView {
             scrollView.topEdgeEffect.style = .soft
             scrollView.topEdgeEffect.isHidden = !LiquidGlass.isEnabled
@@ -863,19 +736,15 @@ final class NavigationController: UINavigationController, Themeable {
             screen?.navigationBarScrollView?.applyNavigationBarPlatterBackdrop(atTop: atTop, theme: theme)
             removeListPlatterBackdrop(for: viewController)
         } else if let collectionView = screen?.navigationBarScrollView as? UICollectionView {
-            // See `installListPlatterBackdrop`: a collection view can't be made to sample right.
-            // Drop the backdrop Liquid Glass gave it, which would otherwise stay behind the list in
-            // the theme of the moment glass was switched off.
+            // See `installListPlatterBackdrop`: a collection view can't be made to sample right. Drop the backdrop Liquid Glass gave it, which would otherwise stay behind the list in the theme of the moment glass was switched off.
             collectionView.applyNavigationBarPlatterBackdrop(atTop: false, theme: theme)
             installListPlatterBackdrop(for: viewController, theme: theme)
         } else {
-            // Reduce Liquid Glass keeps the bar solid at every offset, so the backdrop never gets
-            // handed back to the content — and it has to sit in front of it to stay sampled.
+            // Reduce Liquid Glass keeps the bar solid at every offset, so the backdrop never gets handed back to the content, and it has to sit in front of it to stay sampled.
             screen?.navigationBarScrollView?.pinNavigationBarPlatterBackdropOverContent(theme: theme)
         }
 
-        // Any tab-hosted screen whose scroll view just took the bar's trait (the lists, the
-        // Lepers rap sheet) needs the tab bar looking elsewhere; pushed screens hide the tab bar.
+        // Any tab-hosted screen whose scroll view just took the bar's trait (the lists, the Lepers rap sheet) needs the tab bar looking elsewhere. Pushed screens hide the tab bar.
         if screen?.navigationBarScrollView != nil, tabBarController != nil, !isSidebarNavigationController {
             installTabBarTraitBackdrop(for: viewController)
         }
@@ -939,12 +808,7 @@ final class NavigationController: UINavigationController, Themeable {
             return theme.userInterfaceStyle == .dark ? .lightContent : .darkContent
         }
 
-        // Once the glass bar has gone transparent the status bar sits over the content. `.default`
-        // would follow a trait rather than the pixels (white over a light theme's page when the
-        // system is in dark mode), so screens that sample the page beneath the status bar
-        // (`ContentContrastSampler`) decide, and the theme's mode covers the rest. The same
-        // goes when the screen has slid the bar away itself (immersive mode), which is the only
-        // way the status bar ends up over the content under Reduce Liquid Glass.
+        // Once the glass bar has gone transparent the status bar sits over the content. `.default` would follow a trait rather than the pixels (white over a light theme's page when the system is in dark mode), so screens that sample the page beneath the status bar (`ContentContrastSampler`) decide, and the theme's mode covers the rest. The same goes when the screen has slid the bar away itself (immersive mode), which is the only way the status bar ends up over the content under Reduce Liquid Glass.
         if #available(iOS 26.0, *), LiquidGlass.usesGlassNavigationBar, isScrolledFromTop || screen?.isStatusBarOverContent == true {
             if let color = screen?.statusBarContentColor {
                 return color == .black ? .darkContent : .lightContent
@@ -992,12 +856,7 @@ final class NavigationController: UINavigationController, Themeable {
         unpopHandler?.navigationController(self, didPushViewController: viewController)
     }
 
-    /// UIKit implements the `viewControllers` property setter by calling through to
-    /// `setViewControllers(_:animated:)`, so plain property assignment would otherwise hit the
-    /// override below and clear the unpop stack. The split view's collapse/separate handling
-    /// assigns the property to move stacks between columns and relies on the unpop stack
-    /// surviving — see the unpop TODO in
-    /// `RootViewControllerStack.splitViewController(_:separateSecondaryFrom:)`.
+    /// UIKit implements the `viewControllers` property setter by calling through to `setViewControllers(_:animated:)`, so plain property assignment would otherwise hit the override below and clear the unpop stack. The split view's collapse/separate handling assigns the property to move stacks between columns and relies on the unpop stack surviving. See the unpop TODO in `RootViewControllerStack.splitViewController(_:separateSecondaryFrom:)`.
     private var isAssigningViewControllersProperty = false
 
     override var viewControllers: [UIViewController] {
@@ -1009,10 +868,7 @@ final class NavigationController: UINavigationController, Themeable {
         }
     }
 
-    /// An explicit `setViewControllers(_:animated:)` call replaces the stack wholesale, so the
-    /// staged unpop view controllers are discarded (otherwise the swipe-from-right-edge gesture
-    /// would splice an unrelated screen back on top). Assigning the `viewControllers` property
-    /// deliberately does *not* clear the stack; see `isAssigningViewControllersProperty` above.
+    /// An explicit `setViewControllers(_:animated:)` call replaces the stack wholesale, so the staged unpop view controllers are discarded (otherwise the swipe-from-right-edge gesture would splice an unrelated screen back on top). Assigning the `viewControllers` property deliberately does *not* clear the stack (see `isAssigningViewControllersProperty` above).
     override func setViewControllers(_ viewControllers: [UIViewController], animated: Bool) {
         super.setViewControllers(viewControllers, animated: animated)
 
@@ -1087,10 +943,7 @@ final class NavigationController: UINavigationController, Themeable {
     /// Whether the sidebar chrome has gone on since `removeSidebarChrome` last took it off, so a split view collapse knows to undo it.
     private var isStyledAsSidebar = false
 
-    /// Whether the app's own bar button items go without their shared glass background: under
-    /// Reduce Liquid Glass everywhere, and in the iPad sidebar regardless of that setting. iOS 26
-    /// never drew the platters inside the sidebar's glass panel; iOS 27 does, and the sidebar is
-    /// meant to stay flat.
+    /// Whether the app's own bar button items go without their shared glass background: under Reduce Liquid Glass everywhere, and in the iPad sidebar regardless of that setting. iOS 26 never drew the platters inside the sidebar's glass panel. iOS 27 does, and the sidebar is meant to stay flat.
     @available(iOS 26.0, *)
     private var hidesSharedBarButtonBackground: Bool {
         !LiquidGlass.isEnabled || isSidebarNavigationController
@@ -1153,9 +1006,7 @@ final class NavigationController: UINavigationController, Themeable {
         }
     }
 
-    /// The display mode the split view is in, or is animating towards: RootViewControllerStack
-    /// hands it over from the split view delegate, since the live `displayMode` lags a change
-    /// until the animation ends. Drives the app's own sidebar toggle item.
+    /// The display mode the split view is in, or is animating towards: RootViewControllerStack hands it over from the split view delegate, since the live `displayMode` lags a change until the animation ends. Drives the app's own sidebar toggle item.
     var sidebarDisplayMode: UISplitViewController.DisplayMode? {
         didSet {
             // An unloaded tab picks the mode up in its first viewWillAppear.
@@ -1167,10 +1018,7 @@ final class NavigationController: UINavigationController, Themeable {
         }
     }
 
-    /// The app draws its own sidebar toggle so it can go without the glass platter iOS 27 puts
-    /// behind the system one, which the app can't reach (`displayModeButtonItem` isn't the item
-    /// the bar shows). Shown exactly when the system would show its own: a visible, uncollapsed
-    /// sidebar.
+    /// The app draws its own sidebar toggle so it can go without the glass platter iOS 27 puts behind the system one, which the app can't reach (`displayModeButtonItem` isn't the item the bar shows). Shown exactly when the system would show its own: a visible, uncollapsed sidebar.
     @available(iOS 26.0, *)
     private var wantsSidebarToggleItem: Bool {
         guard let splitViewController, !splitViewController.isCollapsed else { return false }
@@ -1178,26 +1026,15 @@ final class NavigationController: UINavigationController, Themeable {
         return mode == .oneBesideSecondary || mode == .oneOverSecondary
     }
 
-    /// Spacing between neighbouring glyphs in the iPad sidebar's trailing cluster, the sidebar
-    /// toggle included. The one number that decides how the trailing icons sit relative to each
-    /// other: nothing is positioned by offset, so it holds on every column width.
+    /// Spacing between neighbouring glyphs in the iPad sidebar's trailing cluster, the sidebar toggle included. The one number that decides how the trailing icons sit relative to each other: nothing is positioned by offset, so it holds on every column width.
     static let sidebarClusterSpacing: CGFloat = 12
 
-    /// The narrowest slot UINavigationBar gives a bar item on iOS 26 (measured; not exposed by
-    /// UIKit). A lone 20pt toggle sits centred in such a slot, and the cluster keeps that same
-    /// inset from its trailing edge so the toggle stays exactly where the system-sized slot put it.
+    /// The narrowest slot UINavigationBar gives a bar item on iOS 26 (measured, since UIKit doesn't expose it). A lone 20pt toggle sits centred in such a slot, and the cluster keeps that same inset from its trailing edge so the toggle stays exactly where the system-sized slot put it.
     private static let barItemMinimumWidth: CGFloat = 44
 
     /// Adds or removes the app's sidebar toggle to match `wantsSidebarToggleItem`.
     ///
-    /// UINavigationBar lays out custom-view items in 44pt slots 12pt apart, so a toggle added as
-    /// its own item sat 24–36pt from the screen's icons however tightly the screen had packed
-    /// them. Instead the screen's trailing custom views and the toggle are gathered into one
-    /// horizontal stack (`SidebarTrailingClusterBarButtonItem`) with `sidebarClusterSpacing`
-    /// between every pair; a screen's own icon stack is flattened into it so its pairs get the
-    /// same spacing. Removing the toggle restores the screen's items exactly as they were. A
-    /// screen with a system (non-custom-view) trailing item can't be clustered and gets the
-    /// toggle as a separate item, as before.
+    /// UINavigationBar lays out custom-view items in 44pt slots 12pt apart, so a toggle added as its own item sat 24–36pt from the screen's icons however tightly the screen had packed them. Instead the screen's trailing custom views and the toggle are gathered into one horizontal stack (`SidebarTrailingClusterBarButtonItem`) with `sidebarClusterSpacing` between every pair. A screen's own icon stack is flattened into it so its pairs get the same spacing. Removing the toggle restores the screen's items exactly as they were. A screen with a system (non-custom-view) trailing item can't be clustered and gets the toggle as a separate item, as before.
     @available(iOS 26.0, *)
     private func updateSidebarToggleItem(for viewController: UIViewController) {
         let items = viewController.navigationItem.rightBarButtonItems ?? []
@@ -1229,8 +1066,7 @@ final class NavigationController: UINavigationController, Themeable {
                 action: #selector(hideSidebarOnToggleTap)
             )
 
-            // Right items run trailing-first (index 0 is the trailing edge), so the cluster's
-            // leading-to-trailing order is the reverse, with the toggle last.
+            // Right items run trailing-first (index 0 is the trailing edge), so the cluster's leading-to-trailing order is the reverse, with the toggle last.
             var arranged: [UIView] = []
             var flattened: [(stack: UIStackView, views: [UIView])] = []
             for item in items.reversed() {
@@ -1275,14 +1111,7 @@ final class NavigationController: UINavigationController, Themeable {
         }
     }
 
-    /// Screens rebuild their bar items at runtime: Forums swaps its Edit item in and out as the
-    /// favourite count changes and rebuilds its right items on a settings change, Lepers on a
-    /// page load. An item that arrives while the screen is already showing has missed `willShow`
-    /// and the appearance callbacks, so it still shows the shared glass background (the platter),
-    /// and on the sidebar a rebuild drops the toggle. The bar's layout pass is the one place that
-    /// sees every such change, so both are put right from there — on the next turn, not
-    /// mid-layout, and never during a push or pop, when `lendSharedBackgroundDuringTransition`
-    /// has the background on loan and restores it itself.
+    /// Screens rebuild their bar items at runtime: Forums swaps its Edit item in and out as the favourite count changes and rebuilds its right items on a settings change, Lepers on a page load. An item that arrives while the screen is already showing has missed `willShow` and the appearance callbacks, so it still shows the shared glass background (the platter), and on the sidebar a rebuild drops the toggle. The bar's layout pass is the one place that sees every such change, so both are put right from there: on the next turn, not mid-layout, and never during a push or pop, when `lendSharedBackgroundDuringTransition` has the background on loan and restores it itself.
     @available(iOS 26.0, *)
     private func repairBarButtonItemsAfterLayout() {
         guard transitionCoordinator == nil, let topVC = topViewController else { return }
@@ -1308,23 +1137,18 @@ final class NavigationController: UINavigationController, Themeable {
     @available(iOS 26.0, *)
     @objc private func hideSidebarOnToggleTap() {
         guard let splitViewController, !splitViewController.isCollapsed else { return }
-        // Straight to the display mode rather than `hidePrimaryViewController()`, which only
-        // dismisses an overlay: this also unpins a pinned sidebar, as the system toggle did.
+        // Straight to the display mode rather than `hidePrimaryViewController()`, which only dismisses an overlay: this also unpins a pinned sidebar, as the system toggle did.
         UIView.animate(withDuration: 0.25) { splitViewController.preferredDisplayMode = .secondaryOnly }
     }
 
     // MARK: Detail column leading items
 
-    /// True for the nav controller in the iPad split view's detail column (as opposed to a
-    /// sidebar column, which sits inside the tab bar controller, or a presented one, which has
-    /// no split view controller).
+    /// True for the nav controller in the iPad split view's detail column (as opposed to a sidebar column, which sits inside the tab bar controller, or a presented one, which has no split view controller).
     private var isDetailNavigationController: Bool {
         UIDevice.current.userInterfaceIdiom == .pad && tabBarController == nil && splitViewController != nil
     }
 
-    /// Whether the detail column's screens carry the app's sidebar toggle: only once UIKit has
-    /// stopped drawing its own (`presentsWithGesture` off, see RootViewControllerStack), and
-    /// only while the sidebar is hidden or an overlay. A pinned sidebar carries its own toggle.
+    /// Whether the detail column's screens carry the app's sidebar toggle: only once UIKit has stopped drawing its own (`presentsWithGesture` off, see RootViewControllerStack), and only while the sidebar is hidden or an overlay. A pinned sidebar carries its own toggle.
     private var wantsDetailSidebarToggleItem: Bool {
         guard isDetailNavigationController, let splitViewController,
               !splitViewController.isCollapsed, !splitViewController.presentsWithGesture
@@ -1333,9 +1157,7 @@ final class NavigationController: UINavigationController, Themeable {
         return mode != .oneBesideSecondary
     }
 
-    /// Puts every screen's toggle in step with the split view. RootViewControllerStack calls
-    /// this on display-mode changes that don't push or pop anything; `willShow` covers screens
-    /// as they arrive.
+    /// Puts every screen's toggle in step with the split view. RootViewControllerStack calls this on display-mode changes that don't push or pop anything. `willShow` covers screens as they arrive.
     func refreshDetailLeadingItems() {
         guard isDetailNavigationController else { return }
         for viewController in viewControllers {
@@ -1343,8 +1165,7 @@ final class NavigationController: UINavigationController, Themeable {
         }
     }
 
-    /// Strips the toggle from every screen, for a column about to collapse into the primary
-    /// navigation stack.
+    /// Strips the toggle from every screen, for a column about to collapse into the primary navigation stack.
     func removeDetailLeadingItems() {
         for viewController in viewControllers {
             updateDetailLeadingItems(for: viewController, wanted: false)
@@ -1360,8 +1181,7 @@ final class NavigationController: UINavigationController, Themeable {
         viewController.navigationItem.leftBarButtonItems = desired.isEmpty ? nil : desired
     }
 
-    /// The screen's left items as they should be: our toggle (the instance already there, if
-    /// any) ahead of whatever the screen put in itself.
+    /// The screen's left items as they should be: our toggle (the instance already there, if any) ahead of whatever the screen put in itself.
     private func desiredDetailLeadingItems(for viewController: UIViewController, wanted: Bool?) -> [UIBarButtonItem] {
         let current = viewController.navigationItem.leftBarButtonItems ?? []
         let others = current.filter { !($0 is DetailSidebarToggleBarButtonItem) }
@@ -1379,8 +1199,7 @@ final class NavigationController: UINavigationController, Themeable {
         )
         toggle.accessibilityLabel = NSLocalizedString("Show Sidebar", comment: "Detail pane sidebar toggle accessibility label")
         if #available(iOS 26.0, *) {
-            // Flat under Reduce Liquid Glass like the app's other items; the detail bar is an
-            // ordinary glass bar otherwise, so the platter here is the one the system's had.
+            // Flat under Reduce Liquid Glass like the app's other items. The detail bar is an ordinary glass bar otherwise, so the platter here is the one the system's had.
             toggle.hidesSharedBackground = hidesSharedBarButtonBackground
         }
         return toggle
@@ -1396,15 +1215,9 @@ final class NavigationController: UINavigationController, Themeable {
         }
     }
 
-    /// On iPad sidebar, the nav bar is inside a glass panel so buttons get
-    /// flat rendering and fall back to the app's default tintColor. This
-    /// method overrides with an opaque themed appearance and explicit colors.
-    /// Called on push/pop (`willShow`), view appearance (tab switch), and
-    /// theme changes.
+    /// On iPad sidebar, the nav bar is inside a glass panel so buttons get flat rendering and fall back to the app's default tintColor. This method overrides with an opaque themed appearance and explicit colors. Called on push and pop (`willShow`), view appearance (tab switch), theme changes and split view changes (`refreshSidebarChrome`).
     ///
-    /// Runs regardless of the Reduce Liquid Glass setting: that setting only
-    /// swaps the app's own bar appearances, while UIKit keeps rendering the
-    /// sidebar column as a glass panel, so the bypass is needed either way.
+    /// Runs regardless of the Reduce Liquid Glass setting: that setting only swaps the app's own bar appearances, while UIKit keeps rendering the sidebar column as a glass panel, so the bypass is needed either way.
     @available(iOS 26.0, *)
     private func applySidebarAppearanceIfNeeded(with theme: Theme) {
         guard isSidebarNavigationController else { return }
@@ -1421,12 +1234,7 @@ final class NavigationController: UINavigationController, Themeable {
             .foregroundColor: textColor,
             .font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .semibold)
         ]
-        // Use .alwaysOriginal with the color baked in to bypass the glass
-        // panel's vibrancy compositing (same approach as title images).
-        // The system back button is replaced by a custom-view
-        // leftBarButtonItem in `replaceSidebarBarButtonItems` for iPad
-        // sidebar mode, so this image is only seen on iPhone (where it
-        // sits at a sensible inset by default).
+        // Use .alwaysOriginal with the color baked in to bypass the glass panel's vibrancy compositing (same approach as title images). The system back button is replaced by a custom-view leftBarButtonItem in `replaceSidebarBarButtonItems`, so this image only shows where the system back button stays, as on pushed SwiftUI screens.
         if let backImage = UIImage(named: "back")?.withTintColor(textColor, renderingMode: .alwaysOriginal) {
             sidebarAppearance.setBackIndicatorImage(backImage, transitionMaskImage: backImage)
         }
@@ -1455,22 +1263,16 @@ final class NavigationController: UINavigationController, Themeable {
         view.tintColor = textColor
 
         if let topVC = topViewController {
-            // The sidebar bar is always opaque, so the system scroll-edge fade beneath it (the
-            // soft blur applyGlassRestingState asks for under the glass bar) has nothing to
-            // blend into; it just reads as a blurred band below the bar. Hide it. Don't force the
-            // view to load for it: the viewDidAppear pass catches a screen that isn't loaded yet.
+            // The sidebar bar is always opaque, so the system scroll-edge fade beneath it (the soft blur applyGlassRestingState asks for under the glass bar) has nothing to blend into and just reads as a blurred band below the bar. Hide it. Don't force the view to load for it: the viewDidAppear pass catches a screen that isn't loaded yet.
             if topVC.isViewLoaded {
                 (topVC as? NavigationBarScrollTransitioning)?.navigationBarScrollView?.topEdgeEffect.isHidden = true
             }
 
-            // Replace system bar button items with custom-view equivalents
-            // that bypass the glass panel's vibrancy compositing.
+            // Replace system bar button items with custom-view equivalents that bypass the glass panel's vibrancy compositing.
             replaceSidebarBarButtonItems(for: topVC)
             updateSidebarToggleItem(for: topVC)
 
-            // Custom titleView using SwiftUI Text with .glassEffect(.identity) to bypass the
-            // glass panel's vibrancy compositing; it centres itself on the bar (see
-            // SidebarTitleView), whatever the items either side of it weigh.
+            // Custom titleView using SwiftUI Text with .glassEffect(.identity) to bypass the glass panel's vibrancy compositing. It centres itself on the bar (see SidebarTitleView), whatever the items either side of it weigh.
             let roundedFont = theme.roundedFonts
             if let existing = topVC.navigationItem.titleView as? SidebarTitleView {
                 existing.update(title: topVC.title ?? "", color: textColor, roundedFont: roundedFont)
@@ -1480,8 +1282,7 @@ final class NavigationController: UINavigationController, Themeable {
                 topVC.navigationItem.titleView = titleView
             }
 
-            // Hide the back button text to avoid vibrancy tinting it blue.
-            // The back arrow image still shows (it responds to forcedTintColor).
+            // Hide the back button text to avoid vibrancy tinting it blue. The back arrow image still shows (it responds to forcedTintColor).
             if viewControllers.count > 1 {
                 let previousVC = viewControllers[viewControllers.count - 2]
                 previousVC.navigationItem.backBarButtonItem = UIBarButtonItem(
@@ -1489,16 +1290,12 @@ final class NavigationController: UINavigationController, Themeable {
                 )
             }
 
-            // The replacements above are fresh items, and this runs from view appearance and
-            // the Edit tap as well as from willShow, so flag them here too.
+            // The replacements above are fresh items, and this runs from view appearance and the Edit tap as well as from willShow, so flag them here too.
             updateSharedBackgroundVisibility(for: topVC)
         }
     }
 
-    /// Hides the shared glass background behind every bar button item when the user has disabled
-    /// Liquid Glass, and always in the iPad sidebar (see `hidesSharedBarButtonBackground`); the
-    /// system back button doesn't expose this and stays glass. Assignment rather than set-once so
-    /// re-enabling glass recovers.
+    /// Hides the shared glass background behind every bar button item when the user has disabled Liquid Glass, and always in the iPad sidebar (see `hidesSharedBarButtonBackground`). The system back button doesn't expose this and stays glass. Assignment rather than set-once so re-enabling glass recovers.
     @available(iOS 26.0, *)
     private func updateSharedBackgroundVisibility(for viewController: UIViewController) {
         let hide = hidesSharedBarButtonBackground
@@ -1507,12 +1304,7 @@ final class NavigationController: UINavigationController, Themeable {
         }
     }
 
-    /// Reduce Liquid Glass keeps the bar opaque and in place at every scroll offset, so it doesn't
-    /// minimize on scroll either, as iOS 27 otherwise has it do on some screens (on the folded
-    /// iPhone Duo); nor does a screen that decides for itself when the bar goes
-    /// (`allowsNavigationBarMinimization`). Otherwise it's left to the system. A SwiftUI-hosted
-    /// screen's hosting controller overwrites this from SwiftUI, so those ask in SwiftUI instead
-    /// (see SettingsViewController's ReducedGlassBarMinimization).
+    /// Reduce Liquid Glass keeps the bar opaque and in place at every scroll offset, so it doesn't minimize on scroll either, as iOS 27 otherwise has it do on some screens (on the folded iPhone Duo). Nor does a screen that decides for itself when the bar goes (`allowsNavigationBarMinimization`). Otherwise it's left to the system. A SwiftUI-hosted screen's hosting controller overwrites this from SwiftUI, so those ask in SwiftUI instead (see SettingsViewController's ReducedGlassBarMinimization).
     private func updateBarMinimization(for viewController: UIViewController) {
         guard #available(iOS 27.0, *) else { return }
         let screenAllows = (viewController as? NavigationBarScrollTransitioning)?.allowsNavigationBarMinimization ?? true
@@ -1523,32 +1315,18 @@ final class NavigationController: UINavigationController, Themeable {
         viewController.navigationItem.navigationBarMinimization = minimization
     }
 
-    /// The items `updateSharedBackgroundVisibility` governs: the screen's bar and toolbar items,
-    /// spacers excepted (see `UIBarButtonItem.isSpacer`).
+    /// The items `updateSharedBackgroundVisibility` governs: the screen's bar and toolbar items, spacers excepted (see `UIBarButtonItem.isSpacer`).
     @available(iOS 26.0, *)
     private func sharedBackgroundItems(of viewController: UIViewController) -> [UIBarButtonItem] {
         let toolbarItems = (viewController.toolbarItems ?? []).filter { !$0.isSpacer }
         return navigationBarItems(of: viewController) + toolbarItems
     }
 
-    /// Hands both screens' bar button items their shared glass background back for the length of a
-    /// push or pop, then takes it away again.
+    /// Hands both screens' bar button items their shared glass background back for the length of a push or pop, then takes it away again.
     ///
-    /// UIKit morphs the outgoing screen's bar-button background into the incoming one's. Under
-    /// Reduce Liquid Glass, and in the iPad sidebar (see `hidesSharedBarButtonBackground`), ours
-    /// are hidden, so the morph has no shape to start from and UIKit
-    /// materialises the incoming platter out of the item's raw bounds instead: a hard-cornered
-    /// rectangle that rounds into the back button's circle, after which the glass lens goes on
-    /// refracting that rectangle for the best part of a second. Lending the background back for
-    /// the transition gives the morph a capsule to grow from, and the resting state is untouched
-    /// because it is taken away again the moment the transition ends (whether it finished or was
-    /// cancelled).
+    /// UIKit morphs the outgoing screen's bar-button background into the incoming one's. Under Reduce Liquid Glass, and in the iPad sidebar (see `hidesSharedBarButtonBackground`), ours are hidden, so the morph has no shape to start from and UIKit materialises the incoming platter out of the item's raw bounds instead: a hard-cornered rectangle that rounds into the back button's circle, after which the glass lens goes on refracting that rectangle for the best part of a second. Lending the background back for the transition gives the morph a capsule to grow from, and the resting state is untouched because it is taken away again the moment the transition ends (whether it finished or was cancelled).
     ///
-    /// Verified frame by frame: everything else that looked promising — `UIBarButtonItem`'s
-    /// `identifier` and `sharesBackground`, a capsule `cornerConfiguration` on the custom views,
-    /// and dropping the navigation bar's forced mid-transition layout passes — changed nothing.
-    /// Nor is the custom-view stand-in to blame: a plain system `editButtonItem` with the
-    /// background hidden shows exactly the same rectangle.
+    /// Verified frame by frame: everything else that looked promising changed nothing: `UIBarButtonItem`'s `identifier` and `sharesBackground`, a capsule `cornerConfiguration` on the custom views, and dropping the navigation bar's forced mid-transition layout passes. Nor is the custom-view stand-in to blame: a plain system `editButtonItem` with the background hidden shows exactly the same rectangle.
     @available(iOS 26.0, *)
     private func lendSharedBackgroundDuringTransition(_ navigationController: UINavigationController) {
         guard hidesSharedBarButtonBackground, let coordinator = navigationController.transitionCoordinator else { return }
@@ -1561,17 +1339,9 @@ final class NavigationController: UINavigationController, Themeable {
             item.hidesSharedBackground = false
         }
 
-        // Re-read the setting when restoring rather than assuming: the user can flip it while the
-        // transition is in flight.
+        // Re-read the setting when restoring rather than assuming: the user can flip it while the transition is in flight.
         //
-        // Known cost: UIKit animates the loan away by shrinking it into a tight ring around the
-        // label, which sits on the arriving screen's button for about a third of a second after
-        // the transition has finished. It resists `UIView.performWithoutAnimation`,
-        // `CATransaction.setDisableActions`, restoring off the animation context on the next
-        // runloop turn, re-seating the bar's items, toggling `sharesBackground` around the change,
-        // and restoring partway through the transition instead of at the end. Restoring inside
-        // the transition's own animation removes the ring but brings the rectangle back, because
-        // the morph loses its shape halfway through.
+        // Known cost: UIKit animates the loan away by shrinking it into a tight ring around the label, which sits on the arriving screen's button for about a third of a second after the transition has finished. It resists `UIView.performWithoutAnimation`, `CATransaction.setDisableActions`, restoring off the animation context on the next runloop turn, re-seating the bar's items, toggling `sharesBackground` around the change, and restoring partway through the transition instead of at the end. Restoring inside the transition's own animation removes the ring but brings the rectangle back, because the morph loses its shape halfway through.
         let restore = { [weak self] in
             guard let self else { return }
             let hide = self.hidesSharedBarButtonBackground
@@ -1587,8 +1357,7 @@ final class NavigationController: UINavigationController, Themeable {
         }
     }
 
-    /// The screen's own bar button items — the ones `hidesSharedBackground` applies to. The system
-    /// back button isn't among them; it keeps its platter either way.
+    /// The screen's own bar button items, the ones `hidesSharedBackground` applies to. The system back button isn't among them and keeps its platter either way.
     @available(iOS 26.0, *)
     private func navigationBarItems(of viewController: UIViewController) -> [UIBarButtonItem] {
         let navigationItem = viewController.navigationItem
@@ -1596,19 +1365,14 @@ final class NavigationController: UINavigationController, Themeable {
             .filter { !$0.isSpacer }
     }
 
-    /// Replaces text-based bar button items with custom-view equivalents that
-    /// bypass the glass panel's content-level vibrancy compositing.
+    /// Replaces text-based bar button items with custom-view equivalents that bypass the glass panel's content-level vibrancy compositing.
     @available(iOS 26.0, *)
     private func replaceSidebarBarButtonItems(for viewController: UIViewController) {
         func replaceItem(_ item: UIBarButtonItem) -> UIBarButtonItem {
-            // Skip items that are already custom-view items (including
-            // ones we created on a previous pass). The SwiftUI views read
-            // color from @Environment(\.theme) so they update automatically.
+            // Skip items that are already custom-view items (including ones we created on a previous pass). The SwiftUI views read color from @Environment(\.theme) so they update automatically.
             if item.customView != nil { return item }
 
-            // Text-based items need custom-view wrappers to bypass glass
-            // vibrancy. Detect editButtonItem by title match (identity
-            // comparison via === can fail on non-initial tabs).
+            // Text-based items need custom-view wrappers to bypass glass vibrancy. Detect editButtonItem by title match (identity comparison via === can fail on non-initial tabs).
             let title = item.title ?? ""
             let isEditButton = title == "Edit" || title == "Done"
                 || item === viewController.editButtonItem
@@ -1664,22 +1428,9 @@ final class NavigationController: UINavigationController, Themeable {
             }
         }
 
-        // Replace the system back button with a custom-view leftBarButtonItem
-        // when there's something to pop back to and the VC hasn't claimed the
-        // leading slot itself. setBackIndicatorImage doesn't honor
-        // alignmentRectInsets in iOS 26's glass nav bar, leaving the chevron
-        // visibly more inset than the matched custom-view items (Edit, etc).
-        // Routing the back chevron through the same hosting-view path gives
-        // it the same tight leading position. Interactive pop-swipe is
-        // preserved by the existing UIGestureRecognizerDelegate.
+        // Replace the system back button with a custom-view leftBarButtonItem when there's something to pop back to and the VC hasn't claimed the leading slot itself. setBackIndicatorImage doesn't honor alignmentRectInsets in iOS 26's glass nav bar, leaving the chevron visibly more inset than the matched custom-view items (Edit, etc). Routing the back chevron through the same hosting-view path gives it the same tight leading position. Interactive pop-swipe is preserved by the existing UIGestureRecognizerDelegate.
         //
-        // Skip SwiftUI hosting controllers (e.g. anything pushed via a SwiftUI
-        // `NavigationLink` from the Settings tab — theme picker, app icon
-        // picker, etc.). SwiftUI manages its own back button on these and
-        // injecting our own results in two visible back chevrons. This holds
-        // even for hosting controllers that drive their own UIKit chrome (the
-        // pushed search screens): the system back button is still drawn
-        // alongside the injected one, so they keep the system chevron.
+        // Skip SwiftUI hosting controllers (e.g. anything pushed via a SwiftUI `NavigationLink` from the Settings tab, such as the theme and app icon pickers). SwiftUI manages its own back button on these and injecting our own results in two visible back chevrons. This holds even for hosting controllers that drive their own UIKit chrome (the pushed search screens): the system back button is still drawn alongside the injected one, so they keep the system chevron.
         let hasExistingLeft = viewController.navigationItem.leftBarButtonItem != nil
             || (viewController.navigationItem.leftBarButtonItems?.isEmpty == false)
         if !hasExistingLeft,
@@ -1692,31 +1443,19 @@ final class NavigationController: UINavigationController, Themeable {
                 target: self,
                 action: #selector(popOnSidebarBackTap)
             )
-            // A lone leading item is fine even though the trailing cluster
-            // is wider: SidebarTitleView re-centers its content on the bar
-            // in layoutSubviews, whatever the item clusters weigh.
+            // A lone leading item is fine even though the trailing cluster is wider: SidebarTitleView re-centers its content on the bar in layoutSubviews, whatever the item clusters weigh.
             let backButton = SidebarStandInBarButtonItem(customView: backHosting)
             viewController.navigationItem.leftBarButtonItems = [backButton]
         }
 
-        // A tab root with no leading items at all (Settings) gets its title
-        // staged by the bar in a container squeezed between the leading edge
-        // and the trailing cluster — rendered off-center even though the
-        // title view's own frame reports centered, so the layout-time
-        // correction can't see it. Any leading item, even a 1pt invisible
-        // one, makes the bar lay the title out symmetrically. Tab roots
-        // only: pushed SwiftUI screens must keep their leading slot empty
-        // or their SwiftUI back button disappears.
+        // A tab root with no leading items at all (Settings) gets its title staged by the bar in a container squeezed between the leading edge and the trailing cluster, rendered off-center even though the title view's own frame reports centered, so the layout-time correction can't see it. Any leading item, even a 1pt invisible one, makes the bar lay the title out symmetrically. Tab roots only: pushed SwiftUI screens must keep their leading slot empty or their SwiftUI back button disappears.
         if !hasExistingLeft, viewControllers.first === viewController {
             let hairline = SidebarStandInBarButtonItem(customView: UIView(frame: CGRect(x: 0, y: 0, width: 1, height: 44)))
             viewController.navigationItem.leftBarButtonItems = [hairline]
         }
     }
 
-    /// Walks the class hierarchy looking for `UIHostingController`. Generic
-    /// type erasure makes a direct `is UIHostingController<…>` check awkward,
-    /// so match on the class name instead. Catches both vanilla
-    /// `UIHostingController` and Awful's `HostingController` subclass.
+    /// Walks the class hierarchy looking for `UIHostingController`. Generic type erasure makes a direct `is UIHostingController<…>` check awkward, so match on the class name instead. Catches both vanilla `UIHostingController` and Awful's `HostingController` subclass.
     private static func isHostingController(_ vc: UIViewController) -> Bool {
         var cls: AnyClass? = type(of: vc)
         while let c = cls {
@@ -1733,8 +1472,7 @@ final class NavigationController: UINavigationController, Themeable {
         _ = popViewController(animated: true)
     }
 
-    /// Creates a custom-view bar button item using SwiftUI with
-    /// `.glassEffect(.identity)` to bypass glass vibrancy compositing.
+    /// Creates a custom-view bar button item using SwiftUI with `.glassEffect(.identity)` to bypass glass vibrancy compositing.
     @available(iOS 26.0, *)
     private func makeTextBarButtonItem(
         title: String,
@@ -1752,14 +1490,11 @@ final class NavigationController: UINavigationController, Themeable {
         return SidebarStandInBarButtonItem(customView: hosting.view)
     }
 
-    /// Creates a custom-view stand-in for a screen's plain system `editButtonItem`, for
-    /// screens that don't go through `EditBarButton`. The stand-in relabels itself when
-    /// tapped; a screen that changes its editing state some other way should use
-    /// `EditBarButton` so it can call `setEditing(_:)`.
+    /// Creates a custom-view stand-in for a screen's plain system `editButtonItem`, for screens that don't go through `EditBarButton`. The stand-in relabels itself when tapped. A screen that changes its editing state some other way should use `EditBarButton` so it can call `setEditing(_:)`.
     @available(iOS 26.0, *)
     private func makeEditBarButtonItem(for viewController: UIViewController) -> SidebarStandInBarButtonItem {
         let isEditing = viewController.isEditing
-        // The action needs the view it lives in; hold it weakly so the view doesn't retain itself.
+        // The action needs the view it lives in, so hold it weakly so the view doesn't retain itself.
         final class ViewRef { weak var view: GlassTextBarButtonView? }
         let ref = ViewRef()
         let view = GlassTextBarButtonView(
@@ -1776,8 +1511,7 @@ final class NavigationController: UINavigationController, Themeable {
         return SidebarStandInBarButtonItem(customView: view)
     }
 
-    /// Creates a custom-view bar button item for an image button, using SwiftUI
-    /// with `.glassEffect(.identity)` to bypass glass vibrancy compositing.
+    /// Creates a custom-view bar button item for an image button, using SwiftUI with `.glassEffect(.identity)` to bypass glass vibrancy compositing.
     @available(iOS 26.0, *)
     private func makeImageBarButtonItem(
         image: UIImage,
@@ -1794,10 +1528,7 @@ final class NavigationController: UINavigationController, Themeable {
         return SidebarStandInBarButtonItem(customView: hostingView)
     }
 
-    /// Builds a UIHostingController-hosted view wrapping `SidebarImageButtonView`
-    /// for use as a `UIBarButtonItem.customView`. Callers that need direct
-    /// access to the hosting view (e.g. to animate alpha or anchor a popover)
-    /// can use this directly instead of `makeImageBarButtonItem`.
+    /// Builds a UIHostingController-hosted view wrapping `SidebarImageButtonView` for use as a `UIBarButtonItem.customView`. Callers that need direct access to the hosting view (e.g. to animate alpha or anchor a popover) can use this directly instead of `makeImageBarButtonItem`.
     @available(iOS 26.0, *)
     static func makeSidebarImageHostingView(
         image: UIImage,
@@ -1807,12 +1538,7 @@ final class NavigationController: UINavigationController, Themeable {
         action: Selector?
     ) -> UIView {
         let swiftUIImage = Image(uiImage: image.withRenderingMode(.alwaysTemplate))
-        // Capture target weakly: the closure lives inside the SwiftUI view
-        // hosted by UIBarButtonItem.customView, which is owned (transitively)
-        // by the view controller — and the target is typically the same
-        // view controller (or its navigation controller). A strong capture
-        // would form a retain cycle that only breaks when the bar button is
-        // removed.
+        // Capture target weakly: the closure lives inside the SwiftUI view hosted by UIBarButtonItem.customView, which is owned (transitively) by the view controller, and the target is typically the same view controller (or its navigation controller). A strong capture would form a retain cycle that only breaks when the bar button is removed.
         let content = SidebarImageButtonView(
             image: swiftUIImage,
             accessibilityLabel: accessibilityLabel,
@@ -1826,10 +1552,7 @@ final class NavigationController: UINavigationController, Themeable {
         let hosting = UIHostingController(rootView: AnyView(content))
         hosting.view.backgroundColor = .clear
         hosting.view.translatesAutoresizingMaskIntoConstraints = false
-        // Enforce a tight size so the bar button item doesn't reserve the
-        // hosting view's natural (often larger) fitting size. The system
-        // already adds inter-item spacing between bar buttons, so the
-        // customView itself doesn't need internal horizontal padding.
+        // Enforce a tight size so the bar button item doesn't reserve the hosting view's natural (often larger) fitting size. The system already adds inter-item spacing between bar buttons, so the customView itself doesn't need internal horizontal padding.
         NSLayoutConstraint.activate([
             hosting.view.widthAnchor.constraint(equalToConstant: pointSize),
             hosting.view.heightAnchor.constraint(equalToConstant: pointSize),
@@ -1838,15 +1561,9 @@ final class NavigationController: UINavigationController, Themeable {
         return hosting.view
     }
 
-    /// Builds a menu-bearing sidebar button whose icon gets the same
-    /// `.glassEffect(.identity)` treatment as `makeSidebarImageHostingView`, so the glass
-    /// panel's vibrancy compositing doesn't mis-tint it.
+    /// Builds a menu-bearing sidebar button whose icon gets the same `.glassEffect(.identity)` treatment as `makeSidebarImageHostingView`, so the glass panel's vibrancy compositing doesn't mis-tint it.
     ///
-    /// Split into two layers because neither half can do the whole job: SwiftUI's `Menu`
-    /// can't present a `UIMenu`, and a plain UIButton — which is what `showsMenuAsPrimaryAction`
-    /// needs, since UIBarButtonItem menus misbehave on iOS 26 iPad — is exactly what the
-    /// vibrancy mis-tints. So the SwiftUI hosting view draws the icon and a transparent
-    /// UIButton on top carries the menu.
+    /// Split into two layers because neither half can do the whole job: SwiftUI's `Menu` can't present a `UIMenu`, and a plain UIButton (which `showsMenuAsPrimaryAction` needs, since UIBarButtonItem menus misbehave on iOS 26 iPad) is exactly what the vibrancy mis-tints. So the SwiftUI hosting view draws the icon and a transparent UIButton on top carries the menu.
     @available(iOS 26.0, *)
     static func makeSidebarMenuButtonView(
         image: UIImage,
@@ -1862,9 +1579,7 @@ final class NavigationController: UINavigationController, Themeable {
             target: nil,
             action: nil
         )
-        // Purely decorative here: the SwiftUI Button inside would otherwise swallow the taps
-        // meant for the menu button layered over it, and would surface to VoiceOver (and
-        // XCUITest) as an unlabeled button beside the real, labeled one.
+        // Purely decorative here: the SwiftUI Button inside would otherwise swallow the taps meant for the menu button layered over it, and would surface to VoiceOver (and XCUITest) as an unlabeled button beside the real, labeled one.
         iconView.isUserInteractionEnabled = false
         iconView.accessibilityElementsHidden = true
 
@@ -1892,10 +1607,7 @@ final class NavigationController: UINavigationController, Themeable {
         return container
     }
 
-    /// Configures button appearance attributes for iOS 26 liquid glass compatibility.
-    /// Omits foregroundColor (so navigationBar.tintColor controls button text color) unless
-    /// `color` is given, which the resting-at-the-top state does: the glass circles read as the
-    /// bar there and take the theme's bar text colour (see NavigationBarScrollTransitioning).
+    /// Configures button appearance attributes for iOS 26 liquid glass compatibility. Omits foregroundColor (so navigationBar.tintColor controls button text color) unless `color` is given, which the resting-at-the-top state does: the glass circles read as the bar there and take the theme's bar text colour (see NavigationBarScrollTransitioning).
     private func configureButtonAppearance(_ appearance: UINavigationBarAppearance, font: UIFont, color: UIColor? = nil) {
         var buttonAttributes: [NSAttributedString.Key: Any] = [.font: font]
         if let color {
@@ -1933,10 +1645,7 @@ final class NavigationController: UINavigationController, Themeable {
         // Reduce Liquid Glass never lets the bar go clear: it stays at the resting state.
         let progressValue = LiquidGlass.isEnabled ? CGFloat(progress.floatValue) : 0
 
-        // Snap to the extremes: near-0 and near-1 scrolls render identically to 0 and 1,
-        // so collapse them into a single stable value. Without this, oscillations around
-        // the boundaries (e.g. 0.003 → 0.009 → 0.002) each clear the 0.005 delta gate
-        // and rebuild the appearance even though the visual result is unchanged.
+        // Snap to the extremes: near-0 and near-1 scrolls render identically to 0 and 1, so collapse them into a single stable value. Without this, oscillations around the boundaries (e.g. 0.003 → 0.009 → 0.002) each clear the 0.005 delta gate and rebuild the appearance even though the visual result is unchanged.
         let snappedProgress: CGFloat
         if progressValue < ScrollProgress.atTop {
             snappedProgress = 0
@@ -1954,10 +1663,7 @@ final class NavigationController: UINavigationController, Themeable {
 
         // Before the appearance is rebuilt: the glass circles re-evaluate their light/dark then.
         //
-        // The bar's own trait follows the same rule as the scroll view beneath it. iOS 26 took
-        // the circles' (and the edge fade's) light/dark from that scroll view, but iOS 27 reads
-        // the bar's trait instead, so a bar left on the theme's (dark) bar style over light
-        // content rendered dark glass circles with white glyphs and a dark, hard-edged fade.
+        // The bar's own trait follows the same rule as the scroll view beneath it. iOS 26 took the circles' (and the edge fade's) light/dark from that scroll view, but iOS 27 reads the bar's trait instead, so a bar left on the theme's (dark) bar style over light content rendered dark glass circles with white glyphs and a dark, hard-edged fade.
         if snappedProgress == 0 {
             awfulNavigationBar.overrideUserInterfaceStyle = theme.navigationBarUserInterfaceStyle
             applyGlassRestingState(atTop: true, for: topViewController, theme: theme)
@@ -1999,16 +1705,12 @@ final class NavigationController: UINavigationController, Themeable {
         }
     }
 
-    /// Whether `screen` gets the bar's content blur in place of the system edge effect (the posts
-    /// page in immersive mode). Reduce Liquid Glass never lets the bar go transparent, so the blur
-    /// stays off under it (the system edge effect is hidden for such a screen either way; see
-    /// applyGlassRestingState).
+    /// Whether `screen` gets the bar's content blur in place of the system edge effect (the posts page in immersive mode). Reduce Liquid Glass never lets the bar go transparent, so the blur stays off under it (the system edge effect is hidden for such a screen either way, see applyGlassRestingState).
     private func usesContentBlur(_ screen: NavigationBarScrollTransitioning?) -> Bool {
         LiquidGlass.isEnabled && screen?.usesNavigationBarContentBlur == true
     }
 
-    /// The content blur's light/dark: what the top screen sampled beneath the bar (or, failing
-    /// that, beneath the status bar), else the theme's mode. White text means dark content.
+    /// The content blur's light/dark: what the top screen sampled beneath the bar (or, failing that, beneath the status bar), else the theme's mode. White text means dark content.
     private var contentBlurUserInterfaceStyle: UIUserInterfaceStyle {
         let screen = topViewController as? NavigationBarScrollTransitioning
         switch screen?.navigationBarContentColor ?? screen?.statusBarContentColor {
@@ -2020,8 +1722,7 @@ final class NavigationController: UINavigationController, Themeable {
 
     @objc func updateNavigationBarTintForScrollPosition(_ isAtTop: NSNumber) {
         guard #available(iOS 26.0, *), LiquidGlass.usesGlassNavigationBar else { return }
-        // Scroll-based appearance handled in updateNavigationBarTintForScrollProgress,
-        // which already guards against iPad split view.
+        // Scroll-based appearance handled in updateNavigationBarTintForScrollProgress, which leaves the sidebar alone.
         let progress = isAtTop.boolValue ? 0.0 : 1.0
         updateNavigationBarTintForScrollProgress(NSNumber(value: progress))
     }
@@ -2033,8 +1734,7 @@ final class NavigationController: UINavigationController, Themeable {
     /// - Fully scrolled (progress > 0.99): Transparent background with system-provided contrasting colors
     /// - Mid-scroll (0.01...0.99): Gradient transition between opaque and transparent states
     ///
-    /// The dynamic appearance ensures optimal button visibility by letting the system adapt
-    /// colors to content underneath when scrolled, while maintaining theme consistency at the top.
+    /// The dynamic appearance ensures optimal button visibility by letting the system adapt colors to content underneath when scrolled, while maintaining theme consistency at the top.
     ///
     /// - Parameter progress: Scroll progress value from 0.0 (at top) to 1.0 (fully scrolled)
     @available(iOS 26.0, *)
@@ -2077,17 +1777,14 @@ final class NavigationController: UINavigationController, Themeable {
             }
         }
 
-        // Must be set AFTER configureWith* — those methods reset shadow state
-        // back to system defaults, which renders as a grey hairline on dark
-        // themes (most visible on SpankyKongDark) once scrolled off the top.
+        // Must be set AFTER configureWith*: those methods reset shadow state back to system defaults, which renders as a grey hairline on dark themes (most visible on SpankyKongDark) once scrolled off the top.
         appearance.shadowColor = .clear
         appearance.shadowImage = nil
     }
 
     @available(iOS 26.0, *)
     private func configureBackIndicator(for appearance: UINavigationBarAppearance, progress: CGFloat) {
-        // Only the resting state bakes a colour in. Scrolled (and mid-scroll) the chevron is the
-        // untinted template, so the back button's glass platter adapts it to the content.
+        // Only the resting state bakes a colour in. Scrolled (and mid-scroll) the chevron is the untinted template, so the back button's glass platter adapts it to the content.
         let backImage: UIImage?
         if progress < ScrollProgress.atTop,
            let textColor = theme[uicolor: "navigationBarTextColor"] {
@@ -2102,10 +1799,7 @@ final class NavigationController: UINavigationController, Themeable {
 
     @available(iOS 26.0, *)
     private func configureTitleAndButtons(for appearance: UINavigationBarAppearance, progress: CGFloat) {
-        // The system title follows the theme: bar text colour at the top, mode colour once the bar
-        // is transparent. The web-content screens (posts, a message, the rap sheet) use their own
-        // title label, coloured the same way (and, on the posts page in immersive mode, from the
-        // page beneath it; see `ContentContrastSampler`).
+        // The system title follows the theme: bar text colour at the top, mode colour once the bar is transparent. The web-content screens (posts, a message, the rap sheet) use their own title label, coloured the same way (and, on the posts page in immersive mode, from the page beneath it, see `ContentContrastSampler`).
         let textColor: UIColor
         if progress > ScrollProgress.fullyScrolled {
             textColor = theme.glassContentTextColor
@@ -2131,27 +1825,23 @@ final class NavigationController: UINavigationController, Themeable {
         awfulNavigationBar.compactScrollEdgeAppearance = appearance
 
         if progress < ScrollProgress.atTop {
-            // At the top the glass circles read as the bar, so text items take the theme's bar
-            // text colour (image items are baked; see applyGlassRestingState).
+            // At the top the glass circles read as the bar, so text items take the theme's bar text colour (image items are baked, see applyGlassRestingState).
             awfulNavigationBar.tintColor = restingNavigationBarTint(theme[uicolor: "navigationBarTextColor"] ?? .label)
         } else if progress > ScrollProgress.fullyScrolled {
-            // Over the content, hand the tint back to the system so the platters pick white or
-            // black from what is beneath them.
+            // Over the content, hand the tint back to the system so the platters pick white or black from what is beneath them.
             awfulNavigationBar.tintColor = nil
         }
     }
 
     private func interpolateColor(from startColor: UIColor, to endColor: UIColor, progress: CGFloat) -> UIColor {
-        let progress = max(0, min(1, progress)) // Clamp to 0-1
+        let progress = max(0, min(1, progress))
 
         var startRed: CGFloat = 0, startGreen: CGFloat = 0, startBlue: CGFloat = 0, startAlpha: CGFloat = 0
         var endRed: CGFloat = 0, endGreen: CGFloat = 0, endBlue: CGFloat = 0, endAlpha: CGFloat = 0
 
-        // Convert colors to RGB color space if needed and handle failures
         guard startColor.getRed(&startRed, green: &startGreen, blue: &startBlue, alpha: &startAlpha),
               endColor.getRed(&endRed, green: &endGreen, blue: &endBlue, alpha: &endAlpha) else {
-            // If color conversion fails (e.g., non-RGB color space), return the end color at full progress
-            // or start color at zero progress
+            // A colour getRed can't express in RGB can't be interpolated, so switch from one to the other halfway.
             return progress >= 0.5 ? endColor : startColor
         }
 
@@ -2192,18 +1882,12 @@ final class NavigationController: UINavigationController, Themeable {
         let backImage: UIImage?
         let buttonTitleColor: UIColor?
         if #available(iOS 26.0, *), LiquidGlass.usesGlassNavigationBar, !isSidebar {
-            // iPhone and iPad detail column: the glass-capable bar. Sidebar nav controllers take
-            // the opaque path so willShow/tab switches never reset tintColor to nil.
+            // The glass-capable bar: iPhone, the iPad detail column and a collapsed split view. Sidebar nav controllers take the opaque path so willShow and tab switches never reset tintColor to nil.
             //
-            // The glass bar-button circles follow this trait when nothing scrolls beneath the bar
-            // (the search and settings screens); a scroll view beneath the bar overrides it (see
-            // applyGlassRestingState). This is the resting state: iOS 27 reads this trait for the
-            // circles even with a scroll view beneath, so once scrolled
-            // updateNavigationBarTintForScrollProgress hands it to the content's mode.
+            // The glass bar-button circles follow this trait when nothing scrolls beneath the bar (the search and settings screens), and a scroll view beneath the bar overrides it (see applyGlassRestingState). This is the resting state: iOS 27 reads this trait for the circles even with a scroll view beneath, so once scrolled updateNavigationBarTintForScrollProgress hands it to the content's mode.
             awfulNavigationBar.overrideUserInterfaceStyle = theme.navigationBarUserInterfaceStyle
 
-            // At the top the glass circles read as the bar, and their glyphs take the theme's bar
-            // text colour, baked in where vibrancy would otherwise override it.
+            // At the top the glass circles read as the bar, and their glyphs take the theme's bar text colour, baked in where vibrancy would otherwise override it.
             applyGlassRestingState(atTop: true, for: viewController ?? topViewController, theme: theme)
             backImage = backIndicatorImage(tinted: textColor)
             buttonTitleColor = textColor
@@ -2267,8 +1951,7 @@ final class NavigationController: UINavigationController, Themeable {
 
 extension NavigationController: UIGestureRecognizerDelegate {
     func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
-        // Disable swipe-to-pop gesture recognizer during pop animations and when we have nothing to pop. If we don't do this, something bad happens in conjunction with the swipe-to-unpop that causes a pushed view controller not to actually appear on the screen. It looks like the app has simply frozen.
-        // See http://holko.pl/ios/2014/04/06/interactive-pop-gesture/ for more, and https://github.com/fastred/AHKNavigationController for the fix.
+        // Disable swipe-to-pop gesture recognizer during pop animations and when we have nothing to pop. If we don't do this, something bad happens in conjunction with the swipe-to-unpop that causes a pushed view controller not to actually appear on the screen. It looks like the app has simply frozen. See http://holko.pl/ios/2014/04/06/interactive-pop-gesture/ for more, and https://github.com/fastred/AHKNavigationController for the fix.
         return viewControllers.count > 1 && !pushAnimationInProgress
     }
     
@@ -2279,9 +1962,7 @@ extension NavigationController: UIGestureRecognizerDelegate {
 }
 
 extension NavigationController: UINavigationControllerDelegate {
-    /// UIKit calls the show delegate methods with a nil view controller when a stack is emptied
-    /// (`viewControllers = []`, which the split view's collapse does), nonnull annotation or not.
-    /// The optimizer takes the non-optional parameter as never nil, so a plain optional check compiles away. The bit cast keeps it.
+    /// UIKit calls the show delegate methods with a nil view controller when a stack is emptied (`viewControllers = []`, which the split view's collapse does), nonnull annotation or not. The optimizer takes the non-optional parameter as never nil, so a plain optional check compiles away. The bit cast keeps it.
     private static func nonNil(_ viewController: UIViewController) -> UIViewController? {
         unsafeBitCast(viewController, to: UIViewController?.self)
     }
@@ -2300,8 +1981,7 @@ extension NavigationController: UINavigationControllerDelegate {
 
         updateDetailLeadingItems(for: viewController)
 
-        // Apply sidebar glass bypass (titleView, button replacement) for
-        // pushed VCs too, not just on tab switches.
+        // Apply sidebar glass bypass (titleView, button replacement) for pushed VCs too, not just on tab switches.
         if #available(iOS 26.0, *) {
             applySidebarAppearanceIfNeeded(with: vcTheme)
             updateSharedBackgroundVisibility(for: viewController)
@@ -2311,8 +1991,7 @@ extension NavigationController: UINavigationControllerDelegate {
 
         if awfulNavigationBar.backIndicatorImage == nil {
             if #available(iOS 26.0, *), let backImage = vcTheme[uicolor: "navigationBarTextColor"].flatMap(backIndicatorImage(tinted:)) {
-                // Glass vibrancy ignores tintColor, on the sidebar panel and on the back button's
-                // platter alike (which stays even under Reduce Liquid Glass), so bake the colour in.
+                // Glass vibrancy ignores tintColor, on the sidebar panel and on the back button's platter alike (which stays even under Reduce Liquid Glass), so bake the colour in.
                 awfulNavigationBar.backIndicatorImage = backImage
                 awfulNavigationBar.backIndicatorTransitionMaskImage = backImage
             } else {
@@ -2326,34 +2005,27 @@ extension NavigationController: UINavigationControllerDelegate {
 
             awfulNavigationBar.tintColor = restingNavigationBarTint(textColor)
 
-            // On iOS 26 iPhone, the liquid glass system handles button
-            // colors dynamically. On iPad sidebar, glass-on-glass is
-            // disallowed so buttons get flat rendering that inherits
-            // tintColor — we must set it explicitly. Pre-iOS 26 also
-            // needs manual tinting.
+            // On iOS 26 the liquid glass system handles button colors dynamically on iPhone and in a collapsed split view. In the iPad sidebar, glass-on-glass is disallowed so buttons get flat rendering that inherits tintColor, which has to be set explicitly. Pre-iOS 26 also needs manual tinting.
             let needsManualButtonTint: Bool = {
                 if #available(iOS 26.0, *), LiquidGlass.usesGlassNavigationBar {
                     if let splitVC = tabBarController?.splitViewController ?? splitViewController,
                        !splitVC.isCollapsed {
                         return true // iPad with expanded split view
                     }
-                    return false // iPhone — glass handles tint
+                    return false // iPhone or a collapsed split view: glass handles tint
                 }
                 return true // pre-iOS 26 or Liquid Glass disabled
             }()
 
             if needsManualButtonTint {
-                // On iPad sidebar with iOS 26, replace text-based items with
-                // custom-view equivalents to bypass glass vibrancy.
+                // On iPad sidebar with iOS 26, replace text-based items with custom-view equivalents to bypass glass vibrancy.
                 if #available(iOS 26.0, *), isSidebarNavigationController {
                     replaceSidebarBarButtonItems(for: viewController)
                 } else {
                     let buttonTintColor: UIColor
                     if #available(iOS 26.0, *), LiquidGlass.usesGlassNavigationBar,
                        !(viewController is NavigationBarScrollTransitioning) {
-                        // Liquid glass renders bar buttons in glass circles that adapt to the
-                        // content; ignore the theme's white and match the title label / back
-                        // button. (Screens whose circles read as the bar take the theme colour.)
+                        // Liquid glass renders bar buttons in glass circles that adapt to the content, so ignore the theme's white and match the title label / back button. (Screens whose circles read as the bar take the theme colour.)
                         buttonTintColor = vcTheme.glassContentTextColor
                     } else {
                         buttonTintColor = textColor
@@ -2380,9 +2052,7 @@ extension NavigationController: UINavigationControllerDelegate {
             invalidateScrollProgressCache()
 
             if animated {
-                // A cancelled interactive pop calls neither -...didShowViewController: nor scrollViewDidScroll,
-                // so nothing would restore the transparent bar on a still-scrolled page. The coordinator's
-                // completion does run on cancellation, after the rewind settles.
+                // A cancelled interactive pop calls neither -...didShowViewController: nor scrollViewDidScroll, so nothing would restore the transparent bar on a still-scrolled page. The coordinator's completion does run on cancellation, after the rewind settles.
                 navigationController.transitionCoordinator?.animate(alongsideTransition: nil) { [weak self] context in
                     guard context.isCancelled, let self else { return }
                     self.invalidateScrollProgressCache()
@@ -2394,8 +2064,7 @@ extension NavigationController: UINavigationControllerDelegate {
         if let unpopHandler = unpopHandler , animated {
             unpopHandler.navigationControllerDidBeginAnimating()
             
-            // We need to hook into the transitionCoordinator's notifications as well as -...didShowViewController: because the latter isn't called when the default interactive pop action is cancelled.
-            // See http://stackoverflow.com/questions/23484310
+            // We need to hook into the transitionCoordinator's notifications as well as -...didShowViewController: because the latter isn't called when the default interactive pop action is cancelled. See http://stackoverflow.com/questions/23484310
             let interactionChanges = { (context: UIViewControllerTransitionCoordinatorContext) in
                 guard context.isCancelled else { return }
                 let unpopping = unpopHandler.interactiveUnpopIsTakingPlace
@@ -2434,12 +2103,7 @@ extension NavigationController: UINavigationControllerDelegate {
             releaseVerticalBarItemColors(of: viewController)
         }
 
-        // A completed transition (notably the swipe-from-right unpop onto a still-scrolled page)
-        // leaves the bar in the opaque resting state that willShow/viewWillAppear applied
-        // mid-transition, with no scroll event coming to clear it. Cancelled transitions are handled
-        // by the coordinator completion in willShow; this is the completed-transition counterpart.
-        // Only a scrolled page needs it: at the top the resting state is already right, and a fresh
-        // appearance object would make the glass circles re-sample for nothing.
+        // A completed transition (notably the swipe-from-right unpop onto a still-scrolled page) leaves the bar in the opaque resting state that willShow/viewWillAppear applied mid-transition, with no scroll event coming to clear it. Cancelled transitions are handled by the coordinator completion in willShow, and this is the completed-transition counterpart. Only a scrolled page needs it: at the top the resting state is already right, and a fresh appearance object would make the glass circles re-sample for nothing.
         if #available(iOS 26.0, *), LiquidGlass.usesGlassNavigationBar,
            let screen = viewController as? NavigationBarScrollProgressProviding,
            let scrollView = (viewController as? NavigationBarScrollTransitioning)?.navigationBarScrollView,
@@ -2468,16 +2132,13 @@ extension NavigationController: UINavigationControllerDelegate {
     }
 }
 
-/// A view controller that can re-derive the navigation bar's opaque/clear state from its current
-/// scroll position when no scroll event will arrive to do so (e.g. after a cancelled interactive pop,
-/// or after a completed transition such as an unpop back onto a still-scrolled page).
+/// A view controller that can re-derive the navigation bar's opaque/clear state from its current scroll position when no scroll event will arrive to do so (e.g. after a cancelled interactive pop, or after a completed transition such as an unpop back onto a still-scrolled page).
 @MainActor protocol NavigationBarScrollProgressProviding: UIViewController {
     func resyncNavigationBarScrollProgress()
 }
 
 extension NavigationController: NavigationBarContentContrastObserving {
-    /// A sampler on the top screen decided: the status bar follows `statusBarContentColor`, and
-    /// the content blur's wash follows `navigationBarContentColor`.
+    /// A sampler on the top screen decided: the status bar follows `statusBarContentColor`, and the content blur's wash follows `navigationBarContentColor`.
     func topScreenContentContrastDidChange() {
         guard #available(iOS 26.0, *), LiquidGlass.usesGlassNavigationBar else { return }
         UIView.animate(withDuration: ContentContrastSampler.flipDuration) {
