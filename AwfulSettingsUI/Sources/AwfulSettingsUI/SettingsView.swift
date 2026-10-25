@@ -21,10 +21,10 @@ public struct SettingsView: View {
     let cacheSizeText: String
     let canOpenTwitter: Bool
     let canOpenYouTube: Bool
+    let canShowSidebar: Bool
     let currentUsername: String
     let emptyCache: () -> Void
     let goToAwfulThread: () -> Void
-    let hasRegularSizeClassInLandscape: Bool
     let isMac: Bool
     let isPad: Bool
     let keyboardShortcutSections: [KeyboardShortcutSection]
@@ -38,10 +38,10 @@ public struct SettingsView: View {
         avatarURL: URL?,
         cacheSizeText: String,
         canOpenURL: @escaping (URL) -> Bool,
+        canShowSidebar: Bool,
         currentUsername: String,
         emptyCache: @escaping () -> Void,
         goToAwfulThread: @escaping () -> Void,
-        hasRegularSizeClassInLandscape: Bool,
         isMac: Bool,
         isPad: Bool,
         keyboardShortcutSections: [KeyboardShortcutSection],
@@ -56,10 +56,10 @@ public struct SettingsView: View {
         // once here rather than doing a `canOpenURL` round trip on every body evaluation.
         self.canOpenTwitter = canOpenURL(URL(string: "twitter://")!)
         self.canOpenYouTube = canOpenURL(URL(string: "youtube://")!)
+        self.canShowSidebar = canShowSidebar
         self.currentUsername = currentUsername
         self.emptyCache = emptyCache
         self.goToAwfulThread = goToAwfulThread
-        self.hasRegularSizeClassInLandscape = hasRegularSizeClassInLandscape
         self.isMac = isMac
         self.isPad = isPad
         self.keyboardShortcutSections = keyboardShortcutSections
@@ -74,7 +74,7 @@ public struct SettingsView: View {
             PostsSection(isMac: isMac, isPad: isPad)
             PostingSection(authenticateImgurAccount: authenticateImgurAccount)
             ThreadsSection()
-            if hasRegularSizeClassInLandscape {
+            if canShowSidebar {
                 SidebarSection()
             }
             LinksSection(canOpenTwitter: canOpenTwitter, canOpenYouTube: canOpenYouTube)
@@ -630,10 +630,10 @@ private struct SectionModifier: ViewModifier {
             avatarURL: nil,
             cacheSizeText: "42.3 MB",
             canOpenURL: { _ in true },
+            canShowSidebar: true,
             currentUsername: "Random Newbie",
             emptyCache: { print("emptying cache") },
             goToAwfulThread: { print("navigating to Awful's thread") },
-            hasRegularSizeClassInLandscape: true,
             isMac: false,
             isPad: true,
             keyboardShortcutSections: [

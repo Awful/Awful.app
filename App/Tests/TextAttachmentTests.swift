@@ -44,6 +44,41 @@ final class TextAttachmentTests: XCTestCase {
         XCTAssertTrue(attachment.thumbnailImage === thumbnail)
     }
 
+    func testThumbnailDoesNotDependOnTheWindowWidth() throws {
+        let attachment = TextAttachment(image: makeImage(width: 700, height: 300), photoAssetIdentifier: nil)
+
+        XCTAssertEqual(attachment.thumbnailImage?.size, CGSize(width: 700, height: 300))
+    }
+
+    func testBoundsShrinkToFitTheLine() {
+        let attachment = TextAttachment(image: makeImage(width: 700, height: 300), photoAssetIdentifier: nil)
+        let bounds = attachment.attachmentBounds(for: nil, proposedLineFragment: CGRect(x: 0, y: 0, width: 360, height: 20), glyphPosition: .zero, characterIndex: 0)
+
+        XCTAssertEqual(bounds.size, CGSize(width: 360, height: 154))
+    }
+
+    func testBoundsKeepTheThumbnailSizeWhenItFits() {
+        let attachment = TextAttachment(image: makeImage(width: 200, height: 100), photoAssetIdentifier: nil)
+
+        let bounds = attachment.attachmentBounds(for: nil, proposedLineFragment: CGRect(x: 0, y: 0, width: 360, height: 20), glyphPosition: .zero, characterIndex: 0)
+
+        XCTAssertEqual(bounds.size, CGSize(width: 200, height: 100))
+    }
+
+    func testTextViewKeepsAWideAttachmentsAspectRatio() {
+        let textView = UITextView(frame: CGRect(x: 0, y: 0, width: 320, height: 1000))
+        let attachment = TextAttachment(image: makeImage(width: 700, height: 300), photoAssetIdentifier: nil)
+        textView.attributedText = NSAttributedString(attachment: attachment)
+        textView.layoutIfNeeded()
+
+        let start = textView.beginningOfDocument
+        let range = textView.textRange(from: start, to: textView.position(from: start, offset: 1)!)!
+
+        let rect = textView.firstRect(for: range)
+        XCTAssertLessThanOrEqual(rect.width, 320)
+        XCTAssertEqual(rect.height, rect.width * 300 / 700, accuracy: 6)
+    }
+
     func testSettingImageInvalidatesThumbnail() throws {
         let attachment = TextAttachment(image: makeImage(width: 4000, height: 3000), photoAssetIdentifier: nil)
         let first = try XCTUnwrap(attachment.thumbnailImage)

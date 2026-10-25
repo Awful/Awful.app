@@ -181,9 +181,16 @@ final class TextAttachment: NSTextAttachment {
         _thumbnailImage = image.thumbnail(targetSize: thumbnailSize)
         return _thumbnailImage
     }
+
+    /// The thumbnail's size, scaled down to fit the line it's on. The line follows the text view's width, which changes as the window resizes. Left to UIKit, a wider attachment keeps its height and is squeezed to the line's width.
     override func attachmentBounds(for textContainer: NSTextContainer?, proposedLineFragment lineFrag: CGRect, glyphPosition position: CGPoint, characterIndex charIndex: Int) -> CGRect {
         let size = thumbnailImage?.size ?? .zero
-        return CGRect(origin: .zero, size: size)
+        let availableWidth = lineFrag.width
+        guard size.width > availableWidth, availableWidth > 0, availableWidth.isFinite else {
+            return CGRect(origin: .zero, size: size)
+        }
+        let height = floor(size.height * availableWidth / size.width)
+        return CGRect(x: 0, y: 0, width: availableWidth, height: height)
     }
     
     override func image(forBounds imageBounds: CGRect, textContainer: NSTextContainer?, characterIndex charIndex: Int) -> UIImage? {
@@ -210,8 +217,7 @@ private func appropriateThumbnailSize(imageSize: CGSize) -> CGSize {
     let threshold = TextAttachment.requiresThumbnailImageSize
     let widthRatio = imageSize.width / threshold.width
     let heightRatio = imageSize.height / threshold.height
-    let screenRatio = imageSize.width / (UIScreen.main.bounds.width - 8)
-    let ratio = max(widthRatio, heightRatio, screenRatio)
+    let ratio = max(widthRatio, heightRatio)
     
     if ratio <= 1 { return imageSize }
     return CGSize(width: floor(imageSize.width / ratio), height: floor(imageSize.height / ratio))

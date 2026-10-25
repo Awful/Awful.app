@@ -11,6 +11,7 @@ import SwiftUI
 final class SettingsViewController: HostingController<SettingsContainerView> {
     let managedObjectContext: NSManagedObjectContext
     private var cacheSizeText: CurrentValueSubject<String, Never>!
+    private var canShowSidebar: CurrentValueSubject<Bool, Never>!
 
     init(managedObjectContext: NSManagedObjectContext) {
         self.managedObjectContext = managedObjectContext
@@ -28,16 +29,16 @@ final class SettingsViewController: HostingController<SettingsContainerView> {
         }
         let box = UnownedBox()
         let cacheSizeText = CurrentValueSubject<String, Never>("Calculating…")
+        let canShowSidebar = CurrentValueSubject<Bool, Never>(false)
 
         super.init(rootView: SettingsContainerView(
             appIconDataSource: makeAppIconDataSource(),
             authenticateImgurAccount: { box.contents.authenticateImgurAccount() },
             cacheSizeText: cacheSizeText,
+            canShowSidebar: canShowSidebar,
             currentUser: currentUser,
             emptyCache: { box.contents.emptyCache() },
             goToAwfulThread: { box.contents.goToAwfulThread() },
-            // Not sure how to tell for real, seems like a decent proxy?
-            hasRegularSizeClassInLandscape: UIDevice.current.userInterfaceIdiom == .pad || UIScreen.main.scale > 2,
             isMac: ProcessInfo.processInfo.isMacCatalystApp,
             isPad: UIDevice.current.userInterfaceIdiom == .pad,
             keyboardShortcutSections: KeyboardShortcut.referenceSections,
@@ -47,6 +48,7 @@ final class SettingsViewController: HostingController<SettingsContainerView> {
             resetSettings: { box.contents.resetSettings() }
         ))
         self.cacheSizeText = cacheSizeText
+        self.canShowSidebar = canShowSidebar
         box.contents = self
 
         title = String(localized: "Settings", bundle: .module)
@@ -75,10 +77,10 @@ final class SettingsViewController: HostingController<SettingsContainerView> {
             appIconDataSource: rootView.appIconDataSource,
             authenticateImgurAccount: rootView.authenticateImgurAccount,
             cacheSizeText: rootView.cacheSizeText,
+            canShowSidebar: rootView.canShowSidebar,
             currentUser: newUser,
             emptyCache: rootView.emptyCache,
             goToAwfulThread: rootView.goToAwfulThread,
-            hasRegularSizeClassInLandscape: rootView.hasRegularSizeClassInLandscape,
             isMac: rootView.isMac,
             isPad: rootView.isPad,
             keyboardShortcutSections: rootView.keyboardShortcutSections,
@@ -100,6 +102,39 @@ final class SettingsViewController: HostingController<SettingsContainerView> {
         let transitionDistance: CGFloat = 30.0
         let progress = max(0, min(1, offsetFromTop / transitionDistance))
         navController.updateNavigationBarTintForScrollProgress(NSNumber(value: Float(progress)))
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        // `UIHingeInteraction` is new in the iOS 27.1 SDK, which only the UIKit build version tells apart from 27.0 (see `VerticalBar`).
+        #if canImport(UIKit, _version: 9127.0.85)
+        if #available(iOS 27.1, *) {
+            view.addInteraction(UIHingeInteraction { [weak self] _, update in
+                // The hinge goes nil whenever the view leaves the window, so only a sighting counts.
+                if update.hinge != nil {
+                    self?.canShowSidebar.send(true)
+                }
+            })
+        }
+        #endif
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        noteSidebarCapability()
+    }
+
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        coordinator.animate(alongsideTransition: nil) { [weak self] _ in self?.noteSidebarCapability() }
+    }
+
+    /// Shows the Sidebar settings once the device has shown a sidebar, or can: on iPad, and on a phone once its split view has expanded, as a Pro Max does in landscape. Which phones those are can't be told from the screen size, so this waits to see it.
+    private func noteSidebarCapability() {
+        if traitCollection.userInterfaceIdiom == .pad || splitViewController?.isCollapsed == false {
+            canShowSidebar.send(true)
+        }
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -266,10 +301,11 @@ struct SettingsContainerView: View {
     let appIconDataSource: AppIconDataSource
     let authenticateImgurAccount: () -> Void
     let cacheSizeText: CurrentValueSubject<String, Never>
+    /// Whether the device can show a sidebar, which `SettingsViewController` only learns once it is on screen.
+    let canShowSidebar: CurrentValueSubject<Bool, Never>
     @ObservedObject var currentUser: User
     let emptyCache: () -> Void
     let goToAwfulThread: () -> Void
-    let hasRegularSizeClassInLandscape: Bool
     let isMac: Bool
     let isPad: Bool
     let keyboardShortcutSections: [KeyboardShortcutSection]
@@ -280,6 +316,7 @@ struct SettingsContainerView: View {
 
     @AppStorage(Settings.disableLiquidGlass) private var disableLiquidGlass
     @State private var displayedCacheSize: String = "Calculating…"
+    @State private var displayedCanShowSidebar = false
 
     var body: some View {
         if #available(iOS 26.0, *) {
@@ -314,10 +351,10 @@ struct SettingsContainerView: View {
             avatarURL: currentUser.avatarURL,
             cacheSizeText: displayedCacheSize,
             canOpenURL: UIApplication.shared.canOpenURL(_:),
+            canShowSidebar: displayedCanShowSidebar,
             currentUsername: currentUser.username ?? "",
             emptyCache: emptyCache,
             goToAwfulThread: goToAwfulThread,
-            hasRegularSizeClassInLandscape: hasRegularSizeClassInLandscape,
             isMac: isMac,
             isPad: isPad,
             keyboardShortcutSections: keyboardShortcutSections,
@@ -326,6 +363,7 @@ struct SettingsContainerView: View {
         )
         .environment(\.managedObjectContext, managedObjectContext)
         .themed()
+        .onReceive(canShowSidebar) { displayedCanShowSidebar = $0 }
         .onReceive(cacheSizeText) { newValue in
             displayedCacheSize = newValue
         }

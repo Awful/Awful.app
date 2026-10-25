@@ -8,28 +8,30 @@ import AwfulTheming
 import UIKit
 
 extension CGRect {
-    var pixelRound: CGRect {
+    func pixelRound(scale: CGFloat) -> CGRect {
         var rounded = self
-        rounded.origin.x = Awful.pixelRound(rounded.origin.x)
-        rounded.origin.y = Awful.pixelRound(rounded.origin.y)
-        rounded.size = size.pixelCeil
+        rounded.origin.x = Awful.pixelRound(rounded.origin.x, scale: scale)
+        rounded.origin.y = Awful.pixelRound(rounded.origin.y, scale: scale)
+        rounded.size = size.pixelCeil(scale: scale)
         return rounded
     }
 }
 
 extension CGSize {
-    var pixelCeil: CGSize {
-        return CGSize(width: Awful.pixelCeil(width), height: Awful.pixelCeil(height))
+    func pixelCeil(scale: CGFloat) -> CGSize {
+        return CGSize(width: Awful.pixelCeil(width, scale: scale), height: Awful.pixelCeil(height, scale: scale))
     }
 }
 
-private let defaultScale: CGFloat = UIScreen.main.scale
-
-func pixelCeil(_ val: CGFloat, scale: CGFloat = defaultScale) -> CGFloat {
+/// `scale` is a trait collection's `displayScale`, which is 0 for a view outside a window, so that rounds to whole points.
+func pixelCeil(_ val: CGFloat, scale: CGFloat) -> CGFloat {
+    let scale = max(scale, 1)
     return ceil(val * scale) / scale
 }
 
-func pixelRound(_ val: CGFloat, scale: CGFloat = defaultScale) -> CGFloat {
+/// `scale` is a trait collection's `displayScale`, which is 0 for a view outside a window, so that rounds to whole points.
+func pixelRound(_ val: CGFloat, scale: CGFloat) -> CGFloat {
+    let scale = max(scale, 1)
     return round(val * scale) / scale
 }
 

@@ -173,7 +173,7 @@ final class ThreadPreviewViewController: ViewController {
     }
     
     private func repositionCell() {
-        let cellHeight = ThreadListCell.heightForViewModel(threadCell.viewModel, inTableWithWidth: view.bounds.width)
+        let cellHeight = ThreadListCell.heightForViewModel(threadCell.viewModel, inTableWithWidth: view.bounds.width, traitCollection: traitCollection)
         let attachmentBlockHeight = attachmentCard == nil ? 0 : AttachmentCardLayout.previewBlockHeight
         threadCell.frame = CGRect(x: 0, y: -(cellHeight + attachmentBlockHeight), width: view.bounds.width, height: cellHeight)
         attachmentCard?.layOutAboveContent(in: view)

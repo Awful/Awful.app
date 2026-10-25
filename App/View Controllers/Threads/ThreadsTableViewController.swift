@@ -81,7 +81,7 @@ final class ThreadsTableViewController: CollectionViewController, ComposeTextVie
     }
 
     private func rebuildLayout() {
-        let inset = ThreadListCell.separatorLeftInset(showsTagAndRating: showThreadTags, inTableWithWidth: collectionView.bounds.width)
+        let inset = ThreadListCell.separatorLeftInset(showsTagAndRating: showThreadTags, inTableWithWidth: collectionView.bounds.width, traitCollection: traitCollection)
         let layout = ThreadsTableViewController.makeLayout(
             separatorLeadingInset: inset,
             separatorColor: theme[uicolor: "listSeparatorColor"]

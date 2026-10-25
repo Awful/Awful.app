@@ -686,7 +686,7 @@ final class BookmarksTableViewController: HostedCollectionViewController {
     }
 
     private func rebuildLayout() {
-        let inset = ThreadListCell.separatorLeftInset(showsTagAndRating: showThreadTags, inTableWithWidth: collectionView.bounds.width)
+        let inset = ThreadListCell.separatorLeftInset(showsTagAndRating: showThreadTags, inTableWithWidth: collectionView.bounds.width, traitCollection: traitCollection)
 
         var config = UICollectionLayoutListConfiguration(appearance: .plain)
         config.backgroundColor = .clear

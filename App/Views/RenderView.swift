@@ -117,7 +117,7 @@ final class RenderView: UIView {
         #endif
 
         configuration.setURLSchemeHandler(ImageURLProtocol(), forURLScheme: ImageURLProtocol.scheme)
-        configuration.setURLSchemeHandler(ResourceURLProtocol(), forURLScheme: ResourceURLProtocol.scheme)
+        configuration.setURLSchemeHandler(ResourceURLSchemeHandler(), forURLScheme: ResourceURLSchemeHandler.scheme)
         configuration.setURLSchemeHandler(AttachmentSchemeHandler(), forURLScheme: AttachmentSchemeHandler.scheme)
 
         let webView = WKWebView(frame: .zero, configuration: configuration)

@@ -101,7 +101,8 @@ final class MessageListViewController: CollectionViewController, ContentRefresha
     private func rebuildLayout() {
         let inset = MessageListCell.separatorLeftInset(
             showsTagAndRating: showThreadTags,
-            inTableWithWidth: collectionView.bounds.width
+            inTableWithWidth: collectionView.bounds.width,
+            traitCollection: traitCollection
         )
         let color = theme[uicolor: "listSeparatorColor"]
         collectionView.setCollectionViewLayout(

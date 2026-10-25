@@ -140,7 +140,7 @@ final class MessageListCell: UICollectionViewListCell {
     override func layoutSubviews() {
         super.layoutSubviews()
 
-        let layout = Layout(width: contentView.bounds.width, viewModel: viewModel)
+        let layout = Layout(width: contentView.bounds.width, viewModel: viewModel, displayScale: traitCollection.displayScale)
         dateLabel.frame = layout.dateFrame
         senderLabel.frame = layout.senderFrame
         subjectLabel.frame = layout.subjectFrame
@@ -151,7 +151,7 @@ final class MessageListCell: UICollectionViewListCell {
     override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
         let attributes = super.preferredLayoutAttributesFitting(layoutAttributes)
         let width = layoutAttributes.size.width
-        let height = Layout(width: contentViewWidth(forCellWidth: width), viewModel: viewModel).height
+        let height = Layout(width: contentViewWidth(forCellWidth: width), viewModel: viewModel, displayScale: traitCollection.displayScale).height
         attributes.size = CGSize(width: width, height: height)
         return attributes
     }
@@ -175,7 +175,7 @@ final class MessageListCell: UICollectionViewListCell {
         private static let tagRightMargin: CGFloat = 8
         private static let tagOverlayOffset = UIOffset(horizontal: 4, vertical: 4)
 
-        init(width: CGFloat, viewModel: ViewModel) {
+        init(width: CGFloat, viewModel: ViewModel, displayScale: CGFloat) {
             // 1. See how much width we have for the subject.
             var subjectWidth = width - Layout.cellHorizontalMargin - Layout.cellHorizontalMargin
             let tagSize = viewModel.tagImage.imageSize
@@ -183,11 +183,11 @@ final class MessageListCell: UICollectionViewListCell {
                 subjectWidth -= tagSize.width - Layout.tagRightMargin
             }
 
-            let subjectHeight = viewModel.subject.boundingRect(with: CGSize(width: subjectWidth, height: .infinity), options: .usesLineFragmentOrigin, context: nil).pixelRound.height
+            let subjectHeight = viewModel.subject.boundingRect(with: CGSize(width: subjectWidth, height: .infinity), options: .usesLineFragmentOrigin, context: nil).pixelRound(scale: displayScale).height
 
             // 2. Figure out how tall things are.
-            let senderHeight = viewModel.sender.boundingRect(with: CGSize(width: width, height: .infinity), options: [], context: nil).pixelRound.height
-            let dateSize = viewModel.sentDateRaw.boundingRect(with: CGSize(width: width, height: .infinity), options: [], context: nil).pixelRound
+            let senderHeight = viewModel.sender.boundingRect(with: CGSize(width: width, height: .infinity), options: [], context: nil).pixelRound(scale: displayScale).height
+            let dateSize = viewModel.sentDateRaw.boundingRect(with: CGSize(width: width, height: .infinity), options: [], context: nil).pixelRound(scale: displayScale)
 
             let textHeight = max(senderHeight, dateSize.height) + Layout.subjectTopMargin + subjectHeight
             height = max(Layout.minimumHeight,
@@ -199,7 +199,7 @@ final class MessageListCell: UICollectionViewListCell {
                 y: (height - tagSize.height) / 2,
                 width: tagSize.width,
                 height: tagSize.height)
-                .pixelRound
+                .pixelRound(scale: displayScale)
 
             let tagOverlaySize = CGSize(width: 18, height: 18)
             tagOverlayFrame = CGRect(
@@ -214,7 +214,7 @@ final class MessageListCell: UICollectionViewListCell {
                 y: (height - textHeight) / 2,
                 width: dateSize.width,
                 height: dateSize.height)
-                .pixelRound
+                .pixelRound(scale: displayScale)
 
             // 5. Sender
             let senderX = tagSize.width > 0
@@ -235,7 +235,7 @@ final class MessageListCell: UICollectionViewListCell {
         }
     }
 
-    static func separatorLeftInset(showsTagAndRating: Bool, inTableWithWidth width: CGFloat) -> CGFloat {
+    static func separatorLeftInset(showsTagAndRating: Bool, inTableWithWidth width: CGFloat, traitCollection: UITraitCollection) -> CGFloat {
         let viewModel = ViewModel(
             backgroundColor: .clear,
             selectedBackgroundColor: .clear,
@@ -246,7 +246,7 @@ final class MessageListCell: UICollectionViewListCell {
             subject: .init(),
             tagImage: showsTagAndRating ? .spacer : .none,
             tagOverlayImage: nil)
-        return Layout(width: width, viewModel: viewModel).subjectFrame.minX
+        return Layout(width: width, viewModel: viewModel, displayScale: traitCollection.displayScale).subjectFrame.minX
     }
 }
 

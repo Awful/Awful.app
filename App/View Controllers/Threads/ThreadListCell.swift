@@ -145,7 +145,7 @@ final class ThreadListCell: UICollectionViewListCell {
     override func layoutSubviews() {
         super.layoutSubviews()
 
-        let layout = Layout(width: contentView.bounds.width, viewModel: viewModel)
+        let layout = Layout(width: contentView.bounds.width, viewModel: viewModel, displayScale: traitCollection.displayScale)
          // Background behind the page count label, with padding and pill shape
         if viewModel.unreadCount.length > 0 {
             let backgroundPadding = UIEdgeInsets(top: -2, left: -6, bottom: -2, right: -6)
@@ -174,7 +174,7 @@ final class ThreadListCell: UICollectionViewListCell {
     override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
         let attributes = super.preferredLayoutAttributesFitting(layoutAttributes)
         let width = layoutAttributes.size.width
-        let height = Layout(width: contentViewWidth(forCellWidth: width), viewModel: viewModel).height
+        let height = Layout(width: contentViewWidth(forCellWidth: width), viewModel: viewModel, displayScale: traitCollection.displayScale).height
         attributes.size = CGSize(width: width, height: height)
         return attributes
     }
@@ -203,7 +203,7 @@ final class ThreadListCell: UICollectionViewListCell {
         /// clears the vertical scroll bar indicator.
         static let unreadTrailingPadding: CGFloat = 8
 
-        init(width: CGFloat, viewModel: ViewModel) {
+        init(width: CGFloat, viewModel: ViewModel, displayScale: CGFloat) {
             // 1. See how much width we have for the text.
             var textWidth = width - Layout.outerMargin - Layout.outerMargin
 
@@ -212,7 +212,7 @@ final class ThreadListCell: UICollectionViewListCell {
                 textWidth -= tagImageSize.width + Layout.tagRightMargin
             }
 
-            let unreadSize = viewModel.unreadCount.boundingRect(with: CGSize(width: width, height: .infinity), options: [], context: nil).pixelRound.size
+            let unreadSize = viewModel.unreadCount.boundingRect(with: CGSize(width: width, height: .infinity), options: [], context: nil).pixelRound(scale: displayScale).size
             if unreadSize.width > 0 {
                 textWidth -= unreadSize.width + Layout.unreadLeftMargin + Layout.unreadTrailingPadding
             }
@@ -220,13 +220,13 @@ final class ThreadListCell: UICollectionViewListCell {
             // Pixel-ceil textWidth so the measurement width matches the rendered width after textRect is pixelRound'd.
             // Without this, a title that barely wraps at textWidth may fit on one line at the slightly wider pixelCeil(textWidth),
             // leaving a gap between the title and the subtitle row.
-            textWidth = pixelCeil(textWidth)
+            textWidth = pixelCeil(textWidth, scale: displayScale)
 
             // 2. Figure out how tall things are.
-            let titleHeight = viewModel.title.boundingRect(with: CGSize(width: textWidth, height: .infinity), options: [.usesLineFragmentOrigin], context: nil).pixelRound.height
+            let titleHeight = viewModel.title.boundingRect(with: CGSize(width: textWidth, height: .infinity), options: [.usesLineFragmentOrigin], context: nil).pixelRound(scale: displayScale).height
 
-            let pageCountSize = viewModel.pageCount.boundingRect(with: CGSize(width: width, height: .infinity), options: [], context: nil).pixelRound.size
-            let postInfoSize = viewModel.postInfo.boundingRect(with: CGSize(width: width, height: .infinity), options: [], context: nil).pixelRound.size
+            let pageCountSize = viewModel.pageCount.boundingRect(with: CGSize(width: width, height: .infinity), options: [], context: nil).pixelRound(scale: displayScale).size
+            let postInfoSize = viewModel.postInfo.boundingRect(with: CGSize(width: width, height: .infinity), options: [], context: nil).pixelRound(scale: displayScale).size
 
             let textHeight = titleHeight + Layout.titleBottomMargin + max(pageCountSize.height, postInfoSize.height)
 
@@ -245,14 +245,14 @@ final class ThreadListCell: UICollectionViewListCell {
                 y: (height - tagAndRatingHeight) / 2,
                 width: max(tagImageSize.width, ratingWidth),
                 height: tagAndRatingHeight)
-                .pixelRound
+                .pixelRound(scale: displayScale)
 
             tagImageFrame = CGRect(
                 x: tagAndRatingRect.minX + (tagAndRatingRect.width - tagImageSize.width) / 2,
                 y: tagAndRatingRect.minY,
                 width: tagImageSize.width,
                 height: tagImageSize.height)
-                .pixelRound
+                .pixelRound(scale: displayScale)
 
             let secondaryTagSize = CGSize(width: 14, height: 14)
             secondaryTagFrame = CGRect(
@@ -266,7 +266,7 @@ final class ThreadListCell: UICollectionViewListCell {
                 y: tagAndRatingRect.maxY - ratingHeight,
                 width: ratingWidth,
                 height: ratingHeight)
-                .pixelRound
+                .pixelRound(scale: displayScale)
 
             // 4. Unread count
             unreadCountFrame = CGRect(
@@ -274,7 +274,7 @@ final class ThreadListCell: UICollectionViewListCell {
                 y: (height - unreadSize.height) / 2,
                 width: unreadSize.width,
                 height: unreadSize.height)
-                .pixelRound
+                .pixelRound(scale: displayScale)
 
             // 5. Title, page count, post info
             let textRect = CGRect(
@@ -282,7 +282,7 @@ final class ThreadListCell: UICollectionViewListCell {
                 y: (height - textHeight) / 2,
                 width: textWidth,
                 height: textHeight)
-                .pixelRound
+                .pixelRound(scale: displayScale)
 
             titleFrame = CGRect(
                 x: textRect.minX,
@@ -297,14 +297,14 @@ final class ThreadListCell: UICollectionViewListCell {
                 height: pageCountSize.height)
 
             let pageCountFont = viewModel.pageCount.attribute(.font, at: 0, effectiveRange: nil) as? UIFont ?? UIFont.systemFont(ofSize: 12)
-            let pageIconHeight = pixelCeil(pageCountFont.capHeight)
+            let pageIconHeight = pixelCeil(pageCountFont.capHeight, scale: displayScale)
             let pageIconWidth = CGFloat(9)
             pageIconFrame = CGRect(
                 x: pageCountFrame.maxX + Layout.pageCountRightMargin,
                 y: pageCountFrame.minY + pageCountFont.ascender - pageIconHeight,
                 width: pageIconWidth,
                 height: pageIconHeight)
-                .pixelRound
+                .pixelRound(scale: displayScale)
 
             let postInfoFont = viewModel.postInfo.attribute(.font, at: 0, effectiveRange: nil) as? UIFont ?? UIFont.systemFont(ofSize: 11)
             postInfoFrame = CGRect(
@@ -312,7 +312,7 @@ final class ThreadListCell: UICollectionViewListCell {
                 y: textRect.maxY - postInfoSize.height + (pageCountFont.descender - postInfoFont.descender),
                 width: textWidth - (pageIconFrame.maxX - pageCountFrame.minX),
                 height: postInfoSize.height)
-                .pixelRound
+                .pixelRound(scale: displayScale)
 
             // 6. Sticky
             let stickySize = viewModel.stickyImage?.size ?? .zero
@@ -324,11 +324,11 @@ final class ThreadListCell: UICollectionViewListCell {
         }
     }
 
-    static func heightForViewModel(_ viewModel: ViewModel, inTableWithWidth width: CGFloat) -> CGFloat {
-        return Layout(width: width, viewModel: viewModel).height
+    static func heightForViewModel(_ viewModel: ViewModel, inTableWithWidth width: CGFloat, traitCollection: UITraitCollection) -> CGFloat {
+        return Layout(width: width, viewModel: viewModel, displayScale: traitCollection.displayScale).height
     }
 
-    static func separatorLeftInset(showsTagAndRating: Bool, inTableWithWidth width: CGFloat) -> CGFloat {
+    static func separatorLeftInset(showsTagAndRating: Bool, inTableWithWidth width: CGFloat, traitCollection: UITraitCollection) -> CGFloat {
         let viewModel = ViewModel(
             backgroundColor: .clear,
             pageCount: NSAttributedString(),
@@ -341,6 +341,6 @@ final class ThreadListCell: UICollectionViewListCell {
             tagImage: showsTagAndRating ? .spacer : .none,
             title: NSAttributedString(),
             unreadCount: NSAttributedString())
-        return Layout(width: width, viewModel: viewModel).titleFrame.minX
+        return Layout(width: width, viewModel: viewModel, displayScale: traitCollection.displayScale).titleFrame.minX
     }
 }
