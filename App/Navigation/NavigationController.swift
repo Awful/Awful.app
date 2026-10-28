@@ -1264,6 +1264,8 @@ final class NavigationController: UINavigationController, Themeable {
         awfulNavigationBar.scrollEdgeAppearance = sidebarAppearance
         awfulNavigationBar.compactAppearance = sidebarAppearance
         awfulNavigationBar.compactScrollEdgeAppearance = sidebarAppearance
+        // The strip above the bar on the iPhone Duo. Unlike the detail bar's, it doesn't fade, since this bar is always opaque.
+        awfulNavigationBar.verticalBarTopFillColor = theme[uicolor: "navigationBarTintColor"]
         awfulNavigationBar.tintColor = textColor
         awfulNavigationBar.forcedTintColor = textColor
         awfulNavigationBar.titleTextAttributes = [
