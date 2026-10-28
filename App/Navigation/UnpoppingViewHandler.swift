@@ -14,6 +14,13 @@ final class UnpoppingViewHandler: UIPercentDrivenInteractiveTransition {
     /// Horizontal speed (points per second) past which releasing the finger commits to, or abandons, the unpop regardless of how far it got.
     private static let flickVelocity: CGFloat = 500
 
+    /// A swipe from mid-screen needs a faster flick that has already travelled some way, so a quick diagonal scroll doesn't unpop.
+    private static let contentFlickVelocity: CGFloat = 1000
+    private static let contentMinimumFlickProgress: CGFloat = 0.1
+
+    /// Fraction of the screen a slower release has to have travelled to commit.
+    private static let commitProgress: CGFloat = 0.3
+
     private lazy var edgePanRecognizer: UIGestureRecognizer = {
         let pan = UIScreenEdgePanGestureRecognizer()
         pan.addTarget(self, action: #selector(handlePan))
@@ -54,6 +61,22 @@ final class UnpoppingViewHandler: UIPercentDrivenInteractiveTransition {
         guard let view = sender.view, view.bounds.width > 0 else { return 0 }
         return -sender.translation(in: view).x / view.bounds.width
     }
+
+    /// Swipes tend to be short, so a leftward flick counts as much as distance does.
+    private func releaseCommits(_ sender: UIPanGestureRecognizer) -> Bool {
+        let velocity = sender.velocity(in: sender.view).x
+        let progress = percentComplete(for: sender)
+        if velocity > Self.flickVelocity {
+            return false
+        }
+        let isContentPan = sender === contentPanRecognizer
+        let commitVelocity = isContentPan ? Self.contentFlickVelocity : Self.flickVelocity
+        let minimumFlickProgress = isContentPan ? Self.contentMinimumFlickProgress : 0
+        if velocity < -commitVelocity && progress >= minimumFlickProgress {
+            return true
+        }
+        return progress > Self.commitProgress
+    }
     
     @objc private func handlePan(_ sender: UIPanGestureRecognizer) {
         switch sender.state {
@@ -68,11 +91,7 @@ final class UnpoppingViewHandler: UIPercentDrivenInteractiveTransition {
             
         case .cancelled, .ended:
             guard interactiveUnpopIsTakingPlace else { break }
-            // Swipes from mid-screen tend to be short, so a flick counts as much as distance does.
-            let velocity = sender.velocity(in: sender.view).x
-            let completes = sender.state == .ended
-                && (velocity < -Self.flickVelocity || (velocity <= Self.flickVelocity && percentComplete(for: sender) > 0.3))
-            if completes {
+            if sender.state == .ended && releaseCommits(sender) {
                 viewControllers.removeLast()
                 finish()
             } else {
@@ -177,9 +196,9 @@ extension UnpoppingViewHandler: UIGestureRecognizerDelegate {
         {
             return false
         }
-        // Only for horizontal-dominant leftward motion; rightward is the system's pop.
+        // Only for clearly horizontal leftward motion, within about 27° of horizontal, so a diagonal scroll is left alone. Rightward is the system's pop.
         let translation = contentPanRecognizer.translation(in: view)
-        return translation.x < 0 && abs(translation.x) > abs(translation.y)
+        return translation.x < 0 && -translation.x > 2 * abs(translation.y)
     }
     
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith other: UIGestureRecognizer) -> Bool {
