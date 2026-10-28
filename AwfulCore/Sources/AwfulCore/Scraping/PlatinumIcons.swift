@@ -54,6 +54,11 @@ public enum PlatinumIcons {
         return icons
     }
 
+    /// Bump this whenever `postsViewStylesheet(for:isBlack:)` changes what it makes. The app caches the stylesheet and only makes it again when the Forums change `platicons.css`, so a change wouldn't otherwise show up.
+    ///
+    /// Sizing lives in the posts view's own stylesheets, as the `--awful-platinum-icon-size` and `--awful-platinum-icon-drop` variables, so changing it doesn't need a bump.
+    public static let postsViewStylesheetVersion = 2
+
     /// Makes a posts view stylesheet that shows each icon after the author's username, in place of the platinum grenade.
     ///
     /// Icons are drawn as-is, except that black icons (per `isBlack`) take on whatever filter the theme sets in `--awful-black-icon-filter`. Themes use that to give black icons the same treatment as the (black) platinum grenade, e.g. turning them white on dark backgrounds. Icons in any other colour are left alone, as that's a colour the user picked.
@@ -73,10 +78,10 @@ public enum PlatinumIcons {
              {
               content: "";
               display: inline-block;
-              width: 16px;
-              height: 16px;
+              width: var(--awful-platinum-icon-size, 16px);
+              height: var(--awful-platinum-icon-size, 16px);
               margin-left: 2px;
-              vertical-align: -2px;
+              vertical-align: var(--awful-platinum-icon-drop, -2px);
               background-size: contain;
               background-repeat: no-repeat;
               background-position: center;

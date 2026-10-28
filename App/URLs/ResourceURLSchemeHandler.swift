@@ -14,11 +14,13 @@ private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: 
 
  Automatically loads `@3x` and/or `@2x` versions of image resources when available, with priority given to scales closest to the requesting web view's display scale.
 
+ A PNG that isn't in the resources folder comes from the asset catalog instead, so an image the native UI uses can be shared with web views rather than copied.
+
  Unlike `UIImage.imageNamed()`, the path extension is required.
 
  # Examples
 
- - `awful-resource://updog.png` in a web view on a 3x display will attempt to load `updog@3x.png`, then `updog@2x.png`, then `updog.png` from the main bundle's resources folder, using the first one found.
+ - `awful-resource://updog.png` in a web view on a 3x display will attempt to load `updog@3x.png`, then `updog@2x.png`, then `updog.png` from the main bundle's resources folder, using the first one found. Failing that, it loads the `updog` image from the asset catalog.
  - `awful-resource://only-big@2x.png` will attempt to load `only-big@2x.png` from the main bundle's resources folder, whatever the display scale.
  */
 final class ResourceURLSchemeHandler: NSObject, WKURLSchemeHandler {
@@ -29,8 +31,7 @@ final class ResourceURLSchemeHandler: NSObject, WKURLSchemeHandler {
         let initialURL = task.request.url!
         let resource = Resource(initialURL)
         do {
-            let bundledURL = try findBundledURL(resource, displayScale: webView.traitCollection.displayScale)
-            let resourceData = try loadData(from: bundledURL)
+            let resourceData = try loadData(resource, displayScale: webView.traitCollection.displayScale)
             task.didReceive(URLResponse(url: initialURL, mimeType: resource.mimeType, expectedContentLength: resourceData.count, textEncodingName: nil))
             task.didReceive(resourceData)
         } catch {
@@ -45,24 +46,28 @@ final class ResourceURLSchemeHandler: NSObject, WKURLSchemeHandler {
         // nothing to do
     }
 
-    private func findBundledURL(_ resource: Resource, displayScale: CGFloat) throws -> URL {
-        let possibleBundledURLs = resource
+    private func loadData(_ resource: Resource, displayScale: CGFloat) throws -> Data {
+        let bundledURL = resource
             .paths(forDisplayScale: displayScale)
+            .lazy
             .compactMap { Bundle.main.url(forResource: $0, withExtension: nil) }
-
-        guard let resourceURL = possibleBundledURLs.first else {
-            throw NSError(domain: NSURLErrorDomain, code: NSURLErrorBadURL, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"])
+            .first
+        if let bundledURL {
+            do {
+                return try Data(contentsOf: bundledURL)
+            } catch {
+                throw CocoaError(.fileNoSuchFile, userInfo: [NSUnderlyingErrorKey: error])
+            }
         }
 
-        return resourceURL
-    }
-
-    private func loadData(from bundledURL: URL) throws -> Data {
-        do {
-            return try Data(contentsOf: bundledURL)
-        } catch {
-            throw CocoaError(.fileNoSuchFile, userInfo: [NSUnderlyingErrorKey: error])
+        if resource.isPNG,
+           let image = UIImage(named: resource.assetName, in: .main, compatibleWith: UITraitCollection(displayScale: displayScale)),
+           let data = image.pngData()
+        {
+            return data
         }
+
+        throw NSError(domain: NSURLErrorDomain, code: NSURLErrorBadURL, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"])
     }
 }
 
@@ -82,7 +87,7 @@ private struct Resource {
     func paths(forDisplayScale displayScale: CGFloat) -> [String] {
         guard isImage else { return [path] }
 
-        let basename = ((path as NSString).lastPathComponent as NSString).deletingPathExtension
+        let basename = assetName
 
         // If someone asks specifically for "foo@2x.png", trying to load "foo@2x@2x.png" is probably not helpful.
         if basename.hasSuffix("@2x") || basename.hasSuffix("@3x") {
@@ -110,6 +115,15 @@ private struct Resource {
 
     var isImage: Bool {
         uti?.conforms(to: .image) ?? false
+    }
+
+    var isPNG: Bool {
+        uti == .png
+    }
+
+    /// The name of the image in the asset catalog, i.e. the path without its folders or extension.
+    var assetName: String {
+        ((path as NSString).lastPathComponent as NSString).deletingPathExtension
     }
 
     private var uti: UTType? {

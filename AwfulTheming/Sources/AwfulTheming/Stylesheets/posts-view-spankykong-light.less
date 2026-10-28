@@ -154,14 +154,7 @@ post {
     color: var(--link-color);
 }
 .platinum .username:after {
-    background-image: url('awful-resource://platinum-member.png');
-    background-position: -100% 0;
     -webkit-filter: invert(66%) sepia(11%) saturate(0%) hue-rotate(239deg) brightness(90%) contrast(92%);
-    content: "";
-    background-size: 14px;
-    width: 14px;
-    height: 14px;
-    display: inline-block;
 }
 body {
     /* Black custom platinum icons get the same tint as the grenade above. */
@@ -181,12 +174,6 @@ body {
 }
 .award .username:before {
     content: url('awful-resource://award.png');
-}
-.platinum .username:after {
-  background-image: url('awful-resource://platinum-member.png');
-}
-.op .username {
-    color: var(--link-color);
 }
 .postbody img,
 .postbody iframe,
@@ -255,15 +242,7 @@ body {
     }
   
     h4::before {
-      content: "";
-      height: 25px;
-      width: 25px;
-      display: block;
-      position: absolute;
-      top: 8px;
-      left: 8px;
-      background-color: #0066ff;
-      -webkit-mask-box-image: url("awful-resource://quote-post.png");
+      .quote-icon(#0066ff);
     }
 
     h4 a {
@@ -462,16 +441,6 @@ post,
     position: relative;
 }
 
-.quotepost-span {
-    height: 25px;
-    width: 25px;
-    display: block;
-    position: absolute;
-    top: 8px;
-    left: 8px;
-    background-color: var(--quotelink-color);
-    -webkit-mask-box-image: url("awful-resource://quote-post.png");
-}
 .bbc-block a {
     -webkit-tap-highlight-color: transparent;
     text-decoration: none;

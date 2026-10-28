@@ -82,6 +82,7 @@ final class PlatinumIconsTests: XCTestCase {
         let css = PlatinumIcons.postsViewStylesheet(for: [black, colour], isBlack: { $0 == black.imageURL })
 
         XCTAssertTrue(css.contains("post.feather .username:after,\npost.pumpkin .username:after {"))
+        XCTAssertTrue(css.contains("width: var(--awful-platinum-icon-size, 16px);"))
         XCTAssertTrue(css.contains(#"post.feather .username:after { background-image: url("https://fi.somethingawful.com/feather.svg"); -webkit-filter: var(--awful-black-icon-filter, none);"#))
         XCTAssertTrue(css.contains(#"post.pumpkin .username:after { background-image: url("https://fi.somethingawful.com/pumpkin.svg"); }"#))
 

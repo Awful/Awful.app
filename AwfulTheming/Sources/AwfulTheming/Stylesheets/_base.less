@@ -184,12 +184,15 @@ header {
 
 	/*  Platinum users */
 
+	// The grenade's top lines up with the top of a capital letter at any font scale. It's a little over 1cap because the drawing leaves a pixel empty above and below in its 42px image. `cap` needs iOS 17.2; older versions use 0.73em, about the same for SF.
 	.platinum &:after {
 		background-image: url('awful-resource://platinum-member.png');
 		content: "";
-		background-size: 14px;
-		width: 14px;
-		height: 14px;
+		background-size: contain;
+		width: 0.73em;
+		height: 0.73em;
+		width: ~"1.04cap";
+		height: ~"1.04cap";
 		display: inline-block;
 	}
 
@@ -215,9 +218,10 @@ header {
 
   // Maybe only show these in October?
   .pumpkin &:after, .ghost &:after, .bat &:after {
-    width: 20px;
-    height: 20px;
-    background-size: 20px;
+    @size: .grown-with-username(20px)[@result];
+    width: @size;
+    height: @size;
+    background-size: contain;
     content: "";
   }
   .pumpkin &:after {
@@ -229,6 +233,20 @@ header {
   .bat &:after {
     background-image: url('awful-resource://bat.svg');
   }
+}
+
+// Platinum icons other than the grenade have sizes of their own. They keep that size next to a default-sized username, and grow in proportion with a bigger one, but never shrink.
+@default-username-size: 18.5px;
+.grown-with-username(@length) {
+  @ems: unit(round((@length / @default-username-size), 3), em);
+  @result: ~"max(@{length}, @{ems})";
+}
+
+// Sizes for the custom platinum icons from the Forums, whose stylesheet is made by PlatinumIcons.postsViewStylesheet.
+body {
+  --awful-platinum-icon-size: .grown-with-username(16px)[@result];
+  @drop: .grown-with-username(2px)[@result];
+  --awful-platinum-icon-drop: ~"calc(-1 * @{drop})";
 }
 
 // Custom platinum icons that are black (see PlatinumIcons.postsViewStylesheet) follow the grenade: black in light themes, white in dark ones. Themes that tint their grenade override this to match.
@@ -323,6 +341,19 @@ body.dark {
   .bbc-spoiler:not(.spoiled) & > h4::before {
     visibility: hidden;
   }
+}
+
+// A quote icon for a theme to put in a quote's top left corner (`.bbc-block h4::before`, in a quote with `position: relative`). It's the same image as the post actions menu's Quote item, from the asset catalog, at its 26pt size, so the two match.
+.quote-icon(@color) {
+  content: "";
+  width: 26px;
+  height: 26px;
+  display: block;
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background-color: @color;
+  -webkit-mask-box-image: url("awful-resource://quote-post.png");
 }
 
 // The arrow at the top right of a collapsible quote's header: pointing right when collapsed, rotating to point down when expanded, as in the Forums list. It's a black template image, so each theme tints it alongside the post actions button's `post-dots.png`.

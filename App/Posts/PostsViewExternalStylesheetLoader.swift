@@ -28,6 +28,7 @@ private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: 
         return PostsViewExternalStylesheetLoader(
             stylesheetURL: PlatinumIcons.siteStylesheetURL,
             cacheFolder: cacheFolder,
+            cachedStylesheetName: "style-\(PlatinumIcons.postsViewStylesheetVersion).css",
             refresh: .platinumIcons,
             transform: { await builder.postsViewStylesheet(fromSiteStylesheet: $0) }
         )
@@ -66,6 +67,7 @@ private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: 
     private(set) var stylesheet: String?
     private let stylesheetURL: URL
     private let cacheFolder: URL
+    private let cachedStylesheetName: String
     private let refresh: RefreshMinder.Refresh
     private let transform: Transform?
     private var cancellables: Set<AnyCancellable> = []
@@ -73,9 +75,11 @@ private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: 
     private var checkingForUpdate = false
     private var updateTimer: Task<Void, Never>?
 
-    private init(stylesheetURL: URL, cacheFolder: URL, refresh: RefreshMinder.Refresh, transform: Transform? = nil) {
+    /// Changing `cachedStylesheetName` (e.g. when `transform` changes what it makes) skips whatever was cached under the old name, so the stylesheet gets downloaded and transformed again.
+    private init(stylesheetURL: URL, cacheFolder: URL, cachedStylesheetName: String = "style.css", refresh: RefreshMinder.Refresh, transform: Transform? = nil) {
         self.stylesheetURL = stylesheetURL
         self.cacheFolder = cacheFolder
+        self.cachedStylesheetName = cachedStylesheetName
         self.refresh = refresh
         self.transform = transform
 
@@ -154,6 +158,7 @@ private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: 
                             _ = try fileManager.replaceItemAt(cachedStylesheetURL, withItemAt: tempURL, options: .usingNewMetadataOnly)
                         }
                     }
+                    removeStaleStylesheets()
                     logger.debug("downloaded new stylesheet from \(self.stylesheetURL)")
 
                 case 304:
@@ -198,7 +203,7 @@ private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: 
     }
     
     private var cachedStylesheetURL: URL {
-        cacheFolder.appendingPathComponent("style.css", isDirectory: false)
+        cacheFolder.appendingPathComponent(cachedStylesheetName, isDirectory: false)
     }
     
     private func createCacheFolderIfNecessary() {
@@ -209,6 +214,15 @@ private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: 
         }
     }
     
+    /// Removes stylesheets cached under an earlier `cachedStylesheetName`.
+    private func removeStaleStylesheets() {
+        let fileManager = FileManager.default
+        guard let contents = try? fileManager.contentsOfDirectory(at: cacheFolder, includingPropertiesForKeys: nil) else { return }
+        for url in contents where url.pathExtension == "css" && url.lastPathComponent != cachedStylesheetName {
+            try? fileManager.removeItem(at: url)
+        }
+    }
+
     func clearCache() {
         let fileManager = FileManager.default
         if let contents = try? fileManager.contentsOfDirectory(at: cacheFolder, includingPropertiesForKeys: nil) {
