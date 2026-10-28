@@ -25,7 +25,15 @@
         NSLog(@"%s bailing; keyboard does not have full access", __PRETTY_FUNCTION__);
         return;
     }
-    
+
+    // The context is main queue, but this operation runs on a background queue.
+    [self.dataStore.managedObjectContext performBlockAndWait:^{
+        [self cleanUp];
+    }];
+}
+
+- (void)cleanUp
+{
     NSPersistentStoreCoordinator *storeCoordinator = self.dataStore.managedObjectContext.persistentStoreCoordinator;
     NSDictionary *bundledMetadata = [storeCoordinator metadataForPersistentStore:self.dataStore.bundledSmilieStore];
     NSDictionary *appContainerMetadata = [storeCoordinator metadataForPersistentStore:self.dataStore.appContainerSmilieStore];
@@ -89,7 +97,12 @@
     // Cleanup was a success.
     NSMutableDictionary *newMetadata = [appContainerMetadata mutableCopy];
     newMetadata[SmilieMetadataVersionKey] = bundledMetadata[SmilieMetadataVersionKey] ?: @0;
-    [storeCoordinator setMetadata:newMetadata forPersistentStore:self.dataStore.appContainerSmilieStore];
+    // An uncaught exception here takes down the keyboard, and it'd happen again every time the keyboard opens.
+    @try {
+        [storeCoordinator setMetadata:newMetadata forPersistentStore:self.dataStore.appContainerSmilieStore];
+    } @catch (NSException *exception) {
+        NSLog(@"%s error setting app container store's metadata: %@", __PRETTY_FUNCTION__, exception);
+    }
 }
 
 @end
