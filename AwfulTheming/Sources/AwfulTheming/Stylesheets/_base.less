@@ -374,9 +374,9 @@ body.dark {
   img {
     width: 1.4em;
     height: 1.4em;
-    transform: rotate(90deg);
+    transform: rotate(var(--awful-quote-arrow-turn, 90deg));
     // Matches `QUOTE_COLLAPSE_DURATION_MS` in RenderView.js, so it turns as the quote collapses or expands.
-    transition: transform 150ms ease-in-out;
+    transition: --awful-quote-arrow-turn 150ms ease-in-out;
 
     @media (prefers-reduced-motion: reduce) {
       transition: none;
@@ -384,8 +384,15 @@ body.dark {
   }
 
   .bbc-block.collapsed > h4 > & img {
-    transform: none;
+    --awful-quote-arrow-turn: 0deg;
   }
+}
+
+// The arrow turns by animating this rather than `transform`. In a post (with `content-visibility: auto` and `overflow-x: clip`), WebKit draws a `transform` animation on its own layer a point or so away from where the arrow sits still, so it jumps as it starts and stops turning. Animating a registered custom property redraws the arrow in place each frame instead. Before iOS 16.4 it isn't registered, so the arrow turns without animating.
+@property --awful-quote-arrow-turn {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 90deg;
 }
 
 code, pre, tt {
