@@ -112,11 +112,10 @@ final class MessageViewController: ViewController, ContentRefreshable {
         actions.append(.cancel())
         
         let actionSheet = UIAlertController(actionSheetActions: actions)
-        present(actionSheet, animated: true)
-        
         if let popover = actionSheet.popoverPresentationController {
             popover.barButtonItem = sender
         }
+        present(actionSheet, animated: true)
     }
     
     @objc private func didLongPressWebView(_ sender: UILongPressGestureRecognizer) {

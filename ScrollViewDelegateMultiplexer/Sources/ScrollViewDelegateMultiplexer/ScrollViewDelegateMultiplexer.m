@@ -9,6 +9,7 @@ NS_ASSUME_NONNULL_BEGIN
 // This is written in Objective-C so that we can use `-forwardInvocation`.
 
 @implementation ScrollViewDelegateMultiplexer {
+    // Always enumerate `allObjects`, since a delegate can add or remove delegates from inside a callback.
     NSPointerArray *_delegates;
     
     // We can't use `__weak` here or it'll be set to `nil` by the time our `-dealloc` runs, and we need to remove ourselves as a KVO observer to avoid an exception.
@@ -67,7 +68,7 @@ NS_ASSUME_NONNULL_BEGIN
         return;
     }
     
-    for (id<ScrollViewDelegateExtras> delegate in _delegates) {
+    for (id<ScrollViewDelegateExtras> delegate in _delegates.allObjects) {
         if ([delegate respondsToSelector:@selector(awful_scrollViewDidChangeContentSize:)]) {
             [delegate awful_scrollViewDidChangeContentSize:scrollView];
         }
@@ -111,7 +112,7 @@ static void *KVOContext = &KVOContext;
     if ([super respondsToSelector:selector]) {
         return YES;
     }
-    for (id<UIScrollViewDelegate> delegate in _delegates) {
+    for (id<UIScrollViewDelegate> delegate in _delegates.allObjects) {
         if ([delegate respondsToSelector:selector]) {
             return YES;
         }
@@ -122,7 +123,7 @@ static void *KVOContext = &KVOContext;
 - (nullable NSMethodSignature *)methodSignatureForSelector:(SEL)selector {
     NSMethodSignature *signature = [super methodSignatureForSelector:selector];
     if (!signature) {
-        for (NSObject *delegate in _delegates) {
+        for (NSObject *delegate in _delegates.allObjects) {
             signature = [delegate methodSignatureForSelector:selector];
             if (signature) { break; }
         }
@@ -141,7 +142,7 @@ static void *KVOContext = &KVOContext;
 }
 
 - (void)forwardInvocation:(NSInvocation *)invocation {
-    for (id<UIScrollViewDelegate> delegate in _delegates) {
+    for (id<UIScrollViewDelegate> delegate in _delegates.allObjects) {
         if ([delegate respondsToSelector:invocation.selector]) {
             [invocation invokeWithTarget:delegate];
         }

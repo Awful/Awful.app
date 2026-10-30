@@ -69,33 +69,37 @@ class BundleResourceLoader: Loader {
     }
 
     func loadTemplate(name: String, environment: Stencil.Environment) throws -> Template {
-        if let cached = cache.object(forKey: name as NSString) {
-            return cached
-        }
-        guard let url = URL(string: name, relativeTo: resourceURL) else {
+        guard let template = try template(named: name, environment: environment) else {
             throw TemplateDoesNotExist(templateNames: [name], loader: self)
         }
-        let content = try String(contentsOf: url, encoding: .utf8)
-        let template = environment.templateClass.init(templateString: content, environment: environment, name: name)
-        cache.setObject(template, forKey: name as NSString)
         return template
     }
 
     func loadTemplate(names: [String], environment: Stencil.Environment) throws -> Template {
         for name in names {
-            if let cached = cache.object(forKey: name as NSString) {
-                return cached
+            if let template = try template(named: name, environment: environment) {
+                return template
             }
-            guard let url = URL(string: name, relativeTo: resourceURL) else {
-                continue
-            }
-            let content = try String(contentsOf: url, encoding: .utf8)
-            let template = environment.templateClass.init(templateString: content, environment: environment, name: name)
-            cache.setObject(template, forKey: name as NSString)
-            return template
         }
 
         throw TemplateDoesNotExist(templateNames: names, loader: self)
+    }
+
+    private func template(named name: String, environment: Stencil.Environment) throws -> Template? {
+        if let cached = cache.object(forKey: name as NSString) {
+            return cached
+        }
+        guard let url = URL(string: name, relativeTo: resourceURL) else {
+            return nil
+        }
+        let content = try String(contentsOf: url, encoding: .utf8)
+        let template = environment.templateClass.init(templateString: content, environment: environment, name: name)
+        // Cached templates are rendered concurrently, and `Token.components` is a lazy var that isn't safe to initialize from more than one thread.
+        for token in template.tokens {
+            _ = token.components
+        }
+        cache.setObject(template, forKey: name as NSString)
+        return template
     }
 }
 

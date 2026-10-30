@@ -75,7 +75,8 @@ final class PostPreviewViewController: ViewController {
         return forum?.managedObjectContext
     }
     
-    private lazy var postButton: GlassTextBarButton = GlassTextBarButton(title: "Post") { [unowned self] in
+    private lazy var postButton: GlassTextBarButton = GlassTextBarButton(title: "Post") { [weak self] in
+        guard let self else { return }
         postButton.item.isEnabled = false
         submitBlock?()
     }

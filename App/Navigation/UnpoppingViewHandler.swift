@@ -81,7 +81,12 @@ final class UnpoppingViewHandler: UIPercentDrivenInteractiveTransition {
     @objc private func handlePan(_ sender: UIPanGestureRecognizer) {
         switch sender.state {
         case .began:
-            guard let vc = viewControllers.last else { break }
+            guard let vc = viewControllers.last, navigationController.transitionCoordinator == nil else { break }
+            // UIKit throws when pushing a view controller that's already in a container, e.g. one the split view moved to the other column.
+            if vc.parent != nil {
+                viewControllers.removeLast()
+                break
+            }
             interactiveUnpopIsTakingPlace = true
             navigationController.pushViewController(vc, animated: true)
             
@@ -115,10 +120,12 @@ final class UnpoppingViewHandler: UIPercentDrivenInteractiveTransition {
         navigationControllerIsAnimating = false
     }
     
-    func navigationControllerDidCancelInteractivePop() {
-        // We get a call to didPopViewController when the interactive pop starts, but no (automatic) inverse call if the gesture is cancelled. This cleans up the state by removing the falsely stacked controller.
+    func navigationControllerDidCancelInteractivePop(of viewController: UIViewController?) {
+        // We get a call to didPopViewController when the interactive pop starts, but no (automatic) inverse call if the gesture is cancelled. This cleans up the state by removing the falsely stacked controller, unless the stack was replaced before this ran.
         navigationControllerIsAnimating = false
-        viewControllers.removeLast()
+        if let viewController, viewControllers.last === viewController {
+            viewControllers.removeLast()
+        }
     }
     
     func navigationControllerDidCancelInteractiveUnpop() {

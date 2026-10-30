@@ -70,10 +70,10 @@ final class ProfileViewController: ViewController {
 
     private func showActionsForHomepage(_ url: URL, from frame: CGRect) {
         let activity = UIActivityViewController(activityItems: [url], applicationActivities: [SafariActivity(), ChromeActivity(url: url)])
-        present(activity, animated: true)
         let popover = activity.popoverPresentationController
         popover?.sourceRect = frame
         popover?.sourceView = renderView
+        present(activity, animated: true)
     }
     
     override func viewDidLoad() {

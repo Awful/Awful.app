@@ -2081,16 +2081,13 @@ extension NavigationController: UINavigationControllerDelegate {
             let interactionChanges = { (context: UIViewControllerTransitionCoordinatorContext) in
                 guard context.isCancelled else { return }
                 let unpopping = unpopHandler.interactiveUnpopIsTakingPlace
+                let poppedViewController = context.viewController(forKey: .from)
                 let completion = context.transitionDuration * Double(context.percentComplete)
-                var viewControllerCount = navigationController.viewControllers.count
-                if !unpopping {
-                    viewControllerCount += 1
-                }
                 DispatchQueue.main.asyncAfter(deadline: .now() + completion) {
                     if unpopping {
                         unpopHandler.navigationControllerDidCancelInteractiveUnpop()
                     } else {
-                        unpopHandler.navigationControllerDidCancelInteractivePop()
+                        unpopHandler.navigationControllerDidCancelInteractivePop(of: poppedViewController)
                     }
 
                     self.pushAnimationInProgress = false

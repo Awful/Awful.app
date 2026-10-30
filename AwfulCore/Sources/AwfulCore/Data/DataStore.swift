@@ -51,7 +51,8 @@ public final class DataStore: NSObject {
             try mainManagedObjectContext.save()
         }
         catch {
-            fatalError("error saving main managed object context: \(error)")
+            // The changes stay in the context, so the next save gets another try.
+            logger.error("error saving main managed object context on entering background: \(error)")
         }
     }
     

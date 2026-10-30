@@ -1147,11 +1147,10 @@ final class PostsPageViewController: ViewController {
                 settings.showKeyboardShortcuts = { [weak self] in
                     self?.present(KeyboardShortcutsViewController.makeSheet(), animated: true)
                 }
-                self.present(settings, animated: true)
-
                 if let popover = settings.popoverPresentationController {
-                    popover.barButtonItem = action.sender as? UIBarButtonItem
+                    popover.barButtonItem = action.sender as? UIBarButtonItem ?? self.settingsItem
                 }
+                self.present(settings, animated: true)
             }
         ))
         item.accessibilityLabel = "Settings"
@@ -1601,23 +1600,20 @@ final class PostsPageViewController: ViewController {
     @objc func currentPageButtonTapped(_ sender: UIBarButtonItem) {
         guard self.postsView.loadingView == nil else { return }
         let selectotron = Selectotron(postsViewController: self)
-        self.present(selectotron, animated: true, completion: nil)
-
         if let popover = selectotron.popoverPresentationController {
             popover.barButtonItem = sender
         }
+        present(selectotron, animated: true)
     }
 
     private func handlePageNumberTap() {
         guard postsView.loadingView == nil else { return }
         let selectotron = Selectotron(postsViewController: self)
-        present(selectotron, animated: true)
-        
-        // For popover presentation with custom view, we need to set sourceView and sourceRect
         if let popover = selectotron.popoverPresentationController {
             popover.sourceView = pageNumberView
             popover.sourceRect = pageNumberView.bounds
         }
+        present(selectotron, animated: true)
     }
     
     @objc private func loadPreviousPage(_ sender: UIKeyCommand) {
@@ -1668,11 +1664,10 @@ final class PostsPageViewController: ViewController {
     private func showPagePicker(anchoredTo item: UIBarButtonItem) {
         guard postsView.loadingView == nil else { return }
         let selectotron = Selectotron(postsViewController: self)
-        present(selectotron, animated: true)
-
         if let popover = selectotron.popoverPresentationController {
             popover.barButtonItem = item
         }
+        present(selectotron, animated: true)
     }
 
     @objc private func toggleBookmark(_ sender: UIKeyCommand) {
@@ -1917,13 +1912,12 @@ final class PostsPageViewController: ViewController {
                     self.lastOfferedPasteboardURLString = url.absoluteString
                 }
             }
-            self.present(activityVC, animated: false)
-
             if let popover = activityVC.popoverPresentationController {
                 // TODO: previously this would eval some js on the webview to find the new location of the header after rotating, but that sync call on UIWebView is async on WKWebView, so ???
                 popover.sourceRect = self.selectedFrame!
                 popover.sourceView = self.postsView.renderView
             }
+            self.present(activityVC, animated: false)
         }
     }
 
@@ -2192,11 +2186,10 @@ final class PostsPageViewController: ViewController {
             }
             actions.append(.cancel())
             let actionSheet = UIAlertController(actionSheetActions: actions)
-            present(actionSheet, animated: false)
-
             if let popover = actionSheet.popoverPresentationController {
                 popover.barButtonItem = actionsItem
             }
+            present(actionSheet, animated: false)
         }
     }
 
@@ -2588,8 +2581,6 @@ final class PostsPageViewController: ViewController {
             title: NSLocalizedString("cancel", comment: ""),
             style: .cancel
         ))
-        present(actionSheet, animated: true)
-
         switch source {
         case let .barButtonItem(item):
             actionSheet.popoverPresentationController?.barButtonItem = item
@@ -2597,6 +2588,7 @@ final class PostsPageViewController: ViewController {
             actionSheet.popoverPresentationController?.sourceRect = sourceRect
             actionSheet.popoverPresentationController?.sourceView = sourceView
         }
+        present(actionSheet, animated: true)
     }
 
     private struct DraftMenuOptions {

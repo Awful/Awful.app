@@ -179,7 +179,8 @@ final class ReplyWorkspace: NSObject {
     
     fileprivate var textViewNotificationToken: AnyObject?
     
-    private lazy var cancelButton: GlassTextBarButton = GlassTextBarButton(title: "Cancel") { [unowned self] in
+    private lazy var cancelButton: GlassTextBarButton = GlassTextBarButton(title: "Cancel") { [weak self] in
+        guard let self else { return }
         self.didTapCancel(self.cancelButton.item)
     }
 
@@ -188,7 +189,8 @@ final class ReplyWorkspace: NSObject {
 
     /// Posts, or previews first when the user has asked to confirm: a glass stand-in has no
     /// target/action to swap, so the title and the tap follow the same setting.
-    private lazy var rightButton: GlassTextBarButton = GlassTextBarButton(title: draft.submitButtonTitle) { [unowned self] in
+    private lazy var rightButton: GlassTextBarButton = GlassTextBarButton(title: draft.submitButtonTitle) { [weak self] in
+        guard let self else { return }
         if self.confirmBeforeReplying {
             self.didTapPreview()
         } else {
@@ -265,11 +267,10 @@ final class ReplyWorkspace: NSObject {
                 .cancel(),
             ]
         )
-        compositionViewController.present(actionSheet, animated: true)
-
         if let popover = actionSheet.popoverPresentationController {
             popover.barButtonItem = sender
         }
+        compositionViewController.present(actionSheet, animated: true)
     }
     
     private func didTapPreview() {
@@ -282,7 +283,8 @@ final class ReplyWorkspace: NSObject {
             preview = PostPreviewViewController(thread: draft.thread, BBcode: draft.text ?? .init())
         }
         preview.attachment = draft.forumAttachment
-        let postButton = GlassTextBarButton(title: draft.submitButtonTitle) { [unowned self] in
+        let postButton = GlassTextBarButton(title: draft.submitButtonTitle) { [weak self] in
+            guard let self else { return }
             self.didTapPost(self.previewPostButton?.item)
         }
         previewPostButton = postButton
