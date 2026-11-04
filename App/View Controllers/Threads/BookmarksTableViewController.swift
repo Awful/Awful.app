@@ -607,6 +607,28 @@ final class BookmarksTableViewController: HostedCollectionViewController {
     }()
     private var searchBarHeightConstraint: NSLayoutConstraint!
 
+    /// Shown above the search bar while the user is on probation, until they dismiss it.
+    private lazy var probationBanner: ProbationBannerView = {
+        let banner = ProbationBannerView()
+        banner.onTap = { [weak self] in
+            guard let self else { return }
+            ProbationDetailView.present(from: self)
+        }
+        banner.onVisibilityChange = { [weak self] in
+            self?.viewIfLoaded?.setNeedsLayout()
+        }
+        return banner
+    }()
+
+    /// Holds the probation banner and search bar at the top of the view, overlaying the collection view.
+    private lazy var topOverlayStack: UIStackView = {
+        let stack = UIStackView(arrangedSubviews: [probationBanner, searchBarContainer])
+        stack.axis = .vertical
+        stack.alignment = .fill
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        return stack
+    }()
+
     private var currentFilter: BookmarkFilter = {
         if let saved = UserDefaults.standard.string(forKey: UserDefaultsKey.bookmarksFilter) {
             return BookmarkFilter(persistenceKey: saved)
@@ -850,10 +872,7 @@ final class BookmarksTableViewController: HostedCollectionViewController {
 
         updateButtonColors()
 
-        // The collection view is full-bleed, so reserve (or reclaim) the search bar's
-        // space with a content inset rather than moving the collection view itself.
-        let wasAtTop = collectionView.contentOffset.y <= -collectionView.adjustedContentInset.top + 0.5
-
+        // The layout pass below runs `viewDidLayoutSubviews`, which animates the content inset along with the search bar.
         UIView.animate(
             withDuration: 0.4,
             delay: 0,
@@ -864,10 +883,6 @@ final class BookmarksTableViewController: HostedCollectionViewController {
                 guard let self else { return }
                 self.searchBarHeightConstraint.constant = self.isSearchVisible ? 52 : 0
                 self.searchBar.alpha = self.isSearchVisible ? 1 : 0
-                self.collectionView.contentInset.top = self.isSearchVisible ? 52 : 0
-                if wasAtTop {
-                    self.collectionView.contentOffset.y = -self.collectionView.adjustedContentInset.top
-                }
                 self.view.layoutIfNeeded()
             },
             completion: { [weak self] _ in
@@ -1053,9 +1068,11 @@ final class BookmarksTableViewController: HostedCollectionViewController {
     override func loadView() {
         // Custom view hierarchy:
         //   view
-        //   ├── collectionView (full-bleed; search bar space reserved via contentInset.top)
-        //   └── searchBarContainer (height 0 when hidden, 52 when shown; overlays scrolled content)
-        //       └── searchBar
+        //   ├── collectionView (full-bleed, with the overlay's space reserved via contentInset.top)
+        //   └── topOverlayStack (overlays scrolled content)
+        //       ├── probationBanner (hidden unless on probation)
+        //       └── searchBarContainer (height 0 when hidden, 52 when shown)
+        //           └── searchBar
         // Hosting the search bar OUTSIDE the collection view sidesteps UIKit's
         // `_resignOrRebaseFirstResponderViewWithIndexPathMapping`, which silently
         // resigns first responder on supplementary views during every snapshot
@@ -1072,14 +1089,14 @@ final class BookmarksTableViewController: HostedCollectionViewController {
         collectionView.translatesAutoresizingMaskIntoConstraints = false
 
         containerView.addSubview(collectionView)
-        containerView.addSubview(searchBarContainer)
+        containerView.addSubview(topOverlayStack)
 
         searchBarHeightConstraint = searchBarContainer.heightAnchor.constraint(equalToConstant: 0)
 
         NSLayoutConstraint.activate([
-            searchBarContainer.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
-            searchBarContainer.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
-            searchBarContainer.topAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.topAnchor),
+            topOverlayStack.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            topOverlayStack.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+            topOverlayStack.topAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.topAnchor),
             searchBarHeightConstraint,
 
             searchBar.topAnchor.constraint(equalTo: searchBarContainer.topAnchor, constant: 8),
@@ -1136,6 +1153,22 @@ final class BookmarksTableViewController: HostedCollectionViewController {
         editBarButton.setEditing(editing)
     }
 
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        updateTopContentInset()
+    }
+
+    /// The collection view is full-bleed, so reserve (or reclaim) the space under the probation banner and search bar with a content inset rather than moving the collection view itself. A list scrolled to the top stays at the top.
+    private func updateTopContentInset() {
+        let height = topOverlayStack.frame.height
+        guard collectionView.contentInset.top != height else { return }
+        let wasAtTop = collectionView.contentOffset.y <= -collectionView.adjustedContentInset.top + 0.5
+        collectionView.contentInset.top = height
+        if wasAtTop {
+            collectionView.contentOffset.y = -collectionView.adjustedContentInset.top
+        }
+    }
+
     override func themeDidChange() {
         if isViewLoaded {
             rebuildLayout()
@@ -1144,6 +1177,8 @@ final class BookmarksTableViewController: HostedCollectionViewController {
         super.themeDidChange()
 
         loadMoreFooter?.themeDidChange()
+
+        probationBanner.apply(theme)
 
         if !LiquidGlass.isEnabled {
             editButtonItem.tintColor = theme[uicolor: "navigationBarTextColor"]

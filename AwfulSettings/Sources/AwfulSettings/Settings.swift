@@ -62,6 +62,9 @@ public enum Settings {
         default: SystemCapabilities.oled ? .brightLight : .default
     )
 
+    /// The probation notice message the user dismissed from the thread list banners. A different message means a new probation, which shows the banner again.
+    public static let dismissedProbationMessage = Setting<String?>(key: "dismissed_probation_message")
+
     /// Render the pre-iOS-26 opaque themed bars instead of iOS 26's Liquid Glass chrome. iOS 26+ only.
     public static let disableLiquidGlass = Setting(key: "disable_liquid_glass", default: false)
 
@@ -139,6 +142,12 @@ public enum Settings {
 
     /// Freeze GIFs, avatars, videos and other animations in posts while the app is not the active one: another app frontmost on the Mac, or another window focused under iPad Stage Manager. See `RenderViewAnimationPauser`.
     public static let pauseAnimationsWhenInactive = Setting(key: "pause_animations_when_inactive", default: true)
+
+    /// The body of the logged-in user's probation notice, or `nil` when not on probation. Updated whenever a thread list or bookmarks page loads.
+    public static let probationMessage = Setting<String?>(key: "probation_message")
+
+    /// The heading of the logged-in user's probation notice, e.g. "TAKE A BREAK".
+    public static let probationTitle = Setting<String?>(key: "probation_title")
 
     /// Pull up from the bottom of a page of posts to go to the next page.
     public static let pullForNext = Setting(key: "pull_for_next", default: true)

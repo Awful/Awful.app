@@ -108,6 +108,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
             NotificationCenter.default.addObserver(self, selector: #selector(forumSpecificThemeDidChange), name: Theme.themeForForumDidChangeNotification, object: Theme.self)
             NotificationCenter.default.addObserver(self, selector: #selector(preferredContentSizeDidChange), name: UIContentSizeCategory.didChangeNotification, object: nil)
             NotificationCenter.default.addObserver(self, selector: #selector(archivesTimeframeDidChange), name: ForumsClient.archivesTimeframeDidChange, object: nil)
+            NotificationCenter.default.addObserver(self, selector: #selector(probationNoticeDidUpdate), name: ForumsClient.probationNoticeDidUpdate, object: nil)
         }
 
         do {
@@ -387,6 +388,10 @@ extension AppDelegate {
         // The archived timeframe changed, so every forum's cached threads are now for the wrong
         // period. Forget them all so each reloads on next view (the visible list reloads itself).
         RefreshMinder.sharedMinder.forgetAllForums(in: managedObjectContext)
+    }
+
+    @objc private func probationNoticeDidUpdate(_ notification: Notification) {
+        ProbationNoticeStore.record(ForumsClient.shared.probationNotice)
     }
 
     private func showSnapshotDuringThemeDidChange() {

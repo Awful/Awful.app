@@ -173,6 +173,19 @@ public final class ForumsClient {
         currentArchivesTimeframe = timeframe
     }
 
+    // MARK: Probation
+
+    /// Posted (on the main queue) after every thread list or bookmarks page is scraped, whether or not ``probationNotice`` changed, so observers holding a stale copy can catch up.
+    public static let probationNoticeDidUpdate = Notification.Name("AwfulProbationNoticeDidUpdate")
+
+    /// The logged-in user's probation notice as of the most recent thread list or bookmarks page, or `nil` if they're not on probation (or no such page has loaded yet).
+    @MainActor public private(set) var probationNotice: ProbationNoticeScrapeResult?
+
+    @MainActor private func updateProbationNotice(_ notice: ProbationNoticeScrapeResult?) {
+        probationNotice = notice
+        NotificationCenter.default.post(name: Self.probationNoticeDidUpdate, object: self)
+    }
+
     enum Error: Swift.Error {
         case failedTransferToMainContext
         case missingURLSession
@@ -555,6 +568,7 @@ public final class ForumsClient {
         if let archivesForm = result.archivesForm {
             await updateArchivesTimeframe(archivesForm.selectedTimeframe)
         }
+        await updateProbationNotice(result.probationNotice)
         let threadIDs = try await backgroundContext.perform {
             let threads = try result.upsert(into: backgroundContext)
             _ = try result.upsertAnnouncements(into: backgroundContext)
@@ -592,6 +606,7 @@ public final class ForumsClient {
         ])
         let (document, url) = try parseHTML(data: data, response: response)
         let result = try ThreadListScrapeResult(document, url: url)
+        await updateProbationNotice(result.probationNotice)
         let threadIDs = try await backgroundContext.perform {
             let threads = try result.upsert(into: backgroundContext)
             _ = try result.upsertAnnouncements(into: backgroundContext)

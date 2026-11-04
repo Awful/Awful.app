@@ -1569,6 +1569,78 @@
         }
       }
     },
+    "probation.banner.accessibility-hint" : {
+      "comment" : "Accessibility hint for the probation banner atop thread lists.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shows the full probation notice."
+          }
+        }
+      }
+    },
+    "probation.banner.dismiss" : {
+      "comment" : "Accessibility label for the button that hides the probation banner atop thread lists.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hide Probation Notice"
+          }
+        }
+      }
+    },
+    "probation.banner.generic" : {
+      "comment" : "Probation banner text atop thread lists when the end date is unknown.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You are on probation"
+          }
+        }
+      }
+    },
+    "probation.banner.until" : {
+      "comment" : "Probation banner text atop thread lists. Parameter is the end date as written by the Forums.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "On probation until %@"
+          }
+        }
+      }
+    },
+    "probation.detail.rap-sheet" : {
+      "comment" : "Button in the probation details sheet that opens the user's rap sheet.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "View Leper's Colony Record"
+          }
+        }
+      }
+    },
+    "probation.detail.rules" : {
+      "comment" : "Button in the probation details sheet that opens the forum rules.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Read the Forum Rules"
+          }
+        }
+      }
+    },
     "Problem Logging In" : {
 
     },

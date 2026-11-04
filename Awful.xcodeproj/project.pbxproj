@@ -64,6 +64,7 @@
 		1C25AC451F5377B100977D6F /* ManagedObjectObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C25AC441F5377B100977D6F /* ManagedObjectObserver.swift */; };
 		1C25AC471F53788900977D6F /* RenderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C25AC461F53788900977D6F /* RenderView.swift */; };
 		F7F6D795100A6FA9DCBE370F /* StatusBarBlurView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEB24EC89219105885D6EFCA /* StatusBarBlurView.swift */; };
+		CC1417AFD919FCB3DA3F9F00 /* ProbationBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F87839FE0FD61A55DAB822C9 /* ProbationBannerView.swift */; };
 		1C25AC491F537A0B00977D6F /* WeakTrampoline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C25AC481F537A0B00977D6F /* WeakTrampoline.swift */; };
 		1C25AC4B1F537A9600977D6F /* WebViewAntiHijacking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C25AC4A1F537A9600977D6F /* WebViewAntiHijacking.swift */; };
 		1C25AC4D1F5768D200977D6F /* ManagedObjectCountObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C25AC4C1F5768D200977D6F /* ManagedObjectCountObserver.swift */; };
@@ -125,6 +126,7 @@
 		1C66AA1819DDF8DD001B9A41 /* NeedsFullAccessView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C66AA1719DDF8DD001B9A41 /* NeedsFullAccessView.m */; };
 		1C67313C2B55CE0600A8CF6F /* AwfulSettingsUI in Frameworks */ = {isa = PBXBuildFile; productRef = 1C67313B2B55CE0600A8CF6F /* AwfulSettingsUI */; };
 		1C6821A91F113A760083F204 /* AnnouncementViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6821A81F113A760083F204 /* AnnouncementViewController.swift */; };
+		B1A934B327813EF4BD637595 /* ProbationDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA26F5E1D43F9770B30BB98A /* ProbationDetailView.swift */; };
 		1C6B2A9A272F992E00671F0C /* Nuke in Frameworks */ = {isa = PBXBuildFile; productRef = 1C6B2A99272F992E00671F0C /* Nuke */; };
 		1C6BDD26265CB337005475CE /* HTMLReader in Frameworks */ = {isa = PBXBuildFile; productRef = 1C6BDD25265CB337005475CE /* HTMLReader */; };
 		1C725A8926E71C6D009713DC /* MRProgress in Frameworks */ = {isa = PBXBuildFile; productRef = 1C725A8826E71C6D009713DC /* MRProgress */; };
@@ -166,6 +168,7 @@
 		1CC256B31A3876F7003FA7A8 /* CompositionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC256B21A3876F7003FA7A8 /* CompositionViewController.swift */; };
 		1CC256B51A398084003FA7A8 /* ScrollViewKeyboardAvoider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC256B41A398084003FA7A8 /* ScrollViewKeyboardAvoider.swift */; };
 		1CC256B71A39A6BE003FA7A8 /* AwfulBrowser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC256B61A39A6BE003FA7A8 /* AwfulBrowser.swift */; };
+		8362C4A5114C49D80D7563C6 /* ProbationNoticeStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36D189A670676DC4060E3B15 /* ProbationNoticeStore.swift */; };
 		1CC256BC1A3AA82F003FA7A8 /* ShowSmilieKeyboardCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC256BB1A3AA82F003FA7A8 /* ShowSmilieKeyboardCommand.swift */; };
 		1CC256BF1A3AC9C0003FA7A8 /* CompositionMenuTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC256BD1A3AB08D003FA7A8 /* CompositionMenuTree.swift */; };
 		1CC58F5D1B5AC4330016EE83 /* UIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC58F5C1B5AC4330016EE83 /* UIKit.swift */; };
@@ -438,6 +441,7 @@
 		1C25AC441F5377B100977D6F /* ManagedObjectObserver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ManagedObjectObserver.swift; sourceTree = "<group>"; };
 		1C25AC461F53788900977D6F /* RenderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RenderView.swift; sourceTree = "<group>"; };
 		FEB24EC89219105885D6EFCA /* StatusBarBlurView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarBlurView.swift; sourceTree = "<group>"; };
+		F87839FE0FD61A55DAB822C9 /* ProbationBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProbationBannerView.swift; sourceTree = "<group>"; };
 		1C25AC481F537A0B00977D6F /* WeakTrampoline.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeakTrampoline.swift; sourceTree = "<group>"; };
 		1C25AC4A1F537A9600977D6F /* WebViewAntiHijacking.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebViewAntiHijacking.swift; sourceTree = "<group>"; };
 		1C25AC4C1F5768D200977D6F /* ManagedObjectCountObserver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ManagedObjectCountObserver.swift; sourceTree = "<group>"; };
@@ -512,6 +516,7 @@
 		1C66AA1619DDF8DD001B9A41 /* NeedsFullAccessView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NeedsFullAccessView.h; sourceTree = "<group>"; };
 		1C66AA1719DDF8DD001B9A41 /* NeedsFullAccessView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NeedsFullAccessView.m; sourceTree = "<group>"; };
 		1C6821A81F113A760083F204 /* AnnouncementViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnnouncementViewController.swift; sourceTree = "<group>"; };
+		FA26F5E1D43F9770B30BB98A /* ProbationDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProbationDetailView.swift; sourceTree = "<group>"; };
 		1C796A282218C41F0035E154 /* DefaultBrowser+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DefaultBrowser+.swift"; sourceTree = "<group>"; };
 		1C82AC4A199F585000CB15FE /* Selectotron.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Selectotron.swift; sourceTree = "<group>"; };
 		1C8A8CF91A3C14DF00E4F6A4 /* ReplyWorkspace.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReplyWorkspace.swift; sourceTree = "<group>"; };
@@ -556,6 +561,7 @@
 		1CC256B21A3876F7003FA7A8 /* CompositionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompositionViewController.swift; sourceTree = "<group>"; };
 		1CC256B41A398084003FA7A8 /* ScrollViewKeyboardAvoider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrollViewKeyboardAvoider.swift; sourceTree = "<group>"; };
 		1CC256B61A39A6BE003FA7A8 /* AwfulBrowser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AwfulBrowser.swift; sourceTree = "<group>"; };
+		36D189A670676DC4060E3B15 /* ProbationNoticeStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProbationNoticeStore.swift; sourceTree = "<group>"; };
 		1CC256BB1A3AA82F003FA7A8 /* ShowSmilieKeyboardCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShowSmilieKeyboardCommand.swift; sourceTree = "<group>"; };
 		1CC256BD1A3AB08D003FA7A8 /* CompositionMenuTree.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompositionMenuTree.swift; sourceTree = "<group>"; };
 		1CC58F5C1B5AC4330016EE83 /* UIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIKit.swift; sourceTree = "<group>"; };
@@ -871,6 +877,7 @@
 			children = (
 				2D5009F22F9C9FF300887F4B /* LoadMoreCollectionFooter.swift */,
 				1CC256B61A39A6BE003FA7A8 /* AwfulBrowser.swift */,
+				36D189A670676DC4060E3B15 /* ProbationNoticeStore.swift */,
 				1CF280972055EB9B00913149 /* AwfulRoute.swift */,
 				CF01C0DE2F0000010000A003 /* CloudflareChallengePresenter.swift */,
 				CF01C0DE2F0000010000B005 /* UIWindow+SheetHost.swift */,
@@ -1250,6 +1257,7 @@
 			isa = PBXGroup;
 			children = (
 				1C6821A81F113A760083F204 /* AnnouncementViewController.swift */,
+				FA26F5E1D43F9770B30BB98A /* ProbationDetailView.swift */,
 				CF01C0DE2F0000010000A001 /* CloudflareChallengeViewController.swift */,
 				CF01C0DE2F0000010000B001 /* ForumsStatusPageViewController.swift */,
 				1C16FBB11CB86ACD00C88BD1 /* EmptyViewController.swift */,
@@ -1354,6 +1362,7 @@
 				1CD9FB631D1A38030070C8C7 /* NigglyRefreshView.swift */,
 				1C25AC461F53788900977D6F /* RenderView.swift */,
 				FEB24EC89219105885D6EFCA /* StatusBarBlurView.swift */,
+				F87839FE0FD61A55DAB822C9 /* ProbationBannerView.swift */,
 				D1A0C0DE00000000000000A1 /* RenderViewPerformance.swift */,
 				1C23C7041A7AB8940089BD5C /* SlopButton.swift */,
 				1C353C061E416FE200CCBA51 /* SpriteSheetView.swift */,
@@ -1952,6 +1961,7 @@
 				1C8D114719ACDAD9005D46CB /* RootViewControllerStack.swift in Sources */,
 				1CC256B51A398084003FA7A8 /* ScrollViewKeyboardAvoider.swift in Sources */,
 				1C6821A91F113A760083F204 /* AnnouncementViewController.swift in Sources */,
+				B1A934B327813EF4BD637595 /* ProbationDetailView.swift in Sources */,
 				1CB15BEE1A9D33F600176E73 /* URLMenuPresenter.swift in Sources */,
 				1C220E3D2B815AFC00DA92B0 /* Bundle+.swift in Sources */,
 				1CD0C54F1BE674D700C3AC80 /* PostsPageRefreshSpinnerView.swift in Sources */,
@@ -1987,6 +1997,7 @@
 				1C3E1819224EF97D00BD88E5 /* PostedSmilie.swift in Sources */,
 				1C25AC471F53788900977D6F /* RenderView.swift in Sources */,
 				F7F6D795100A6FA9DCBE370F /* StatusBarBlurView.swift in Sources */,
+				CC1417AFD919FCB3DA3F9F00 /* ProbationBannerView.swift in Sources */,
 				D1A0C0DE00000000000000A2 /* RenderViewPerformance.swift in Sources */,
 				1C16FBC01CB950BE00C88BD1 /* ThreadTagButton.swift in Sources */,
 				1C3E180F224C558500BD88E5 /* FLAnimatedImageView+Nuke.swift in Sources */,
@@ -1999,6 +2010,7 @@
 				1C47AF4A19A7905F0098B828 /* PostsPageSettingsViewController.swift in Sources */,
 				1C0D7FFE1CF38CA2003EE2D1 /* PostsPageViewController.swift in Sources */,
 				1CC256B71A39A6BE003FA7A8 /* AwfulBrowser.swift in Sources */,
+				8362C4A5114C49D80D7563C6 /* ProbationNoticeStore.swift in Sources */,
 				CF01C0DE2F0000010000A002 /* CloudflareChallengeViewController.swift in Sources */,
 				CF01C0DE2F0000010000A004 /* CloudflareChallengePresenter.swift in Sources */,
 				CF01C0DE2F0000010000B006 /* UIWindow+SheetHost.swift in Sources */,

@@ -30,6 +30,9 @@ private let sessionKeys: Set<String> = [
     Settings.hasNoAds.key,
     Settings.lastOfferedPasteboardURLString.key,
     Settings.imgurUploadMode.key,
+    Settings.probationMessage.key,
+    Settings.probationTitle.key,
+    Settings.dismissedProbationMessage.key,
 ]
 
 public extension UserDefaults {

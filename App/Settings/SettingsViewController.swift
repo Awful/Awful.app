@@ -45,7 +45,9 @@ final class SettingsViewController: HostingController<SettingsContainerView> {
             logOut: { AppDelegate.instance.logOut() },
             managedObjectContext: managedObjectContext,
             onScrollOffsetFromTop: { box.contents.updateNavigationBarForScrollOffset($0) },
-            resetSettings: { box.contents.resetSettings() }
+            resetSettings: { box.contents.resetSettings() },
+            showProbationDetails: { ProbationDetailView.present(from: box.contents) },
+            simulateProbation: Environment.isTestingBuild ? { ProbationNoticeStore.simulate() } : nil
         ))
         self.cacheSizeText = cacheSizeText
         self.canShowSidebar = canShowSidebar
@@ -87,7 +89,9 @@ final class SettingsViewController: HostingController<SettingsContainerView> {
             logOut: rootView.logOut,
             managedObjectContext: rootView.managedObjectContext,
             onScrollOffsetFromTop: rootView.onScrollOffsetFromTop,
-            resetSettings: rootView.resetSettings
+            resetSettings: rootView.resetSettings,
+            showProbationDetails: rootView.showProbationDetails,
+            simulateProbation: rootView.simulateProbation
         )
     }
 
@@ -313,8 +317,13 @@ struct SettingsContainerView: View {
     let managedObjectContext: NSManagedObjectContext
     let onScrollOffsetFromTop: (CGFloat) -> Void
     let resetSettings: () -> Void
+    let showProbationDetails: () -> Void
+    /// Only set for testing builds (see `Environment.isTestingBuild`).
+    let simulateProbation: (() -> Void)?
 
     @AppStorage(Settings.disableLiquidGlass) private var disableLiquidGlass
+    /// Observed so the account section updates as the stored probation notice changes. Read the notice itself from `ProbationNoticeStore`.
+    @AppStorage(Settings.probationMessage) private var probationMessage
     @State private var displayedCacheSize: String = "Calculating…"
     @State private var displayedCanShowSidebar = false
 
@@ -359,7 +368,9 @@ struct SettingsContainerView: View {
             isPad: isPad,
             keyboardShortcutSections: keyboardShortcutSections,
             logOut: logOut,
-            resetSettings: resetSettings
+            probation: probationStatus,
+            resetSettings: resetSettings,
+            simulateProbation: simulateProbation
         )
         .environment(\.managedObjectContext, managedObjectContext)
         .themed()
@@ -367,6 +378,17 @@ struct SettingsContainerView: View {
         .onReceive(cacheSizeText) { newValue in
             displayedCacheSize = newValue
         }
+    }
+}
+
+private extension SettingsContainerView {
+    var probationStatus: ProbationStatus? {
+        guard probationMessage != nil, let notice = ProbationNoticeStore.current else { return nil }
+        return ProbationStatus(
+            summary: notice.localizedSummary,
+            image: Image("title-probation"),
+            showDetails: showProbationDetails
+        )
     }
 }
 

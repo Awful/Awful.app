@@ -29,7 +29,9 @@ public struct SettingsView: View {
     let isPad: Bool
     let keyboardShortcutSections: [KeyboardShortcutSection]
     let logOut: () -> Void
+    let probation: ProbationStatus?
     let resetSettings: () -> Void
+    let simulateProbation: (() -> Void)?
     @Environment(\.theme) var theme
 
     public init(
@@ -46,7 +48,9 @@ public struct SettingsView: View {
         isPad: Bool,
         keyboardShortcutSections: [KeyboardShortcutSection],
         logOut: @escaping () -> Void,
-        resetSettings: @escaping () -> Void
+        probation: ProbationStatus?,
+        resetSettings: @escaping () -> Void,
+        simulateProbation: (() -> Void)?
     ) {
         self.appIconDataSource = appIconDataSource
         self.authenticateImgurAccount = authenticateImgurAccount
@@ -64,12 +68,14 @@ public struct SettingsView: View {
         self.isPad = isPad
         self.keyboardShortcutSections = keyboardShortcutSections
         self.logOut = logOut
+        self.probation = probation
         self.resetSettings = resetSettings
+        self.simulateProbation = simulateProbation
     }
 
     public var body: some View {
         Form {
-            AccountSection(avatarURL: avatarURL, currentUsername: currentUsername, logOut: logOut)
+            AccountSection(avatarURL: avatarURL, currentUsername: currentUsername, logOut: logOut, probation: probation)
             FeedbackSection(goToAwfulThread: goToAwfulThread)
             PostsSection(isMac: isMac, isPad: isPad)
             PostingSection(authenticateImgurAccount: authenticateImgurAccount)
@@ -88,6 +94,9 @@ public struct SettingsView: View {
             }
             TabsSection()
             DataManagementSection(cacheSizeText: cacheSizeText, emptyCache: emptyCache, resetSettings: resetSettings)
+            if let simulateProbation {
+                TestingSection(simulateProbation: simulateProbation)
+            }
             if isPad || isMac {
                 KeyboardShortcutsSection(sections: keyboardShortcutSections)
             }
@@ -107,9 +116,29 @@ private struct AccountSection: View {
     let avatarURL: URL?
     let currentUsername: String
     let logOut: () -> Void
+    let probation: ProbationStatus?
+    @Environment(\.theme) private var theme
 
     var body: some View {
         Section {
+            if let probation {
+                Button(action: probation.showDetails) {
+                    HStack {
+                        probation.image
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 28, height: 28)
+                            .clipShape(RoundedRectangle(cornerRadius: 5, style: .continuous))
+                            .accessibilityHidden(true)
+                        Text(verbatim: probation.summary)
+                            .foregroundStyle(theme[color: "listText"]!)
+                        Spacer()
+                        Image(systemName: "chevron.right")
+                            .font(.footnote.weight(.semibold))
+                            .foregroundStyle(theme[color: "listSecondaryText"]!)
+                    }
+                }
+            }
             Button("Log Out", bundle: .module) { logOut() }
         } header: {
             VStack(alignment: .leading) {
@@ -537,6 +566,26 @@ private struct DataManagementSection: View {
     }
 }
 
+/// Tools for testers. Only shown when the host passes them in.
+private struct TestingSection: View {
+    let simulateProbation: () -> Void
+
+    var body: some View {
+        Section {
+            Button { simulateProbation() } label: {
+                CaptionedLabel(
+                    "Simulate Probation",
+                    caption: "Shows a pretend probation notice on thread lists and here in Settings until you relaunch Awful."
+                )
+            }
+        } header: {
+            Text("Testing", bundle: .module)
+                .header()
+        }
+        .section()
+    }
+}
+
 private struct KeyboardShortcutsSection: View {
     let sections: [KeyboardShortcutSection]
     @Environment(\.theme) private var theme
@@ -642,7 +691,13 @@ private struct SectionModifier: ViewModifier {
                 ]),
             ],
             logOut: { print("logging out") },
-            resetSettings: { print("resetting settings") }
+            probation: ProbationStatus(
+                summary: "On probation until Nov 3, 2026 22:21",
+                image: Image(systemName: "exclamationmark.triangle.fill"),
+                showDetails: { print("showing probation details") }
+            ),
+            resetSettings: { print("resetting settings") },
+            simulateProbation: { print("simulating probation") }
         )
         .navigationTitle(Text(verbatim: "Settings"))
         .navigationBarTitleDisplayMode(.inline)

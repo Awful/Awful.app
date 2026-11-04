@@ -17,6 +17,8 @@ public struct ThreadListScrapeResult: ScrapeResult, Sendable {
     public let isBookmarkedThreadsPage: Bool
     public let pageCount: Int?
     public let pageNumber: Int?
+    /// The logged-in user's probation notice, when they're on probation.
+    public let probationNotice: ProbationNoticeScrapeResult?
     public let threads: [Thread]
 
     public struct Announcement: Sendable {
@@ -87,6 +89,8 @@ public struct ThreadListScrapeResult: ScrapeResult, Sendable {
         let pageNavData = scrapePageNavigationData(body)
         pageNumber = pageNavData?.currentPage
         pageCount = pageNavData?.totalPages
+
+        probationNotice = try? ProbationNoticeScrapeResult(html, url: url)
     }
 }
 

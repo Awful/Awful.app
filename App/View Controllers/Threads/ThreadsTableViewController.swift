@@ -251,6 +251,7 @@ final class ThreadsTableViewController: CollectionViewController, ComposeTextVie
         loadMoreFooter?.themeDidChange()
 
         updateFilterButton()
+        probationBanner.apply(theme)
         refreshArchivesBanner()
     }
 
@@ -363,8 +364,22 @@ final class ThreadsTableViewController: CollectionViewController, ComposeTextVie
         return label
     }()
 
+    /// Shown above the filter button while the user is on probation, until they dismiss it.
+    private lazy var probationBanner: ProbationBannerView = {
+        let banner = ProbationBannerView()
+        banner.onTap = { [weak self] in
+            guard let self else { return }
+            ProbationDetailView.present(from: self)
+        }
+        banner.onVisibilityChange = { [weak self] in
+            guard let self, isViewLoaded else { return }
+            collectionView.collectionViewLayout.invalidateLayout()
+        }
+        return banner
+    }()
+
     private lazy var headerStack: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [filterButton, archivesBanner])
+        let stack = UIStackView(arrangedSubviews: [probationBanner, filterButton, archivesBanner])
         stack.axis = .vertical
         stack.alignment = .fill
         stack.translatesAutoresizingMaskIntoConstraints = false

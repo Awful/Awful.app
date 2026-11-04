@@ -25,6 +25,11 @@ enum Environment {
         return !isSimulator && Bundle.main.containsSandboxReceipt
     }
 
+    /// Whether to offer tools that only make sense for testers, such as simulating a probation: a debug build or a TestFlight install.
+    static var isTestingBuild: Bool {
+        isDebugBuild || isInstalledViaTestFlight
+    }
+
     /// The thread ID of the app's feedback thread ("Awful's Thread"), where the reply composer
     /// offers a Specs button.
     static let feedbackThreadID: String = {

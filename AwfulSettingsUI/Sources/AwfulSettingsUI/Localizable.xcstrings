@@ -221,8 +221,14 @@
     "Show Thread Tags" : {
 
     },
+    "Shows a pretend probation notice on thread lists and here in Settings until you relaunch Awful." : {
+      "comment" : "Caption for the Simulate Probation button."
+    },
     "Sidebar" : {
 
+    },
+    "Simulate Probation" : {
+      "comment" : "Button in the TestFlight-only Testing section that shows a pretend probation notice."
     },
     "Skips usernames, post dates, and join dates when iOS reads posts aloud (Speak Screen and VoiceOver)." : {
 
@@ -247,6 +253,9 @@
     },
     "Tabs" : {
 
+    },
+    "Testing" : {
+      "comment" : "Header for the TestFlight-only section of testing tools."
     },
     "Thank You" : {
 
