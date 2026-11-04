@@ -45,7 +45,7 @@
     </section>
 
 	<footer {% if hideMetadataForReader %} aria-hidden="true" {% endif %}>
-        <span class="divider{% if beenSeen %} divider-seen {% endif %}"></span>
+        <span class="divider"></span>
         <span class="postdate">
             {% if postDateRaw %}
                 {{ postDateRaw }}
