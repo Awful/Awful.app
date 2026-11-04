@@ -31,7 +31,7 @@
     "Add a poll" : {
 
     },
-    "Add Bookmark" : {
+    "Add bookmark" : {
 
     },
     "Added Bookmark" : {
@@ -49,7 +49,7 @@
         }
       }
     },
-    "Author Profile" : {
+    "Author profile" : {
 
     },
     "Automatic Dark Mode" : {
@@ -394,42 +394,6 @@
         }
       }
     },
-    "compose.draft-menu.editing-other-post.title" : {
-      "comment" : "Title of compose draft menu when editing another user's post. Parameters: 1. post author's username.",
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "You're currently editing %1$@'s post"
-          }
-        }
-      }
-    },
-    "compose.draft-menu.editing-own-post.title" : {
-      "comment" : "Title of compose draft menu when editing your own post.",
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "You're currently editing your own post"
-          }
-        }
-      }
-    },
-    "compose.draft-menu.editing-unknown-other-post.title" : {
-      "comment" : "Title of compose draft menu when editing an unnamed other user's post.",
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "You're currently editing someone else's post"
-          }
-        }
-      }
-    },
     "compose.draft-menu.private-message.title" : {
       "comment" : "Title of compose draft menu when writing a private message.",
       "localizations" : {
@@ -437,18 +401,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "You're currently writing a private message"
-          }
-        }
-      }
-    },
-    "compose.draft-menu.replying.title" : {
-      "comment" : "Title of compose draft menu when replying to the thread.",
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "You're currently replying to the thread"
           }
         }
       }
@@ -537,10 +489,10 @@
         }
       }
     },
-    "Copy Title" : {
+    "Copy link" : {
 
     },
-    "Copy URL" : {
+    "Copy title" : {
 
     },
     "copy-action.copied-image" : {
@@ -633,7 +585,13 @@
     "Exit Endless Scroll" : {
 
     },
+    "First page" : {
+
+    },
     "Five" : {
+
+    },
+    "Forums Unavailable" : {
 
     },
     "forums-list.announcements-section-title" : {
@@ -683,9 +641,6 @@
           }
         }
       }
-    },
-    "Forums Unavailable" : {
-
     },
     "Froggo" : {
 
@@ -765,10 +720,10 @@
     "Immersive Mode" : {
 
     },
-    "Jump to First Page" : {
+    "Keyboard Shortcuts…" : {
 
     },
-    "Keyboard Shortcuts…" : {
+    "Last page" : {
 
     },
     "Last Page" : {
@@ -1026,10 +981,10 @@
         }
       }
     },
-    "Mark Thread As Read" : {
+    "Mark as read" : {
 
     },
-    "Mark Unread" : {
+    "Mark as unread" : {
 
     },
     "No smilies found" : {
@@ -1652,7 +1607,7 @@
     "Recently Used" : {
 
     },
-    "Remove Bookmark" : {
+    "Remove bookmark" : {
 
     },
     "Removed Bookmark" : {

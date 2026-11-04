@@ -104,7 +104,7 @@ extension SearchHandlers {
     /// `showDetailViewController` rather than a push: on iPad the posts page belongs in the detail
     /// column, and when collapsed the split view pushes onto the results' stack anyway.
     ///
-    /// Results reached from a modal (e.g. a profile's "All Their Posts") dismiss and let the router
+    /// Results reached from a modal (e.g. a profile's "Post history") dismiss and let the router
     /// place the post, like the modal Rap Sheet does, rather than pushing it inside the modal.
     @MainActor static var awful: SearchHandlers {
         SearchHandlers(openPost: { postID, from in

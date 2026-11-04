@@ -52,7 +52,7 @@ final class ProfileViewController: ViewController {
         present(compose.enclosingNavigationController, animated: true)
     }
     
-    /// Searches forum-wide for everything this user has posted, same as the posts page's "All their posts".
+    /// Searches forum-wide for everything this user has posted, same as the posts page's "Post history".
     private func showPostHistory() {
         guard let username = user.username, !username.isEmpty,
               let navigationController

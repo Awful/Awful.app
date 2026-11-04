@@ -190,7 +190,7 @@ final class PostsPageViewController: ViewController {
         var children: [UIMenuElement] = [
             // Bookmark
             UIAction(
-                title: thread.bookmarked ? "Remove Bookmark" : "Bookmark Thread",
+                title: thread.bookmarked ? "Remove bookmark" : "Add bookmark",
                 image: UIImage(named: thread.bookmarked ? "remove-bookmark" : "add-bookmark")!.withRenderingMode(.alwaysTemplate),
                 identifier: .init("bookmark"),
                 attributes: thread.bookmarked ? .destructive : [],
@@ -1838,7 +1838,7 @@ final class PostsPageViewController: ViewController {
             }
             // Their posts everywhere
             let theirPostsEverywhere = UIAction.Identifier("theirPostsEverywhere")
-            let theirPostsEverywhereAction = UIAction(title: "All their posts",
+            let theirPostsEverywhereAction = UIAction(title: "Post history",
                                                       image: UIImage(named: "all-their-posts"),
                                                       identifier: theirPostsEverywhere,
                                                       handler: theirPostsEverywhere(action:))
@@ -1888,36 +1888,21 @@ final class PostsPageViewController: ViewController {
         postsView.renderView.showMenu(userActionMenu, from: frame)
     }
 
-    private func shareURL(action: UIAction) {
+    /// Copies a link to the selected post. A `goto=post` link lands on the right page whatever the reader's posts-per-page setting or author filter.
+    private func copyPostLink(action: UIAction) {
         if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
-        self.dismiss(animated: false) {
-            let components = NSURLComponents(string: "https://forums.somethingawful.com/showthread.php")!
-            var queryItems = [
-                URLQueryItem(name: "threadid", value: self.thread.threadID),
-                URLQueryItem(name: "perpage", value: "40"),
-                URLQueryItem(name: "noseen", value: "1"),
-            ]
-            if case .specific(let pageNumber)? = self.page, pageNumber > 1 {
-                queryItems.append(URLQueryItem(name: "pagenumber", value: "\(pageNumber)"))
+        guard let postID = selectedPost?.postID else { return }
+        self.dismiss(animated: false) { [self] in
+            let overlay = MRProgressOverlayView.showOverlayAdded(to: self.view, title: "Copied Link", mode: .checkmark, animated: true)
+            overlay?.tintColor = theme["tintColor"]
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                overlay?.dismiss(true)
             }
-            components.queryItems = queryItems
-            components.fragment = "post\(self.selectedPost!.postID)"
-            let url = components.url!
-
-            let activityVC = UIActivityViewController(activityItems: [url], applicationActivities: [SafariActivity(), ChromeActivity(url: url)])
-            activityVC.completionWithItemsHandler = { (activityType, completed, returnedItems, activityError) in
-                if completed && activityType == .copyToPasteboard {
-                    self.lastOfferedPasteboardURLString = url.absoluteString
-                }
-            }
-            if let popover = activityVC.popoverPresentationController {
-                // TODO: previously this would eval some js on the webview to find the new location of the header after rotating, but that sync call on UIWebView is async on WKWebView, so ???
-                popover.sourceRect = self.selectedFrame!
-                popover.sourceView = self.postsView.renderView
-            }
-            self.present(activityVC, animated: false)
+            let url = AwfulRoute.post(id: postID, .noseen).httpURL
+            lastOfferedPasteboardURLString = url.absoluteString
+            UIPasteboard.general.coercedURL = url
         }
     }
 
@@ -2503,7 +2488,7 @@ final class PostsPageViewController: ViewController {
             // Mark Read Up To Here
             if author == nil {
                 postActions.append(.init(
-                    title: "Mark as last read",
+                    title: "Mark as read",
                     image: UIImage(named: "mark-read-up-to-here")!.withRenderingMode(.alwaysTemplate),
                     identifier: .init("markread"),
                     handler: markThreadAsSeenUpTo(action:)
@@ -2520,12 +2505,12 @@ final class PostsPageViewController: ViewController {
                 ))
             }
 
-            // Share URL
+            // Copy link
             postActions.append(.init(
-                title: "Share",
-                image: UIImage(named: "share")!.withRenderingMode(.alwaysTemplate),
-                identifier: UIAction.Identifier("shareurl"),
-                handler: shareURL(action:)
+                title: "Copy link",
+                image: UIImage(named: "copy-url")!.withRenderingMode(.alwaysTemplate),
+                identifier: .init("copyPostLink"),
+                handler: copyPostLink(action:)
             ))
 
             // Report
@@ -3472,7 +3457,7 @@ extension PostsPageViewController {
     private func liveTitle(for shortcut: KeyboardShortcut) -> String? {
         switch shortcut {
         case .toggleBookmark:
-            return thread.bookmarked ? "Remove Bookmark" : "Bookmark Thread"
+            return thread.bookmarked ? "Remove bookmark" : "Add bookmark"
         default:
             return nil
         }

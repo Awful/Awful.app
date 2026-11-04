@@ -40,14 +40,14 @@ extension UIContextMenuConfiguration {
     ) -> UIContextMenuConfiguration {
         var copyTitle: UIMenuElement {
             UIAction(
-                title: NSLocalizedString("Copy Title", comment: ""),
+                title: NSLocalizedString("Copy title", comment: ""),
                 image: UIImage(named: "copy-title")!.withRenderingMode(.alwaysTemplate),
                 handler: { action in UIPasteboard.general.string = thread.title }
             )
         }
         var copyURL: UIMenuElement {
             UIAction(
-                title: NSLocalizedString("Copy URL", comment: ""),
+                title: NSLocalizedString("Copy link", comment: ""),
                 image: UIImage(named: "copy-url")!.withRenderingMode(.alwaysTemplate),
                 handler: { action in
                     let url = AwfulRoute.threadPage(
@@ -68,7 +68,7 @@ extension UIContextMenuConfiguration {
         }
         var jumpToFirstPage: UIMenuElement {
             UIAction(
-                title: NSLocalizedString("Jump to First Page", comment: ""),
+                title: NSLocalizedString("First page", comment: ""),
                 image: UIImage(named: "jump-to-first-page")!.withRenderingMode(.alwaysTemplate),
                 handler: { action in jump(to: .first) }
             )
@@ -93,7 +93,7 @@ extension UIContextMenuConfiguration {
         }
         var jumpToLastPage: UIMenuElement {
             UIAction(
-                title: NSLocalizedString("Last Page", comment: ""),
+                title: NSLocalizedString("Last page", comment: ""),
                 image: UIImage(named: "jump-to-last-page")!.withRenderingMode(.alwaysTemplate),
                 handler: { action in jump(to: .last) }
             )
@@ -101,7 +101,7 @@ extension UIContextMenuConfiguration {
         var markThreadRead: UIMenuElement? {
             guard !thread.beenSeen else { return nil }
             return UIAction(
-                title: NSLocalizedString("Mark Thread As Read", comment: ""),
+                title: NSLocalizedString("Mark as read", comment: ""),
                 image: UIImage(named: "mark-read-up-to-here")!.withRenderingMode(.alwaysTemplate),
                 handler: { [weak presenter] action in
                     Task { [weak presenter] in
@@ -136,7 +136,7 @@ extension UIContextMenuConfiguration {
                 }
             }
             return UIAction(
-                title: NSLocalizedString("Mark Unread", comment: ""),
+                title: NSLocalizedString("Mark as unread", comment: ""),
                 image: UIImage(named: "mark-as-unread")!.withRenderingMode(.alwaysTemplate),
                 handler: { action in
                     let oldSeen = thread.seenPosts
@@ -163,7 +163,7 @@ extension UIContextMenuConfiguration {
         var profileAuthor: UIMenuElement? {
             guard let author = thread.author else { return nil }
             return UIAction(
-                title: NSLocalizedString("Author Profile", comment: ""),
+                title: NSLocalizedString("Author profile", comment: ""),
                 image: UIImage(named: "user-profile")!.withRenderingMode(.alwaysTemplate),
                 handler: { action in
                     let profile = ProfileViewController(user: author)
@@ -178,8 +178,8 @@ extension UIContextMenuConfiguration {
         var toggleBookmark: UIMenuElement {
             UIAction(
                 title: (thread.bookmarked
-                        ? NSLocalizedString("Remove Bookmark", comment: "")
-                        : NSLocalizedString("Add Bookmark", comment: "")),
+                        ? NSLocalizedString("Remove bookmark", comment: "")
+                        : NSLocalizedString("Add bookmark", comment: "")),
                 image: UIImage(named: thread.bookmarked
                                ? "remove-bookmark"
                                : "add-bookmark")!.withRenderingMode(.alwaysTemplate),
