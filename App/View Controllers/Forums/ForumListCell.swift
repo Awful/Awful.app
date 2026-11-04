@@ -242,7 +242,8 @@ final class ForumListCell: UICollectionViewListCell {
 
 /// A right-pointing chevron that rotates to point down when expanded.
 final class ExpandForumButton: UIButton {
-    private static let arrowSize = CGSize(width: 22, height: 22)
+    // Matches a quote's collapse arrow at the default text size (`.quote-collapse-toggle img` in _base.less is 1.4em of a 13.9px quote header, about 19.5pt).
+    private static let arrowSize = CGSize(width: 20, height: 20)
 
     // A separate image view (rather than the button's own image) so UIButton's layout
     // doesn't fight the rotation transform.
