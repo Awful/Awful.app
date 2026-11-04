@@ -599,53 +599,6 @@ extension RenderView {
         webView.isOpaque = setOpaqueTo
     }
 
-    /// Mean relative luminance (0 dark … 1 light) of the rendered page within `rect` (in this
-    /// view's coordinates), or nil when nothing could be captured. Uses WebKit's own snapshot
-    /// path: `drawHierarchy` and `CALayer.render` don't read back web content on iOS 26. The
-    /// web view is transparent outside dark-mode scrolling, so `backdrop` (what shows through
-    /// it) is composited underneath before measuring.
-    func sampleLuminance(in rect: CGRect, over backdrop: UIColor?, completion: @escaping @MainActor (CGFloat?) -> Void) {
-        let webRect = convert(rect, to: webView).intersection(webView.bounds)
-        guard !webRect.isNull, webRect.width >= 1, webRect.height >= 1 else {
-            completion(nil)
-            return
-        }
-        let configuration = WKSnapshotConfiguration()
-        configuration.rect = webRect
-        // A few dozen pixels across is plenty for an average and keeps the capture cheap.
-        configuration.snapshotWidth = 24
-        configuration.afterScreenUpdates = false
-        webView.takeSnapshot(with: configuration) { image, _ in
-            guard let cgImage = image?.cgImage else {
-                completion(nil)
-                return
-            }
-            completion(Self.meanLuminance(of: cgImage, over: backdrop))
-        }
-    }
-
-    private static func meanLuminance(of image: CGImage, over backdrop: UIColor?) -> CGFloat? {
-        let width = image.width, height = image.height
-        guard width > 0, height > 0,
-              let context = CGContext(
-                data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: width * 4,
-                space: CGColorSpaceCreateDeviceRGB(),
-                bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)
-        else { return nil }
-        let bounds = CGRect(x: 0, y: 0, width: width, height: height)
-        context.setFillColor((backdrop ?? .black).cgColor)
-        context.fill(bounds)
-        context.draw(image, in: bounds)
-        guard let data = context.data else { return nil }
-        let pixels = data.assumingMemoryBound(to: UInt8.self)
-        var total: CGFloat = 0
-        for index in stride(from: 0, to: width * height * 4, by: 4) {
-            let r = CGFloat(pixels[index]), g = CGFloat(pixels[index + 1]), b = CGFloat(pixels[index + 2])
-            total += (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255
-        }
-        return total / CGFloat(width * height)
-    }
-    
     /**
      Removes all previously-loaded content.
      
@@ -1356,45 +1309,4 @@ protocol RenderViewDelegate: AnyObject {
 
 private func escapeForEval(_ s: String) throws -> String {
     return String(data: try JSONEncoder().encode([s]), encoding: .utf8)! + "[0]"
-}
-
-extension ContentContrastSampler {
-    /// Samples the title's region through `RenderView.sampleLuminance`.
-    convenience init(
-        renderView: RenderView,
-        titleLabel: @escaping () -> UILabel?,
-        backdrop: @escaping () -> UIColor?,
-        titleOf viewController: UIViewController
-    ) {
-        self.init(
-            sourceView: renderView,
-            sample: Self.sample(through: renderView),
-            titleLabel: titleLabel,
-            backdrop: backdrop,
-            titleOf: viewController
-        )
-    }
-
-    /// Samples the status bar's region through `RenderView.sampleLuminance`.
-    convenience init(
-        renderView: RenderView,
-        backdrop: @escaping () -> UIColor?,
-        statusBarOf viewController: UIViewController,
-        onColorChange: ((UIColor?) -> Void)? = nil
-    ) {
-        self.init(
-            sourceView: renderView,
-            sample: Self.sample(through: renderView),
-            backdrop: backdrop,
-            statusBarOf: viewController,
-            onColorChange: onColorChange
-        )
-    }
-
-    private static func sample(through renderView: RenderView) -> Sample {
-        { [weak renderView] rect, backdrop, completion in
-            guard let renderView else { return completion(nil) }
-            renderView.sampleLuminance(in: rect, over: backdrop, completion: completion)
-        }
-    }
 }

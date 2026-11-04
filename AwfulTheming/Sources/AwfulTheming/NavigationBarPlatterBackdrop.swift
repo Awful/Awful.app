@@ -25,27 +25,8 @@ public protocol NavigationBarScrollTransitioning: AnyObject {
     /// `UIButton.setGlassGlyph(bakedColor:tint:)` (nil restores the template).
     func updateGlassBarButtonGlyphs(color: UIColor?)
 
-    /// `.black` or `.white` as sampled from the content beneath the status bar while the bar is
-    /// transparent (see `ContentContrastSampler`), or nil when unknown: nothing sampled yet, or
-    /// the screen doesn't sample. The navigation controller derives the status bar style from it.
-    var statusBarContentColor: UIColor? { get }
-
-    /// True while the screen has moved the bar out from under the status bar itself (immersive
-    /// mode), so the status bar sits over the content whatever the bar's scroll state. The
-    /// navigation controller then styles it from `statusBarContentColor` as it does once the
-    /// glass bar has gone transparent. Call `contentContrastDidChange()` when this changes.
+    /// True while the screen has moved the bar out from under the status bar itself (immersive mode), so the status bar sits over the content whatever the bar's scroll state. The navigation controller then styles it as it does once the glass bar has gone transparent. Call `statusBarOverContentDidChange()` when this changes.
     var isStatusBarOverContent: Bool { get }
-
-    /// Likewise for the content beneath the navigation bar (what the title is coloured for); the
-    /// navigation controller points the content blur's trait at it. Call
-    /// `contentContrastDidChange()` when either colour changes.
-    var navigationBarContentColor: UIColor? { get }
-
-    /// True while the screen moves the bar out from under the status bar itself (the posts page in
-    /// immersive mode): the system's soft edge effect belongs to the scroll view and can't slide
-    /// away with the bar, so the bar puts its own fading blur under the transparent bar instead.
-    /// False keeps the system effect, the blurred fade the lists show as they scroll under the bar.
-    var usesNavigationBarContentBlur: Bool { get }
 
     /// Whether iOS 27 may minimize the bar as this screen scrolls (on the folded iPhone Duo).
     /// Reduce Liquid Glass never lets it whatever this says. False for a screen that decides for
@@ -56,30 +37,21 @@ public protocol NavigationBarScrollTransitioning: AnyObject {
 public extension NavigationBarScrollTransitioning {
     func updateGlassBarButtonGlyphs(color: UIColor?) {}
 
-    var statusBarContentColor: UIColor? { nil }
-
     var isStatusBarOverContent: Bool { false }
-
-    var navigationBarContentColor: UIColor? { nil }
-
-    var usesNavigationBarContentBlur: Bool { false }
 
     var allowsNavigationBarMinimization: Bool { true }
 }
 
-/// A navigation controller that restyles the status bar and its content blur from its top
-/// screen's `statusBarContentColor` and `navigationBarContentColor`.
-public protocol NavigationBarContentContrastObserving: AnyObject {
-    func topScreenContentContrastDidChange()
+/// A navigation controller that restyles itself when its top screen's `isStatusBarOverContent` changes.
+public protocol StatusBarOverContentObserving: AnyObject {
+    func topScreenStatusBarOverContentDidChange()
 }
 
 public extension UIViewController {
-    /// Tells the navigation controller that `statusBarContentColor` or
-    /// `navigationBarContentColor` changed; a navigation controller that doesn't observe just
-    /// gets a status bar appearance update.
-    func contentContrastDidChange() {
-        if let observer = navigationController as? NavigationBarContentContrastObserving {
-            observer.topScreenContentContrastDidChange()
+    /// Tells the navigation controller that `isStatusBarOverContent` changed. A navigation controller that doesn't observe just gets a status bar appearance update.
+    func statusBarOverContentDidChange() {
+        if let observer = navigationController as? StatusBarOverContentObserving {
+            observer.topScreenStatusBarOverContentDidChange()
         } else {
             navigationController?.setNeedsStatusBarAppearanceUpdate()
         }

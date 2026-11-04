@@ -75,7 +75,6 @@ final class PostsPageViewController: ViewController {
     @FoilDefaultStorage(Settings.frogAndGhostEnabled) private var frogAndGhostEnabled
     @FoilDefaultStorage(Settings.handoffEnabled) private var handoffEnabled
     @FoilDefaultStorage(Settings.hidePostMetadataForReader) private var hidePostMetadataForReader
-    @FoilDefaultStorage(Settings.immersiveModeEnabled) private var immersiveModeEnabled
     private var jumpToLastPost = false
     @FoilDefaultStorageOptional(Settings.lastOfferedPasteboardURLString) private var lastOfferedPasteboardURLString
     @FoilDefaultStorageOptional(Settings.userID) private var loggedInUserID
@@ -1012,28 +1011,6 @@ final class PostsPageViewController: ViewController {
     private var isArchivesMode: Bool {
         ForumsClient.shared.currentArchivesTimeframe != nil
     }
-
-    /// Colours the title from the page beneath it while the iOS 26 glass bar is transparent in
-    /// immersive mode; driven from `PostsPageView.updateNavigationBarForScrollProgress`, which
-    /// keeps it reset otherwise.
-    private(set) lazy var titleContrastSampler = ContentContrastSampler(
-        renderView: postsView.renderView,
-        titleLabel: { [weak self] in self?.navigationItem.titleView as? UILabel },
-        backdrop: { [weak self] in self?.theme[uicolor: "backgroundColor"] },
-        titleOf: self
-    )
-
-    /// Likewise decides the status bar's light/dark from the page beneath it in immersive mode;
-    /// the navigation controller reads the result via `statusBarContentColor`, and the immersive
-    /// mode's safe-area gradient (drawn in the same strip) follows it too.
-    private(set) lazy var statusBarContrastSampler = ContentContrastSampler(
-        renderView: postsView.renderView,
-        backdrop: { [weak self] in self?.theme[uicolor: "backgroundColor"] },
-        statusBarOf: self,
-        onColorChange: { [weak self] color in
-            self?.postsView.immersiveModeManager.safeAreaGradientView.contentColor = color
-        }
-    )
 
     private lazy var composeItem: UIBarButtonItem = {
         let item = UIBarButtonItem(image: UIImage(named: "compose"), style: .plain, target: self, action: #selector(compose))
@@ -2774,10 +2751,8 @@ final class PostsPageViewController: ViewController {
         navigationItem.titleLabel.theme = theme
 
         if #available(iOS 26.0, *), LiquidGlass.isEnabled {
-            // The bar rests opaque while the navigation controller restyles it below, so the title takes the theme's bar colour to match. The sync at the end brings the bar and the title back to the real scroll offset together, and the sampled colour is dropped first because the page background it was measured against has just changed.
+            // The bar rests opaque while the navigation controller restyles it below, so the title takes the theme's bar colour to match. The sync at the end brings the bar and the title back to the real scroll offset together.
             navigationItem.updateTitleLabelTextColor(forScrollProgress: 0, theme: theme)
-            titleContrastSampler.reset()
-            statusBarContrastSampler.reset()
         } else {
             navigationItem.titleLabel.textColor = Theme.defaultTheme()[uicolor: "navigationBarTextColor"] ?? .label
         }
@@ -2882,21 +2857,6 @@ final class PostsPageViewController: ViewController {
         $jumpToPostEndOnDoubleTap
             .receive(on: RunLoop.main)
             .sink { doubleTap.isEnabled = $0 }
-            .store(in: &cancellables)
-
-        // Immersive mode decides whether the bar's blur or the system edge effect sits under the
-        // transparent bar (`usesNavigationBarContentBlur`), and the navigation controller only
-        // re-applies that when the scroll progress changes; the toggle in the page settings
-        // popover flips it while this page is on screen, so re-apply for the current offset.
-        $immersiveModeEnabled
-            .dropFirst()
-            .removeDuplicates()
-            .receive(on: RunLoop.main)
-            .sink { [weak self] _ in
-                guard let self, #available(iOS 26.0, *), LiquidGlass.usesGlassNavigationBar else { return }
-                (navigationController as? NavigationController)?.invalidateScrollProgressCache()
-                postsView.syncNavigationBarScrollProgress()
-            }
             .store(in: &cancellables)
 
         NotificationCenter.default.publisher(
@@ -3467,15 +3427,7 @@ extension PostsPageViewController {
 extension PostsPageViewController: NavigationBarScrollTransitioning {
     var navigationBarScrollView: UIScrollView? { postsView.renderView.scrollView }
 
-    var statusBarContentColor: UIColor? { statusBarContrastSampler.color }
-
     var isStatusBarOverContent: Bool { postsView.immersiveModeManager.isStatusBarOverContent }
-
-    var navigationBarContentColor: UIColor? { titleContrastSampler.color }
-
-    /// Immersive mode slides the bar away, so the blur under it has to be the bar's own; otherwise
-    /// the page keeps the system edge effect, the blurred fade the lists show.
-    var usesNavigationBarContentBlur: Bool { immersiveModeEnabled }
 
     /// The bar goes away only in immersive mode, which slides it off itself.
     var allowsNavigationBarMinimization: Bool { false }

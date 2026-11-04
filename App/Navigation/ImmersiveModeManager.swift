@@ -6,6 +6,7 @@ import Combine
 import Foundation
 import UIKit
 import AwfulSettings
+import AwfulTheming
 
 // MARK: - ImmersiveModeManager
 
@@ -58,6 +59,7 @@ final class ImmersiveModeManager: NSObject {
                 let oldValue = lastImmersiveModeEnabled
                 guard newValue != oldValue else { return }
                 lastImmersiveModeEnabled = newValue
+                updateTopEdgeEffectInteraction()
                 if newValue {
                     postsView?.setNeedsLayout()
                     postsView?.layoutIfNeeded()
@@ -67,7 +69,6 @@ final class ImmersiveModeManager: NSObject {
                     bottomFadeProgress = 0.0
                     resetAllTransforms()
                     restoreBarAlphas()
-                    safeAreaGradientView.alpha = 0.0
                     updateStatusBarOverContent()
                     postsView?.setNeedsLayout()
                 }
@@ -121,23 +122,74 @@ final class ImmersiveModeManager: NSObject {
 
     // MARK: - UI Elements
 
-    lazy var safeAreaGradientView: GradientView = {
-        let view = GradientView()
+    /// Sizes the scroll view's top edge effect (the system blur under the transparent bar) while immersive mode is on. Left to itself the effect covers the bar where it was laid out and stays there when the bar slides away. This follows the bar's visible bottom edge instead (`updateTopEdgeEffectExtent`), so the blur leaves with the bar. The effect never gets shorter than the status bar plus its fade, so once the bar has mostly gone the navigation controller hides it (`isStatusBarOverContent`) and `statusBarBlurView` takes over.
+    let topEdgeEffectExtentView: UIView = {
+        let view = UIView()
         view.isUserInteractionEnabled = false
-        view.alpha = 0.0
+        // The edge effect takes its shape from what the container's subviews draw, so an empty container (or a blank label) doesn't size it. This fill is too faint to see.
+        let fill = UIView()
+        fill.backgroundColor = UIColor.black.withAlphaComponent(0.01)
+        fill.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        view.addSubview(fill)
         return view
     }()
 
-    /// True once the bars have mostly left the screen (slid more than halfway, or faded below
-    /// half in bottom fade mode), so the status bar sits over the page rather than the bar.
-    /// The posts page samples the page beneath the status bar while this is set (immersive mode
-    /// is the only time it samples) and the navigation controller styles the status bar from the
-    /// result; the gradient above tracks the same colour. Under Reduce Liquid Glass this is the
-    /// only time the status bar is over the content, since the bar never goes transparent on scroll.
+    private var topEdgeEffectInteraction: UIInteraction?
+
+    /// Registers `topEdgeEffectExtentView` with the scroll view only while immersive mode is on, leaving the bar to size the edge effect otherwise.
+    private func updateTopEdgeEffectInteraction() {
+        guard #available(iOS 26.0, *) else { return }
+        if immersiveModeEnabled, let scrollView = renderView?.scrollView {
+            guard topEdgeEffectInteraction == nil else { return }
+            let interaction = UIScrollEdgeElementContainerInteraction()
+            interaction.scrollView = scrollView
+            interaction.edge = .top
+            topEdgeEffectExtentView.addInteraction(interaction)
+            topEdgeEffectInteraction = interaction
+            updateTopEdgeEffectExtent()
+        } else if let interaction = topEdgeEffectInteraction {
+            topEdgeEffectExtentView.removeInteraction(interaction)
+            topEdgeEffectInteraction = nil
+        }
+    }
+
+    /// Sizes `topEdgeEffectExtentView` to the bar's visible bottom edge, never shorter than the status bar. A bar faded below half (bottom fade mode) counts as gone.
+    private func updateTopEdgeEffectExtent() {
+        guard #available(iOS 26.0, *), let postsView else { return }
+        // While the edge effect is hidden the container draws a faint band of its own, so it goes too. The navigation controller decides when the effect shows.
+        topEdgeEffectExtentView.isHidden = renderView?.scrollView.topEdgeEffect.isHidden ?? true
+        var height = postsView.window?.safeAreaInsets.top ?? postsView.safeAreaInsets.top
+        if let navBar = findNavigationBar(), navBar.alpha > 0.5 {
+            // `convert` includes the slide transform.
+            height = max(height, navBar.convert(navBar.bounds, to: postsView).maxY)
+        }
+        topEdgeEffectExtentView.frame = CGRect(x: postsView.bounds.minX, y: postsView.bounds.minY, width: postsView.bounds.width, height: height)
+    }
+
+    /// What sits under the status bar once the bar has mostly gone (`isStatusBarOverContent`). Under Liquid Glass it stands in for the system edge effect, which can't get short enough. Under Reduce Liquid Glass the edge effect is hidden altogether, so this is the only thing there. The posts page sets its light/dark from the theme.
+    let statusBarBlurView: StatusBarBlurView = {
+        let view = StatusBarBlurView()
+        view.alpha = 0
+        return view
+    }()
+
+    private static let statusBarBlurFadeDuration: TimeInterval = 0.2
+
+    private func updateStatusBarBlur() {
+        let alpha: CGFloat = isStatusBarOverContent ? 1 : 0
+        UIView.animate(withDuration: Self.statusBarBlurFadeDuration, delay: 0, options: [.beginFromCurrentState, .allowUserInteraction]) {
+            self.statusBarBlurView.alpha = alpha
+        }
+    }
+
+    /// True once the bars have mostly left the screen (slid more than halfway, or faded below half in bottom fade mode), so the status bar sits over the page rather than the bar. `statusBarBlurView` goes under it then. The navigation controller styles the status bar in the theme's mode, which reads fine over the blur. Under Reduce Liquid Glass this is the only time the status bar is over the content, since the bar never goes transparent on scroll.
     private(set) var isStatusBarOverContent = false {
         didSet {
             guard isStatusBarOverContent != oldValue else { return }
+            // First, so the navigation controller has shown or hidden the edge effect before `topEdgeEffectExtentView` follows it.
             statusBarOverContentDidChange?()
+            updateStatusBarBlur()
+            updateTopEdgeEffectExtent()
         }
     }
 
@@ -202,6 +254,7 @@ final class ImmersiveModeManager: NSObject {
         self.toolbar = toolbar
         self.topBarContainer = topBarContainer
         cachedNavigationBar = nil
+        updateTopEdgeEffectInteraction()
     }
 
     // MARK: - Public Methods
@@ -248,16 +301,16 @@ final class ImmersiveModeManager: NSObject {
         return fallback - (fallback - safeAreaTop) * immersiveProgress
     }
 
-    func updateGradientLayout(in containerView: UIView) {
+    func updateStatusBarViewsLayout(in containerView: UIView) {
         guard #available(iOS 26.0, *) else { return }
 
-        let gradientHeight: CGFloat = containerView.window?.safeAreaInsets.top ?? containerView.safeAreaInsets.top
-        safeAreaGradientView.frame = CGRect(
+        statusBarBlurView.frame = CGRect(
             x: containerView.bounds.minX,
             y: containerView.bounds.minY,
             width: containerView.bounds.width,
-            height: gradientHeight
+            height: containerView.window?.safeAreaInsets.top ?? containerView.safeAreaInsets.top
         )
+        updateTopEdgeEffectExtent()
     }
 
     func reapplyTransformsAfterLayout() {
@@ -437,21 +490,15 @@ final class ImmersiveModeManager: NSObject {
         defer { updateStatusBarOverContent() }
 
         guard immersiveModeEnabled && immersiveProgress > 0 else {
-            safeAreaGradientView.alpha = 0.0
             resetAllTransforms()
             return
         }
-
-        // Shown whatever the Reduce Liquid Glass setting: once the bar slides away this is the
-        // only thing under the status bar (the system scroll-edge effect is hidden for the
-        // posts page while immersive mode is on, see NavigationController.applyGlassRestingState).
-        safeAreaGradientView.alpha = immersiveProgress
 
         let navBarTransform = calculateNavigationBarTransform()
         if let navBar = findNavigationBar() {
             navBar.transform = CGAffineTransform(translationX: 0, y: navBarTransform)
         }
-        syncPlatterBackdropWithNavigationBar()
+        followNavigationBar()
 
         topBarContainer?.transform = CGAffineTransform(translationX: 0, y: navBarTransform)
 
@@ -479,8 +526,7 @@ final class ImmersiveModeManager: NSObject {
         topBarContainer?.alpha = 0
         toolbar?.alpha = 0
         resetAllTransforms()
-        syncPlatterBackdropWithNavigationBar()
-        safeAreaGradientView.alpha = 0.0
+        followNavigationBar()
         CATransaction.commit()
         updateStatusBarOverContent()
 
@@ -496,7 +542,7 @@ final class ImmersiveModeManager: NSObject {
                 options: [.allowUserInteraction],
                 animations: {
                     navBar?.alpha = 1
-                    self.syncPlatterBackdropWithNavigationBar()
+                    self.followNavigationBar()
                     self.topBarContainer?.alpha = 1
                     self.toolbar?.alpha = 1
                 },
@@ -533,12 +579,10 @@ final class ImmersiveModeManager: NSObject {
         if let navBar = findNavigationBar() {
             navBar.alpha = alpha
         }
-        syncPlatterBackdropWithNavigationBar()
+        followNavigationBar()
         topBarContainer?.alpha = alpha
         toolbar?.alpha = alpha
 
-        // Gradient is only shown when bars are hidden via slide.
-        safeAreaGradientView.alpha = 0.0
         updateStatusBarOverContent()
     }
 
@@ -588,7 +632,7 @@ final class ImmersiveModeManager: NSObject {
         }
         topBarContainer?.transform = .identity
         toolbar?.transform = .identity
-        syncPlatterBackdropWithNavigationBar()
+        followNavigationBar()
     }
 
     private func restoreBarAlphas() {
@@ -597,14 +641,12 @@ final class ImmersiveModeManager: NSObject {
         }
         topBarContainer?.alpha = 1.0
         toolbar?.alpha = 1.0
-        syncPlatterBackdropWithNavigationBar()
+        followNavigationBar()
     }
 
-    /// Under Reduce Liquid Glass a bar-coloured strip sits in front of the web content under the
-    /// bar (`UIScrollView.pinNavigationBarPlatterBackdropOverContent`), relying on the opaque bar
-    /// to hide it. It lives in the scroll view, so it has to be told to go where the bar goes:
-    /// call this after every change to the bar's transform or alpha.
-    private func syncPlatterBackdropWithNavigationBar() {
+    /// Moves what has to go where the bar goes: call this after every change to the bar's transform or alpha. Under Reduce Liquid Glass a bar-coloured strip sits in front of the web content under the bar (`UIScrollView.pinNavigationBarPlatterBackdropOverContent`), relying on the opaque bar to hide it. It lives in the scroll view. Under Liquid Glass the system blur under the bar follows `topEdgeEffectExtentView`.
+    private func followNavigationBar() {
+        updateTopEdgeEffectExtent()
         guard let navBar = findNavigationBar(), let scrollView = renderView?.scrollView else { return }
         scrollView.followNavigationBarPlatterBackdrop(verticalOffset: navBar.transform.ty, alpha: navBar.alpha)
     }

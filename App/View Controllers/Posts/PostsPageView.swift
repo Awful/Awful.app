@@ -305,14 +305,6 @@ final class PostsPageView: UIView {
 
     let toolbar = Toolbar(frame: CGRect(x: 0, y: 0, width: 320, height: 44) /* somewhat arbitrary size to avoid unhelpful unsatisfiable constraints console messages */)
 
-    private lazy var fallbackSafeAreaGradientView: GradientView = {
-        let view = GradientView()
-        view.isUserInteractionEnabled = false
-        view.alpha = 0.0
-        view.isHidden = true
-        return view
-    }()
-
     var toolbarItems: [UIBarButtonItem] {
         get { return toolbar.items ?? [] }
         set { toolbar.items = newValue }
@@ -329,9 +321,8 @@ final class PostsPageView: UIView {
 
         addSubview(renderView)
         if #available(iOS 26.0, *) {
-            addSubview(immersiveModeManager.safeAreaGradientView)
-        } else {
-            addSubview(fallbackSafeAreaGradientView)
+            addSubview(immersiveModeManager.statusBarBlurView)
+            addSubview(immersiveModeManager.topEdgeEffectExtentView)
         }
         addSubview(topBarContainer)
         addSubview(loadingViewContainer)
@@ -345,13 +336,11 @@ final class PostsPageView: UIView {
             toolbar: toolbar,
             topBarContainer: topBarContainer
         )
-        // The bars snapping the rest of the way (end of a drag, a page change) can move the
-        // status bar over the content with no scroll event to start or stop the sampling, and
-        // the status bar has to restyle even before a sample has landed.
+        // The bars snapping the rest of the way (end of a drag, a page change) can move the status bar over the content with no scroll event to restyle it.
         immersiveModeManager.statusBarOverContentDidChange = { [weak self] in
             guard let self, #available(iOS 26.0, *) else { return }
             syncNavigationBarScrollProgress()
-            postsPageViewController?.contentContrastDidChange()
+            postsPageViewController?.statusBarOverContentDidChange()
         }
 
         tiltScrollManager.configure(scrollView: renderView.scrollView)
@@ -384,7 +373,7 @@ final class PostsPageView: UIView {
             height: bounds.height)
 
         if #available(iOS 26.0, *) {
-            immersiveModeManager.updateGradientLayout(in: self)
+            immersiveModeManager.updateStatusBarViewsLayout(in: self)
         }
 
         if toolbar.transform == .identity {
@@ -510,9 +499,8 @@ final class PostsPageView: UIView {
 
         topBar.themeDidChange(Theme.defaultTheme())
 
-        if #available(iOS 26.0, *) {
-            immersiveModeManager.safeAreaGradientView.themeDidChange()
-        }
+        // Matches the status bar, which the navigation controller styles in the theme's mode while it's over the page.
+        immersiveModeManager.statusBarBlurView.overrideUserInterfaceStyle = theme.userInterfaceStyle
     }
 
     // MARK: Gunk
@@ -978,32 +966,9 @@ extension PostsPageView: ScrollViewDelegateExtras {
 
         navController.updateNavigationBarTintForScrollProgress(NSNumber(value: Float(progress)))
 
-        // In immersive mode the title and the status bar sit over the bare page (the bar's own
-        // blur under the transparent bar is faint, and the bar slides away altogether), so they
-        // take the colour sampled from the page beneath them; the samplers answer
-        // asynchronously, so the theme's mode colour covers the first frame. The bar only goes
-        // transparent under Liquid Glass, but immersive mode slides it away whatever the
-        // setting, leaving the status bar over the page either way. With immersive mode off the
-        // system edge effect blurs the page under both, and the theme's mode colour reads fine
-        // over it, as on the lists.
-        let sampler = viewController.titleContrastSampler
-        let statusBarSampler = viewController.statusBarContrastSampler
-        let samplesContent = immersiveModeManager.isImmersiveModeEnabled
-        let isBarTransparent = LiquidGlass.isEnabled && progress > 0.99
-        if samplesContent, isBarTransparent {
-            sampler.sampleIfNeeded()
-        } else {
-            sampler.reset()
-        }
-        if samplesContent, isBarTransparent || immersiveModeManager.isStatusBarOverContent {
-            statusBarSampler.sampleIfNeeded()
-        } else {
-            statusBarSampler.reset()
-        }
         viewController.navigationItem.updateTitleLabelTextColor(
             forScrollProgress: progress,
-            theme: viewController.theme,
-            contentColor: sampler.color
+            theme: viewController.theme
         )
     }
 }

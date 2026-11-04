@@ -726,18 +726,22 @@ final class NavigationController: UINavigationController, Themeable {
         }
     }
 
+    /// Under Reduce Liquid Glass the bar stays opaque at every offset, so (as on the iPad sidebar) the edge effect's fade has nothing to blend into and just reads as a blurred band below the bar: hide it. Otherwise the web views keep it, like the lists. A screen that slides the bar away sizes the effect to follow it (see ImmersiveModeManager.topEdgeEffectExtentView). Once the bar has gone (`isStatusBarOverContent`) that screen puts its own shorter blur under the status bar instead, since the effect can't get shorter than the status bar plus its fade.
+    @available(iOS 26.0, *)
+    private func updateTopEdgeEffectVisibility(for screen: NavigationBarScrollTransitioning?) {
+        screen?.navigationBarScrollView?.topEdgeEffect.isHidden = !LiquidGlass.isEnabled
+            || screen?.isStatusBarOverContent == true
+    }
+
     /// iOS 26 glass bar-button circles take their light/dark from the scroll view beneath the bar (or from the bar's own trait when nothing scrolls beneath it), and their glyphs ignore tintColor on dark glass. At the top, make the screen's scroll view read as the bar (dark glass on a dark bar, even in a light theme) and bake the theme's bar text colour into its glyphs. Once scrolled, hand both back to the content.
     @available(iOS 26.0, *)
     private func applyGlassRestingState(atTop: Bool, for viewController: UIViewController?, theme: Theme) {
         guard let viewController else { return }
         let screen = viewController as? NavigationBarScrollTransitioning
 
-        // Under the transparent bar, the automatic edge effect resolved to the soft fade on iOS 26 but to the hard cutoff on iOS 27 (lists and web views alike), so ask for the fade. A screen that slides the bar away (the posts page in immersive mode) hides it whatever the setting and brings its own top treatment: the bar's content blur under Liquid Glass (see NavigationBar.contentBlurAlpha), the immersive mode's safe-area gradient under Reduce. The effect belongs to the scroll view, so immersive mode can't slide it away with the bar, and it spans the whole top inset. Under Reduce Liquid Glass the bar stays opaque at every offset, so (as on the iPad sidebar) the fade has nothing to blend into and just reads as a blurred band below the bar: hide it. Otherwise the web views keep it, like the lists.
-        if let scrollView = screen?.navigationBarScrollView {
-            scrollView.topEdgeEffect.style = .soft
-            scrollView.topEdgeEffect.isHidden = !LiquidGlass.isEnabled
-                || screen?.usesNavigationBarContentBlur == true
-        }
+        // Under the transparent bar, the automatic edge effect resolved to the soft fade on iOS 26 but to the hard cutoff on iOS 27 (lists and web views alike), so ask for the fade.
+        screen?.navigationBarScrollView?.topEdgeEffect.style = .soft
+        updateTopEdgeEffectVisibility(for: screen)
 
         if LiquidGlass.isEnabled {
             screen?.navigationBarScrollView?.applyNavigationBarPlatterBackdrop(atTop: atTop, theme: theme)
@@ -815,11 +819,8 @@ final class NavigationController: UINavigationController, Themeable {
             return theme.userInterfaceStyle == .dark ? .lightContent : .darkContent
         }
 
-        // Once the glass bar has gone transparent the status bar sits over the content. `.default` would follow a trait rather than the pixels (white over a light theme's page when the system is in dark mode), so screens that sample the page beneath the status bar (`ContentContrastSampler`) decide, and the theme's mode covers the rest. The same goes when the screen has slid the bar away itself (immersive mode), which is the only way the status bar ends up over the content under Reduce Liquid Glass.
+        // Once the glass bar has gone transparent the status bar sits over the content, blurred beneath it. `.default` would follow a trait rather than the theme (white over a light theme's page when the system is in dark mode), so take the theme's mode. The same goes when the screen has slid the bar away itself (immersive mode), which is the only way the status bar ends up over the content under Reduce Liquid Glass.
         if #available(iOS 26.0, *), LiquidGlass.usesGlassNavigationBar, isScrolledFromTop || screen?.isStatusBarOverContent == true {
-            if let color = screen?.statusBarContentColor {
-                return color == .black ? .darkContent : .lightContent
-            }
             return theme.userInterfaceStyle == .dark ? .lightContent : .darkContent
         }
 
@@ -1687,9 +1688,6 @@ final class NavigationController: UINavigationController, Themeable {
 
         updateNavigationBarBackgroundWithProgress(snappedProgress)
 
-        awfulNavigationBar.contentBlurAlpha = usesContentBlur(topViewController as? NavigationBarScrollTransitioning) ? snappedProgress : 0
-        awfulNavigationBar.contentBlurUserInterfaceStyle = contentBlurUserInterfaceStyle
-
         // The screen beneath the top one owns the back button's item, so its tint follows the scroll along with the bar's.
         let backItem = viewControllers.dropLast().last?.navigationItem.backBarButtonItem
 
@@ -1715,21 +1713,6 @@ final class NavigationController: UINavigationController, Themeable {
 
             isScrolledFromTop = true
             setNeedsStatusBarAppearanceUpdate()
-        }
-    }
-
-    /// Whether `screen` gets the bar's content blur in place of the system edge effect (the posts page in immersive mode). Reduce Liquid Glass never lets the bar go transparent, so the blur stays off under it (the system edge effect is hidden for such a screen either way, see applyGlassRestingState).
-    private func usesContentBlur(_ screen: NavigationBarScrollTransitioning?) -> Bool {
-        LiquidGlass.isEnabled && screen?.usesNavigationBarContentBlur == true
-    }
-
-    /// The content blur's light/dark: what the top screen sampled beneath the bar (or, failing that, beneath the status bar), else the theme's mode. White text means dark content.
-    private var contentBlurUserInterfaceStyle: UIUserInterfaceStyle {
-        let screen = topViewController as? NavigationBarScrollTransitioning
-        switch screen?.navigationBarContentColor ?? screen?.statusBarContentColor {
-        case .white?: return .dark
-        case .black?: return .light
-        default: return theme.userInterfaceStyle
         }
     }
 
@@ -1812,7 +1795,7 @@ final class NavigationController: UINavigationController, Themeable {
 
     @available(iOS 26.0, *)
     private func configureTitleAndButtons(for appearance: UINavigationBarAppearance, progress: CGFloat) {
-        // The system title follows the theme: bar text colour at the top, mode colour once the bar is transparent. The web-content screens (posts, a message, the rap sheet) use their own title label, coloured the same way (and, on the posts page in immersive mode, from the page beneath it, see `ContentContrastSampler`).
+        // The system title follows the theme: bar text colour at the top, mode colour once the bar is transparent. The web-content screens (posts, a message, the rap sheet) use their own title label, coloured the same way.
         let textColor: UIColor
         if progress > ScrollProgress.fullyScrolled {
             textColor = theme.glassContentTextColor
@@ -2061,7 +2044,6 @@ extension NavigationController: UINavigationControllerDelegate {
 
         if #available(iOS 26.0, *), LiquidGlass.usesGlassNavigationBar {
             isScrolledFromTop = false
-            awfulNavigationBar.contentBlurAlpha = 0
             invalidateScrollProgressCache()
 
             if animated {
@@ -2147,13 +2129,17 @@ extension NavigationController: UINavigationControllerDelegate {
     func resyncNavigationBarScrollProgress()
 }
 
-extension NavigationController: NavigationBarContentContrastObserving {
-    /// A sampler on the top screen decided: the status bar follows `statusBarContentColor`, and the content blur's wash follows `navigationBarContentColor`.
-    func topScreenContentContrastDidChange() {
+extension NavigationController: StatusBarOverContentObserving {
+    private static let statusBarRestyleDuration: TimeInterval = 0.2
+
+    /// The top screen moved the bar out from under the status bar or back. The edge effect and the status bar style follow `isStatusBarOverContent`.
+    func topScreenStatusBarOverContentDidChange() {
         guard #available(iOS 26.0, *), LiquidGlass.usesGlassNavigationBar else { return }
-        UIView.animate(withDuration: ContentContrastSampler.flipDuration) {
+        if !isSidebarNavigationController {
+            updateTopEdgeEffectVisibility(for: topViewController as? NavigationBarScrollTransitioning)
+        }
+        UIView.animate(withDuration: Self.statusBarRestyleDuration) {
             self.setNeedsStatusBarAppearanceUpdate()
         }
-        awfulNavigationBar.contentBlurUserInterfaceStyle = contentBlurUserInterfaceStyle
     }
 }
