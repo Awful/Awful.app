@@ -44,6 +44,21 @@ extension ImgurUploader {
             }
         }
 
+        /// Whether Imgur turned down the request because too many have been made recently, as opposed to some other problem.
+        public var isRateLimited: Bool {
+            switch error {
+            case .left(let string):
+                return APIError.mentionsRateLimit(string)
+            case .right(let detail):
+                return detail.code == 429 || APIError.mentionsRateLimit(detail.message)
+            }
+        }
+
+        private static func mentionsRateLimit(_ message: String) -> Bool {
+            let message = message.lowercased()
+            return message.contains("too many requests") || message.contains("rate limit")
+        }
+
         private static func mentionsFileType(_ message: String) -> Bool {
             let message = message.lowercased()
 
@@ -69,6 +84,46 @@ internal struct APIResponse<T: Decodable>: Decodable {
     let data: ImgurUploader.Either<T, ImgurUploader.APIError>
     let status: Int
     let success: Bool
+}
+
+/// Imgur sometimes skips the usual `data`/`status`/`success` envelope and instead answers with e.g. `{"errors":[{"code":"429","status":"Too Many Requests","detail":"Too Many Requests"}]}` (seen on rate-limited uploads). Every field is optional so a partial body still tells us something.
+private struct ErrorsResponse: Decodable {
+    let errors: [Entry]
+
+    struct Entry: Decodable {
+        let code: String?
+        let status: String?
+        let detail: String?
+    }
+}
+
+/// Decodes an Imgur API response body into either the expected value or an `ImgurUploader.APIError`. Never fails with a bare `DecodingError`, whose "The data couldn't be read because it is missing." says nothing about what Imgur actually said.
+private func decodeAPIResponse<T: Decodable>(_ data: Data, response: URLResponse?) -> Swift.Result<T, Error> {
+    let decoder = JSONDecoder()
+    decoder.dateDecodingStrategy = .secondsSince1970
+
+    let statusCode = (response as? HTTPURLResponse)?.statusCode ?? 0
+
+    do {
+        let decoded = try decoder.decode(APIResponse<T>.self, from: data)
+        switch decoded.data {
+        case .left(let value):
+            return .success(value)
+        case .right(let error):
+            return .failure(error)
+        }
+    } catch {
+        log(.error, "could not decode Imgur response (HTTP \(statusCode)) as the usual envelope: \(error); body: \(String(decoding: data.prefix(500), as: UTF8.self))")
+    }
+
+    if let entry = (try? decoder.decode(ErrorsResponse.self, from: data))?.errors.first {
+        return .failure(ImgurUploader.APIError(error: .right(ImgurUploader.DetailedAPIError(
+            code: entry.code.flatMap { Int($0) } ?? statusCode,
+            message: entry.detail ?? entry.status ?? "Unknown error",
+            type: entry.status ?? "HTTP \(statusCode)"))))
+    }
+
+    return .failure(ImgurUploader.APIError(error: .left("Unexpected response from Imgur (HTTP \(statusCode))")))
 }
 
 extension ImgurUploader {
@@ -103,18 +158,10 @@ internal final class FetchURL<T: Decodable>: AsynchronousOperation<T>, @unchecke
                 return self.finish(.failure(MissingResponseData()))
             }
 
-            let decoder = JSONDecoder()
-            decoder.dateDecodingStrategy = .secondsSince1970
-
-            do {
-                let response = try decoder.decode(APIResponse<T>.self, from: data)
-                switch response.data {
-                case .left(let value):
-                    self.finish(.success(value))
-                case .right(let error):
-                    self.finish(.failure(error))
-                }
-            } catch {
+            switch decodeAPIResponse(data, response: response) as Swift.Result<T, Error> {
+            case .success(let value):
+                self.finish(.success(value))
+            case .failure(let error):
                 self.finish(.failure(error))
             }
         }
@@ -164,19 +211,11 @@ internal final class UploadImageAsFormData: AsynchronousOperation<ImgurUploader.
                 return self.finish(.failure(MissingResponseData()))
             }
 
-            let decoder = JSONDecoder()
-            decoder.dateDecodingStrategy = .secondsSince1970
-
             let responseData: ResponseData
-            do {
-                let decodedResponse = try decoder.decode(APIResponse<ResponseData>.self, from: data)
-                switch decodedResponse.data {
-                case .left(let value):
-                    responseData = value
-                case .right(let error):
-                    return self.finish(.failure(error))
-                }
-            } catch {
+            switch decodeAPIResponse(data, response: response) as Swift.Result<ResponseData, Error> {
+            case .success(let value):
+                responseData = value
+            case .failure(let error):
                 return self.finish(.failure(error))
             }
 
