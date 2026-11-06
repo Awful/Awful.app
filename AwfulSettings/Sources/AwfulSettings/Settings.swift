@@ -14,6 +14,9 @@ import SystemCapabilities
  */
 public enum Settings {
 
+    /// Label text in posts with the font size it's drawn at. Testing builds only. TEXT-SIZE-ANNOTATIONS
+    public static let annotateTextSizes = Setting(key: "annotate_text_sizes", default: false) // TEXT-SIZE-ANNOTATIONS
+
     /// The name of the alternative app icon to use.
     public static let appIconName = Setting<String?>(key: "app_icon_name")
 

@@ -578,11 +578,29 @@ private struct TestingSection: View {
                     caption: "Shows a pretend probation notice on thread lists and here in Settings until you relaunch Awful."
                 )
             }
+            TextSizeAnnotationsToggle() // TEXT-SIZE-ANNOTATIONS
         } header: {
             Text("Testing", bundle: .module)
                 .header()
         }
         .section()
+    }
+}
+
+// TEXT-SIZE-ANNOTATIONS: the whole struct. Its text is verbatim so it never enters the string catalog.
+private struct TextSizeAnnotationsToggle: View {
+    @AppStorage(Settings.annotateTextSizes) private var annotateTextSizes
+    @Environment(\.theme) private var theme
+
+    var body: some View {
+        Toggle(isOn: $annotateTextSizes) {
+            VStack(alignment: .leading, spacing: 2) {
+                Text(verbatim: "Annotate Text Sizes")
+                Text(verbatim: "Labels names, dates, post text and quotes with the size they're drawn at, in points.")
+                    .font(.footnote)
+                    .foregroundStyle(theme[color: "listSecondaryText"]!)
+            }
+        }
     }
 }
 

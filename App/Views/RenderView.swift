@@ -76,6 +76,8 @@ final class RenderView: UIView {
     /// Bumped by every `setAnimationsPaused`, so a snapshot that arrives after a later call is dropped.
     private var animationPauseGeneration = 0
 
+    private var textSizeAnnotations: TextSizeAnnotations? // TEXT-SIZE-ANNOTATIONS
+
     private lazy var webView: WKWebView = {
         let configuration = WKWebViewConfiguration()
 
@@ -116,6 +118,8 @@ final class RenderView: UIView {
             return WKUserScript(source: script, injectionTime: .atDocumentEnd, forMainFrameOnly: false)
         }())
 
+        textSizeAnnotations = TextSizeAnnotations(configuration: configuration) // TEXT-SIZE-ANNOTATIONS
+
         #if DEBUG
         if PostsPerformance.isProbeEnabled {
             configuration.userContentController.addUserScript(PostsPerformance.probeScript)
@@ -131,6 +135,7 @@ final class RenderView: UIView {
         webView.navigationDelegate = self
         webView.scrollView.backgroundColor = nil
         webView.scrollView.decelerationRate = .normal
+        textSizeAnnotations?.attach(to: webView) // TEXT-SIZE-ANNOTATIONS
         
         // newer iOS requires this for allowing Safari page inspector
         // https://webkit.org/blog/13936/enabling-the-inspection-of-web-content-in-apps/
@@ -336,6 +341,7 @@ extension RenderView: WKNavigationDelegate {
         if statusBarBlur.isVisible {
             sendStatusBarBlur()
         }
+        textSizeAnnotations?.documentDidLoad() // TEXT-SIZE-ANNOTATIONS
         delegate?.didFinishRenderingHTML(in: self)
     }
     
