@@ -31,6 +31,8 @@ final class StatusBarBlurView: UIView {
                 self.applyBlur()
             }
         }
+
+        NotificationCenter.default.addObserver(self, selector: #selector(sceneWillEnterForeground), name: UIScene.willEnterForegroundNotification, object: nil)
     }
 
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
@@ -48,6 +50,12 @@ final class StatusBarBlurView: UIView {
         if window != nil {
             applyBlur()
         }
+    }
+
+    /// UIKit also drops it when the scene comes to the foreground, as when the posts page is restored into a scene that hasn't yet.
+    @objc private func sceneWillEnterForeground(_ notification: Notification) {
+        guard let scene = notification.object as? UIScene, scene === window?.windowScene else { return }
+        applyBlur()
     }
 
     override func layoutSubviews() {
