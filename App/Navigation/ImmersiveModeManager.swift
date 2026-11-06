@@ -122,7 +122,7 @@ final class ImmersiveModeManager: NSObject {
 
     // MARK: - UI Elements
 
-    /// Sizes the scroll view's top edge effect (the system blur under the transparent bar) while immersive mode is on. Left to itself the effect covers the bar where it was laid out and stays there when the bar slides away. This follows the bar's visible bottom edge instead (`updateTopEdgeEffectExtent`), so the blur leaves with the bar. The effect never gets shorter than the status bar plus its fade, so once the bar has mostly gone the navigation controller hides it (`isStatusBarOverContent`) and `statusBarBlurView` takes over.
+    /// Sizes the scroll view's top edge effect (the system blur under the transparent bar) while immersive mode is on. Left to itself the effect covers the bar where it was laid out and stays there when the bar slides away. This follows the bar's visible bottom edge instead (`updateTopEdgeEffectExtent`), so the blur leaves with the bar. The effect never gets shorter than the status bar plus its fade, so once the bar has mostly gone the navigation controller hides it (`isStatusBarOverContent`) and the page's own status bar blur takes over (`updateStatusBarBlur`).
     let topEdgeEffectExtentView: UIView = {
         let view = UIView()
         view.isUserInteractionEnabled = false
@@ -166,23 +166,14 @@ final class ImmersiveModeManager: NSObject {
         topEdgeEffectExtentView.frame = CGRect(x: postsView.bounds.minX, y: postsView.bounds.minY, width: postsView.bounds.width, height: height)
     }
 
-    /// What sits under the status bar once the bar has mostly gone (`isStatusBarOverContent`). Under Liquid Glass it stands in for the system edge effect, which can't get short enough. Under Reduce Liquid Glass the edge effect is hidden altogether, so this is the only thing there. The posts page sets its light/dark from the theme.
-    let statusBarBlurView: StatusBarBlurView = {
-        let view = StatusBarBlurView()
-        view.alpha = 0
-        return view
-    }()
-
-    private static let statusBarBlurFadeDuration: TimeInterval = 0.2
-
+    /// Shows the page's light blur under the status bar while `isStatusBarOverContent`. Under Liquid Glass it stands in for the system edge effect, which can't get short enough. Under Reduce Liquid Glass the edge effect is hidden altogether, so this is the only thing there. The page draws the blur (`RenderView.setStatusBarBlur`) because UIKit has no public API for one this light.
     private func updateStatusBarBlur() {
-        let alpha: CGFloat = isStatusBarOverContent ? 1 : 0
-        UIView.animate(withDuration: Self.statusBarBlurFadeDuration, delay: 0, options: [.beginFromCurrentState, .allowUserInteraction]) {
-            self.statusBarBlurView.alpha = alpha
-        }
+        guard #available(iOS 26.0, *), let renderView, let postsView else { return }
+        let height = postsView.window?.safeAreaInsets.top ?? postsView.safeAreaInsets.top
+        renderView.setStatusBarBlur(isVisible: isStatusBarOverContent, height: height)
     }
 
-    /// True once the bars have mostly left the screen (slid more than halfway, or faded below half in bottom fade mode), so the status bar sits over the page rather than the bar. `statusBarBlurView` goes under it then. The navigation controller styles the status bar in the theme's mode, which reads fine over the blur. Under Reduce Liquid Glass this is the only time the status bar is over the content, since the bar never goes transparent on scroll.
+    /// True once the bars have mostly left the screen (slid more than halfway, or faded below half in bottom fade mode), so the status bar sits over the page rather than the bar. The page's status bar blur goes under it then (`updateStatusBarBlur`). The navigation controller styles the status bar in the theme's mode, which reads fine over the blur. Under Reduce Liquid Glass this is the only time the status bar is over the content, since the bar never goes transparent on scroll.
     private(set) var isStatusBarOverContent = false {
         didSet {
             guard isStatusBarOverContent != oldValue else { return }
@@ -301,15 +292,10 @@ final class ImmersiveModeManager: NSObject {
         return fallback - (fallback - safeAreaTop) * immersiveProgress
     }
 
-    func updateStatusBarViewsLayout(in containerView: UIView) {
+    func updateStatusBarViewsLayout() {
         guard #available(iOS 26.0, *) else { return }
 
-        statusBarBlurView.frame = CGRect(
-            x: containerView.bounds.minX,
-            y: containerView.bounds.minY,
-            width: containerView.bounds.width,
-            height: containerView.window?.safeAreaInsets.top ?? containerView.safeAreaInsets.top
-        )
+        updateStatusBarBlur()
         updateTopEdgeEffectExtent()
     }
 

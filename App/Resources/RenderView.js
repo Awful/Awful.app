@@ -2078,6 +2078,27 @@ Awful.setDarkMode = function(dark) {
 
 
 /**
+ Shows or hides the light blur under the status bar (`#awful-status-bar-blur` in the posts view stylesheet), adding it to the page if needed.
+
+ @param {boolean} visible - `true` to fade the blur in, `false` to fade it out.
+ @param {number} top - Where the blur starts, in CSS pixels from the top of the viewport that fixed elements are placed in. Negative to reach above it.
+ @param {number} height - The blur's height in CSS pixels.
+ */
+Awful.setStatusBarBlur = function(visible, top, height) {
+  var blur = document.getElementById('awful-status-bar-blur');
+  if (!blur) {
+    blur = document.createElement('div');
+    blur.id = 'awful-status-bar-blur';
+    blur.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(blur);
+  }
+  blur.style.setProperty('--awful-status-bar-blur-top', top + 'px');
+  blur.style.setProperty('--awful-status-bar-blur-height', height + 'px');
+  blur.classList.toggle('visible', visible);
+};
+
+
+/**
  Updates the externally-updatable stylesheet, which lets us make changes quickly without going through a full app update.
  */
 Awful.setExternalStylesheet = function(stylesheet) {

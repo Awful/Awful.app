@@ -321,7 +321,6 @@ final class PostsPageView: UIView {
 
         addSubview(renderView)
         if #available(iOS 26.0, *) {
-            addSubview(immersiveModeManager.statusBarBlurView)
             addSubview(immersiveModeManager.topEdgeEffectExtentView)
         }
         addSubview(topBarContainer)
@@ -373,7 +372,7 @@ final class PostsPageView: UIView {
             height: bounds.height)
 
         if #available(iOS 26.0, *) {
-            immersiveModeManager.updateStatusBarViewsLayout(in: self)
+            immersiveModeManager.updateStatusBarViewsLayout()
         }
 
         if toolbar.transform == .identity {
@@ -498,9 +497,6 @@ final class PostsPageView: UIView {
         }
 
         topBar.themeDidChange(Theme.defaultTheme())
-
-        // Matches the status bar, which the navigation controller styles in the theme's mode while it's over the page.
-        immersiveModeManager.statusBarBlurView.overrideUserInterfaceStyle = theme.userInterfaceStyle
     }
 
     // MARK: Gunk

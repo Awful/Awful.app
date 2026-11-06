@@ -635,3 +635,28 @@ post, #ad, #end {
 
 // handle switching between ipad and iphone post header layout
 @import "ipad-responsive-postheader.less";
+
+// A light blur under the status bar while immersive mode has hidden the navigation bar. UIKit has no public API for a blur this light, so the page draws it. Awful.setStatusBarBlur places and shows it.
+#awful-status-bar-blur {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: var(--awful-status-bar-blur-top, 0px);
+  height: var(--awful-status-bar-blur-height, 0px);
+  z-index: 2147483647;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s linear;
+  background-color: rgba(255, 255, 255, 0.08);
+  -webkit-backdrop-filter: blur(3px) saturate(1.08);
+  backdrop-filter: blur(3px) saturate(1.08);
+  -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent);
+  mask-image: linear-gradient(to bottom, black 60%, transparent);
+
+  &.visible {
+    opacity: 1;
+  }
+}
+body.dark #awful-status-bar-blur {
+  background-color: rgba(28, 28, 28, 0.07);
+}

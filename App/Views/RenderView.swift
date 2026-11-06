@@ -61,6 +61,12 @@ final class RenderView: UIView {
 
     private var animationPauser: RenderViewAnimationPauser?
 
+    /// Whether the page shows its blur under the status bar, and the blur's height in points (see `setStatusBarBlur`). Remembered so a freshly rendered document gets it too.
+    private var statusBarBlur: (isVisible: Bool, height: CGFloat) = (false, 0)
+
+    /// Moves the status bar blur along with the scroll view's top inset while the blur shows (see `sendStatusBarBlur`).
+    private var statusBarBlurInsetObservation: NSKeyValueObservation?
+
     /// While animations are paused, a snapshot of the web view taken just before they froze, covering it. Frozen GIFs can only show their first frame (see `Awful.freezeGIF`), so this keeps each one on the frame it was showing. Removed once anything would make it stale.
     private var pausedSnapshotView: UIImageView?
 
@@ -326,6 +332,9 @@ extension RenderView: WKNavigationDelegate {
         performanceTrace?.mark("webView didFinish navigation")
         if animationsPaused {
             setAnimationsPaused(true)
+        }
+        if statusBarBlur.isVisible {
+            sendStatusBarBlur()
         }
         delegate?.didFinishRenderingHTML(in: self)
     }
@@ -1144,6 +1153,37 @@ extension RenderView {
                 _ = try await webView.eval("if (window.Awful) Awful.setThemeStylesheet(\(escaped))")
             } catch {
                 self.mentionError(error, explanation: "could not evaluate setThemeStylesheet")
+            }
+        }
+    }
+
+    /// Fades in (when `isVisible` is `true`) or out the light blur the page draws across the top of the web view, `height` points tall. The state carries over to subsequently rendered documents.
+    func setStatusBarBlur(isVisible: Bool, height: CGFloat) {
+        guard isVisible != statusBarBlur.isVisible || height != statusBarBlur.height else { return }
+        statusBarBlur = (isVisible, height)
+        if isVisible {
+            if statusBarBlurInsetObservation == nil {
+                statusBarBlurInsetObservation = scrollView.observe(\.contentInset) { [weak self] _, _ in
+                    MainActor.assumeIsolated { self?.sendStatusBarBlur() }
+                }
+            }
+        } else {
+            statusBarBlurInsetObservation = nil
+        }
+        sendStatusBarBlur()
+    }
+
+    private func sendStatusBarBlur() {
+        // The page places fixed elements below the scroll view's top inset, so the blur reaches back up by the inset to the top of the web view. A negative inset (from a top bar that has slid off screen) doesn't raise fixed elements above the top of the web view.
+        let top = -max(0, scrollView.adjustedContentInset.top)
+        // CSS pixels, which the web view scales by its zoom.
+        let zoom = max(scrollView.zoomScale, 0.01)
+        let (isVisible, height) = statusBarBlur
+        Task {
+            do {
+                _ = try await webView.eval("if (window.Awful) Awful.setStatusBarBlur(\(isVisible), \(top / zoom), \(height / zoom))")
+            } catch {
+                self.mentionError(error, explanation: "could not evaluate setStatusBarBlur")
             }
         }
     }
