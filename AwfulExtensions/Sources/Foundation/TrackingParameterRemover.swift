@@ -4,9 +4,9 @@
 
 import Foundation
 
-/// Removes known tracking query parameters (`utm_*`, `fbclid`, per-site share tokens like YouTube's `si`) from URLs, leaving functional parameters (YouTube timestamps, Reddit comment context, etc.) intact.
+/// Removes tracking query parameters from URLs, leaving functional parameters (YouTube timestamps, Reddit comment context, etc.) intact.
 ///
-/// The rule set follows the consensus of the ClearURLs, Brave, uBlock Origin, and AdGuard tracking-parameter databases.
+/// On known sites (YouTube, X, Reddit, Amazon, …) each rule is a keep-list: every query parameter that isn't known to be functional is removed, so new share tokens are caught without rule updates. Everywhere else a blocklist of cross-site trackers (`utm_*`, `fbclid`, …) applies, following the consensus of the ClearURLs, Brave, uBlock Origin, and AdGuard tracking-parameter databases.
 public enum TrackingParameterRemover {
 
     /// Returns a cleaned copy of `url`, or `nil` if nothing needed removing. Only http(s) URLs with a host are ever modified.
@@ -30,7 +30,7 @@ public enum TrackingParameterRemover {
         if let items = components.percentEncodedQueryItems, !items.isEmpty {
             let kept = items.filter { item in
                 let name = (item.name.removingPercentEncoding ?? item.name).lowercased()
-                let keep = matchingRules.contains { $0.keepExact.contains(name) }
+                let keep = matchingRules.contains { $0.keepOnly?.contains(name) == true }
                 let remove = matchingRules.contains { $0.removes(name) }
                 return keep || !remove
             }
@@ -117,11 +117,11 @@ private struct TrackingRule {
     /// Lowercased registrable-domain suffixes; a host matches when it equals a suffix or ends with "." + suffix. Empty (with no predicate) means the rule applies to every host.
     var hostSuffixes: [String] = []
     var hostPredicate: ((String) -> Bool)?
-    /// Query-item names to remove, compared against the percent-decoded, lowercased name.
+    /// Query-item names to remove, compared against the percent-decoded, lowercased name. Only used when `keepOnly` is nil.
     var removeExact: Set<String> = []
     var removePrefixes: [String] = []
-    /// Names that must survive on this rule's hosts even if another rule would remove them.
-    var keepExact: Set<String> = []
+    /// When set, this rule is a keep-list: every query item whose (decoded, lowercased) name isn't in it is removed, and names in it survive even if another rule would remove them.
+    var keepOnly: Set<String>?
     /// Transform applied to the URL's percent-encoded path (e.g. Amazon's "/ref=…" suffix).
     var transformPath: ((String) -> String)?
 
@@ -136,13 +136,16 @@ private struct TrackingRule {
     }
 
     func removes(_ decodedLowercasedName: String) -> Bool {
-        removeExact.contains(decodedLowercasedName)
+        if let keepOnly {
+            return !keepOnly.contains(decodedLowercasedName)
+        }
+        return removeExact.contains(decodedLowercasedName)
             || removePrefixes.contains { decodedLowercasedName.hasPrefix($0) }
     }
 }
 
 private let rules: [TrackingRule] = [
-    // Cross-site trackers, safe to strip on any domain.
+    // Cross-site trackers, safe to strip on any domain. This is the only blocklist; every site rule below is a keep-list.
     TrackingRule(
         removeExact: [
             "fbclid", "gclid", "gclsrc", "dclid", "wbraid", "gbraid",
@@ -153,75 +156,58 @@ private let rules: [TrackingRule] = [
         ],
         removePrefixes: ["utm_"]
     ),
-    // YouTube (music.youtube.com etc. match via suffix)
+    // YouTube (music.youtube.com etc. match via suffix). lc = linked comment, search_query/sp = search and its filters, the rest are embed player options.
     TrackingRule(
         hostSuffixes: ["youtube.com", "youtu.be", "youtube-nocookie.com"],
-        removeExact: [
-            "si", "is", "feature", "pp", "kw",
-            "embeds_referring_euri", "embeds_referring_origin", "source_ve_path", "ab_channel",
-        ],
-        keepExact: ["v", "t", "list", "index", "start", "end", "loop", "playlist", "time_continue", "q"]
+        keepOnly: [
+            "v", "t", "list", "index", "start", "end", "loop", "playlist", "time_continue",
+            "q", "search_query", "sp", "lc", "hl", "gl",
+            "autoplay", "mute", "controls", "rel", "cc_load_policy", "cc_lang_pref", "playsinline",
+        ]
     ),
-    // Twitter/X
+    // Twitter/X: only search uses query params (f = tab, pf = "people you follow" filter); share links keep sprouting new tokens (s, t, a, …).
     TrackingRule(
         hostSuffixes: ["twitter.com", "x.com"],
-        removeExact: ["s", "t", "ref_src", "refsrc", "ref_url", "cxt", "cn"],
-        keepExact: ["q", "f", "lang"]
+        keepOnly: ["q", "f", "pf", "lang"]
     ),
     // Instagram/Threads
     TrackingRule(
         hostSuffixes: ["instagram.com", "threads.net", "threads.com"],
-        removeExact: ["igsh", "igshid", "ig_rid", "xmt"],
-        keepExact: ["img_index", "hl"]
+        keepOnly: ["img_index", "hl"]
     ),
     // TikTok (vm./vt.tiktok.com short links carry no query params and pass through)
     TrackingRule(
         hostSuffixes: ["tiktok.com"],
-        removeExact: [
-            "is_from_webapp", "sender_device", "sender_web_id", "web_id",
-            "u_code", "share_app_id", "share_app_name", "share_author_id",
-            "share_link_id", "share_item_id", "share_iid", "share_region",
-            "social_share_type", "ug_btm", "tt_from", "timestamp",
-            "user_id", "sec_user_id", "sec_uid",
-            "_d", "_r", "_t", "checksum", "k", "preview_pb", "trackparams",
-            "refer", "referer_url", "referer_video_id",
-            "embed_source", "enter_method", "source",
-        ],
-        keepExact: ["lang", "enter_from"]
+        keepOnly: ["lang", "enter_from", "q"]
     ),
     // Bluesky
     TrackingRule(
         hostSuffixes: ["bsky.app"],
-        removeExact: ["ref_src", "ref_url"]
+        keepOnly: ["q"]
     ),
-    // Reddit ($-names stored decoded; they appear in URLs as %24…)
+    // Reddit: t = "top" time range, after/before/count = listing pagination, restrict_sr/type/include_over_18/f = search options.
     TrackingRule(
         hostSuffixes: ["reddit.com"],
-        removeExact: [
-            "share_id", "rdt", "correlation_id",
-            "ref", "ref_campaign", "ref_source",
-            "$deep_link", "$3p", "$original_url",
-            "_branch_match_id", "entry_point", "post_index", "post_fullname",
-        ],
-        keepExact: ["context", "sort", "depth", "limit", "q"]
+        keepOnly: [
+            "context", "sort", "depth", "limit", "q", "t", "type", "restrict_sr",
+            "include_over_18", "after", "before", "count", "f",
+        ]
     ),
-    // Spotify
+    // Spotify: t = podcast episode timestamp
     TrackingRule(
         hostSuffixes: ["open.spotify.com"],
-        removeExact: ["si", "sp_cid", "dlsi", "pi", "referral", "nd"],
-        keepExact: ["context", "highlight"]
+        keepOnly: ["context", "highlight", "t"]
     ),
-    // Amazon, all marketplace TLDs (amazon.com, amazon.co.uk, amazon.com.au, …)
+    // Amazon, all marketplace TLDs (amazon.com, amazon.co.uk, amazon.com.au, …). Keeps search/browse refinements (k, i, rh, bbn, s, …), seller selection (smid, m, me), variants (th, psc), wish lists (colid, coliid, ty), and review filters.
     TrackingRule(
         hostPredicate: { host in
             host.range(of: #"(^|\.)amazon(\.[a-z]{2,3}){1,2}$"#, options: .regularExpression) != nil
         },
-        removeExact: [
-            "qid", "sr", "sprefix", "crid", "keywords", "dib", "dib_tag",
-            "refrid", "_encoding", "tag", "linkcode", "linkid", "ascsubtag",
+        keepOnly: [
+            "k", "i", "node", "psc", "th", "s", "rh", "bbn", "field-keywords", "page",
+            "low-price", "high-price", "smid", "m", "me", "asin", "colid", "coliid", "ty",
+            "filter", "sortby", "pagenumber", "filterbystar", "reviewertype", "language",
         ],
-        removePrefixes: ["ref_", "pf_rd_", "pd_rd_"],
-        keepExact: ["k", "i", "node", "psc", "th", "s"],
         transformPath: { path in
             guard let range = path.range(of: "/ref=", options: .backwards) else { return path }
             return String(path[..<range.lowerBound])

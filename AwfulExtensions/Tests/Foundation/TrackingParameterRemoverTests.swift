@@ -77,6 +77,21 @@ final class TrackingParameterRemoverTests: XCTestCase {
         )
     }
 
+    func testYouTubeUnknownParamStripped() {
+        XCTAssertEqual(
+            cleaned("https://www.youtube.com/watch?v=abc&newtoken=1"),
+            "https://www.youtube.com/watch?v=abc"
+        )
+    }
+
+    func testYouTubeKeepsLinkedCommentAndSearch() {
+        XCTAssertNil(cleaned("https://www.youtube.com/watch?v=abc&lc=UgxComment"))
+        XCTAssertEqual(
+            cleaned("https://www.youtube.com/results?search_query=foo&sp=EgIQAQ%253D%253D&si=x"),
+            "https://www.youtube.com/results?search_query=foo&sp=EgIQAQ%253D%253D"
+        )
+    }
+
     func testSimilarHostNameIsNotStripped() {
         XCTAssertNil(cleaned("https://notyoutube.com/?si=x"))
         XCTAssertNil(cleaned("https://example.com/?si=x"))
@@ -99,6 +114,21 @@ final class TrackingParameterRemoverTests: XCTestCase {
         XCTAssertEqual(
             cleaned("https://twitter.com/search?q=foo&s=1"),
             "https://twitter.com/search?q=foo"
+        )
+        XCTAssertEqual(
+            cleaned("https://x.com/search?q=foo&f=live&pf=on&src=typed_query"),
+            "https://x.com/search?q=foo&f=live&pf=on"
+        )
+    }
+
+    func testXUnknownShareParamStripped() {
+        XCTAssertEqual(
+            cleaned("https://x.com/royalfamily/status/2118341498576294173?a=trackingvalue"),
+            "https://x.com/royalfamily/status/2118341498576294173"
+        )
+        XCTAssertEqual(
+            cleaned("https://x.com/user/status/123?s=46&t=tok&a=val&zz_new=1"),
+            "https://x.com/user/status/123"
         )
     }
 
@@ -142,12 +172,26 @@ final class TrackingParameterRemoverTests: XCTestCase {
         )
     }
 
+    func testRedditSearchKeepsOptionsAndStripsUnknown() {
+        XCTAssertEqual(
+            cleaned("https://www.reddit.com/r/foo/search/?q=bar&restrict_sr=1&t=week&newtoken=1"),
+            "https://www.reddit.com/r/foo/search/?q=bar&restrict_sr=1&t=week"
+        )
+    }
+
     // MARK: Spotify
 
     func testSpotifyKeepsContextWithOriginalPercentEncoding() {
         XCTAssertEqual(
             cleaned("https://open.spotify.com/track/4uLU6hMCjMI75M1A2tKUQC?si=abc123&context=spotify%3Aplaylist%3A37i9dQ"),
             "https://open.spotify.com/track/4uLU6hMCjMI75M1A2tKUQC?context=spotify%3Aplaylist%3A37i9dQ"
+        )
+    }
+
+    func testSpotifyEpisodeKeepsTimestampAndStripsUnknown() {
+        XCTAssertEqual(
+            cleaned("https://open.spotify.com/episode/abc?si=x&t=120&newtoken=1"),
+            "https://open.spotify.com/episode/abc?t=120"
         )
     }
 
@@ -176,6 +220,19 @@ final class TrackingParameterRemoverTests: XCTestCase {
             cleaned("https://www.amazon.com.au/dp/B0ABC123?pf_rd_r=XYZ&node=123"),
             "https://www.amazon.com.au/dp/B0ABC123?node=123"
         )
+    }
+
+    func testAmazonKeepsSellerAndStripsUnknown() {
+        XCTAssertEqual(
+            cleaned("https://www.amazon.com/dp/B0ABC123?smid=A1SELLER&newtoken=1"),
+            "https://www.amazon.com/dp/B0ABC123?smid=A1SELLER"
+        )
+    }
+
+    // MARK: Unknown sites
+
+    func testUnknownSiteParamsKept() {
+        XCTAssertNil(cleaned("https://example.com/page?a=1&s=2&t=3"))
     }
 
     // MARK: Encoding & structure preservation
