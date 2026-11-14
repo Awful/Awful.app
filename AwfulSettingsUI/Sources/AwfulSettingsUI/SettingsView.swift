@@ -575,7 +575,7 @@ private struct TestingSection: View {
             Button { simulateProbation() } label: {
                 CaptionedLabel(
                     "Simulate Probation",
-                    caption: "Shows a pretend probation notice on thread lists and here in Settings until you relaunch Awful."
+                    caption: "Shows a probation message on thread lists and here in Settings until you relaunch Awful and refresh a list."
                 )
             }
             TextSizeAnnotationsToggle() // TEXT-SIZE-ANNOTATIONS
@@ -596,7 +596,7 @@ private struct TextSizeAnnotationsToggle: View {
         Toggle(isOn: $annotateTextSizes) {
             VStack(alignment: .leading, spacing: 2) {
                 Text(verbatim: "Annotate Text Sizes")
-                Text(verbatim: "Labels names, dates, post text and quotes with the size they're drawn at, in points.")
+                Text(verbatim: "Adds markup to post view names, dates, post text and quotes with the size they're drawn at, in points. For troubleshooting CSS rules.")
                     .font(.footnote)
                     .foregroundStyle(theme[color: "listSecondaryText"]!)
             }

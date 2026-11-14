@@ -34,11 +34,9 @@ final class ProbationBannerView: UIView {
 
     private let label: UILabel = {
         let label = UILabel()
-        label.numberOfLines = 1
+        // Wraps rather than truncating, since the end date (e.g. "September 21, 2014 8:45 PM CST") doesn't fit on one line on narrower iPhones.
+        label.numberOfLines = 0
         label.textAlignment = .center
-        label.lineBreakMode = .byTruncatingTail
-        label.adjustsFontSizeToFitWidth = true
-        label.minimumScaleFactor = 0.8
         label.accessibilityTraits = .button
         label.accessibilityHint = LocalizedString("probation.banner.accessibility-hint")
         return label
@@ -60,12 +58,12 @@ final class ProbationBannerView: UIView {
     init() {
         super.init(frame: .zero)
 
-        // The icon and close button sit at the edges, and the text is centred across the whole banner between them.
+        // The icon and close button sit at the edges and the text is centered across the whole banner between them.
         for view in [iconView, label, closeButton] {
             view.translatesAutoresizingMaskIntoConstraints = false
             addSubview(view)
         }
-        // Gives way before the label compresses, so long text shifts off centre rather than shrinking.
+        // Gives way before the label compresses, so long text shifts off center before it wraps.
         let centered = label.centerXAnchor.constraint(equalTo: centerXAnchor)
         centered.priority = UILayoutPriority(UILayoutPriority.defaultHigh.rawValue - 1)
         // Hugs the tallest subview, since the vertical constraints are all inequalities.

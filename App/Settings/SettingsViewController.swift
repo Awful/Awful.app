@@ -6,6 +6,7 @@ import AwfulSettingsUI
 import AwfulTheming
 import Combine
 import CoreData
+import MRProgress
 import SwiftUI
 
 final class SettingsViewController: HostingController<SettingsContainerView> {
@@ -47,7 +48,7 @@ final class SettingsViewController: HostingController<SettingsContainerView> {
             onScrollOffsetFromTop: { box.contents.updateNavigationBarForScrollOffset($0) },
             resetSettings: { box.contents.resetSettings() },
             showProbationDetails: { ProbationDetailView.present(from: box.contents) },
-            simulateProbation: Environment.isTestingBuild ? { ProbationNoticeStore.simulate() } : nil
+            simulateProbation: Environment.isTestingBuild ? { box.contents.simulateProbation() } : nil
         ))
         self.cacheSizeText = cacheSizeText
         self.canShowSidebar = canShowSidebar
@@ -191,6 +192,12 @@ final class SettingsViewController: HostingController<SettingsContainerView> {
                 .measurement(width: .abbreviated, numberFormatStyle: .number.precision(.fractionLength(1)))
             )
         }
+    }
+
+    /// Confirms with a checkmark, since the only other sign is the banners on thread lists the user can't see from here.
+    func simulateProbation() {
+        ProbationNoticeStore.simulate()
+        MRProgressOverlayView.flashConfirmation("Probation Simulated", in: view, from: self)
     }
 
     func resetSettings() {

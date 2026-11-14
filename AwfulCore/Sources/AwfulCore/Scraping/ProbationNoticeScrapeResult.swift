@@ -37,7 +37,7 @@ public struct ProbationNoticeScrapeResult: ScrapeResult, Equatable, Sendable {
             .trimmingCharacters(in: .whitespaces)
     }
 
-    /// When the probation ends, as written by the Forums (e.g. "Nov 3, 2026 22:21"). Not in the user's time zone, so show it verbatim.
+    /// When the probation ends, as written by the Forums (e.g. "September 21, 2014 8:45 PM CST"). Shown verbatim.
     public var endDateText: String? {
         let range = NSRange(message.startIndex..., in: message)
         guard let match = endDateRegex.firstMatch(in: message, range: range),

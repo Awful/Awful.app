@@ -44,9 +44,11 @@ enum ProbationNoticeStore {
     /// Shows a pretend probation notice until relaunch, so testers can try the banner and Settings row without getting probated.
     static func simulate() {
         isSimulating = true
+        // Matches how the Forums write the end date (e.g. "September 21, 2014 8:45 PM CST") so the simulated text is as long as a real one.
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "en_US_POSIX")
-        formatter.dateFormat = "MMM d, yyyy HH:mm"
+        formatter.timeZone = TimeZone(identifier: "America/Chicago")
+        formatter.dateFormat = "MMMM d, yyyy h:mm a zzz"
         let endDate = formatter.string(from: Date().addingTimeInterval(24 * 60 * 60))
         defaults.removeObject(forKey: Settings.dismissedProbationMessage.key)
         defaults.set("TAKE A BREAK", forKey: Settings.probationTitle.key)
@@ -61,7 +63,7 @@ enum ProbationNoticeStore {
 }
 
 extension ProbationNoticeScrapeResult {
-    /// A short description of the probation for banners and rows, e.g. "On probation until Nov 3, 2026 22:21".
+    /// A short description of the probation for banners and rows, e.g. "On probation until September 21, 2014 8:45 PM CST".
     var localizedSummary: String {
         if let endDateText {
             String(format: LocalizedString("probation.banner.until"), endDateText)
