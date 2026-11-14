@@ -15,8 +15,9 @@ enum ImageUploadError: Error, LocalizedError {
     case missingIdentifiedAsset
     case authenticationRequired
     case authenticationFailed
-    case unsupportedImageFormat
-    case rateLimited
+    /// `imgurMessage` is what Imgur said, shown after our own explanation so the reader can see the actual reason.
+    case unsupportedImageFormat(imgurMessage: String)
+    case rateLimited(imgurMessage: String)
     case emptyImageTag
 
     var errorDescription: String? {
@@ -44,13 +45,19 @@ enum ImageUploadError: Error, LocalizedError {
             return "You need to log in to Imgur to upload images with your account."
         case .authenticationFailed:
             return "Could not log in to Imgur. Please try again or switch to anonymous uploads in settings."
-        case .unsupportedImageFormat:
-            return "Imgur wouldn't accept this image. Attaching a screenshot of it instead usually works."
-        case .rateLimited:
-            return "Imgur is limiting uploads right now. Wait a while and try again. Your draft has been retained."
+        case .unsupportedImageFormat(let imgurMessage):
+            return Self.appending(imgurMessage, to: "Imgur wouldn't accept this image.")
+        case .rateLimited(let imgurMessage):
+            return Self.appending(imgurMessage, to: "Imgur is limiting uploads right now. Wait a while and try again. Your draft has been retained.")
         case .emptyImageTag:
             return "This post has an [img] tag with nothing inside, which would show up as a missing image. Put an image URL inside the tag, or remove it, then try again."
         }
+    }
+
+    private static func appending(_ imgurMessage: String, to explanation: String) -> String {
+        let imgurMessage = imgurMessage.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !imgurMessage.isEmpty else { return explanation }
+        return "\(explanation)\n\nImgur said: \"\(imgurMessage)\""
     }
 }
 
@@ -59,13 +66,13 @@ func containsEmptyImageTag(_ plainText: String) -> Bool {
     plainText.range(of: #"\[(t?img)\]\s*\[/\1\]"#, options: [.regularExpression, .caseInsensitive]) != nil
 }
 
-/// Turns an Imgur rejection we recognize into something the reader can act on. The original error is logged either way.
+/// Turns an Imgur rejection we recognize into something the reader can act on, keeping Imgur's own message alongside. The original error is logged either way.
 private func friendlierError(_ error: Error) -> Error {
     if let apiError = error as? ImgurUploader.APIError, apiError.isUnsupportedFileType {
-        return ImageUploadError.unsupportedImageFormat
+        return ImageUploadError.unsupportedImageFormat(imgurMessage: apiError.message)
     }
     if let apiError = error as? ImgurUploader.APIError, apiError.isRateLimited {
-        return ImageUploadError.rateLimited
+        return ImageUploadError.rateLimited(imgurMessage: apiError.message)
     }
     return error
 }

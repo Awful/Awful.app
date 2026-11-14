@@ -33,6 +33,16 @@ extension ImgurUploader {
             }
         }
 
+        /// Imgur's own explanation of the problem, without the type and code that `failureReason` adds.
+        public var message: String {
+            switch error {
+            case .left(let string):
+                return string
+            case .right(let detail):
+                return detail.message
+            }
+        }
+
         /// Whether Imgur turned down the upload because it didn't like the image's format, as opposed to some other problem.
         public var isUnsupportedFileType: Bool {
             switch error {
