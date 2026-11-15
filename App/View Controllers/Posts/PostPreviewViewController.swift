@@ -187,6 +187,7 @@ final class PostPreviewViewController: ViewController {
         
         renderView.frame = CGRect(origin: .zero, size: view.bounds.size)
         renderView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        renderView.registerMessage(RenderView.BuiltInMessage.ImageLoadProgress.self)
         view.insertSubview(renderView, at: 0)
 
         if #available(iOS 26.0, *) {
@@ -267,13 +268,25 @@ extension PostPreviewViewController: NavigationBarScrollTransitioning {
 
 extension PostPreviewViewController: RenderViewDelegate {
     func didFinishRenderingHTML(in view: RenderView) {
+        dismissLoadingView()
+    }
+
+    func didReceive(message: RenderViewMessage, in view: RenderView) {
+        switch message {
+        case let progress as RenderView.BuiltInMessage.ImageLoadProgress:
+            // Like the posts page, stop waiting once the post's images have loaded or timed out. The page load itself also waits on avatars, embeds and slow image hosts, which can hold the preview up for a long time.
+            if progress.total == 0 || progress.complete {
+                dismissLoadingView()
+            }
+        default:
+            let description = "\(message)"
+            logger.warning("received unexpected message: \(description)")
+        }
+    }
+
+    private func dismissLoadingView() {
         loadingView?.removeFromSuperview()
         loadingView = nil
-    }
-    
-    func didReceive(message: RenderViewMessage, in view: RenderView) {
-        let description = "\(message)"
-        logger.warning("received unexpected message: \(description)")
     }
     
     func didTapLink(to url: URL, in view: RenderView) {
