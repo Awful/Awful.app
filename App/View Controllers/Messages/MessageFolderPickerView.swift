@@ -206,12 +206,12 @@ final class MessageFolderPickerView: UIView {
         segmentedControl.selectedSegmentTintColor = theme[uicolor: "tintColor"]
 
         let normalTextAttributes: [NSAttributedString.Key: Any] = [
-            .foregroundColor: theme[uicolor: "navigationBarTextColor"] ?? UIColor.label
+            .foregroundColor: theme[uicolor: "messageFolderPickerUnselectedTextColor"] ?? UIColor.label
         ]
         segmentedControl.setTitleTextAttributes(normalTextAttributes, for: .normal)
 
         let selectedTextAttributes: [NSAttributedString.Key: Any] = [
-            .foregroundColor: theme[uicolor: "navigationBarTextColor"] ?? UIColor.label
+            .foregroundColor: theme[uicolor: "messageFolderPickerSelectedTextColor"] ?? UIColor.label
         ]
         segmentedControl.setTitleTextAttributes(selectedTextAttributes, for: .selected)
     }

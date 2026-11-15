@@ -31,7 +31,7 @@
 			<key>listSelectedBackgroundColor</key>
 			<string>#e7e7ff</string>
 			<key>messageFolderPickerUnselectedColor</key>
-			<string>#99f</string>
+			<string>#4d4d4d</string>
 			<key>ratingIconEmptyColor</key>
 			<string>#99f</string>
 		</dict>
@@ -149,6 +149,10 @@
 			<string>#f7f7f7</string>
 			<key>navigationBarTextColor</key>
 			<string>#ffffff</string>
+			<key>messageFolderPickerSelectedTextColor</key>
+			<string>#ffffff</string>
+			<key>messageFolderPickerUnselectedTextColor</key>
+			<string>#000</string>
 			<key>navigationBarTintColor</key>
 			<string>#1483b1</string>
 			<key>toolbarTextColor</key>
@@ -277,6 +281,10 @@
 		<dict>
 			<key>navigationBarTextColor</key>
 			<string>#dddddd</string>
+			<key>messageFolderPickerSelectedTextColor</key>
+			<string>#dddddd</string>
+			<key>messageFolderPickerUnselectedTextColor</key>
+			<string>#dddddd</string>
 			<key>navigationBarTintColor</key>
 			<string>#0f4f70</string>
 			<key>tabBarBackgroundColor</key>
@@ -382,6 +390,10 @@
 		<dict>
 			<key>navigationBarTextColor</key>
 			<string>#ffffff</string>
+			<key>messageFolderPickerSelectedTextColor</key>
+			<string>#ffffff</string>
+			<key>messageFolderPickerUnselectedTextColor</key>
+			<string>#000</string>
 			<key>navigationBarTintColor</key>
 			<string>#004696</string>
 			<key>toolbarTextColor</key>
@@ -480,6 +492,8 @@
 			<string>#262626</string>
 			<key>threadListPageIconColor</key>
 			<string>#808080e5</string>
+			<key>messageFolderPickerUnselectedColor</key>
+			<string>#4d4d4d</string>
 		</dict>
 		<key>Lotties</key>
 		<dict>
@@ -491,6 +505,10 @@
 		<key>Navbar, tab bar, toolbar</key>
 		<dict>
 			<key>navigationBarTextColor</key>
+			<string>#ffffff</string>
+			<key>messageFolderPickerSelectedTextColor</key>
+			<string>#ffffff</string>
+			<key>messageFolderPickerUnselectedTextColor</key>
 			<string>#ffffff</string>
 			<key>navigationBarTintColor</key>
 			<string>#002e64</string>
@@ -586,6 +604,8 @@
 			<string>#262626</string>
 			<key>threadListPageIconColor</key>
 			<string>#808080e5</string>
+			<key>messageFolderPickerUnselectedColor</key>
+			<string>#4d4d4d</string>
 		</dict>
 		<key>Lotties</key>
 		<dict>
@@ -601,6 +621,10 @@
 			<key>navigationBarShadowOpacity</key>
 			<integer>0</integer>
 			<key>navigationBarTextColor</key>
+			<string>#ffffff</string>
+			<key>messageFolderPickerSelectedTextColor</key>
+			<string>#ffffff</string>
+			<key>messageFolderPickerUnselectedTextColor</key>
 			<string>#ffffff</string>
 			<key>navigationBarTintColor</key>
 			<string>#000000</string>
@@ -700,10 +724,16 @@
 			<string>#cccccc</string>
 			<key>threadListPageIconColor</key>
 			<string>#808080e5</string>
+			<key>messageFolderPickerUnselectedColor</key>
+			<string>#808080</string>
 		</dict>
 		<key>Navbar, tab bar, toolbar</key>
 		<dict>
 			<key>navigationBarTextColor</key>
+			<string>#ffffff</string>
+			<key>messageFolderPickerSelectedTextColor</key>
+			<string>#ffffff</string>
+			<key>messageFolderPickerUnselectedTextColor</key>
 			<string>#ffffff</string>
 			<key>navigationBarTintColor</key>
 			<string>#004696</string>
@@ -815,7 +845,7 @@
 		<key>Lists</key>
 		<dict>
 			<key>messageFolderPickerUnselectedColor</key>
-			<string>#ff80ff</string>
+			<string>#4d4d4d</string>
 			<key>ratingIconEmptyColor</key>
 			<string>#ff80ff</string>
 			<key>listTextColor</key>
@@ -1026,6 +1056,10 @@
 			<integer>0</integer>
 			<key>navigationBarTextColor</key>
 			<string>#ffffff</string>
+			<key>messageFolderPickerSelectedTextColor</key>
+			<string>#ffffff</string>
+			<key>messageFolderPickerUnselectedTextColor</key>
+			<string>#ffffff</string>
 			<key>navigationBarTintColor</key>
 			<string>#000000</string>
 			<key>tabBarBackgroundColor</key>
@@ -1227,6 +1261,10 @@
 			<integer>0</integer>
 			<key>navigationBarTextColor</key>
 			<string>#000000</string>
+			<key>messageFolderPickerSelectedTextColor</key>
+			<string>#ffffff</string>
+			<key>messageFolderPickerUnselectedTextColor</key>
+			<string>#000000</string>
 			<key>navigationBarTintColor</key>
 			<string>#e6e6e6</string>
 			<key>tabBarBackgroundColor</key>
@@ -1412,7 +1450,7 @@
 		<key>Lists</key>
 		<dict>
 			<key>messageFolderPickerUnselectedColor</key>
-			<string>#4d4d4d</string>
+			<string>#151515</string>
 			<key>ratingIconEmptyColor</key>
 			<string>#4d4d4d</string>
 			<key>listSecondaryTextColor</key>
@@ -1523,7 +1561,7 @@
 		<key>Lists</key>
 		<dict>
 			<key>messageFolderPickerUnselectedColor</key>
-			<string>#4d4d4d</string>
+			<string>#151515</string>
 			<key>ratingIconEmptyColor</key>
 			<string>#4d4d4d</string>
 			<key>listFontName</key>
