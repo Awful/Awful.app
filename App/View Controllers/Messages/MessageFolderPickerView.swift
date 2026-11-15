@@ -202,7 +202,7 @@ final class MessageFolderPickerView: UIView {
     }
 
     func applyTheme(_ theme: Theme) {
-        segmentedControl.backgroundColor = theme[uicolor: "ratingIconEmptyColor"]
+        segmentedControl.backgroundColor = theme[uicolor: "messageFolderPickerUnselectedColor"]
         segmentedControl.selectedSegmentTintColor = theme[uicolor: "tintColor"]
 
         let normalTextAttributes: [NSAttributedString.Key: Any] = [

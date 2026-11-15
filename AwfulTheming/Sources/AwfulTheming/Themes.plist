@@ -30,6 +30,8 @@
 			<string>#ccccff</string>
 			<key>listSelectedBackgroundColor</key>
 			<string>#e7e7ff</string>
+			<key>messageFolderPickerUnselectedColor</key>
+			<string>#99f</string>
 			<key>ratingIconEmptyColor</key>
 			<string>#99f</string>
 		</dict>
@@ -95,6 +97,8 @@
 			<string>2</string>
 			<key>expansionTintColor</key>
 			<string>#808080</string>
+			<key>messageFolderPickerUnselectedColor</key>
+			<string>#cccccc</string>
 			<key>ratingIconEmptyColor</key>
 			<string>#cccccc</string>
 			<key>listHeaderTextColor</key>
@@ -259,6 +263,8 @@
 			<string>#262626</string>
 			<key>threadListPageIconColor</key>
 			<string>#808080e5</string>
+			<key>messageFolderPickerUnselectedColor</key>
+			<string>#060606</string>
 		</dict>
 		<key>Lotties</key>
 		<dict>
@@ -808,6 +814,8 @@
 		</dict>
 		<key>Lists</key>
 		<dict>
+			<key>messageFolderPickerUnselectedColor</key>
+			<string>#ff80ff</string>
 			<key>ratingIconEmptyColor</key>
 			<string>#ff80ff</string>
 			<key>listTextColor</key>
@@ -977,6 +985,8 @@
 			<integer>-1</integer>
 			<key>messageListSenderFontSizeAdjustment</key>
 			<integer>0</integer>
+			<key>messageFolderPickerUnselectedColor</key>
+			<string>#4d4d4d</string>
 			<key>ratingIconEmptyColor</key>
 			<string>#4d4d4d</string>
 			<key>expansionTintColor</key>
@@ -1178,6 +1188,8 @@
 			<integer>-1</integer>
 			<key>messageListSubjectFontSizeAdjustment</key>
 			<integer>0</integer>
+			<key>messageFolderPickerUnselectedColor</key>
+			<string>#cccccc</string>
 			<key>ratingIconEmptyColor</key>
 			<string>#cccccc</string>
 			<key>expansionTintColor</key>
@@ -1399,6 +1411,8 @@
 		</dict>
 		<key>Lists</key>
 		<dict>
+			<key>messageFolderPickerUnselectedColor</key>
+			<string>#4d4d4d</string>
 			<key>ratingIconEmptyColor</key>
 			<string>#4d4d4d</string>
 			<key>listSecondaryTextColor</key>
@@ -1508,6 +1522,8 @@
 		</dict>
 		<key>Lists</key>
 		<dict>
+			<key>messageFolderPickerUnselectedColor</key>
+			<string>#4d4d4d</string>
 			<key>ratingIconEmptyColor</key>
 			<string>#4d4d4d</string>
 			<key>listFontName</key>

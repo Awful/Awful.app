@@ -221,8 +221,8 @@
     "Show Thread Tags" : {
 
     },
-    "Shows a pretend probation notice on thread lists and here in Settings until you relaunch Awful." : {
-      "comment" : "Caption for the Simulate Probation button."
+    "Shows a probation message on thread lists and here in Settings until you relaunch Awful and refresh a list." : {
+
     },
     "Sidebar" : {
 
